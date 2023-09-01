@@ -6,6 +6,7 @@ import Login from './components/log in/login';
 import Dashboard from './components/profile/dashboard';
 import List from './components/list/list';
 import Upload from './components/upload/upload';
+import Interface from './components/interface/Interface';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='dashboard' element={<Dashboard />} />
         <Route path='list/:id' element={<List />} />
         <Route path='upload' element={<Upload />} />
+        <Route path='/interface' element={<Interface />} />
       </Routes>
     </BrowserRouter>
   );
