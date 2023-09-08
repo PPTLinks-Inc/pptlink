@@ -1,14 +1,13 @@
-import { useParams } from "react-router-dom"
+import { useParams } from 'react-router-dom';
 
 const List = () => {
-    const { id } = useParams()
+  const { id } = useParams();
 
+  return (
+    <div>
+      <span></span>
+    </div>
+  );
+};
 
-    return (
-        <div>this is the list of {id} files</div>
-
-    
-    )
-}
-
-export default List
+export default List;
