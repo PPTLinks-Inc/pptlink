@@ -7,7 +7,6 @@ import Dashboard from './components/profile/dashboard';
 import List from './components/list/list';
 import Upload from './components/upload/upload';
 import Interface from './components/interface/Interface';
-
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +18,7 @@ function App() {
         <Route path='list/:id' element={<List />} />
         <Route path='upload' element={<Upload />} />
         <Route path='/interface' element={<Interface />} />
+
       </Routes>
     </BrowserRouter>
   );
