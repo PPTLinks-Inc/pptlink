@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './components/home/home';
 import NotFound from './components/404/404';
@@ -38,7 +37,7 @@ function App() {
               <div>
                 <p
                   className='text-xl tracking-widest font-bold cursor-pointer'
-                  yyy
+                  
                 >
                   <Link to='/'>PPTLink.</Link>
                 </p>
@@ -118,7 +117,7 @@ function App() {
                 <div>
                   <p
                     className='text-xl tracking-widest font-bold cursor-pointer'
-                    yyy
+                    
                   >
                     <Link to='/'>PPTLink.</Link>
                   </p>
@@ -241,7 +240,7 @@ function App() {
               <div>
                 <p
                   className='text-xl tracking-widest font-bold cursor-pointer'
-                  yyy
+                  
                 >
                   <Link to='/'>PPTLink.</Link>
                 </p>
