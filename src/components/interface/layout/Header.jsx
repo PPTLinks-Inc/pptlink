@@ -19,7 +19,7 @@ function Header({handleSideBar}) {
    </div> */}
    <header className="p-4 pl-6 flex justify-between items-center bg-[#04247D] relative shadow-md z-50 w-full">
       <div className="mr-4 flex items-center">
-        <button className="border-none p-2 rounded-full transition duration-300 hover:bg-blue"  onClick={() => {
+        <button className="border-none p-2 rounded-full transition duration-400 hover:bg-blue"  onClick={() => {
             setSidebar(!sidebar)
             handleSideBar(!sidebar)}
             }>
