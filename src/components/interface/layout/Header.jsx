@@ -3,6 +3,7 @@
 import { FaBars  } from "react-icons/fa";
 import { useState } from "react";
 
+// eslint-disable-next-line react/prop-types
 function Header({handleSideBar}) {
 
     const [sidebar, setSidebar] = useState(false)
