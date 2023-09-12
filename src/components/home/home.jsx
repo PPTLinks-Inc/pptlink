@@ -8,28 +8,41 @@ const Home = () => {
         src={Ellipse}
         alt='Ellipse'
         className='z-20 w-6 absolute left-24 top-56'
+        draggable='false'
+        loading='lazy'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
         className='z-20 w-6 absolute right-36 top-36'
+        draggable='false'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
         className='z-20 w-6 absolute left-65 bottom-24'
+        draggable='false'
+        loading='lazy'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
         className='z-20 w-6 absolute right-40 bottom-40'
+        draggable='false'
+        loading='lazy'
       />
 
       <div className='flex-1'>
-        <img src={loading} alt='loading' className='w-9/12' />
+        <img
+          src={loading}
+          alt='loading'
+          className='w-9/12'
+          draggable='false'
+          loading='lazy'
+        />
       </div>
 
       <div className='flex-1 pt-7'>

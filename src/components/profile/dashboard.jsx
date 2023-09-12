@@ -16,6 +16,8 @@ const Dashboard = () => {
           className='w-[250px] h-[250px] rounded-full mb-[40px]'
           src={profile}
           alt='your profile'
+          draggable='false'
+          loading='lazy'
         />
         <h2 className='text-xl mb-6'>Welcome to PPTLink,</h2>
         <p className='mb-6'>
@@ -44,6 +46,8 @@ const Dashboard = () => {
               src={beginnersguide}
               alt='presentation image'
               className='rounded-xl w-full h-[190px]'
+              draggable='false'
+              loading='lazy'
             />
 
             <p className='font-bold leading-10 treading-6'>
@@ -61,6 +65,8 @@ const Dashboard = () => {
               src={chatgptWebiner}
               alt='presentation image'
               className='rounded-xl w-full h-[190px]'
+              draggable='false'
+              loading='lazy'
             />
 
             <p className='font-bold leading-10 treading-6'>
@@ -78,6 +84,8 @@ const Dashboard = () => {
               src={moreThan}
               alt='presentation image'
               className='rounded-xl w-full h-[190px]'
+              draggable='false'
+              loading='lazy'
             />
 
             <p className='font-bold leading-10 treading-6'>
@@ -95,6 +103,8 @@ const Dashboard = () => {
               src={sixStep}
               alt='presentation image'
               className='rounded-xl w-full h-[190px]'
+              draggable='false'
+              loading='lazy'
             />
 
             <p className='font-bold leading-10'>My first presentation</p>
@@ -110,6 +120,8 @@ const Dashboard = () => {
               src={healthCare}
               alt='presentation image'
               className='rounded-xl w-full h-[190px]'
+              draggable='false'
+              loading='lazy'
             />
 
             <p className='font-bold leading-10 treading-6'>
@@ -127,6 +139,8 @@ const Dashboard = () => {
               src={humanResecource}
               alt='presentation image'
               className='rounded-xl w-full h-[190px]'
+              draggable='false'
+              loading='lazy'
             />
 
             <p className='font-bold leading-10 treading-6'>
