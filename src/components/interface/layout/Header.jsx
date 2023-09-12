@@ -3,6 +3,9 @@ import logo from './assets/logo.png';
 import headerImg from './assets/header-gradient.webp';
 import { FaBars } from 'react-icons/fa';
 
+
+    const [sidebar, setSidebar] = useState(false)
+
 function Header() {
   return (
     <>
@@ -35,6 +38,7 @@ function Header() {
       </header>
     </>
   );
-}
 
-export default Header;
+} 
+
+export default Header
