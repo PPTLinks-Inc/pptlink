@@ -1,7 +1,6 @@
-import React from "react";
-import logo from "./assets/logo.png";
-import headerImg from './assets/header-gradient.webp'
-import { FaBars, faMagnifyingGlass } from "react-icons/fa";
+// import logo from "./assets/logo.png";
+// import headerImg from './assets/header-gradient.webp'
+import { FaBars  } from "react-icons/fa";
 import { useState } from "react";
 
 function Header({handleSideBar}) {

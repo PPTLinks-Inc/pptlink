@@ -1,4 +1,4 @@
-::-webkit-scrollbar{
+/* ::-webkit-scrollbar{
     width: .5em;
 }
 ::-webkit-scrollbar-track{
@@ -7,8 +7,8 @@
 }
 ::-webkit-scrollbar-thumb{
     background: #04247D;
-    /* height: 10px; */
-}
+  
+} */
 
 
 .nav-item li:hover .nav-side::before {
