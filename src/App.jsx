@@ -12,7 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Root />} >
+        <Route path='/' element={<Root />}>
           <Route path='/' element={<Home />} />
           <Route path='*' element={<NotFound />} />
           <Route path='login' element={<Login />} />
@@ -20,8 +20,7 @@ function App() {
           <Route path='list/:id' element={<List />} />
           <Route path='upload' element={<Upload />} />
         </Route>
-        <Route path='/interface' element={<Interface />} />
-
+        <Route path='interface' element={<Interface />} />
       </Routes>
     </BrowserRouter>
   );

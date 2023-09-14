@@ -19,17 +19,17 @@ const Home = () => {
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='hidden z-20 w-6 lg:block lg:absolute left-5 bottom-0 lg:left-65 lg:bottom-24'
+        className='z-20 w-6 absolute left-65 bottom-24'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='hidden z-20 w-6 lg:block lg:absolute right-10 bottom-0 lg:right-40 lg:bottom-40'
+        className='z-20 w-6 absolute right-40 bottom-40'
       />
 
-      <div className='hidden lg:flex'>
-        <img src={loading} alt='loading' className='w-9/12 d' />
+      <div className='flex-1'>
+        <img src={loading} alt='loading' className='w-9/12' />
       </div>
 
       <div className='flex-1 pt-7 flex justify-center'>
