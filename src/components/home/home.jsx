@@ -3,37 +3,37 @@ import loading from './../../images/loading.png';
 
 const Home = () => {
   return (
-    <section className='min-h-full w-full flex px-[10%] py-[6%] relative'>
+    <section className='min-h-full w-full flex flex-col flex-reverse px-[10%] py-[6%] relative lg:flex-row'>
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute left-24 top-56'
+        className='display-none z-20 w-6 absolute left-4 top-10 lg:left-24 lg:top-56'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute right-36 top-36'
+        className='z-20 w-6 absolute right-10 top-10 lg:right-36 lg:top-16'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute left-65 bottom-24'
+        className='z-20 w-6 absolute left-5 bottom-0 lg:left-65 lg:bottom-24'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute right-40 bottom-40'
+        className='z-20 w-6 absolute right-10 bottom-0 lg:right-40 lg:bottom-40'
       />
 
-      <div className='flex-1'>
-        <img src={loading} alt='loading' className='w-9/12' />
+      <div className='hidden lg:flex'>
+        <img src={loading} alt='loading' className='w-9/12 d' />
       </div>
 
-      <div className='flex-1 pt-7'>
-        <div className='absolute'>
+      <div className='flex-1 pt-7 flex justify-center'>
+        <div className='lg:absolute'>
           <h1 className='text-2xl leading-normal py-6'>
             Make your presentation, <br />
             and as you move from page <br />
