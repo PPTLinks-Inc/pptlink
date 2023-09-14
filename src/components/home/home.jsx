@@ -7,25 +7,25 @@ const Home = () => {
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='display-none z-20 w-6 absolute left-4 top-10 lg:left-24 lg:top-56'
+        className='hidden z-20 w-6 lg:block  lg:absolute left-4 top-10 lg:left-24 lg:top-56'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute right-10 top-10 lg:right-36 lg:top-16'
+        className='hidden z-20 w-6 lg:block lg:absolute right-10 top-10 lg:right-36 lg:top-16'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute left-5 bottom-0 lg:left-65 lg:bottom-24'
+        className='hidden z-20 w-6 lg:block lg:absolute left-5 bottom-0 lg:left-65 lg:bottom-24'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute right-10 bottom-0 lg:right-40 lg:bottom-40'
+        className='hidden z-20 w-6 lg:block lg:absolute right-10 bottom-0 lg:right-40 lg:bottom-40'
       />
 
       <div className='hidden lg:flex'>

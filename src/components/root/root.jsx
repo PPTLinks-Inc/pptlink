@@ -98,7 +98,7 @@ export default function Root() {
                 </div>
 
                 <div
-                    className={`min-h-screen bg-black w-[100%] absolute top-[5px] rounded-t-[2.7rem] overflow-x-hidden text-slate-200 lg:px-[2.5rem] ${page.dropdown
+                    className={`min-h-screen bg-black w-[100%] absolute top-[15px] rounded-t-[2.7rem] overflow-x-hidden text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${page.dropdown
                         ? 'transition-transform translate-y-[100vh] lg:translate-y-[100vh]  ease-in-out duration-500'
                         : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300'
                         }`}
