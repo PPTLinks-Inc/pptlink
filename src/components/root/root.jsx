@@ -124,9 +124,7 @@ export default function Root() {
               </div>
             )}
           </div>
-
           <Outlet />
-
           <footer className='w-full h-[80vh] mt-[10vh] flex flex-col'>
             <div className='grow-[.7] flex flex-row'>
               <div className='w-[60%] flex flex-row justify-between pr-[310px]'>

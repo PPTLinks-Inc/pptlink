@@ -11,7 +11,7 @@ import healthCare from '../../images/ppt-on-health-care-marketing-1-2048.webp';
 const Dashboard = () => {
   return (
     <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around'>
-      <div className='flex flex-col items-center mb-[40px]'>
+      <div className='flex flex-col md:flex-row max-w-[80%] mx-auto gap-20 items-center mb-[40px]'>
         <img
           className='w-[250px] h-[250px] rounded-full mb-[40px]'
           src={profile}
@@ -19,16 +19,18 @@ const Dashboard = () => {
           draggable='false'
           loading='lazy'
         />
-        <h2 className='text-xl mb-6'>Welcome to PPTLink,</h2>
-        <p className='mb-6'>
-          Your upload list and all other activities carried out on the platform
-          will appear here. Feel free to upload more presentations, lets make
-          this world paperless.
-        </p>
+        <div className=''>
+          <h2 className='text-xl mb-6 font-bold'>Welcome to PPTLink,</h2>
+          <p className='mb-6'>
+            Your upload list and all other activities carried out on the
+            platform will appear here. Feel free to upload more presentations,
+            lets make this world paperless.
+          </p>
 
-        <button className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around'>
-          <GrAdd /> <span className='ml-3'>Upload</span>
-        </button>
+          <button className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce'>
+            <GrAdd /> <span className='ml-3'>Upload</span>
+          </button>
+        </div>
       </div>
 
       <div className=''>
