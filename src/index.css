@@ -8,3 +8,7 @@ body {
   --tw-bg-opacity: 1;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
 }
+
+button {
+  @apply hover:animate-none active:scale-95 transition-all duration-200;
+}
