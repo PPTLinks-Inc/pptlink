@@ -1,4 +1,4 @@
-import { LoadingAssetBig } from '../../assets/assets';
+// import { LoadingAssetBig } from '../../assets/assets';
 import { RiFilePpt2Fill } from 'react-icons/ri';
 const Upload = () => {
   return (
