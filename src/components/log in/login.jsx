@@ -55,23 +55,21 @@ const Login = () => {
 
       setValues({ ...values, loginPending: true });
 
-      // axios
-      //   .post('http://10.42.0.1:4000/api/v1/auth/login', sendData, {
-      //     withCredentials: true,
-      //   })
-      //   .then(({ data }) => {
-      //     console.log(data);
-      //     setValues({
-      //       ...values,
-      //       loginPending: false,
-      //       email: '',
-      //       password: '',
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setValues({ ...values, loginPending: false });
-      //   });
+      axios
+        .post('/api/v1/auth/login', sendData)
+        .then(({ data }) => {
+          console.log(data);
+          setValues({
+            ...values,
+            loginPending: false,
+            email: '',
+            password: '',
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setValues({ ...values, loginPending: false });
+        });
     },
     [values]
   );
@@ -84,9 +82,8 @@ const Login = () => {
     const sendData = { email: values.email, password: values.password };
 
     axios
-      .post('http://10.42.0.1:4000/api/v1/auth/signup', sendData, {
-        signal: controller.signal,
-        withCredentials: true,
+      .post('/api/v1/auth/signup', sendData, {
+        signal: controller.signal
       })
       .then((data) => {
         console.log(data);
