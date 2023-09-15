@@ -1,7 +1,21 @@
 import Ellipse from './../../images/Ellipse.png';
 import loading from './../../images/loading.png';
+import { userContext } from '../../contexts/userContext';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 const Home = () => {
+  // const [user, setUser] = userContext();
+
+  // useEffect(() => {
+  //   axios
+  //     .get('auth', { withCredentials: true })
+  //     .then(({ user }) => {
+  //       setUser(user);
+  //     })
+  //     .catch((err) => setUser(null));
+  // }, [user]);
+
   return (
     <section className='min-h-full w-full flex flex-col flex-reverse px-[10%] py-[6%] relative lg:flex-row'>
       <img

@@ -12,3 +12,8 @@ body {
 button {
   @apply hover:animate-none active:scale-95 transition-all duration-200;
 }
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
