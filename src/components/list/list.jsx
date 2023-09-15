@@ -1,8 +1,21 @@
 // import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { AiFillCaretDown } from 'react-icons/ai';
+import { userContext } from '../../contexts/userContext';
+import axios from 'axios';
 
 const List = () => {
+  // const [user, setUser] = userContext();
+
+  // useEffect(() => {
+  //   axios
+  //     .get('auth', { withCredentials: true })
+  //     .then(({ user }) => {
+  //       setUser(user);
+  //     })
+  //     .catch((err) => setUser(null));
+  // }, [user]);
+
   return (
     <section className='min-h-full w-full flex px-[25%] '>
       <div className='w-full flex flex-col justify-between'>

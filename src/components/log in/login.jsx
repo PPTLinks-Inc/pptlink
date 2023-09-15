@@ -1,31 +1,41 @@
-import { useCallback, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router';
-import { LoadingAssetSmall } from '../../assets/assets';
+import { useCallback, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router";
+import { LoadingAssetSmall } from "../../assets/assets";
+import { userContext } from "../../contexts/userContext";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
+  const controller = new AbortController();
+  const [user, setUser] = userContext();
+
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
     signup: false,
 
-    email: '',
-    password: '',
+    email: "",
+    password: "",
+
+    showPassword: false,
 
     loginPending: false,
     signupPending: false,
 
-    loginError: [],
-    signupError: [],
+    validateError: [],
   });
 
-  const formValidation = () => {
-    setValues({ ...values, loginError: [] });
+  const showPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
 
-    let tempArr = [];
+  let tempArr = [];
+
+  const formValidation = () => {
+    tempArr = [];
 
     if (values.email.length < 5) {
-      tempArr = [...tempArr, 'Your Email is too short'];
+      tempArr = [...tempArr, "Your Email is too short"];
     }
 
     if (
@@ -33,16 +43,14 @@ const Login = () => {
         values.email
       )
     ) {
-      tempArr = [...tempArr, 'Your Email is not Valid'];
+      tempArr = [...tempArr, "Your Email is not Valid"];
     }
 
     if (values.password.length < 5) {
-      tempArr = [...tempArr, 'Your Password should be more than 5 characters'];
+      tempArr = [...tempArr, "Your Password should be more than 5 characters"];
     }
 
-    setValues({ ...values, loginError: tempArr });
-
-    console.log(values.password);
+    setValues({ ...values, validateError: tempArr });
   };
 
   const handleLogin = useCallback(
@@ -51,104 +59,142 @@ const Login = () => {
 
       formValidation();
 
-      const sendData = { email: values.email, password: values.password };
-
-      setValues({ ...values, loginPending: true });
-
-      axios
-        .post('/api/v1/auth/login', sendData)
-        .then(({ data }) => {
-          console.log(data);
-          setValues({
-            ...values,
-            loginPending: false,
-            email: '',
-            password: '',
+      if (tempArr.length === 0) {
+        const sendData = { email: values.email, password: values.password };
+        setValues({ ...values, loginPending: true, validateError: tempArr });
+        axios
+          .post("/api/v1/auth/login", sendData, {
+            signal: controller.signal,
+          })
+          .then(({ data }) => {
+            console.log(data);
+            setValues({
+              ...values,
+              loginPending: false,
+              email: "",
+              password: "",
+            });
+            controller.abort();
+          })
+          .catch((err) => {
+            console.log(err);
+            setValues({ ...values, loginPending: false });
           });
-        })
-        .catch((err) => {
-          console.log(err);
-          setValues({ ...values, loginPending: false });
-        });
+      }
     },
     [values]
   );
 
-  const handleSignup = useCallback((e) => {
-    e.preventDefault();
+  const handleSignup = useCallback(
+    (e) => {
+      e.preventDefault();
 
-    setValues({ ...values, signupPending: true });
+      formValidation();
 
-    const sendData = { email: values.email, password: values.password };
+      if (tempArr.length === 0) {
+        const sendData = { email: values.email, password: values.password };
+        axios
+          .post("/api/v1/auth/register", sendData, {
+            signal: controller.signal,
+          })
+          .then(({ user }) => {
+            console.log(user);
+            setUser(user);
 
-    axios
-      .post('/api/v1/auth/signup', sendData, {
-        signal: controller.signal
-      })
-      .then((data) => {
-        console.log(data);
-
-        setValues({ ...values, signupPending: false, email: '', password: '' });
-        controller.abort();
-      })
-      .catch((err) => {
-        setValues({ ...values, signupPending: false });
-        console.log(err);
-      });
-  });
+            setValues({
+              ...values,
+              signupPending: false,
+              email: "",
+              password: "",
+            });
+            controller.abort();
+          })
+          .catch((err) => {
+            setValues({ ...values, signupPending: false });
+            console.log(err);
+          });
+      }
+    },
+    [values]
+  );
 
   return (
-    <section className='flex justify-center'>
+    <section className="flex justify-center">
       {!values.signup && (
-        <form onSubmit={handleLogin} autoComplete='false'>
-          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
-            <div className='border-b border-slate-200 w-full p-[30px]'>
-              <h1 className='text-xl font-bold'>Log in</h1>
+        <form onSubmit={handleLogin} autoComplete="false">
+          <div className="w-[450px] border border-slate-200 rounded-xl border-collapse">
+            <div className="border-b border-slate-200 w-full p-[30px]">
+              <h1 className="text-xl font-bold">Log in</h1>
               Note: If you belong to an institution, log in using your email and
               the institution password
             </div>
 
             <input
-              type='email'
-              className='w-full p-[30px] bg-transparent border-b border-slate-200'
-              placeholder='Email'
+              type="email"
+              value={values.email}
+              className="w-full p-[30px] bg-transparent border-b border-slate-200"
+              placeholder="Email"
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
 
-            <input
-              type='password'
-              className={`w-full p-[30px] bg-transparent ${
-                values.loginError.length > 0 && 'border-b border-slate-200'
+            <div
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && "border-b border-slate-200"
               }`}
-              placeholder='Password'
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
-            />
+            >
+              <input
+                type={values.showPassword ? "text" : "password"}
+                value={values.password}
+                className="flex-[.75] h-full p-[30px] bg-transparent"
+                placeholder="Password"
+                onChange={(e) =>
+                  setValues({ ...values, password: e.target.value })
+                }
+              />
+              <div
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
+                  values.validateError.length === 0 && "rounded-br-xl"
+                }`}
+                onClick={showPassword}
+              >
+                {values.showPassword ? (
+                  <AiFillEyeInvisible className="text-black font-bold text-2xl" />
+                ) : (
+                  <AiFillEye className="text-black font-bold text-2xl" />
+                )}
+              </div>
+            </div>
 
-            {values.loginError.length > 0 && (
-              <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
-                {values.loginError.map((error, i) => (
+            {values.validateError.length > 0 && (
+              <ul className="flex flex-col justify-between p-[30px] list-[disc]">
+                {values.validateError.map((error, i) => (
                   <li key={i}>{error}</li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className='flex justify-between items-center'>
+          <div className="flex justify-between items-center">
             <button
-              type='submit'
+              type="submit"
               disabled={values.loginPending}
-              className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+              className="px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]"
             >
-              {values.loginPending ? <LoadingAssetSmall /> : 'Log in'}
+              {values.loginPending ? <LoadingAssetSmall /> : "Log in"}
             </button>
 
             <p>
-              Do not have an account?{' '}
+              Do not have an account?{" "}
               <span
-                className='text-xl font-bold cursor-pointer'
-                onClick={() => setValues({ ...values, signup: !values.signup })}
+                className="text-xl font-bold cursor-pointer"
+                onClick={() =>
+                  setValues({
+                    ...values,
+                    signup: !values.signup,
+                    validateError: [],
+                    showPassword: false,
+                  })
+                }
               >
                 Signup
               </span>
@@ -158,54 +204,79 @@ const Login = () => {
       )}
 
       {values.signup && (
-        <form onSubmit={handleSignup}>
-          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
-            <div className='border-b border-slate-200 w-full p-[30px]'>
-              <h1 className='text-xl font-bold'>Sign up</h1>
+        <form onSubmit={handleSignup} autoComplete="false">
+          <div className="w-[450px] border border-slate-200 rounded-xl border-collapse">
+            <div className="border-b border-slate-200 w-full p-[30px]">
+              <h1 className="text-xl font-bold">Sign up</h1>
               Please input the necessary information and create an account
             </div>
 
             <input
-              type='email'
-              className='w-full p-[30px] bg-transparent border-b border-slate-200'
-              placeholder='Email'
+              type="email"
+              value={values.email}
+              className="w-full p-[30px] bg-transparent border-b border-slate-200"
+              placeholder="Email"
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
 
-            <input
-              type='password'
-              className={`w-full p-[30px] bg-transparent ${
-                values.signupError.length > 0 && 'border-b border-slate-200'
+            <div
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && "border-b border-slate-200"
               }`}
-              placeholder='Password'
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
-            />
+            >
+              <input
+                type={values.showPassword ? "text" : "password"}
+                value={values.password}
+                className="flex-[.75] h-full p-[30px] bg-transparent"
+                placeholder="Password"
+                onChange={(e) =>
+                  setValues({ ...values, password: e.target.value })
+                }
+              />
+              <div
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
+                  values.validateError.length === 0 && "rounded-br-xl"
+                }`}
+                onClick={showPassword}
+              >
+                {values.showPassword ? (
+                  <AiFillEyeInvisible className="text-black font-bold text-2xl" />
+                ) : (
+                  <AiFillEye className="text-black font-bold text-2xl" />
+                )}
+              </div>
+            </div>
 
-            {values.signupError.length > 0 && (
-              <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
-                {values.signupError.map((error, i) => (
+            {values.validateError.length > 0 && (
+              <ul className="flex flex-col justify-between p-[30px] list-[disc]">
+                {values.validateError.map((error, i) => (
                   <li key={i}>{error}</li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className='flex justify-between items-center'>
+          <div className="flex justify-between items-center">
             <button
-              type='submit'
-              className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+              type="submit"
+              className="px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]"
               disabled={values.signupPending}
             >
-              {values.signupPending ? <LoadingAssetSmall /> : 'Sign up'}
+              {values.signupPending ? <LoadingAssetSmall /> : "Sign up"}
             </button>
 
             <p>
-              Already have an account?{' '}
+              Already have an account?{" "}
               <span
-                className='text-xl font-bold cursor-pointer'
-                onClick={() => setValues({ ...values, signup: !values.signup })}
+                className="text-xl font-bold cursor-pointer"
+                onClick={() =>
+                  setValues({
+                    ...values,
+                    signup: !values.signup,
+                    validateError: [],
+                    showPassword: false,
+                  })
+                }
               >
                 Login
               </span>

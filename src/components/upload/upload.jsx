@@ -1,6 +1,24 @@
+/* eslint-disable no-unused-vars */
+
 // import { LoadingAssetBig } from '../../assets/assets';
 import { RiFilePpt2Fill } from 'react-icons/ri';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { userContext } from '../../contexts/userContext';
+
 const Upload = () => {
+  // script to authenticate and determine if the person is a user
+  // const [user, setUser] = userContext();
+
+  // useEffect(() => {
+  //   axios
+  //     .get('auth', { withCredentials: true })
+  //     .then(({ user }) => {
+  //       setUser(user);
+  //     })
+  //     .catch((err) => setUser(null));
+  // }, [user]);
+
   return (
     <section className='flex justify-center'>
       <form>
