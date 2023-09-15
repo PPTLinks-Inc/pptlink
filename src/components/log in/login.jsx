@@ -1,4 +1,6 @@
-import { useCallback, useState } from 'react';
+/* eslint-disable no-unused-vars */
+
+import { useCallback, useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { LoadingAssetSmall } from '../../assets/assets';
@@ -6,7 +8,9 @@ import { userContext } from '../../contexts/userContext';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 const Login = () => {
-  // const [user, setUser] = userContext();
+  const controller = new AbortController();
+
+  const [user, setUser] = useContext(userContext);
 
   const navigate = useNavigate();
 

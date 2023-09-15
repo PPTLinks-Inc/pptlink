@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import profile from '../../images/profile.jfif';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { GrAdd } from 'react-icons/gr';
@@ -8,21 +10,23 @@ import sixStep from '../../images/the-six-step-guide.webp';
 import humanResecource from '../../images/human-resource-management.webp';
 import healthCare from '../../images/ppt-on-health-care-marketing-1-2048.webp';
 import { userContext } from '../../contexts/userContext';
-import useEffect from 'react';
+import { useEffect, useContext } from 'react';
 import axios from 'axios';
 
 const Dashboard = () => {
-  // script to authenticate and determine if the person is a user
-  // const [user, setUser] = userContext();
+  const controller = new AbortController();
 
-  // useEffect(() => {
-  //   axios
-  //     .get('auth', { withCredentials: true })
-  //     .then(({ user }) => {
-  //       setUser(user);
-  //     })
-  //     .catch((err) => setUser(null));
-  // }, [user]);
+  // script to authenticate and determine if the person is a user
+  const { user, setUser } = useContext(userContext);
+
+  useEffect(() => {
+    axios
+      .get('auth', { withCredentials: true })
+      .then(({ user }) => {
+        setUser(user);
+      })
+      .catch((err) => setUser(null));
+  }, [user]);
 
   return (
     <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around'>

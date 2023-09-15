@@ -2,22 +2,26 @@
 
 // import { LoadingAssetBig } from '../../assets/assets';
 import { RiFilePpt2Fill } from 'react-icons/ri';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import axios from 'axios';
 import { userContext } from '../../contexts/userContext';
 
 const Upload = () => {
-  // script to authenticate and determine if the person is a user
-  // const [user, setUser] = userContext();
+  const controller = new AbortController();
 
-  // useEffect(() => {
-  //   axios
-  //     .get('auth', { withCredentials: true })
-  //     .then(({ user }) => {
-  //       setUser(user);
-  //     })
-  //     .catch((err) => setUser(null));
-  // }, [user]);
+  // script to authenticate and determine if the person is a user
+  const { user, setUser } = useContext(userContext);
+
+  useEffect(() => {
+    axios
+      .get('auth', { withCredentials: true, signal: controller.signal })
+      .then(({ user }) => {
+        setUser(user);
+
+        controller.abort();
+      })
+      .catch((err) => setUser(null));
+  }, [user]);
 
   return (
     <section className='flex justify-center'>
