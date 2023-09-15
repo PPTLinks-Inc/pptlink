@@ -2,8 +2,12 @@ import { useCallback, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { LoadingAssetSmall } from '../../assets/assets';
+import { userContext } from '../../contexts/userContext';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 const Login = () => {
+  // const [user, setUser] = userContext();
+
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
@@ -12,17 +16,22 @@ const Login = () => {
     email: '',
     password: '',
 
+    showPassword: false,
+
     loginPending: false,
     signupPending: false,
 
-    loginError: [],
-    signupError: [],
+    validateError: [],
   });
 
-  const formValidation = () => {
-    setValues({ ...values, loginError: [] });
+  const showPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
 
-    let tempArr = [];
+  let tempArr = [];
+
+  const formValidation = () => {
+    tempArr = [];
 
     if (values.email.length < 5) {
       tempArr = [...tempArr, 'Your Email is too short'];
@@ -40,9 +49,7 @@ const Login = () => {
       tempArr = [...tempArr, 'Your Password should be more than 5 characters'];
     }
 
-    setValues({ ...values, loginError: tempArr });
-
-    console.log(values.password);
+    setValues({ ...values, validateError: tempArr });
   };
 
   const handleLogin = useCallback(
@@ -51,27 +58,31 @@ const Login = () => {
 
       formValidation();
 
-      const sendData = { email: values.email, password: values.password };
+      if (tempArr.length === 0) {
+        const sendData = { email: values.email, password: values.password };
 
-      setValues({ ...values, loginPending: true });
+        setValues({ ...values, loginPending: true, validateError: tempArr });
 
-      // axios
-      //   .post('http://10.42.0.1:4000/api/v1/auth/login', sendData, {
-      //     withCredentials: true,
-      //   })
-      //   .then(({ data }) => {
-      //     console.log(data);
-      //     setValues({
-      //       ...values,
-      //       loginPending: false,
-      //       email: '',
-      //       password: '',
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setValues({ ...values, loginPending: false });
-      //   });
+        // axios
+        //   .post('http://10.42.0.1:4000/api/v1/auth/login', sendData, {
+        //     withCredentials: true,
+        //   })
+        //   .then(({ user }) => {
+        //     console.log(user);
+        //     setUser(user);
+
+        //     setValues({
+        //       ...values,
+        //       loginPending: false,
+        //       email: '',
+        //       password: '',
+        //     });
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //     setValues({ ...values, loginPending: false });
+        //   });
+      }
     },
     [values]
   );
@@ -79,25 +90,35 @@ const Login = () => {
   const handleSignup = useCallback((e) => {
     e.preventDefault();
 
-    setValues({ ...values, signupPending: true });
+    formValidation();
 
-    const sendData = { email: values.email, password: values.password };
+    if (tempArr.length === 0) {
+      const sendData = { email: values.email, password: values.password };
 
-    axios
-      .post('http://10.42.0.1:4000/api/v1/auth/signup', sendData, {
-        signal: controller.signal,
-        withCredentials: true,
-      })
-      .then((data) => {
-        console.log(data);
+      setValues({ ...values, signupPending: true, validateError: tempArr });
 
-        setValues({ ...values, signupPending: false, email: '', password: '' });
-        controller.abort();
-      })
-      .catch((err) => {
-        setValues({ ...values, signupPending: false });
-        console.log(err);
-      });
+      // axios
+      //   .post('http://10.42.0.1:4000/api/v1/auth/signup', sendData, {
+      //     signal: controller.signal,
+      //     withCredentials: true,
+      //   })
+      //   .then(({user}) => {
+      //     console.log(user);
+      //     setUser(user);
+
+      //     setValues({
+      //       ...values,
+      //       signupPending: false,
+      //       email: '',
+      //       password: '',
+      //     });
+      //     controller.abort();
+      //   })
+      //   .catch((err) => {
+      //     setValues({ ...values, signupPending: false });
+      //     console.log(err);
+      //   });
+    }
   });
 
   return (
@@ -113,25 +134,43 @@ const Login = () => {
 
             <input
               type='email'
+              value={values.email}
               className='w-full p-[30px] bg-transparent border-b border-slate-200'
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
 
-            <input
-              type='password'
-              className={`w-full p-[30px] bg-transparent ${
-                values.loginError.length > 0 && 'border-b border-slate-200'
+            <div
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && 'border-b border-slate-200'
               }`}
-              placeholder='Password'
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
-            />
+            >
+              <input
+                type={values.showPassword ? 'text' : 'password'}
+                value={values.password}
+                className='flex-[.75] h-full p-[30px] bg-transparent'
+                placeholder='Password'
+                onChange={(e) =>
+                  setValues({ ...values, password: e.target.value })
+                }
+              />
+              <div
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center ${
+                  values.validateError.length === 0 && 'rounded-br-xl'
+                }`}
+                onClick={showPassword}
+              >
+                {values.showPassword ? (
+                  <AiFillEyeInvisible className='text-black font-bold text-2xl' />
+                ) : (
+                  <AiFillEye className='text-black font-bold text-2xl' />
+                )}
+              </div>
+            </div>
 
-            {values.loginError.length > 0 && (
+            {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
-                {values.loginError.map((error, i) => (
+                {values.validateError.map((error, i) => (
                   <li key={i}>{error}</li>
                 ))}
               </ul>
@@ -151,7 +190,14 @@ const Login = () => {
               Do not have an account?{' '}
               <span
                 className='text-xl font-bold cursor-pointer'
-                onClick={() => setValues({ ...values, signup: !values.signup })}
+                onClick={() =>
+                  setValues({
+                    ...values,
+                    signup: !values.signup,
+                    validateError: [],
+                    showPassword: false,
+                  })
+                }
               >
                 Signup
               </span>
@@ -161,7 +207,7 @@ const Login = () => {
       )}
 
       {values.signup && (
-        <form onSubmit={handleSignup}>
+        <form onSubmit={handleSignup} autoComplete='false'>
           <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Sign up</h1>
@@ -170,25 +216,43 @@ const Login = () => {
 
             <input
               type='email'
+              value={values.email}
               className='w-full p-[30px] bg-transparent border-b border-slate-200'
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
 
-            <input
-              type='password'
-              className={`w-full p-[30px] bg-transparent ${
-                values.signupError.length > 0 && 'border-b border-slate-200'
+            <div
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && 'border-b border-slate-200'
               }`}
-              placeholder='Password'
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
-            />
+            >
+              <input
+                type={values.showPassword ? 'text' : 'password'}
+                value={values.password}
+                className='flex-[.75] h-full p-[30px] bg-transparent'
+                placeholder='Password'
+                onChange={(e) =>
+                  setValues({ ...values, password: e.target.value })
+                }
+              />
+              <div
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center ${
+                  values.validateError.length === 0 && 'rounded-br-xl'
+                }`}
+                onClick={showPassword}
+              >
+                {values.showPassword ? (
+                  <AiFillEyeInvisible className='text-black font-bold text-2xl' />
+                ) : (
+                  <AiFillEye className='text-black font-bold text-2xl' />
+                )}
+              </div>
+            </div>
 
-            {values.signupError.length > 0 && (
+            {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
-                {values.signupError.map((error, i) => (
+                {values.validateError.map((error, i) => (
                   <li key={i}>{error}</li>
                 ))}
               </ul>
@@ -208,7 +272,14 @@ const Login = () => {
               Already have an account?{' '}
               <span
                 className='text-xl font-bold cursor-pointer'
-                onClick={() => setValues({ ...values, signup: !values.signup })}
+                onClick={() =>
+                  setValues({
+                    ...values,
+                    signup: !values.signup,
+                    validateError: [],
+                    showPassword: false,
+                  })
+                }
               >
                 Login
               </span>

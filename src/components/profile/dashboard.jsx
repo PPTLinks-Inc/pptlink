@@ -7,8 +7,23 @@ import moreThan from '../../images/more-than.webp';
 import sixStep from '../../images/the-six-step-guide.webp';
 import humanResecource from '../../images/human-resource-management.webp';
 import healthCare from '../../images/ppt-on-health-care-marketing-1-2048.webp';
+import { userContext } from '../../contexts/userContext';
+import useEffect from 'react';
+import axios from 'axios';
 
 const Dashboard = () => {
+  // script to authenticate and determine if the person is a user
+  // const [user, setUser] = userContext();
+
+  // useEffect(() => {
+  //   axios
+  //     .get('auth', { withCredentials: true })
+  //     .then(({ user }) => {
+  //       setUser(user);
+  //     })
+  //     .catch((err) => setUser(null));
+  // }, [user]);
+
   return (
     <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around'>
       <div className='flex flex-col md:flex-row max-w-[80%] mx-auto gap-20 items-center mb-[40px]'>
