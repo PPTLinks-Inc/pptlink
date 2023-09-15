@@ -155,7 +155,7 @@ const Login = () => {
                 }
               />
               <div
-                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center ${
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
                   values.validateError.length === 0 && 'rounded-br-xl'
                 }`}
                 onClick={showPassword}
@@ -237,7 +237,7 @@ const Login = () => {
                 }
               />
               <div
-                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center ${
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
                   values.validateError.length === 0 && 'rounded-br-xl'
                 }`}
                 onClick={showPassword}
