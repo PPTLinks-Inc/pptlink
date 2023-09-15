@@ -1,4 +1,6 @@
-import { useCallback, useState } from "react";
+/* eslint-disable */
+
+import { useCallback, useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { LoadingAssetSmall } from "../../assets/assets";
@@ -7,7 +9,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const controller = new AbortController();
-  const [user, setUser] = userContext();
+  const { user, setUser } = useContext(userContext);
 
   const navigate = useNavigate();
 

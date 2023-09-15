@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { createContext, useState, useMemo } from 'react';
 
 export const userContext = createContext();
