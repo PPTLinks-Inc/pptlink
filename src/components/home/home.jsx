@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import Ellipse from './../../images/Ellipse.png';
 import loading from './../../images/loading.png';
 import { userContext } from '../../contexts/userContext';

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 // import { LoadingAssetBig } from '../../assets/assets';
 import { RiFilePpt2Fill } from 'react-icons/ri';
 import { useEffect } from 'react';

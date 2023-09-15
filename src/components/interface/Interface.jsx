@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import './interface.css';
 import { FaUser, FaHome, FaAndroid } from 'react-icons/fa';
 import { useState } from 'react';
