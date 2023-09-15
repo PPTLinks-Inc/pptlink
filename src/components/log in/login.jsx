@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable */
 
-import { useCallback, useState, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { LoadingAssetSmall } from '../../assets/assets';
@@ -9,8 +9,7 @@ import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 const Login = () => {
   const controller = new AbortController();
-
-  const [user, setUser] = useContext(userContext);
+  const { user, setUser } = useContext(userContext);
 
   const navigate = useNavigate();
 
@@ -64,66 +63,62 @@ const Login = () => {
 
       if (tempArr.length === 0) {
         const sendData = { email: values.email, password: values.password };
-
         setValues({ ...values, loginPending: true, validateError: tempArr });
-
-        // axios
-        //   .post('http://10.42.0.1:4000/api/v1/auth/login', sendData, {
-        //     withCredentials: true,
-        //   })
-        //   .then(({ user }) => {
-        //     console.log(user);
-        //     setUser(user);
-
-        //     setValues({
-        //       ...values,
-        //       loginPending: false,
-        //       email: '',
-        //       password: '',
-        //     });
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //     setValues({ ...values, loginPending: false });
-        //   });
+        axios
+          .post('/api/v1/auth/login', sendData, {
+            signal: controller.signal,
+          })
+          .then(({ data }) => {
+            console.log(data);
+            setValues({
+              ...values,
+              loginPending: false,
+              email: '',
+              password: '',
+            });
+            controller.abort();
+          })
+          .catch((err) => {
+            console.log(err);
+            setValues({ ...values, loginPending: false });
+          });
       }
     },
     [values]
   );
 
-  const handleSignup = useCallback((e) => {
-    e.preventDefault();
+  const handleSignup = useCallback(
+    (e) => {
+      e.preventDefault();
 
-    formValidation();
+      formValidation();
 
-    if (tempArr.length === 0) {
-      const sendData = { email: values.email, password: values.password };
+      if (tempArr.length === 0) {
+        const sendData = { email: values.email, password: values.password };
+        axios
+          .post('/api/v1/auth/register', sendData, {
+            signal: controller.signal,
+          })
+          .then(({ user }) => {
+            console.log(user);
+            setUser(user);
 
-      setValues({ ...values, signupPending: true, validateError: tempArr });
-
-      // axios
-      //   .post('http://10.42.0.1:4000/api/v1/auth/signup', sendData, {
-      //     signal: controller.signal,
-      //     withCredentials: true,
-      //   })
-      //   .then(({user}) => {
-      //     console.log(user);
-      //     setUser(user);
-
-      //     setValues({
-      //       ...values,
-      //       signupPending: false,
-      //       email: '',
-      //       password: '',
-      //     });
-      //     controller.abort();
-      //   })
-      //   .catch((err) => {
-      //     setValues({ ...values, signupPending: false });
-      //     console.log(err);
-      //   });
-    }
-  });
+            setValues({
+              ...values,
+              signupPending: false,
+              email: '',
+              password: '',
+            });
+            controller.abort();
+          })
+          .catch((err) => {
+            setValues({ ...values, signupPending: false });
+            console.log(err);
+          });
+      }
+    },
+    [values]
+  );
 
   return (
     <section className='flex justify-center'>

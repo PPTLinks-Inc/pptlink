@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import axios from 'axios';
 import Home from './components/home/home';
 import NotFound from './components/404/404';
 import Login from './components/log in/login';
@@ -7,6 +8,22 @@ import List from './components/list/list';
 import Upload from './components/upload/upload';
 import Interface from './components/interface/Interface';
 import Root from './components/root/root';
+
+axios.defaults.baseURL = 'http://localhost:4000';
+
+// Add a request interceptor
+axios.interceptors.request.use(function (config) {
+  config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
+  return config;
+});
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+  if (response.data.token) {
+    localStorage.setItem("accessToken", response.data.token);
+  }
+  return response;
+});
 
 function App() {
   return (
