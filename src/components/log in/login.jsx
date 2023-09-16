@@ -69,8 +69,9 @@ const Login = () => {
             signal: controller.signal,
           })
           .then(({ user }) => {
-            navigate('/');
             setUser(user);
+
+            navigate('/');
 
             setValues({
               ...values,
@@ -81,8 +82,11 @@ const Login = () => {
             controller.abort();
           })
           .catch((err) => {
-            console.log(err);
-            setValues({ ...values, loginPending: false });
+            setValues({
+              ...values,
+              loginPending: false,
+              validateError: [err.response.data.message],
+            });
           });
       }
     },
