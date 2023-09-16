@@ -6,26 +6,8 @@ import { useState } from 'react';
 import Header from './layout/Header';
 import { Carousel } from './layout/Carousel';
 import axios from 'axios';
-import { userContext } from '../../contexts/userContext';
-import { useContext } from 'react';
 
 function Interface() {
-  const controller = new AbortController();
-
-  // script to authenticate and determine if the person is a user
-  const { user, setUser } = useContext(userContext);
-
-  useEffect(() => {
-    axios
-      .get('auth', { withCredentials: true, signal: controller.signal })
-      .then(({ user }) => {
-        setUser(user);
-
-        controller.abort();
-      })
-      .catch((err) => setUser(null));
-  }, [user]);
-
   const [sidebar, setSidebar] = useState(false);
 
   const handleSideBar = (item) => {

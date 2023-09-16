@@ -1,21 +1,7 @@
 import { LoadingAssetBig, LoadingAssetSmall } from '../../assets/assets';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import axios from 'axios';
-import { userContext } from '../../contexts/userContext';
 
 const NotFound = () => {
-  // const[(user, setUser)] = userContext();
-
-  // useEffect(() => {
-  //   axios
-  //     .get('auth', { withCredentials: true })
-  //     .then(({ user }) => {
-  //       setUser(user);
-  //     })
-  //     .catch((err) => setUser(null));
-  // }, [user]);
-
   return (
     <section className='min-h-full w-[100%] flex px-7 md:px-[25%] '>
       <div className='h-[80vh] w-full flex flex-col justify-between'>

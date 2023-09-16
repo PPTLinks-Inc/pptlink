@@ -68,8 +68,10 @@ const Login = () => {
           .post('/api/v1/auth/login', sendData, {
             signal: controller.signal,
           })
-          .then(({ data }) => {
-            console.log(data);
+          .then(({ user }) => {
+            navigate('/');
+            setUser(user);
+
             setValues({
               ...values,
               loginPending: false,
@@ -100,7 +102,7 @@ const Login = () => {
             signal: controller.signal,
           })
           .then(({ user }) => {
-            console.log(user);
+            navigate('/');
             setUser(user);
 
             setValues({
@@ -123,7 +125,7 @@ const Login = () => {
   return (
     <section className='flex justify-center'>
       {!values.signup && (
-        <form onSubmit={handleLogin} autoComplete='false'>
+        <form onSubmit={handleLogin}>
           <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Log in</h1>
