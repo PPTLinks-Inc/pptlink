@@ -27,8 +27,8 @@ export default function Root() {
     <>
       <div className='w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col'>
         <div>
-          {page.dropdown && (
-            <div className='h-[8rem] flex justify-between items-center py-3 px-3 border lg:p-[2.5rem] lg:h-[10rem]'>
+          {page.dropdown ? (
+            <div className='h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]'>
               <div>
                 <p className='text-xl tracking-widest font-bold cursor-pointer'>
                   <Link to='/'>PPTLink.</Link>
@@ -38,7 +38,7 @@ export default function Root() {
               <div className='w-[10rem] flex justify-between items-center -'>
                 <button
                   className='px-5 rounded-xl py-1 bg-black text-slate-200'
-                  onClick={navigate('/login')}
+                  onClick={() => navigate('/login')}
                 >
                   Present
                 </button>
@@ -50,6 +50,8 @@ export default function Root() {
                 </button>
               </div>
             </div>
+          ) : (
+            <div className='h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]'></div>
           )}
         </div>
 
@@ -118,7 +120,7 @@ export default function Root() {
                 <div className='w-[10rem] flex justify-between items-center'>
                   <button
                     className='px-7 rounded-xl py-1 bg-slate-200 text-black'
-                    onClick={navigate('/login')}
+                    onClick={() => navigate('/login')}
                   >
                     Present
                   </button>

@@ -16,7 +16,7 @@ const Upload = () => {
 
     fileName: '',
     file: null,
-    presentationType: '',
+    presentationType: 'private',
 
     uploadError: [],
   });
@@ -25,6 +25,10 @@ const Upload = () => {
 
   const formValidation = () => {
     tempArr = [];
+
+    if (values.fileName.length === 0) {
+      tempArr = [...tempArr, 'Type in name of presentation'];
+    }
 
     if (values.fileName.length < 4) {
       tempArr = [...tempArr, 'Presentation name is too short'];
@@ -41,10 +45,12 @@ const Upload = () => {
         tempArr = [...tempArr, 'The file is too large'];
       }
     }
+
+    if (values.presentationType.length === 0) {
+      tempArr = [...tempArr, 'Choose presentation visibility'];
+    }
     setValues({ ...values, uploadError: tempArr });
   };
-
-  const radioChange = (e) => {};
 
   const handleSubmit = useCallback(
     (e) => {
@@ -52,9 +58,29 @@ const Upload = () => {
 
       formValidation();
 
-      // const form = new FormData();
+      if (tempArr.length === 0) {
+        const form = new FormData();
+        form.append('fileName', values.fileName);
+        form.append('file', values.file);
+        form.append('presentationType', values.presentationType);
 
-      // setValues({ ...values, pending: true });
+        setValues({ ...values, pending: true, uploadError: tempArr });
+
+        // axios
+        //   .post('route', form, { signal: controller.signal })
+        //   .then((data) => {
+        //     controller.abort();
+
+        //     setValues({ ...values, pending: false });
+        //   })
+        //   .catch((err) => {
+        //     setValues({
+        //       ...values,
+        //       pending: false,
+        //       uploadError: [err.response.data.message],
+        //     });
+        //   });
+      }
     },
     [values]
   );
@@ -73,9 +99,7 @@ const Upload = () => {
           <input
             type='text'
             value={values.fileName}
-            onChange={(e) =>
-              setValues({ ...values, fileName: e.target.element })
-            }
+            onChange={(e) => setValues({ ...values, fileName: e.target.value })}
             className='w-full p-[30px] bg-transparent border-b border-slate-200'
             placeholder='Presentation name'
           />
@@ -107,15 +131,47 @@ const Upload = () => {
             }`}
           >
             <label htmlFor='priv'>
-              <input type='radio' name='type' id='Priv' checked /> Private
+              <input
+                type='radio'
+                name='type'
+                id='Priv'
+                checked={values.presentationType === 'private'}
+                onChange={() =>
+                  setValues({ ...values, presentationType: 'private' })
+                }
+              />{' '}
+              Private
             </label>
 
             <label htmlFor='pub'>
-              <input type='radio' name='type' id='Pub' disabled /> Public
+              <input
+                type='radio'
+                name='type'
+                id='Pub'
+                checked={values.presentationType === 'public'}
+                disabled
+                onChange={() =>
+                  setValues({ ...values, presentationType: 'public' })
+                }
+              />{' '}
+              Public
             </label>
 
             <label htmlFor='temp'>
-              <input type='radio' name='type' id='Temp' disabled /> Temporary
+              <input
+                type='radio'
+                name='type'
+                id='Temp'
+                checked={values.presentationType === 'temporary'}
+                disabled
+                onChange={() =>
+                  setValues({
+                    ...values,
+                    presentationType: 'temporary',
+                  })
+                }
+              />{' '}
+              Temporary
             </label>
           </div>
 
