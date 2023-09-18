@@ -1,25 +1,13 @@
 /* eslint-disable no-unused-vars */
+
 import './interface.css';
 import { FaUser, FaHome, FaAndroid } from 'react-icons/fa';
 import { useState } from 'react';
 import Header from './layout/Header';
 import { Carousel } from './layout/Carousel';
 import axios from 'axios';
-import { userContext } from '../../contexts/userContext';
 
 function Interface() {
-  // script to authenticate and determine if the person is a user
-  // const [user, setUser] = userContext();
-
-  // useEffect(() => {
-  //   axios
-  //     .get('auth', { withCredentials: true })
-  //     .then(({ user }) => {
-  //       setUser(user);
-  //     })
-  //     .catch((err) => setUser(null));
-  // }, [user]);
-
   const [sidebar, setSidebar] = useState(false);
 
   const handleSideBar = (item) => {
