@@ -16,21 +16,18 @@ const Upload = () => {
 
     fileName: '',
     file: null,
-    presentationType: 'private',
+    presentationType: ' private',
 
     uploadError: [],
   });
 
   let tempArr = [];
-
   const formValidation = () => {
     tempArr = [];
 
     if (values.fileName.length === 0) {
       tempArr = [...tempArr, 'Type in name of presentation'];
-    }
-
-    if (values.fileName.length < 4) {
+    } else if (values.fileName.length < 4) {
       tempArr = [...tempArr, 'Presentation name is too short'];
     }
 
@@ -51,7 +48,6 @@ const Upload = () => {
     }
     setValues({ ...values, uploadError: tempArr });
   };
-
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
@@ -66,20 +62,19 @@ const Upload = () => {
 
         setValues({ ...values, pending: true, uploadError: tempArr });
 
-        // axios
-        //   .post('route', form, { signal: controller.signal })
-        //   .then((data) => {
-        //     controller.abort();
-
-        //     setValues({ ...values, pending: false });
-        //   })
-        //   .catch((err) => {
-        //     setValues({
-        //       ...values,
-        //       pending: false,
-        //       uploadError: [err.response.data.message],
-        //     });
-        //   });
+        axios
+          .post('route', form, { signal: controller.signal })
+          .then((data) => {
+            controller.abort();
+            setValues({ ...values, pending: false });
+          })
+          .catch((err) => {
+            setValues({
+              ...values,
+              pending: false,
+              uploadError: [err.response.data.message],
+            });
+          });
       }
     },
     [values]
@@ -122,7 +117,9 @@ const Upload = () => {
                 className={`text-[140px] ${values.file && 'text-[#D04423]'}`}
               />
             </div>
-            Note: Click on this to select a file
+            {values.file
+              ? values.file[0].name
+              : 'Note: Click on this to select a file'}
           </label>
 
           <div

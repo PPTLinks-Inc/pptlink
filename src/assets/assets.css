@@ -22,6 +22,10 @@
   overflow: hidden;
 }
 
+.two .logo {
+  border: 1px solid rgb(226 232 240);
+}
+
 .logo > div {
   width: 50px;
   height: 100%;
@@ -41,10 +45,22 @@
   background-color: black;
 }
 
+.two .logo__content1 {
+  background-color: rgb(226 232 240);
+}
+
 .logo__content2 {
   width: 19px;
   height: 19px;
   border: 1px solid black;
+}
+
+.two .logo__content {
+  border: 1px solid rgb(226 232 240);
+}
+
+.two .logo__content2 {
+  border: 1px solid rgb(226 232 240);
 }
 
 @keyframes logo {

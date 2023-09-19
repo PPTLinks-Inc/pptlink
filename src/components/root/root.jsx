@@ -35,9 +35,9 @@ export default function Root() {
                 </p>
               </div>
 
-              <div className='w-[10rem] flex justify-between items-center -'>
+              <div className='w-[10rem] flex justify-between items-center'>
                 <button
-                  className='px-5 rounded-xl py-1 bg-black text-slate-200'
+                  className='px-7 rounded-xl py-1 bg-black text-slate-200'
                   onClick={() => navigate('/login')}
                 >
                   Present
