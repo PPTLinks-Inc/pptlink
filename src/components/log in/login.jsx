@@ -64,6 +64,7 @@ const Login = () => {
       if (tempArr.length === 0) {
         const sendData = { email: values.email, password: values.password };
         setValues({ ...values, loginPending: true, validateError: tempArr });
+
         axios
           .post('/api/v1/auth/login', sendData, {
             signal: controller.signal,

@@ -11,16 +11,79 @@ import {
 import { FiTwitter } from 'react-icons/fi';
 import { TbWorldWww } from 'react-icons/tb';
 import { useState } from 'react';
+import { LoadingAssetSmall } from '../../assets/assets';
 
 export default function Root() {
+  const controller = new AbortController();
+
   const navigate = useNavigate();
 
   const [page, setPage] = useState({
     dropdown: false,
+
+    email: '',
+    message: '',
+
+    submitPending: false,
+    submitErrors: [],
   });
 
   const handleDropdown = () => {
     setPage({ ...page, dropdown: !page.dropdown });
+  };
+
+  let tempArr = [];
+  const submitValidation = () => {
+    tempArr = [];
+
+    if (
+      !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        page.email
+      )
+    ) {
+      tempArr = [...tempArr, 'Your Email is not Valid'];
+    }
+
+    if (page.message.length < 7) {
+      tempArr = [
+        ...tempArr,
+        'Your message is too short, we want to hear more from you',
+      ];
+
+      setPage({ ...page, submitErrors: tempArr });
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    submitValidation();
+    if (tempArr.length === 0) {
+      const sendData = { email: page.email, message: page.message };
+
+      setPage({ ...page, submitPending: true, submitErrors: tempArr });
+
+      axios
+        .post('the route', {
+          signal: controller.signal,
+        })
+        .then(({ data }) => {
+          setPage({
+            ...page,
+            submitPending: false,
+            submitSuccess: data.successMessage,
+          });
+
+          controller.abort();
+        })
+        .catch((err) => {
+          setPage({
+            ...page,
+            submitPending: false,
+            submitErrors: [err.response.message],
+          });
+        });
+    }
   };
 
   return (
@@ -194,7 +257,10 @@ export default function Root() {
                 </div>
               </div>
 
-              <form className='lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto flex flex-col items-start'>
+              <form
+                className='lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto flex flex-col items-start'
+                onSubmit={handleSubmit}
+              >
                 <div className='w-full m-0 border border-slate-200 rounded-xl border-collapse'>
                   <div className='border-b border-slate-200 w-[100%] p-[30px] flex flex-wrap flex-row'>
                     <h4 className='text-lg font-bold my-1'>Send us an email</h4>
@@ -206,20 +272,42 @@ export default function Root() {
                   </div>
 
                   <input
-                    type='text'
+                    type='email'
                     placeholder='Type your email'
+                    value={page.email}
+                    onChange={(e) =>
+                      setPage({ ...page, email: e.target.value })
+                    }
                     className='w-full p-[30px] bg-transparent border-b border-slate-200'
                   />
+
                   <textarea
                     placeholder='Send us a message'
-                    className='w-full p-[30px] bg-transparent'
-                  ></textarea>
+                    onChange={(e) =>
+                      setPage({ ...page, message: e.target.value })
+                    }
+                    className={`w-full p-[30px] bg-transparent ${
+                      page.submitErrors.length > 0 &&
+                      'border-b border-slate-200'
+                    }`}
+                  >
+                    {page.message}
+                  </textarea>
+
+                  {page.submitErrors.length > 0 && (
+                    <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
+                      {page.submitErrors.map((error, i) => (
+                        <li key={i}>{error}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
+
                 <button
                   className='px-7 text-center rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
                   type='submit'
                 >
-                  Send
+                  {page.submitPending ? <LoadingAssetSmall /> : 'Send'}
                 </button>
               </form>
             </div>
