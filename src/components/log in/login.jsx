@@ -2,14 +2,17 @@
 
 import { useCallback, useContext, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { LoadingAssetSmall } from '../../assets/assets';
 import { userContext } from '../../contexts/userContext';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { useEffect } from 'react';
 
 const Login = () => {
   const controller = new AbortController();
   const { user, setUser } = useContext(userContext);
+
+  const { pathname } = useLocation();
 
   const navigate = useNavigate();
 
@@ -26,6 +29,11 @@ const Login = () => {
 
     validateError: [],
   });
+
+  useEffect(() => {
+    pathname.includes('signup') &&
+      setValues((prev) => ({ ...prev, signup: true }));
+  }, [pathname]);
 
   const showPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
@@ -69,11 +77,11 @@ const Login = () => {
           .post('/api/v1/auth/login', sendData, {
             signal: controller.signal,
           })
-          .then(({ user }) => {
-            setUser(user);
+          .then(({ data }) => {
+            setUser(data.user);
 
-            navigate('/');
-
+            // navigate('/');
+            console.log(data.user);
             setValues({
               ...values,
               loginPending: false,
@@ -119,8 +127,11 @@ const Login = () => {
             controller.abort();
           })
           .catch((err) => {
-            setValues({ ...values, signupPending: false });
-            console.log(err);
+            setValues({
+              ...values,
+              signupPending: false,
+              validateError: [err.response.data.message],
+            });
           });
       }
     },

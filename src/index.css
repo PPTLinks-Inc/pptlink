@@ -9,6 +9,10 @@ body {
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 button {
   @apply hover:animate-none active:scale-95 transition-all duration-200;
 }
