@@ -12,9 +12,13 @@ import humanResecource from '../../images/human-resource-management.webp';
 import healthCare from '../../images/ppt-on-health-care-marketing-1-2048.webp';
 import axios from 'axios';
 import { LoadingAssetBig2, LoadingAssetSmall2 } from '../../assets/assets';
+import { useNavigate } from 'react-router-dom';
+import { UPLOAD } from '../../constants/routes';
 
 const Dashboard = () => {
   const controller = new AbortController();
+
+  const navigate = useNavigate();
 
   const [values, setValues] = useState({
     pending: false,
@@ -63,7 +67,10 @@ const Dashboard = () => {
             lets make this world paperless.
           </p>
 
-          <button className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce'>
+          <button
+            className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce'
+            onClick={() => navigate(UPLOAD)}
+          >
             <GrAdd /> <span className='ml-3'>Upload</span>
           </button>
         </div>

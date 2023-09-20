@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 import { BsInstagram } from 'react-icons/bs';
@@ -12,11 +12,36 @@ import { FiTwitter } from 'react-icons/fi';
 import { TbWorldWww } from 'react-icons/tb';
 import { useState } from 'react';
 import { LoadingAssetSmall } from '../../assets/assets';
+import { useEffect } from 'react';
+import {
+  ABOUT,
+  DASHBOARD,
+  HOME,
+  INSTITUTIONS,
+  LEGAL,
+  LOGIN,
+  SIGNUP,
+  UPLOAD,
+} from '../../constants/routes';
+import { useRef } from 'react';
+import { useContext } from 'react';
+import { userContext } from '../../contexts/userContext';
 
 export default function Root() {
   const controller = new AbortController();
 
+  // context
+  const { user, setUser } = useContext(userContext);
+
+  // hooks
+  const location = useLocation();
   const navigate = useNavigate();
+  const mainRef = useRef();
+
+  useEffect(() => {
+    setPage({ ...page, dropdown: false });
+    window.scrollTo({ top: 0 });
+  }, [location.pathname]);
 
   const [page, setPage] = useState({
     dropdown: false,
@@ -29,7 +54,7 @@ export default function Root() {
   });
 
   const handleDropdown = () => {
-    setPage({ ...page, dropdown: !page.dropdown });
+    setPage((prev) => ({ ...prev, dropdown: !prev.dropdown }));
   };
 
   let tempArr = [];
@@ -86,6 +111,27 @@ export default function Root() {
     }
   };
 
+  const PresentButton = ({ color }) => {
+    const handleClick = () => {
+      if (!user) return navigate(LOGIN);
+      if (user && user.presentations.length < 1) return navigate(UPLOAD);
+      if (user.presentations.length > 0) return navigate(DASHBOARD);
+    };
+
+    return (
+      <button
+        className={`px-7 rounded-xl py-1 ${
+          color === 'black'
+            ? ' bg-black text-slate-200'
+            : 'bg-slate-200 text-black'
+        }`}
+        onClick={() => handleClick()}
+      >
+        Present
+      </button>
+    );
+  };
+
   return (
     <>
       <div className='w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col'>
@@ -99,12 +145,7 @@ export default function Root() {
               </div>
 
               <div className='w-[10rem] flex justify-between items-center'>
-                <button
-                  className='px-7 rounded-xl py-1 bg-black text-slate-200'
-                  onClick={() => navigate('/login')}
-                >
-                  Present
-                </button>
+                <PresentButton color={'black'} />
                 <button
                   className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100'
                   onClick={handleDropdown}
@@ -119,20 +160,31 @@ export default function Root() {
         </div>
 
         <div className='flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row '>
-          <Link className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'>
-            Home
-          </Link>
-
-          <Link className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'>
+          <Link
+            to={INSTITUTIONS}
+            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+          >
             Institutions
           </Link>
 
-          <Link className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'>
+          <Link
+            to={ABOUT}
+            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+          >
             About
           </Link>
 
-          <Link className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14 '>
+          <Link
+            to={LEGAL}
+            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14 '
+          >
             Legal
+          </Link>
+          <Link
+            to={UPLOAD}
+            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+          >
+            Upload
           </Link>
         </div>
 
@@ -165,6 +217,7 @@ export default function Root() {
         </div>
 
         <div
+          ref={mainRef}
           className={`min-h-screen bg-black w-[100%] absolute top-[15px] rounded-t-[2.7rem] overflow-x-hidden text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${
             page.dropdown
               ? 'transition-transform translate-y-[100vh] lg:translate-y-[100vh]  ease-in-out duration-500'
@@ -181,12 +234,7 @@ export default function Root() {
                 </div>
 
                 <div className='w-[10rem] flex justify-between items-center'>
-                  <button
-                    className='px-7 rounded-xl py-1 bg-slate-200 text-black'
-                    onClick={() => navigate('/login')}
-                  >
-                    Present
-                  </button>
+                  <PresentButton color={'slate'} />
                   <button
                     className='border-none p-2 rounded-full transition duration-300 hover:bg-lightGray'
                     onClick={handleDropdown}
@@ -204,26 +252,26 @@ export default function Root() {
               <div className='w-[100%] px-[2.5rem] m-auto flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
                 <div className='h-[100%] flex flex-col'>
                   <h4 className='text-lg font-bold my-1'>Internal</h4>
-                  <Link to='/' className='py-2'>
+                  <Link to={HOME} className='py-2'>
                     Home
                   </Link>
-                  <Link to='/' className='py-2'>
-                    Present
+                  <Link to={UPLOAD} className='py-2'>
+                    Upload
                   </Link>
-                  <Link to='/' className='py-2'>
+                  <Link to={INSTITUTIONS} className='py-2'>
                     Institutions
                   </Link>
-                  <Link to='/' className='py-2'>
+                  <Link to={SIGNUP} className='py-2'>
                     sign up
                   </Link>
-                  <Link to='/' className='py-2'>
+                  <Link to={LOGIN} className='py-2'>
                     Log in
                   </Link>
                 </div>
 
                 <div className='h-full flex flex-col mx-4'>
                   <h4 className='text-lg font-bold my-1'>Documentation</h4>
-                  <Link to='/' className='py-2'>
+                  <Link to={ABOUT} className='py-2'>
                     About us
                   </Link>
                   <Link to='/' className='py-2'>
@@ -283,6 +331,7 @@ export default function Root() {
 
                   <textarea
                     placeholder='Send us a message'
+                    value={page.message}
                     onChange={(e) =>
                       setPage({ ...page, message: e.target.value })
                     }
@@ -290,9 +339,7 @@ export default function Root() {
                       page.submitErrors.length > 0 &&
                       'border-b border-slate-200'
                     }`}
-                  >
-                    {page.message}
-                  </textarea>
+                  />
 
                   {page.submitErrors.length > 0 && (
                     <ul className='flex flex-col justify-between p-[30px] list-[disc]'>

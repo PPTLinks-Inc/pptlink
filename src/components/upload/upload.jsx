@@ -16,7 +16,7 @@ const Upload = () => {
 
     fileName: '',
     file: null,
-    presentationType: ' private',
+    presentationType: '',
 
     uploadError: [],
   });
@@ -63,19 +63,19 @@ const Upload = () => {
 
         setValues({ ...values, pending: true, uploadError: tempArr });
 
-        axios
-          .post('route', form, { signal: controller.signal })
-          .then((data) => {
-            controller.abort();
-            setValues({ ...values, pending: false });
-          })
-          .catch((err) => {
-            setValues({
-              ...values,
-              pending: false,
-              uploadError: [err.response.data.message],
-            });
-          });
+        // axios
+        //   .post('route', form, { signal: controller.signal })
+        //   .then((data) => {
+        //     controller.abort();
+        //     setValues({ ...values, pending: false });
+        //   })
+        //   .catch((err) => {
+        //     setValues({
+        //       ...values,
+        //       pending: false,
+        //       uploadError: [err.response.data.message],
+        //     });
+        //   });
       }
     },
     [values]
