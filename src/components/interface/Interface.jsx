@@ -19,11 +19,11 @@ function Interface() {
     }
 
   return (
-    <main className=" min-h-screen overflow-hidden  relative bg-[#04247D]">
+    <main className="min-h-screen overflow-hidden  relative bg-[#04247D]">
       <Header handleSideBar={handleSideBar} />
       {/* navigation */}
       <div className={`${sidebar?'w-60':'w-20'}  bg-[#04247D] left-0  h-full fixed transition-all duration-500 overflow-hidden ${sidebar?'':'active'}`}>
-        <ul className="nav-item pl-6 py-8 w-full absolute top-0 left-0">
+        <ul className="nav-item pl-6 py-6 w-full absolute top-0 left-0">
           <li className="relative w-full" onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
            >
@@ -70,8 +70,8 @@ function Interface() {
         </ul>
       </div>
       {/* body */}
-       <section className={`main-body ${sidebar?'':'active'} w-full  px-2  rounded-2xl  transition-all duration-500 bg-white`}>
-<div className="overflow-y-scroll h-fit max-h-[85vh] p-8">
+       <section className={`main-body ${sidebar?'':'active'} w-full  px-2  lg:rounded-2xl  transition-all duration-500 bg-white`}>
+<div className="overflow-y-scroll h-fit max-h-[95vh] p-4">
 <Carousel/>
 </div>
        </section>

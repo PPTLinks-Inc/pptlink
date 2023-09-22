@@ -26,7 +26,7 @@ export default function Root() {
             <div className='w-full h-[100%] bg-slate-200 relative flex-wrap flex-col'>
                 <div>
                     {page.dropdown && (
-                        <div className='h-[8rem] flex justify-between items-center py-3 px-3 border lg:p-[2.5rem] lg:h-[10rem]'>
+                        <div className='h-[8rem] flex justify-between items-center py-2 px-3 border lg:p-[2.5rem] lg:h-[10rem]'>
                             <div>
                                 <p
                                     className='text-xl tracking-widest font-bold cursor-pointer'
@@ -99,7 +99,7 @@ export default function Root() {
 
                 <div
                     className={`min-h-screen bg-black w-[100%] absolute top-0  lg:rounded-t-[2.7rem] overflow-x-hidden text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${page.dropdown
-                        ? 'transition-transform translate-y-[100vh] lg:translate-y-[100vh]  ease-in-out rounded-t-[2.7rem] duration-500 top-[18rem] '
+                        ? 'transition-transform translate-y-[100vh] lg:translate-y-[100vh]  ease-in-out rounded-t-[2.7rem] duration-500 top-[5rem]  lg:top-9 '
                         : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300'
                         }`}
                 >
