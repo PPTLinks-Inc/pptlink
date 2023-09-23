@@ -80,8 +80,8 @@ const Login = () => {
           .then(({ data }) => {
             setUser(data.user);
 
-            // navigate('/');
-            console.log(data.user);
+            navigate('/');
+
             setValues({
               ...values,
               loginPending: false,
@@ -110,13 +110,15 @@ const Login = () => {
 
       if (tempArr.length === 0) {
         const sendData = { email: values.email, password: values.password };
+        setValues({ ...values, signupPending: true, validateError: tempArr });
+
         axios
           .post('/api/v1/auth/register', sendData, {
             signal: controller.signal,
           })
-          .then(({ user }) => {
+          .then(({ data }) => {
+            setUser(data.user);
             navigate('/');
-            setUser(user);
 
             setValues({
               ...values,

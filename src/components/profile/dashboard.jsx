@@ -1,51 +1,93 @@
 /* eslint-disable no-unused-vars */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import profile from '../../images/profile.jfif';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { GrAdd } from 'react-icons/gr';
 import beginnersguide from '../../images/beginners-guide.webp';
-import chatgptWebiner from '../../images/chatgpt-webinar.webp';
-import moreThan from '../../images/more-than.webp';
-import sixStep from '../../images/the-six-step-guide.webp';
-import humanResecource from '../../images/human-resource-management.webp';
-import healthCare from '../../images/ppt-on-health-care-marketing-1-2048.webp';
 import axios from 'axios';
 import { LoadingAssetBig2, LoadingAssetSmall2 } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { UPLOAD } from '../../constants/routes';
 
+let pageNo = 1;
+let observer;
+let isFetching = false;
 const Dashboard = () => {
   const controller = new AbortController();
 
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
-    pending: false,
     error: false,
 
     setPresentations: [],
 
-    morePending: false,
+    pending: true,
+    isIntersecting: false,
   });
 
-  useEffect(() => {
+  const arrowRef = useRef();
+
+  const getPresentations = () => {
+    setValues((prev) => ({ ...prev, pending: true }));
+    console.log(values);
     axios
-      .get('this is the route', { signal: controller.signal })
+      .get(`/api/v1/ppt/presentations?noPerPage=10&pageNo=${pageNo}`, {
+        signal: controller.signal,
+      })
       .then((data) => {
-        setValues({});
+        setValues((prev) => ({
+          ...prev,
+          setPresentations: [...prev.setPresentations, ...data],
+        }));
+        isFetching = false;
+        pageNo++;
+        if (data.presentationCount < 10) observer && observer.disconnect();
 
         controller.abort();
       })
-      .catch((err) => {});
-  }, [values]);
+      .catch((err) => {
+        setValues((prev) => ({
+          ...prev,
+          pending: false,
+          error: true,
+        }));
+      });
+  };
+
+  useEffect(() => {
+    if (!arrowRef.current) return;
+    observer = new IntersectionObserver(
+      (entries) => {
+        setValues((prev) => ({
+          ...prev,
+          isIntersecting: entries[0].isIntersecting,
+        }));
+      },
+      {
+        root: null,
+        threshold: 0.8,
+        rootMargin: '15%',
+      }
+    );
+    observer.observe(arrowRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isFetching) return;
+    if (values.isIntersecting) {
+      isFetching = true;
+      getPresentations();
+    }
+  }, [values.isIntersecting]);
+
+  console.log(values.setPresentations);
 
   const handleRefresh = useCallback(() => {
     setValues({ ...values, pending: true, error: false });
-  }, [values]);
-
-  const loadMore = useCallback(() => {
-    setValues({ ...values, morePending: true });
+    getPresentations();
   }, [values]);
 
   return (
@@ -56,7 +98,7 @@ const Dashboard = () => {
           src={profile}
           alt='your profile'
           draggable='false'
-          loading='lazy'
+          pending='lazy'
         />
 
         <div className=''>
@@ -67,11 +109,10 @@ const Dashboard = () => {
             lets make this world paperless.
           </p>
 
-          <button
-            className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce'
-            onClick={() => navigate(UPLOAD)}
-          >
-            <GrAdd /> <span className='ml-3'>Upload</span>
+          <button className='' onClick={() => navigate(UPLOAD)}>
+            <span className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce'>
+              <GrAdd /> <span className='ml-3'>Upload</span>
+            </span>
           </button>
         </div>
       </div>
@@ -84,7 +125,7 @@ const Dashboard = () => {
             Log out
           </button>
         </div>
-        {values.pending ? (
+        {values.pending && values.setPresentations.length < 1 ? (
           <div className='w-full h-[25vh] flex justify-center items-center'>
             <LoadingAssetBig2 />
           </div>
@@ -102,124 +143,47 @@ const Dashboard = () => {
             ) : (
               <>
                 <div className='w-full h-fit flex justify-start flex-wrap gap-x-5 gap-y-[60px]'>
-                  <div className='w-[300px] cursor-pointer'>
-                    <img
-                      src={beginnersguide}
-                      alt='presentation image'
-                      className='rounded-xl w-full h-[190px]'
-                      draggable='false'
-                      loading='lazy'
-                    />
+                  {values.setPresentations.length < 1 ? (
+                    <div className='w-full h-[25vh] flex justify-center items-center'>
+                      <LoadingAssetBig2 />
+                    </div>
+                  ) : (
+                    values.setPresentations.map((_, i) => (
+                      <div key={i} className='w-[300px] cursor-pointer'>
+                        <img
+                          src={beginnersguide}
+                          alt='presentation image'
+                          className='rounded-xl w-full h-[190px]'
+                          draggable='false'
+                          pending='lazy'
+                        />
 
-                    <p className='font-bold leading-10 treading-6'>
-                      My first presentation
-                    </p>
+                        <p className='font-bold leading-10 treading-6'>
+                          My first presentation
+                        </p>
 
-                    <span className='w-[40%] flex justify-between'>
-                      <small>11/9/2023</small>
-                      <small>private</small>
-                    </span>
-                  </div>
-                  <div className='w-[300px] cursor-pointer'>
-                    <img
-                      src={chatgptWebiner}
-                      alt='presentation image'
-                      className='rounded-xl w-full h-[190px]'
-                      draggable='false'
-                      loading='lazy'
-                    />
-
-                    <p className='font-bold leading-10 treading-6'>
-                      My first presentation
-                    </p>
-
-                    <span className='w-[40%] flex justify-between'>
-                      <small>11/9/2023</small>
-                      <small>Public</small>
-                    </span>
-                  </div>
-                  <div className='w-[300px] cursor-pointer'>
-                    <img
-                      src={moreThan}
-                      alt='presentation image'
-                      className='rounded-xl w-full h-[190px]'
-                      draggable='false'
-                      loading='lazy'
-                    />
-
-                    <p className='font-bold leading-10 treading-6'>
-                      My first presentation
-                    </p>
-
-                    <span className='w-[40%] flex justify-between'>
-                      <small>11/9/2023</small>
-                      <small>Public</small>
-                    </span>
-                  </div>
-                  <div className='w-[300px] cursor-pointer'>
-                    <img
-                      src={sixStep}
-                      alt='presentation image'
-                      className='rounded-xl w-full h-[190px]'
-                      draggable='false'
-                      loading='lazy'
-                    />
-
-                    <p className='font-bold leading-10'>
-                      My first presentation
-                    </p>
-
-                    <span className='w-[40%] flex justify-between'>
-                      <small>11/9/2023</small>
-                      <small>Public</small>
-                    </span>
-                  </div>
-                  <div className='w-[300px] cursor-pointer'>
-                    <img
-                      src={healthCare}
-                      alt='presentation image'
-                      className='rounded-xl w-full h-[190px]'
-                      draggable='false'
-                      loading='lazy'
-                    />
-
-                    <p className='font-bold leading-10 treading-6'>
-                      My first presentation
-                    </p>
-
-                    <span className='w-[40%] flex justify-between'>
-                      <small>11/9/2023</small>
-                      <small>Public</small>
-                    </span>
-                  </div>
-                  <div className='w-[300px] cursor-pointer'>
-                    <img
-                      src={humanResecource}
-                      alt='presentation image'
-                      className='rounded-xl w-full h-[190px]'
-                      draggable='false'
-                      loading='lazy'
-                    />
-
-                    <p className='font-bold leading-10 treading-6'>
-                      My first presentation
-                    </p>
-
-                    <span className='w-[40%] flex justify-between'>
-                      <small>11/9/2023</small>
-                      <small>Public</small>
-                    </span>
-                  </div>
+                        <span className='w-[40%] flex justify-between'>
+                          <small>11/9/2023</small>
+                          <small>private</small>
+                        </span>
+                      </div>
+                    ))
+                  )}
                 </div>
 
-                <div className='w-full h-[40px] flex items-center justify-center'>
-                  {values.morePending ? (
+                <div
+                  ref={arrowRef}
+                  className='w-full h-[40px] flex items-center justify-center'
+                >
+                  {values.setPresentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />
                   ) : (
-                    <AiFillCaretDown
-                      className='text-2xl cursor-pointer'
-                      onClick={loadMore}
-                    />
+                    values.setPresentations.length > 0 && (
+                      <AiFillCaretDown
+                        className='text-2xl cursor-pointer'
+                        onClick={getPresentations}
+                      />
+                    )
                   )}
                 </div>
               </>

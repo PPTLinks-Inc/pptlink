@@ -11,12 +11,20 @@ const Upload = () => {
 
   const { user, setUser } = useContext(userContext);
 
+  const presentationType = () => {
+    if (user && user.institution) {
+      return ['public', false];
+    } else {
+      return ['private', true];
+    }
+  };
+
   const [values, setValues] = useState({
     pending: false,
 
     fileName: '',
     file: null,
-    presentationType: '',
+    presentationType: presentationType()[0],
 
     uploadError: [],
   });
@@ -107,7 +115,6 @@ const Upload = () => {
             <input
               type='file'
               hidden
-              multiple={false}
               onChange={(e) => setValues({ ...values, file: e.target.files })}
               name='file'
               id='file'
@@ -147,7 +154,7 @@ const Upload = () => {
                 name='type'
                 id='Pub'
                 checked={values.presentationType === 'public'}
-                disabled
+                disabled={presentationType()[1]}
                 onChange={() =>
                   setValues({ ...values, presentationType: 'public' })
                 }
@@ -161,7 +168,7 @@ const Upload = () => {
                 name='type'
                 id='Temp'
                 checked={values.presentationType === 'temporary'}
-                disabled
+                disabled={presentationType()[1]}
                 onChange={() =>
                   setValues({
                     ...values,

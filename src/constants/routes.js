@@ -6,7 +6,9 @@ export const SERVER_URL =
 
 export const HOME = '/';
 
-export const INSTITUTIONS = '/institutions/:id';
+export const INSTITUTIONS = '/institutions';
+
+export const INSTITUTIONS_ID = '/institutions/:id';
 
 export const ABOUT = '/about';
 
@@ -19,5 +21,3 @@ export const UPLOAD = '/upload';
 export const SIGNUP = '/signup';
 
 export const LOGIN = '/login';
-
-export const INSTITUTIONS_ = '/institutions/:id';
