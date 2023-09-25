@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const NotFound = () => {
   return (
     <section className='min-h-full w-[100%] flex px-7 md:px-[25%] '>
-      <div className='h-[100%] text-[10px] w-full flex flex-col justify-between pb-4 '>
+      <div className='h-[100%]  text-[12px] w-full flex flex-col justify-between pb-4 '>
         <h1 className='text-[40px] my-6 font-medium'>
           404: We could not find this page
         </h1>
