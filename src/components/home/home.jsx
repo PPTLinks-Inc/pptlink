@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
+
 import Ellipse from './../../images/Ellipse.png';
 import loading from './../../images/loading.png';
+import axios from 'axios';
 
 const Home = () => {
   return (
@@ -19,16 +22,16 @@ const Home = () => {
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute left-65 bottom-24'
+        className=' hidden z-20 w-6 lg:block lg:absolute lg:left-65 bottom-24'
       />
 
       <img
         src={Ellipse}
         alt='Ellipse'
-        className='z-20 w-6 absolute right-40 bottom-40'
+        className='hidden z-20 w-6 lg:block lg:absolute lg:right-40 lg:bottom-40'
       />
 
-      <div className='flex-1'>
+      <div className='hidden lg:block flex-1'>
         <img src={loading} alt='loading' className='w-9/12' />
       </div>
 

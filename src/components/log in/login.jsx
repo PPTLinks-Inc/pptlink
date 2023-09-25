@@ -1,9 +1,19 @@
-import { useCallback, useState } from 'react';
+/* eslint-disable */
+
+import { useCallback, useContext, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { LoadingAssetSmall } from '../../assets/assets';
+import { userContext } from '../../contexts/userContext';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { useEffect } from 'react';
 
 const Login = () => {
+  const controller = new AbortController();
+  const { user, setUser } = useContext(userContext);
+
+  const { pathname } = useLocation();
+
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
@@ -12,17 +22,27 @@ const Login = () => {
     email: '',
     password: '',
 
+    showPassword: false,
+
     loginPending: false,
     signupPending: false,
 
-    loginError: [],
-    signupError: [],
+    validateError: [],
   });
 
-  const formValidation = () => {
-    setValues({ ...values, loginError: [] });
+  useEffect(() => {
+    pathname.includes('signup') &&
+      setValues((prev) => ({ ...prev, signup: true }));
+  }, [pathname]);
 
-    let tempArr = [];
+  const showPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  let tempArr = [];
+
+  const formValidation = () => {
+    tempArr = [];
 
     if (values.email.length < 5) {
       tempArr = [...tempArr, 'Your Email is too short'];
@@ -40,9 +60,7 @@ const Login = () => {
       tempArr = [...tempArr, 'Your Password should be more than 5 characters'];
     }
 
-    setValues({ ...values, loginError: tempArr });
-
-    console.log(values.password);
+    setValues({ ...values, validateError: tempArr });
   };
 
   const handleLogin = useCallback(
@@ -51,60 +69,80 @@ const Login = () => {
 
       formValidation();
 
-      const sendData = { email: values.email, password: values.password };
+      if (tempArr.length === 0) {
+        const sendData = { email: values.email, password: values.password };
+        setValues({ ...values, loginPending: true, validateError: tempArr });
 
-      setValues({ ...values, loginPending: true });
+        axios
+          .post('/api/v1/auth/login', sendData, {
+            signal: controller.signal,
+          })
+          .then(({ data }) => {
+            setUser(data.user);
 
-      // axios
-      //   .post('http://10.42.0.1:4000/api/v1/auth/login', sendData, {
-      //     withCredentials: true,
-      //   })
-      //   .then(({ data }) => {
-      //     console.log(data);
-      //     setValues({
-      //       ...values,
-      //       loginPending: false,
-      //       email: '',
-      //       password: '',
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     setValues({ ...values, loginPending: false });
-      //   });
+            // navigate('/');
+            console.log(data.user);
+            setValues({
+              ...values,
+              loginPending: false,
+              email: '',
+              password: '',
+            });
+            controller.abort();
+          })
+          .catch((err) => {
+            setValues({
+              ...values,
+              loginPending: false,
+              validateError: [err.response.data.message],
+            });
+          });
+      }
     },
     [values]
   );
 
-  const handleSignup = useCallback((e) => {
-    e.preventDefault();
+  const handleSignup = useCallback(
+    (e) => {
+      e.preventDefault();
 
-    setValues({ ...values, signupPending: true });
+      formValidation();
 
-    const sendData = { email: values.email, password: values.password };
+      if (tempArr.length === 0) {
+        const sendData = { email: values.email, password: values.password };
+        axios
+          .post('/api/v1/auth/register', sendData, {
+            signal: controller.signal,
+          })
+          .then(({ user }) => {
+            navigate('/');
+            setUser(user);
 
-    axios
-      .post('http://10.42.0.1:4000/api/v1/auth/signup', sendData, {
-        signal: controller.signal,
-        withCredentials: true,
-      })
-      .then((data) => {
-        console.log(data);
-
-        setValues({ ...values, signupPending: false, email: '', password: '' });
-        controller.abort();
-      })
-      .catch((err) => {
-        setValues({ ...values, signupPending: false });
-        console.log(err);
-      });
-  });
+            setValues({
+              ...values,
+              signupPending: false,
+              email: '',
+              password: '',
+            });
+            controller.abort();
+          })
+          .catch((err) => {
+            setValues({
+              ...values,
+              signupPending: false,
+              validateError: [err.response.data.message],
+            });
+          });
+      }
+    },
+    [values]
+  );
 
   return (
     <section className='flex justify-center my-9'>
       {!values.signup && (
         <form onSubmit={handleLogin} autoComplete='false'>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
+          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Log in</h1>
               Note: If you belong to an institution, log in using your email and
@@ -113,25 +151,43 @@ const Login = () => {
 
             <input
               type='email'
+              value={values.email}
               className='w-full p-[30px] bg-transparent border-b border-slate-200'
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
 
-            <input
-              type='password'
-              className={`w-full p-[30px] bg-transparent ${
-                values.loginError.length > 0 && 'border-b border-slate-200'
+            <div
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && 'border-b border-slate-200'
               }`}
-              placeholder='Password'
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
-            />
+            >
+              <input
+                type={values.showPassword ? 'text' : 'password'}
+                value={values.password}
+                className='flex-[.75] h-full p-[30px] bg-transparent'
+                placeholder='Password'
+                onChange={(e) =>
+                  setValues({ ...values, password: e.target.value })
+                }
+              />
+              <div
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
+                  values.validateError.length === 0 && 'rounded-br-xl'
+                }`}
+                onClick={showPassword}
+              >
+                {values.showPassword ? (
+                  <AiFillEyeInvisible className='text-black font-bold text-2xl' />
+                ) : (
+                  <AiFillEye className='text-black font-bold text-2xl' />
+                )}
+              </div>
+            </div>
 
-            {values.loginError.length > 0 && (
+            {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
-                {values.loginError.map((error, i) => (
+                {values.validateError.map((error, i) => (
                   <li key={i}>{error}</li>
                 ))}
               </ul>
@@ -150,7 +206,7 @@ const Login = () => {
             <p className='text-right '>
               Do not have an account?{' '}
               <span
-                className='text-12 text-center lg:text-xl font-bold cursor-pointer'
+                className='text-xl font-bold cursor-pointer'
                 onClick={() => setValues({ ...values, signup: !values.signup })}
               >
                 Signup
@@ -162,7 +218,7 @@ const Login = () => {
 
       {values.signup && (
         <form onSubmit={handleSignup}>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
+          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Sign up</h1>
               Please input the necessary information and create an account
@@ -170,25 +226,43 @@ const Login = () => {
 
             <input
               type='email'
+              value={values.email}
               className='w-full p-[30px] bg-transparent border-b border-slate-200'
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
 
-            <input
-              type='password'
-              className={`w-full p-[30px] bg-transparent ${
-                values.signupError.length > 0 && 'border-b border-slate-200'
+            <div
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && 'border-b border-slate-200'
               }`}
-              placeholder='Password'
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
-            />
+            >
+              <input
+                type={values.showPassword ? 'text' : 'password'}
+                value={values.password}
+                className='flex-[.75] h-full p-[30px] bg-transparent'
+                placeholder='Password'
+                onChange={(e) =>
+                  setValues({ ...values, password: e.target.value })
+                }
+              />
+              <div
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
+                  values.validateError.length === 0 && 'rounded-br-xl'
+                }`}
+                onClick={showPassword}
+              >
+                {values.showPassword ? (
+                  <AiFillEyeInvisible className='text-black font-bold text-2xl' />
+                ) : (
+                  <AiFillEye className='text-black font-bold text-2xl' />
+                )}
+              </div>
+            </div>
 
-            {values.signupError.length > 0 && (
+            {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
-                {values.signupError.map((error, i) => (
+                {values.validateError.map((error, i) => (
                   <li key={i}>{error}</li>
                 ))}
               </ul>
@@ -207,7 +281,7 @@ const Login = () => {
             <p>
               Already have an account?{' '}
               <span
-                className='text-12 text-center lg:text-xl font-bold cursor-pointer'
+                className='text-xl font-bold cursor-pointer'
                 onClick={() => setValues({ ...values, signup: !values.signup })}
               >
                 Login

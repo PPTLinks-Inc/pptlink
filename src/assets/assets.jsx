@@ -13,6 +13,19 @@ const LoadingAssetBig = () => {
   );
 };
 
+const LoadingAssetBig2 = () => {
+  return (
+    <div className='logo__container big two'>
+      <div className='logo'>
+        <div>
+          <div className='logo__content1'></div>
+          <div className='logo__content2'></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LoadingAssetSmall = () => {
   return (
     <div className='logo__container small'>
@@ -26,4 +39,22 @@ const LoadingAssetSmall = () => {
   );
 };
 
-export { LoadingAssetBig, LoadingAssetSmall };
+const LoadingAssetSmall2 = () => {
+  return (
+    <div className='logo__container small two'>
+      <div className='logo'>
+        <div>
+          <div className='logo__content1'></div>
+          <div className='logo__content2'></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export {
+  LoadingAssetBig,
+  LoadingAssetBig2,
+  LoadingAssetSmall,
+  LoadingAssetSmall2,
+};
