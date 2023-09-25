@@ -105,16 +105,12 @@ function Interface() {
         </ul>
       </div>
       {/* body */}
-      <section
-        className={`main-body ${
-          sidebar ? '' : 'active'
-        } w-full  px-2  rounded-2xl  transition-all duration-500 bg-white`}
-      >
-        <div className='overflow-y-scroll h-fit max-h-[85vh] p-8'>
-          <Carousel />
-        </div>
-      </section>
-      {/* <div className="absolute right-0 w-2 bg-[#04247D] ">
+       <section className={`main-body ${sidebar?'':'active'} w-full  px-2  rounded-2xl  transition-all duration-500 bg-white`}>
+<div className="overflow-y-scroll h-fit max-h-[85vh] p-8">
+<Carousel/>
+</div>
+       </section>
+       {/* <div className="absolute right-0 w-2 bg-[#04247D] ">
         
        </div> */}
     </main>

@@ -23,14 +23,14 @@ function Header({handleSideBar}) {
             setSidebar(!sidebar)
             handleSideBar(!sidebar)}
             }>
-          <FaBars className="text-white w-[25px] h-[25px]" />{" "}
+          <FaBars className="text-white w-[35px] h-[35px] lg:w-[25px] lg:h-[25px]" />{" "}
         </button>
       </div>
       <form className="flex-1 relative ">
         .
         <input
           type="text"
-          className="rounded-lg py-2 px-6 w-3/5 outline-none text-gray-500 bg-white"
+          className="rounded-lg mb-3 py-3 px-6 w-full lg:py-2 lg:w-3/5 outline-none text-gray-500 bg-white"
           placeholder="Search"
         />
       </form>
