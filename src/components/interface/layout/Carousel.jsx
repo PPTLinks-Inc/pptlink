@@ -22,7 +22,7 @@ export const Carousel = () => {
   }
 
   return (
-    <div className="carousel relative h-[600px] w-[80%] mx-auto">
+    <div className="carousel relative h-[80vh] w-[80%] mx-auto">
       <button
         className="absolute top-1/2 -translate-y-1/2 z-10 -left-12"
         onClick={() => updateIndex(activeIndex - 1)}
