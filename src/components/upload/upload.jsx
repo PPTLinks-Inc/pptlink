@@ -82,9 +82,9 @@ const Upload = () => {
   );
 
   return (
-    <section className='flex justify-center'>
+    <section className='flex justify-center w-[90%] m-auto'>
       <form onSubmit={handleSubmit} autoComplete='false'>
-        <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
+        <div className='w-[100%] m-auto mt-5 border border-slate-200 rounded-xl border-collapse'>
           <div className='border-b border-slate-200 w-full p-[30px]'>
             <h1 className='text-xl font-bold'>Upload</h1>
             Click and select the presentation file you want to upload to our
