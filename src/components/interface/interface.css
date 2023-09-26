@@ -42,7 +42,7 @@
 .main-body {
   width: calc(100% - 240px);
   position: absolute;
-  left: 240px;
+  left: 100%;
 }
 .main-body.active {
   width: calc(100% - 80px);
@@ -52,7 +52,8 @@
 
 @media (max-width:765px){
     .main-body {
-        width: calc(1440px - 240px);
+        width: 100%;
+        left: 0px;
     }
     .active .nav-item li:hover .nav-side::after {
         box-shadow: 35px -35px 0 10px white;
