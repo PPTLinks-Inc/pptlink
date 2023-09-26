@@ -11,11 +11,11 @@ const Upload = () => {
 
   const { user, setUser } = useContext(userContext);
 
-  const presentationType = () => {
+  const presentationData = () => {
     if (user && user.institution) {
-      return ['public', false];
+      return ['PUBLIC', false, 'opacity-[1]'];
     } else {
-      return ['private', true];
+      return ['PRIVATE', true, 'opacity-[.4]'];
     }
   };
 
@@ -24,7 +24,7 @@ const Upload = () => {
 
     fileName: '',
     file: null,
-    presentationType: presentationType()[0],
+    presentationType: presentationData()[0],
 
     uploadError: [],
   });
@@ -46,7 +46,7 @@ const Upload = () => {
     if (values.file) {
       const [file] = values.file;
 
-      if (file.size > 30 * 1024 * 1024) {
+      if (file.size > 31457280) {
         tempArr = [...tempArr, 'The file is too large'];
       }
     }
@@ -54,40 +54,50 @@ const Upload = () => {
     if (values.presentationType.length === 0) {
       tempArr = [...tempArr, 'Choose presentation visibility'];
     }
+
+    // console.log(values.file);
     setValues({ ...values, uploadError: tempArr });
   };
 
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
+      console.log(values.file);
 
       formValidation();
 
       if (tempArr.length === 0) {
         const form = new FormData();
-        form.append('fileName', values.fileName);
-        form.append('file', values.file);
-        form.append('presentationType', values.presentationType);
+        form.append('name', values.fileName);
+        form.append('ppt', values.file[0]);
+        form.append('linkType', values.presentationType);
 
         setValues({ ...values, pending: true, uploadError: tempArr });
 
-        // axios
-        //   .post('route', form, { signal: controller.signal })
-        //   .then((data) => {
-        //     controller.abort();
-        //     setValues({ ...values, pending: false });
-        //   })
-        //   .catch((err) => {
-        //     setValues({
-        //       ...values,
-        //       pending: false,
-        //       uploadError: [err.response.data.message],
-        //     });
-        //   });
+        axios
+          .post('/api/v1/ppt/upload', form, {
+            signal: controller.signal,
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((data) => {
+            controller.abort();
+            setValues({ ...values, pending: false });
+          })
+          .catch((err) => {
+            setValues({
+              ...values,
+              pending: false,
+              uploadError: [err.response.data.message],
+            });
+          });
       }
     },
     [values]
   );
+
+  const [popup, setPopup] = useState(false);
 
   return (
     <section className='flex justify-center'>
@@ -140,39 +150,39 @@ const Upload = () => {
                 type='radio'
                 name='type'
                 id='Priv'
-                checked={values.presentationType === 'private'}
+                checked={values.presentationType === 'PRIVATE'}
                 onChange={() =>
-                  setValues({ ...values, presentationType: 'private' })
+                  setValues({ ...values, presentationType: 'PRIVATE' })
                 }
               />{' '}
               Private
             </label>
 
-            <label htmlFor='pub'>
+            <label htmlFor='pub' className={presentationData()[2]}>
               <input
                 type='radio'
                 name='type'
                 id='Pub'
-                checked={values.presentationType === 'public'}
-                disabled={presentationType()[1]}
+                checked={values.presentationType === 'PUBLIC'}
+                disabled={presentationData()[1]}
                 onChange={() =>
-                  setValues({ ...values, presentationType: 'public' })
+                  setValues({ ...values, presentationType: 'PUBLIC' })
                 }
               />{' '}
               Public
             </label>
 
-            <label htmlFor='temp'>
+            <label htmlFor='temp' className={presentationData()[2]}>
               <input
                 type='radio'
                 name='type'
                 id='Temp'
-                checked={values.presentationType === 'temporary'}
-                disabled={presentationType()[1]}
+                checked={values.presentationType === 'TEMP'}
+                disabled={presentationData()[1]}
                 onChange={() =>
                   setValues({
                     ...values,
-                    presentationType: 'temporary',
+                    presentationType: 'TEMP',
                   })
                 }
               />{' '}
@@ -196,6 +206,21 @@ const Upload = () => {
           {values.pending ? <LoadingAssetSmall /> : 'Submit'}
         </button>
       </form>
+
+      {popup && (
+        <div className='fixed overflow-hidden items-center backdrop-blur-[2px] top-0 left-0 bottom-0 right-0'>
+          <div className='w-[100%] h-[100vh] flex justify-center items-center'>
+            <div className='w-[60%] h-[60vh] bg-black border border-slate-200 rounded-xl'>
+              <button>Save</button>
+              <button>Cancel</button>
+            </div>
+            <div
+              onClick={() => setPopup(false)}
+              className='absolute bg-green-500 w-full, h-full'
+            ></div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

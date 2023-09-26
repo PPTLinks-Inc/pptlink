@@ -263,7 +263,7 @@ export default function Root() {
             )}
           </div>
           {page.pending ? (
-            <div className='w-full h-[50vh] flex justify-center items-center'>
+            <div className='w-full h-[85vh] flex justify-center items-center'>
               <LoadingAssetBig2 />
             </div>
           ) : (

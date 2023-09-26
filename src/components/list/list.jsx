@@ -3,7 +3,7 @@
 import { Link } from 'react-router-dom';
 import { AiFillCaretDown } from 'react-icons/ai';
 import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
 
 let pageNo = 1;
@@ -14,8 +14,12 @@ const List = () => {
   const arrowRef = useRef();
 
   const [values, setValues] = useState({
-    pending: false,
+    pending: true,
+
     isIntersecting: false,
+
+    error: false,
+
     institutions: [],
   });
 
@@ -40,10 +44,17 @@ const List = () => {
 
         controller.abort();
       })
-      .catch((err) => {});
+      .catch((err) => {
+        setValues((prev) => ({ ...prev, pending: false, error: true }));
+      });
   };
 
   useEffect(() => {
+    if (!arrowRef.current) {
+      setValues((prev) => ({ ...prev, isIntersecting: true }));
+      return;
+    }
+
     observer = new IntersectionObserver(
       (entries) => {
         setValues((prev) => ({
@@ -68,6 +79,11 @@ const List = () => {
       getInstitutions();
     }
   }, [values.isIntersecting]);
+
+  const handleRefresh = useCallback(() => {
+    setValues({ ...values, pending: true, error: false });
+    getInstitutions();
+  }, [values]);
 
   return (
     <section className='min-h-full w-full flex px-[25%] '>
@@ -94,38 +110,54 @@ const List = () => {
             Find
           </button>
         </form>
-        {values.institutions.length < 1 ? (
+        {values.pending && values.institutions.length < 1 ? (
           <div className='w-full h-[25vh] flex justify-center items-center'>
             <LoadingAssetBig2 />
           </div>
         ) : (
-          values.institutions.map((_, i) => (
-            <Link
-              key={i}
-              to=''
-              className='border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]'
-            >
-              {_.name}
-            </Link>
-          ))
-        )}
-        {
-          <div
-            ref={arrowRef}
-            className='w-full h-[40px] flex items-center justify-center'
-          >
-            {values.institutions.length > 0 && values.pending ? (
-              <LoadingAssetSmall2 />
+          <>
+            {values.error ? (
+              <div className='w-full h-[25vh] flex justify-center items-center'>
+                <button
+                  className='px-7 rounded-xl py-1 bg-slate-200 text-black'
+                  onClick={handleRefresh}
+                >
+                  Refresh
+                </button>
+              </div>
             ) : (
-              values.institutions.length > 0 && (
-                <AiFillCaretDown
-                  className='text-2xl cursor-pointer'
-                  onClick={getInstitutions}
-                />
-              )
+              <>
+                {values.institutions.map((_, i) => (
+                  <Link
+                    key={i}
+                    to=''
+                    className='border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]'
+                  >
+                    {_.name}
+                  </Link>
+                ))}
+
+                {
+                  <div
+                    ref={arrowRef}
+                    className='w-full h-[40px] flex items-center justify-center'
+                  >
+                    {values.institutions.length > 0 && values.pending ? (
+                      <LoadingAssetSmall2 />
+                    ) : (
+                      values.institutions.length > 0 && (
+                        <AiFillCaretDown
+                          className='text-2xl cursor-pointer'
+                          onClick={getInstitutions}
+                        />
+                      )
+                    )}
+                  </div>
+                }
+              </>
             )}
-          </div>
-        }
+          </>
+        )}
       </div>
     </section>
   );

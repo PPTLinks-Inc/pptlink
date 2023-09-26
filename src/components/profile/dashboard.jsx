@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   const getPresentations = () => {
     setValues((prev) => ({ ...prev, pending: true }));
-    console.log(values);
+
     axios
       .get(`/api/v1/ppt/presentations?noPerPage=10&pageNo=${pageNo}`, {
         signal: controller.signal,
@@ -57,7 +57,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if (!arrowRef.current) return;
+    if (!arrowRef.current) {
+      setValues((prev) => ({ ...prev, isIntersecting: true }));
+      return;
+    }
+
     observer = new IntersectionObserver(
       (entries) => {
         setValues((prev) => ({
@@ -77,13 +81,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (isFetching) return;
+
     if (values.isIntersecting) {
       isFetching = true;
       getPresentations();
     }
   }, [values.isIntersecting]);
-
-  console.log(values.setPresentations);
 
   const handleRefresh = useCallback(() => {
     setValues({ ...values, pending: true, error: false });
