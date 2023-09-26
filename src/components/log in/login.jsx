@@ -80,8 +80,8 @@ const Login = () => {
           .then(({ data }) => {
             setUser(data.user);
 
-            // navigate('/');
-            console.log(data.user);
+            navigate('/');
+
             setValues({
               ...values,
               loginPending: false,
@@ -110,13 +110,15 @@ const Login = () => {
 
       if (tempArr.length === 0) {
         const sendData = { email: values.email, password: values.password };
+        setValues({ ...values, signupPending: true, validateError: tempArr });
+
         axios
           .post('/api/v1/auth/register', sendData, {
             signal: controller.signal,
           })
-          .then(({ user }) => {
+          .then(({ data }) => {
+            setUser(data.user);
             navigate('/');
-            setUser(user);
 
             setValues({
               ...values,
@@ -139,10 +141,10 @@ const Login = () => {
   );
 
   return (
-    <section className='flex justify-center'>
+    <section className='flex justify-center my-9'>
       {!values.signup && (
-        <form onSubmit={handleLogin}>
-          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
+        <form onSubmit={handleLogin} autoComplete='false'>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Log in</h1>
               Note: If you belong to an institution, log in using your email and
@@ -194,27 +196,20 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex justify-between items-center'>
+          <div className='flex m-auto mx-2 gap-3 px-3 justify-between items-center'>
             <button
               type='submit'
               disabled={values.loginPending}
-              className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+              className='px-0.5  py-2 w-36 lg:px-7 rounded-xl lg:py-[9px] bg-slate-200 text-black my-[20px]'
             >
               {values.loginPending ? <LoadingAssetSmall /> : 'Log in'}
             </button>
 
-            <p>
+            <p className='text-right '>
               Do not have an account?{' '}
               <span
                 className='text-xl font-bold cursor-pointer'
-                onClick={() =>
-                  setValues({
-                    ...values,
-                    signup: !values.signup,
-                    validateError: [],
-                    showPassword: false,
-                  })
-                }
+                onClick={() => setValues({ ...values, signup: !values.signup })}
               >
                 Signup
               </span>
@@ -224,8 +219,8 @@ const Login = () => {
       )}
 
       {values.signup && (
-        <form onSubmit={handleSignup} autoComplete='false'>
-          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
+        <form onSubmit={handleSignup}>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Sign up</h1>
               Please input the necessary information and create an account
@@ -276,27 +271,20 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex justify-between items-center'>
+          <div className='flex m-auto mx-2 gap-3 px-3 justify-between items-center'>
             <button
               type='submit'
-              className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+              className='px-0.5  py-2 w-36 lg:px-7 rounded-xl lg:py-[9px] bg-slate-200 text-black my-[20px]'
               disabled={values.signupPending}
             >
               {values.signupPending ? <LoadingAssetSmall /> : 'Sign up'}
             </button>
 
-            <p>
+            <p className='text-right '>
               Already have an account?{' '}
               <span
                 className='text-xl font-bold cursor-pointer'
-                onClick={() =>
-                  setValues({
-                    ...values,
-                    signup: !values.signup,
-                    validateError: [],
-                    showPassword: false,
-                  })
-                }
+                onClick={() => setValues({ ...values, signup: !values.signup })}
               >
                 Login
               </span>

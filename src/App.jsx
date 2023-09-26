@@ -37,7 +37,7 @@ function App() {
           <Route path='login' element={<Login />} />
           <Route path='signup' element={<Login />} />
           <Route path='dashboard' element={<Dashboard />} />
-          <Route path='list/:id' element={<List />} />
+          <Route path='institutions' element={<List />} />
           <Route path='upload' element={<Upload />} />
         </Route>
         <Route path='interface' element={<Interface />} />

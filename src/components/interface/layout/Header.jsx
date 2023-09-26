@@ -23,7 +23,7 @@ function Header({handleSideBar}) {
             setSidebar(!sidebar)
             handleSideBar(!sidebar)}
             }>
-          <FaBars className="text-white w-[25px] h-[25px]" />{" "}
+          <FaBars className="text-white w-[35px] h-[35px] lg:w-[25px] lg:h-[25px]" />{" "}
         </button>
       </div>
       <div className="flex-1 relative ">
