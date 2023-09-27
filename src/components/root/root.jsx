@@ -247,7 +247,7 @@ export default function Root() {
           </div>
           <Outlet />
 
-          <footer className='w-[100%] m-auto h-[100%] mt-[10vh] flex flex-col '>
+          <footer className='w-[100%]px-3 m-auto h-[100%] mt-[10vh] flex flex-col '>
             <div className='w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between'>
               <div className='w-[100%] px-[2.5rem] m-auto flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
                 <div className='h-[100%] flex flex-col'>
