@@ -144,13 +144,12 @@ const Login = () => {
     <section className='flex justify-center my-9'>
       {!values.signup && (
         <form onSubmit={handleLogin} autoComplete='false'>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse lg:w-[450px]'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Log in</h1>
               Note: If you belong to an institution, log in using your email and
               the institution password
             </div>
-
             <input
               type='email'
               value={values.email}
@@ -158,7 +157,6 @@ const Login = () => {
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
-
             <div
               className={`w-full h-fit flex bg-transparent ${
                 values.validateError.length > 0 && 'border-b border-slate-200'
@@ -186,7 +184,6 @@ const Login = () => {
                 )}
               </div>
             </div>
-
             {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
                 {values.validateError.map((error, i) => (
@@ -220,12 +217,11 @@ const Login = () => {
 
       {values.signup && (
         <form onSubmit={handleSignup}>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse lg:w-[450px]'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Sign up</h1>
               Please input the necessary information and create an account
             </div>
-
             <input
               type='email'
               value={values.email}
@@ -233,7 +229,6 @@ const Login = () => {
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
-
             <div
               className={`w-full h-fit flex bg-transparent ${
                 values.validateError.length > 0 && 'border-b border-slate-200'
@@ -261,7 +256,6 @@ const Login = () => {
                 )}
               </div>
             </div>
-
             {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
                 {values.validateError.map((error, i) => (
