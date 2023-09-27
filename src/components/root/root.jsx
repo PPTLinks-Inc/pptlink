@@ -186,20 +186,20 @@ export default function Root() {
 
           <Link
             to={ABOUT}
-            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             About
           </Link>
 
           <Link
             to={LEGAL}
-            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14 '
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14 '
           >
             Legal
           </Link>
           <Link
             to={UPLOAD}
-            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             Upload
           </Link>
