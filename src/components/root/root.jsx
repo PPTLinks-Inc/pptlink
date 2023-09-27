@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { Outlet } from 'react-router';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
@@ -26,6 +28,8 @@ import {
 import { useRef } from 'react';
 import { useContext } from 'react';
 import { userContext } from '../../contexts/userContext';
+import axios from 'axios';
+import { LoadingAssetBig2 } from '../../assets/assets';
 
 export default function Root() {
   const controller = new AbortController();
@@ -43,11 +47,26 @@ export default function Root() {
     window.scrollTo({ top: 0 });
   }, [location.pathname]);
 
+  useEffect(() => {
+    axios
+      .get('/api/v1/auth/user')
+      .then(({ data }) => {
+        setUser(data.user);
+        setPage({ ...page, pending: false });
+      })
+      .catch((err) => {
+        setUser(null);
+        setPage({ ...page, pending: false });
+      });
+  }, []);
+
   const [page, setPage] = useState({
     dropdown: false,
 
     email: '',
     message: '',
+
+    pending: true,
 
     submitPending: false,
     submitErrors: [],
@@ -114,8 +133,8 @@ export default function Root() {
   const PresentButton = ({ color }) => {
     const handleClick = () => {
       if (!user) return navigate(LOGIN);
-      if (user && user.presentations.length < 1) return navigate(UPLOAD);
-      if (user.presentations.length > 0) return navigate(DASHBOARD);
+      if (user && user.presentations < 1) return navigate(UPLOAD);
+      if (user.presentations > 0) return navigate(DASHBOARD);
     };
 
     return (
@@ -245,9 +264,14 @@ export default function Root() {
               </div>
             )}
           </div>
-          <Outlet />
-
-          <footer className='w-[100%]px-3 m-auto h-[100%] mt-[10vh] flex flex-col '>
+          {page.pending ? (
+            <div className='w-full h-[85vh] flex justify-center items-center'>
+              <LoadingAssetBig2 />
+            </div>
+          ) : (
+            <Outlet />
+          )}
+          <footer className='w-[100%] m-auto h-[100%] mt-[10vh] flex flex-col '>
             <div className='w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between'>
               <div className='w-[100%] px-[2.5rem] m-auto flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
                 <div className='h-[100%] flex flex-col'>

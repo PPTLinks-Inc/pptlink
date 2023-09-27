@@ -6,6 +6,8 @@ import { useState } from 'react';
 import Header from './layout/Header';
 import { Carousel } from './layout/Carousel';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 function Interface() {
   const [sidebar, setSidebar] = useState(false);
@@ -22,13 +24,13 @@ function Interface() {
   };
 
   return (
-    <main className=' min-h-screen overflow-hidden  relative bg-[#04247D]'>
+    <main className={` min-h-screen overflow-hidden relative duration-300 transition-all bg-black ${sidebar && 'bg-white'}`}>
       <Header handleSideBar={handleSideBar} />
       {/* navigation */}
       <div
         className={`${
-          sidebar ? 'w-60' : 'w-20'
-        }  bg-[#04247D] left-0  h-full fixed transition-all duration-500 overflow-hidden ${
+          sidebar ? 'md:w-60 ' : 'w-20'
+        }  bg-black left-0  h-full fixed transition-all duration-500 overflow-hidden ${
           sidebar ? '' : 'active'
         }`}
       >
@@ -40,7 +42,7 @@ function Interface() {
           >
             <a
               href='/'
-              className='nav-side flex items-center gap-4 p-4  rounded-l-full relative text-white font-semibold hover:bg-white hover:text-blue '
+              className='nav-side flex items-center gap-4 p-4  rounded-l-full relative text-white font-semibold hover:bg-white hover:text-black '
             >
               <span className='relative block min-[60px]'>
                 {' '}
@@ -61,9 +63,9 @@ function Interface() {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <a
-              href='/'
-              className='nav-side flex items-center gap-4 p-4  rounded-l-full relative text-white font-semibold hover:bg-white hover:text-blue'
+            <Link
+              to='/'
+              className='nav-side flex items-center gap-4 p-4  rounded-l-full relative text-white font-semibold hover:bg-white hover:text-black'
             >
               <span className='relative block min-[60px]'>
                 {' '}
@@ -77,7 +79,7 @@ function Interface() {
                 {' '}
                 Home
               </span>
-            </a>
+            </Link>
           </li>
           <li
             className='relative w-full'
@@ -86,7 +88,7 @@ function Interface() {
           >
             <a
               href='/'
-              className='nav-side flex items-center  p-4 gap-4 rounded-l-full relative text-white font-semibold hover:bg-white hover:text-blue '
+              className='nav-side flex items-center  p-4 gap-4 rounded-l-full relative text-white font-semibold hover:bg-white hover:text-black '
             >
               <span className='relative block min-[60px]'>
                 {' '}
@@ -105,14 +107,16 @@ function Interface() {
         </ul>
       </div>
       {/* body */}
-       <section className={`main-body ${sidebar?'':'active'} w-full  px-2  rounded-2xl  transition-all duration-500 bg-white`}>
-<div className="overflow-y-scroll h-fit max-h-[85vh] p-8">
-<Carousel/>
-</div>
-       </section>
-       {/* <div className="absolute right-0 w-2 bg-[#04247D] ">
-        
-       </div> */}
+      <section
+        className={`main-body ${
+          sidebar ? '' : 'active'
+        } w-full  px-2  rounded-2xl relative  transition-all duration-500 bg-white`}
+      >
+        <div className='overflow-y-scroll h-fit max-h-[100vh] px-8'>
+          <Carousel />
+        </div>
+      </section>
+      
     </main>
   );
 }

@@ -17,7 +17,7 @@ function Header({handleSideBar}) {
     </div>
 
    </div> */}
-   <header className="p-4 pl-6 flex justify-between items-center bg-[#04247D] relative shadow-md z-50 w-full">
+   <header className="p-4 pl-6 flex justify-between items-center bg-black relative shadow-[white] z-50 w-full">
       <div className="mr-4 flex items-center">
         <button className="border-none p-2 rounded-full transition duration-400 hover:bg-blue"  onClick={() => {
             setSidebar(!sidebar)
@@ -26,14 +26,10 @@ function Header({handleSideBar}) {
           <FaBars className="text-white w-[35px] h-[35px] lg:w-[25px] lg:h-[25px]" />{" "}
         </button>
       </div>
-      <form className="flex-1 relative ">
-        .
-        <input
-          type="text"
-          className="rounded-lg mb-3 py-3 px-6 w-full lg:py-2 lg:w-3/5 outline-none text-gray-500 bg-white"
-          placeholder="Search"
-        />
-      </form>
+      <div className="flex-1 relative ">
+        
+        <h1 className="text-center text-white font-bold text-xl tracking-widest cursor-pointer">PPTlink</h1>
+      </div>
     </header>
    
    </>
