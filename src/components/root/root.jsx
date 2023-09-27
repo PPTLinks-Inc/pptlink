@@ -181,27 +181,27 @@ export default function Root() {
         <div className='flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row '>
           <Link
             to={INSTITUTIONS}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             Institutions
           </Link>
 
           <Link
             to={ABOUT}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             About
           </Link>
 
           <Link
             to={LEGAL}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14 '
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14 '
           >
             Legal
           </Link>
           <Link
             to={UPLOAD}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             Upload
           </Link>
@@ -237,10 +237,10 @@ export default function Root() {
 
         <div
           ref={mainRef}
-          className={`min-h-screen bg-black w-[100%] absolute top-[0] lg:rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${
+          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] lg:rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${
             page.dropdown
               ? 'transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500'
-              : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300'
+              : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]'
           }`}
         >
           <div className='h-[6rem]'>
