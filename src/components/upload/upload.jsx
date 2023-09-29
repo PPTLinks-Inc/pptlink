@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 
-import { LoadingAssetSmall } from '../../assets/assets';
+import { LoadingAssetSmall, LoadingAssetSmall2 } from '../../assets/assets';
 import { RiFilePpt2Fill } from 'react-icons/ri';
 import { useCallback, useContext, useState } from 'react';
 import { userContext } from '../../contexts/userContext';
 import axios from 'axios';
+import { MdClose } from 'react-icons/md';
+import { Socket } from 'socket.io-client';
 
 const Upload = () => {
   const controller = new AbortController();
@@ -55,7 +57,6 @@ const Upload = () => {
       tempArr = [...tempArr, 'Choose presentation visibility'];
     }
 
-    // console.log(values.file);
     setValues({ ...values, uploadError: tempArr });
   };
 
@@ -97,127 +98,169 @@ const Upload = () => {
     [values]
   );
 
-  const [popup, setPopup] = useState(false);
+  const handleCancel = useCallback(() => {
+    setPopup((prev) => ({ ...prev, cancelPending: true }));
+
+    const sendData = values.fileName;
+    axios
+      .post('route here', sendData, { signal: controller.signal })
+      .then((data) => {
+        setPopup((prev) => ({ ...prev, cancelPending: false, popup: false }));
+      })
+      .catch((err) => {
+        setPopup((prev) => ({
+          ...prev,
+          popupErr: [prev.popupErr, err.response.message],
+        }));
+      });
+  }, [values]);
+
+  const [popup, setPopup] = useState({
+    popup: true,
+    cancelPending: false,
+    popupErr: [],
+  });
 
   return (
-    <section className='flex justify-center w-[90%] m-auto'>
-      <form onSubmit={handleSubmit} autoComplete='false'>
-        <div className='w-[100%] m-auto mt-5 border border-slate-200 rounded-xl border-collapse'>
-          <div className='border-b border-slate-200 w-full p-[30px]'>
-            <h1 className='text-xl font-bold'>Upload</h1>
-            Click and select the presentation file you want to upload to our
-            servers. Once this is done you can easily make your presentation and
-            carry your audience along
-          </div>
+    <section className='flex justify-center'>
+      {!popup.popup && (
+        <form onSubmit={handleSubmit} autoComplete='false'>
+          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
+            <div className='border-b border-slate-200 w-full p-[30px]'>
+              <h1 className='text-xl font-bold'>Upload</h1>
+              Click and select the presentation file you want to upload to our
+              servers. Once this is done you can easily make your presentation
+              and carry your audience along
+            </div>
 
-          <input
-            type='text'
-            value={values.fileName}
-            onChange={(e) => setValues({ ...values, fileName: e.target.value })}
-            className='w-full p-[30px] bg-transparent border-b border-slate-200'
-            placeholder='Presentation name'
-          />
-
-          <label
-            htmlFor='file'
-            className='w-full p-[30px] bg-transparent block border-b border-slate-200'
-          >
             <input
-              type='file'
-              hidden
-              onChange={(e) => setValues({ ...values, file: e.target.files })}
-              name='file'
-              id='file'
-              accept='.ppt, .pptx'
+              type='text'
+              value={values.fileName}
+              onChange={(e) =>
+                setValues({ ...values, fileName: e.target.value })
+              }
+              className='w-full p-[30px] bg-transparent border-b border-slate-200'
+              placeholder='Presentation name'
             />
-            <div className='h-[140px] flex items-center justify-center w-full'>
-              <RiFilePpt2Fill
-                className={`text-[140px] ${values.file && 'text-[#D04423]'}`}
+
+            <label
+              htmlFor='file'
+              className='w-full p-[30px] bg-transparent block border-b border-slate-200'
+            >
+              <input
+                type='file'
+                hidden
+                onChange={(e) => setValues({ ...values, file: e.target.files })}
+                name='file'
+                id='file'
+                accept='.ppt, .pptx'
               />
+              <div className='h-[140px] flex items-center justify-center w-full'>
+                <RiFilePpt2Fill
+                  className={`text-[140px] ${values.file && 'text-[#D04423]'}`}
+                />
+              </div>
+              {values.file
+                ? values.file[0].name
+                : 'Note: Click on this to select a file'}
+            </label>
+
+            <div
+              className={`w-full p-[30px] bg-transparent flex justify-between  ${
+                values.uploadError.length > 0 && 'border-b border-slate-200'
+              }`}
+            >
+              <label htmlFor='priv'>
+                <input
+                  type='radio'
+                  name='type'
+                  id='Priv'
+                  checked={values.presentationType === 'PRIVATE'}
+                  onChange={() =>
+                    setValues({ ...values, presentationType: 'PRIVATE' })
+                  }
+                />{' '}
+                Private
+              </label>
+
+              <label htmlFor='pub' className={presentationData()[2]}>
+                <input
+                  type='radio'
+                  name='type'
+                  id='Pub'
+                  checked={values.presentationType === 'PUBLIC'}
+                  disabled={presentationData()[1]}
+                  onChange={() =>
+                    setValues({ ...values, presentationType: 'PUBLIC' })
+                  }
+                />{' '}
+                Public
+              </label>
+
+              <label htmlFor='temp' className={presentationData()[2]}>
+                <input
+                  type='radio'
+                  name='type'
+                  id='Temp'
+                  checked={values.presentationType === 'TEMP'}
+                  disabled={presentationData()[1]}
+                  onChange={() =>
+                    setValues({
+                      ...values,
+                      presentationType: 'TEMP',
+                    })
+                  }
+                />{' '}
+                Temporary
+              </label>
             </div>
-            {values.file
-              ? values.file[0].name
-              : 'Note: Click on this to select a file'}
-          </label>
 
-          <div
-            className={`w-full p-[30px] bg-transparent flex justify-between  ${
-              values.uploadError.length > 0 && 'border-b border-slate-200'
-            }`}
-          >
-            <label htmlFor='priv'>
-              <input
-                type='radio'
-                name='type'
-                id='Priv'
-                checked={values.presentationType === 'PRIVATE'}
-                onChange={() =>
-                  setValues({ ...values, presentationType: 'PRIVATE' })
-                }
-              />{' '}
-              Private
-            </label>
-
-            <label htmlFor='pub' className={presentationData()[2]}>
-              <input
-                type='radio'
-                name='type'
-                id='Pub'
-                checked={values.presentationType === 'PUBLIC'}
-                disabled={presentationData()[1]}
-                onChange={() =>
-                  setValues({ ...values, presentationType: 'PUBLIC' })
-                }
-              />{' '}
-              Public
-            </label>
-
-            <label htmlFor='temp' className={presentationData()[2]}>
-              <input
-                type='radio'
-                name='type'
-                id='Temp'
-                checked={values.presentationType === 'TEMP'}
-                disabled={presentationData()[1]}
-                onChange={() =>
-                  setValues({
-                    ...values,
-                    presentationType: 'TEMP',
-                  })
-                }
-              />{' '}
-              Temporary
-            </label>
+            {values.uploadError.length > 0 && (
+              <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
+                {values.uploadError.map((error, i) => (
+                  <li key={i}>{error}</li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {values.uploadError.length > 0 && (
-            <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
-              {values.uploadError.map((error, i) => (
-                <li key={i}>{error}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+          <button
+            type='submit'
+            className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+          >
+            {values.pending ? <LoadingAssetSmall /> : 'Submit'}
+          </button>
+        </form>
+      )}
 
-        <button
-          type='submit'
-          className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
-        >
-          {values.pending ? <LoadingAssetSmall /> : 'Submit'}
-        </button>
-      </form>
+      {popup.popup && (
+        <div className='w-[450px] border border-slate-200 rounded-xl h-[450px] flex flex-col border-collapse'>
+          <div className='flex flex-row justify-between p-[30px]'>
+            <h1 className='text-xl font-bold'>Confirm upload</h1>
 
-      {popup && (
-        <div className='fixed overflow-hidden items-center backdrop-blur-[2px] top-0 left-0 bottom-0 right-0'>
-          <div className='w-[100%] h-[100vh] flex justify-center items-center'>
-            <div className='w-[60%] h-[60vh] bg-black border border-slate-200 rounded-xl'>
-              <button>Save</button>
-              <button>Cancel</button>
+            <button
+              className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100'
+              onClick={() => setPopup((prev) => ({ ...prev, popup: false }))}
+            >
+              <MdClose className='text-slate-200 w-[25px] h-[25px] ' />
+            </button>
+          </div>
+
+          <div className='flex-grow-[.8] border-y border-slate-200 p-[30px]'></div>
+
+          <div className='flex-grow-[.2] px-[30px] flex items-center'>
+            <div className='flex justify-between w-[230px]'>
+              <button className='px-7 rounded-xl py-[15px] bg-slate-200 text-black'>
+                Confirm
+              </button>
+
+              <button
+                className={`px-7 rounded-xl bg-black border border-slate-200 text-slate-200 `}
+                onClick={handleCancel}
+              >
+                {popup.cancelPending ? <LoadingAssetSmall2 /> : 'Cancel'}
+              </button>
             </div>
-            <div
-              onClick={() => setPopup(false)}
-              className='absolute bg-green-500 w-full, h-full'
-            ></div>
           </div>
         </div>
       )}
