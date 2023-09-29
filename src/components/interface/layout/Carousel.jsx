@@ -1,9 +1,9 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 import { useState, useRef, useEffect } from "react";
-import CarouselItems from "./assets/carousel/CarouselItems";
+
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { useOrientation } from "react-use";
+
 import img from "../layout/assets/annie-spratt-ixtJA53Z0CU-unsplash.jpg";
 import img1 from "../layout/assets/victoria-nazaruk-2cpW5zq93yY-unsplash.jpg";
 import img2 from "../layout/assets/ranurte-kSdi_gqbGGs-unsplash.jpg";
@@ -34,14 +34,7 @@ export const Carousel = () => {
 
   const [mobile, setMobile] = useState(false);
 
-  const updateIndex = (index) => {
-    if (index < 0) {
-      index = 0;
-    } else if (index >= list.length) {
-      index = 0;
-    }
-    setActiveIndex(index);
-  };
+
   const handleClick = () => {};
   const onClick = () => {
     if (enableFullscreen) {
@@ -49,42 +42,94 @@ export const Carousel = () => {
     } else {
       handle.enter();
     }
-    setEnableFullScreen((prevState) => !prevState)    
+    setEnableFullScreen((prevState) => !prevState);
+  };
+  function toggleFullScreen() {
+    const element = userRef.current;
+
+    if (
+      !document.fullscreenElement &&
+      !document.mozFullScreenElement &&
+      !document.webkitFullscreenElement &&
+      !document.msFullscreenElement
+    ) {
+      // None of the elements are in full-screen mode, so enter full-screen
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    } else {
+      // An element is already in full-screen mode, so exit full-screen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+    setEnableFullScreen((prevState) => !prevState);
   }
+  
 
   return (
     <FullScreen handle={handle}>
-    <div className={`carousel relative h-[600px] w-[90%]  mx-auto ${enableFullscreen && 'h-full'}`}ref={userRef}>
-      
-      <button
-        className={`absolute top-1/2 -translate-y-1/2 z-10  ${enableFullscreen? 'left-0' : '-left-12'}`}
-        onClick={() => updateIndex(activeIndex - 1)}
+      <div
+        className={`carousel relative h-[600px] w-[90%]  mx-auto ${
+          enableFullscreen && "h-full w-full rotate-90"
+        }`}
+        ref={userRef}
       >
-        <FaChevronLeft  className={`${enableFullscreen ? 'text-white':'text-black'} w-8 h-8`} />
-      </button>
-      <div className="carousel__track-container h-full relative">
-    <ul className="h-full w-full inline-flex overflow-hidden" >
-      {list.map((item,index) => {
-      return  <CarouselItems key={index}  item={item} active={activeIndex}/>
-      })}
-    </ul>
+        {/* <button
+          className={`absolute top-1/2 -translate-y-1/2 z-10  ${
+            enableFullscreen ? "left-0" : "-left-12"
+          }`}
+          onClick={() => updateIndex(activeIndex - 1)}
+        >
+          <FaChevronLeft
+            className={`${
+              enableFullscreen ? "text-white" : "text-black"
+            } w-8 h-8`}
+          />
+        </button> */}
+        <div className="carousel__track-container h-full relative">
+          <ul className="h-full w-full flex  ">
+            {/* {list.map((item, index) => {
+              return (
+                <CarouselItems key={index} item={item} active={activeIndex} />
+              );
+            })} */}
+            <SwiperMySlide list={list}/>
+  
+          </ul>
+        </div>
+        {/* <button
+          className={`absolute top-1/2 -translate-y-1/2 ${
+            enableFullscreen ? "right-0" : "-right-12"
+          }`}
+          onClick={() => updateIndex(activeIndex + 1)}
+        >
+          <FaChevronRight
+            className={`${
+              enableFullscreen ? "text-white" : "text-black"
+            } w-8 h-8`}
+          />
+        </button> */}
 
+        <button type="button" className="absolute right-1 z-50 bottom-14">
+          <FaExpand size="30px" onClick={toggleFullScreen} color="#eee" />
+        </button>
+        <button type="button" className="absolute right-1 bottom-4">
+          <FaFileDownload size="30px" className="text-slate-700"/>
+        </button>
       </div>
-      <button
-        className={`absolute top-1/2 -translate-y-1/2 ${enableFullscreen? 'right-0' : '-right-12'}`}
-        onClick={() => updateIndex(activeIndex + 1)} >
-        <FaChevronRight className={`${enableFullscreen ? 'text-white':'text-black'} w-8 h-8`} />
-      </button>
-      
-      <button type="button" className="absolute right-1 z-50 bottom-14">
-      <FaExpand size='30px' onClick={onClick} color="#eee" />
-      </button>
-      <button type="button" className="absolute right-1 bottom-4">
-      <FaDownload size='30px'/>
-      </button>
- 
-    </div>
-
     </FullScreen>
   );
 };
