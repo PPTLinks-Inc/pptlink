@@ -6,10 +6,21 @@ import { useCallback, useContext, useState } from 'react';
 import { userContext } from '../../contexts/userContext';
 import axios from 'axios';
 import { MdClose } from 'react-icons/md';
-import { Socket } from 'socket.io-client';
+import { socketContext } from '../../contexts/socketContext';
+import { socket } from '../../socket';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import beginnersGuide from '../../images/beginners-guide.webp';
+import beginnersGuide1 from '../../images/beginners-guide.webp';
+import beginnersGuide2 from '../../images/beginners-guide.webp';
+import CarouselItems from '../interface/layout/assets/carousel/CarouselItems';
+import { Helmet } from 'react-helmet';
+import LogoBlack from '../../images/Logo-Black.png';
 
 const Upload = () => {
   const controller = new AbortController();
+
+  // socket context
+  const { sockets, setSocket } = useContext(socketContext);
 
   const { user, setUser } = useContext(userContext);
 
@@ -30,6 +41,17 @@ const Upload = () => {
 
     uploadError: [],
   });
+
+  const [popup, setPopup] = useState({
+    popup: false,
+    cancelPending: false,
+    popupErr: [],
+    presentationId: '',
+  });
+
+  const [list, setList] = useState([]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
 
   let tempArr = [];
   const formValidation = () => {
@@ -63,7 +85,6 @@ const Upload = () => {
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(values.file);
 
       formValidation();
 
@@ -72,6 +93,7 @@ const Upload = () => {
         form.append('name', values.fileName);
         form.append('ppt', values.file[0]);
         form.append('linkType', values.presentationType);
+        form.append('socketId', sockets);
 
         setValues({ ...values, pending: true, uploadError: tempArr });
 
@@ -84,7 +106,8 @@ const Upload = () => {
           })
           .then((data) => {
             controller.abort();
-            setValues({ ...values, pending: false });
+            setValues({ ...values, pending: true });
+            console.log('submitted and pending');
           })
           .catch((err) => {
             setValues({
@@ -98,31 +121,101 @@ const Upload = () => {
     [values]
   );
 
+  socket.on('connect', () => {
+    socket.on('socket-id', (socketId) => {
+      setSocket(socketId);
+      console.log('socket connected');
+    });
+
+    socket.on('upload-done', (file) => {
+      if (file) {
+        setValues((prev) => ({ ...prev, pending: false }));
+        setPopup((prev) => ({ ...prev, popup: true, presentationId: file.id }));
+        setList(file.imageSlides);
+      }
+    });
+  });
+
+  const updateIndex = (index) => {
+    if (index < 0) index = 0;
+
+    if (index >= list.length) {
+      index = 0;
+    }
+
+    setActiveIndex(index);
+  };
+
   const handleCancel = useCallback(() => {
     setPopup((prev) => ({ ...prev, cancelPending: true }));
 
-    const sendData = values.fileName;
     axios
-      .post('route here', sendData, { signal: controller.signal })
-      .then((data) => {
-        setPopup((prev) => ({ ...prev, cancelPending: false, popup: false }));
+      .delete(`/api/v1/ppt/presentations/${popup.presentationId}`, {
+        signal: controller.signal,
       })
-      .catch((err) => {
+      .then(() => {
         setPopup((prev) => ({
           ...prev,
-          popupErr: [prev.popupErr, err.response.message],
+          popup: false,
+          presentationId: '',
+          cancelPending: false,
         }));
-      });
+        setList([]);
+        setValues((prev) => ({
+          ...prev,
+          pending: false,
+          fileName: '',
+          file: null,
+          uploadError: [],
+        }));
+      })
+      .catch((err) =>
+        setPopup((prev) => ({
+          ...prev,
+          popupErr: [...prev, err.response.data.message],
+        }))
+      );
   }, [values]);
-
-  const [popup, setPopup] = useState({
-    popup: true,
-    cancelPending: false,
-    popupErr: [],
-  });
 
   return (
     <section className='flex justify-center'>
+      {/* meta and SEO information */}
+      <Helmet>
+        <title>{`Upload - PPTLink `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/upload`} />
+        <meta property='og:title' content={`Upload - PPTLink `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/upload`}
+        />
+
+        <meta property='twitter:title' content={`Upload - PPTLink `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
+
       {!popup.popup && (
         <form onSubmit={handleSubmit} autoComplete='false'>
           <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
@@ -218,7 +311,9 @@ const Upload = () => {
             {values.uploadError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
                 {values.uploadError.map((error, i) => (
-                  <li key={i}>{error}</li>
+                  <li key={i} className='text-rose-600'>
+                    {error}
+                  </li>
                 ))}
               </ul>
             )}
@@ -234,22 +329,46 @@ const Upload = () => {
       )}
 
       {popup.popup && (
-        <div className='w-[450px] border border-slate-200 rounded-xl h-[450px] flex flex-col border-collapse'>
+        <div className='w-[450px] border border-slate-200 rounded-xl min-h-[450px] flex flex-col border-collapse'>
           <div className='flex flex-row justify-between p-[30px]'>
             <h1 className='text-xl font-bold'>Confirm upload</h1>
 
             <button
               className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100'
-              onClick={() => setPopup((prev) => ({ ...prev, popup: false }))}
+              onClick={handleCancel}
             >
               <MdClose className='text-slate-200 w-[25px] h-[25px] ' />
             </button>
           </div>
 
-          <div className='flex-grow-[.8] border-y border-slate-200 p-[30px]'></div>
+          <div className='flex-grow-[.8] border-y border-slate-200 p-[30px] relative'>
+            <button
+              className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 left-0'
+              onClick={() => updateIndex(activeIndex - 1)}
+            >
+              <FaChevronLeft className='text-slate-200 w-[25px] h-[25px] ' />
+            </button>
 
-          <div className='flex-grow-[.2] px-[30px] flex items-center'>
-            <div className='flex justify-between w-[230px]'>
+            <ul className='h-full w-full flex overflow-hidden'>
+              {list.map((item, i) => (
+                <CarouselItems key={i} item={item} active={activeIndex} />
+              ))}
+            </ul>
+
+            <button
+              className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 right-0'
+              onClick={() => updateIndex(activeIndex + 1)}
+            >
+              <FaChevronRight className='text-slate-200 w-[25px] h-[25px] ' />
+            </button>
+          </div>
+
+          <div
+            className={`flex-grow-[.2] px-[30px] flex items-center ${
+              popup.popupErr.length > 0 && 'border-b border-slate-200'
+            }`}
+          >
+            <div className='flex justify-between w-[230px] my-3'>
               <button className='px-7 rounded-xl py-[15px] bg-slate-200 text-black'>
                 Confirm
               </button>
@@ -262,6 +381,16 @@ const Upload = () => {
               </button>
             </div>
           </div>
+
+          {popup.popupErr.length > 0 && (
+            <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
+              {popup.popupErr.map((error, i) => (
+                <li key={i} className='text-rose-600'>
+                  {error}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </section>

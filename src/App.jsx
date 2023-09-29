@@ -8,6 +8,7 @@ import List from './components/list/list';
 import Upload from './components/upload/upload';
 import Interface from './components/interface/Interface';
 import Root from './components/root/root';
+import Institutions from './components/institutions/institutions';
 
 axios.defaults.baseURL = 'http://10.42.0.1:4000';
 
@@ -38,6 +39,7 @@ function App() {
           <Route path='signup' element={<Login />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='institutions' element={<List />} />
+          <Route path='institutions/:id' element={<Institutions />} />
           <Route path='upload' element={<Upload />} />
         </Route>
         <Route path='interface' element={<Interface />} />

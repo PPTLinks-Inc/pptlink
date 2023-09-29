@@ -5,6 +5,8 @@ import { AiFillCaretDown } from 'react-icons/ai';
 import axios from 'axios';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
+import { Helmet } from 'react-helmet';
+import LogoBlack from '../../images/Logo-Black.png';
 
 let pageNo = 1;
 let isFetching = false;
@@ -38,6 +40,7 @@ const List = () => {
           institutions: [...prev.institutions, ...data.institutions],
           pending: false,
         }));
+
         isFetching = false;
         pageNo++;
         if (data.pageInstitutionCount < 10) observer && observer.disconnect();
@@ -87,6 +90,46 @@ const List = () => {
 
   return (
     <section className='min-h-full w-full flex px-[25%] '>
+      {/* meta and SEO information */}
+      <Helmet>
+        <title>{`Institutions - PPTLink `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta
+          property='og:url'
+          content={`https://www.PPTLink.com/institions`}
+        />
+        <meta property='og:title' content={`Institutions - PPTLink `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/institions`}
+        />
+
+        <meta property='twitter:title' content={`Institutions - PPTLink `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
+
       <div className='w-full flex flex-col justify-between'>
         <h1 className='text-[40px] font-medium mb-[45px]'>
           List of all institutions

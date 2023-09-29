@@ -6,9 +6,12 @@ import { AiFillCaretDown } from 'react-icons/ai';
 import { GrAdd } from 'react-icons/gr';
 import beginnersguide from '../../images/beginners-guide.webp';
 import axios from 'axios';
+import { FaPlus } from 'react-icons/fa';
 import { LoadingAssetBig2, LoadingAssetSmall2 } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { UPLOAD } from '../../constants/routes';
+import { Helmet } from 'react-helmet';
+import LogoBlack from '../../images/Logo-Black.png';
 
 let pageNo = 1;
 let observer;
@@ -95,14 +98,61 @@ const Dashboard = () => {
 
   return (
     <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around'>
-      <div className='flex flex-col md:flex-row max-w-[80%] mx-auto gap-20 items-center mb-[40px]'>
-        <img
-          className='w-[250px] h-[250px] rounded-full mb-[40px]'
-          src={profile}
-          alt='your profile'
-          draggable='false'
-          pending='lazy'
+      {/* meta and SEO information */}
+      <Helmet>
+        <title>{`Dashboard - PPTLink `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
         />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLink, Dashboard`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/dashboard`} />
+        <meta property='og:title' content={`Dashboard - PPTLink `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/dashboard`}
+        />
+
+        <meta property='twitter:title' content={`Dashboard - PPTLink `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
+
+      <div className='flex flex-col md:flex-row max-w-[80%] mx-auto gap-20 items-center mb-[40px]'>
+        <label
+          htmlFor='uploadImg'
+          className='block min-w-[250px] h-fit relative rounded-full'
+        >
+          <img
+            className='w-[250px] h-[250px] rounded-full mb-[40px]'
+            src={profile}
+            alt='your profile'
+            draggable='false'
+            loading='lazy'
+          />
+          <FaPlus
+            size='30px'
+            className='absolute z-10 top-[65%] right-0 border rounded border-slate-200 text-slate-200 '
+          />
+          <input type='file' id='uploadImg' className='absolute' hidden />
+        </label>
 
         <div className=''>
           <h2 className='text-xl mb-6 font-bold'>Welcome to PPTLink,</h2>
@@ -158,7 +208,7 @@ const Dashboard = () => {
                           alt='presentation image'
                           className='rounded-xl w-full h-[190px]'
                           draggable='false'
-                          pending='lazy'
+                          loading='lazy'
                         />
 
                         <p className='font-bold leading-10 treading-6'>

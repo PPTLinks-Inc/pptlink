@@ -1,9 +1,46 @@
-import { LoadingAssetBig, LoadingAssetSmall } from '../../assets/assets';
+/* eslint-disable no-unused-vars */
+
 import { Link } from 'react-router-dom';
+import LogoBlack from '../../images/Logo-Black.png';
+import { Helmet } from 'react-helmet';
 
 const NotFound = () => {
   return (
     <section className='min-h-full w-[100%] flex px-7 md:px-[25%] '>
+      {/* meta and SEO information */}
+      <Helmet>
+        <title>{`404 - PPTLink `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/404`} />
+        <meta property='og:title' content={`404 - PPTLink `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta property='twitter:url' content={`https://www.PPTLink.com/404`} />
+
+        <meta property='twitter:title' content={`404 - PPTLink `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
+
       <div className='h-[100%]  text-[12px] w-full flex flex-col justify-between pb-4 '>
         <h1 className='text-[40px] my-6 font-medium'>
           404: We could not find this page

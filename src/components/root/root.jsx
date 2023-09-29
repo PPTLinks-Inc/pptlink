@@ -14,7 +14,6 @@ import { FiTwitter } from 'react-icons/fi';
 import { TbWorldWww } from 'react-icons/tb';
 import { useState } from 'react';
 import { LoadingAssetSmall } from '../../assets/assets';
-import { useEffect } from 'react';
 import {
   ABOUT,
   DASHBOARD,
@@ -26,10 +25,11 @@ import {
   UPLOAD,
 } from '../../constants/routes';
 import { useRef } from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { userContext } from '../../contexts/userContext';
 import axios from 'axios';
 import { LoadingAssetBig2 } from '../../assets/assets';
+import { socket } from '../../socket';
 
 export default function Root() {
   const controller = new AbortController();
@@ -58,6 +58,13 @@ export default function Root() {
         setUser(null);
         setPage({ ...page, pending: false });
       });
+
+    socket.connect();
+
+    return () => {
+      // if user leaves the page disconnect the socket.io connection
+      socket.disconnect();
+    };
   }, []);
 
   const [page, setPage] = useState({
@@ -368,7 +375,9 @@ export default function Root() {
                   {page.submitErrors.length > 0 && (
                     <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
                       {page.submitErrors.map((error, i) => (
-                        <li key={i}>{error}</li>
+                        <li key={i} className='text-rose-600'>
+                          {error}
+                        </li>
                       ))}
                     </ul>
                   )}
