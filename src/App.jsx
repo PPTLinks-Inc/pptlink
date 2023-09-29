@@ -8,6 +8,8 @@ import List from './components/list/list';
 import Upload from './components/upload/upload';
 import Interface from './components/interface/Interface';
 import Root from './components/root/root';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 axios.defaults.baseURL = 'http://10.42.0.1:4000';
 
@@ -29,6 +31,7 @@ axios.interceptors.response.use(function (response) {
 
 function App() {
   return (
+    <>
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Root />}>
@@ -43,6 +46,8 @@ function App() {
         <Route path='interface' element={<Interface />} />
       </Routes>
     </BrowserRouter>
+    <ToastContainer/>
+    </>
   );
 }
 

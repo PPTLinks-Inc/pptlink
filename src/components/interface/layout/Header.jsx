@@ -1,12 +1,20 @@
 // import logo from "./assets/logo.png";
 // import headerImg from './assets/header-gradient.webp'
+/* eslint-disable no-unused-vars */
 import { FaBars  } from "react-icons/fa";
 import { useState } from "react";
+import shareIcon from '../layout/assets/shareIcon.svg'
+import {toast} from 'react-toastify'
 
 // eslint-disable-next-line react/prop-types
 function Header({handleSideBar}) {
-
+  
+    const [copy, setCopy] = useState(false)
     const [sidebar, setSidebar] = useState(false)
+
+    // const handleClick = () => {
+    //   console.log('hello')
+    // }
   return (
    <>
    {/* <div className="absolute w-full top-0 left-0 right-0 ">
@@ -27,8 +35,15 @@ function Header({handleSideBar}) {
         </button>
       </div>
       <div className="flex-1 relative ">
-        
-        <h1 className="text-center text-white font-bold text-xl tracking-widest cursor-pointer">PPTlink</h1>
+     <p className="max-w-full bg-slate-500 py-3 px-2 rounded-md md:max-w-sm flex justify-between " onClick={()=>{
+      navigator.clipboard.writeText(window.location.href)
+      setCopy(true)
+      toast.success('Link Copied successfully')
+      setTimeout(()=>{
+        setCopy(false)
+      },3000)
+     }}> <span>{window.location.href}</span> <img src={shareIcon} alt="" /></p>
+      
       </div>
     </header>
    
@@ -37,3 +52,9 @@ function Header({handleSideBar}) {
 }
 
 export default Header;
+
+<input
+type="text"
+className="rounded-lg mb-3 py-3 px-6 w-full lg:py-2 lg:w-3/5 outline-none text-gray-500 bg-white"
+placeholder="Search"
+/>
