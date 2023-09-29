@@ -112,7 +112,7 @@ function Interface() {
           sidebar ? '' : 'active'
         } w-full  px-2  rounded-2xl relative  transition-all duration-500 bg-white`}
       >
-        <div className='overflow-y-scroll h-fit max-h-[100vh] px-8'>
+        <div className=' h-fit max-h-[100vh] px-8'>
           <Carousel />
         </div>
       </section>
