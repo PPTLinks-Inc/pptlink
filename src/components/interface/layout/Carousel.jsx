@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import CarouselItems from "./assets/carousel/CarouselItems";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { useOrientation } from "react-use";
+
 import img from "../layout/assets/annie-spratt-ixtJA53Z0CU-unsplash.jpg";
 import img1 from "../layout/assets/victoria-nazaruk-2cpW5zq93yY-unsplash.jpg";
 import img2 from "../layout/assets/ranurte-kSdi_gqbGGs-unsplash.jpg";
@@ -84,7 +84,7 @@ export const Carousel = () => {
     }
     setEnableFullScreen((prevState) => !prevState);
   }
-  console.log(userRef.current);
+  
 
   return (
     <FullScreen handle={handle}>
