@@ -2,7 +2,7 @@
 
 import { LoadingAssetSmall, LoadingAssetSmall2 } from '../../assets/assets';
 import { RiFilePpt2Fill } from 'react-icons/ri';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { userContext } from '../../contexts/userContext';
 import axios from 'axios';
 import { MdClose } from 'react-icons/md';
@@ -121,20 +121,29 @@ const Upload = () => {
     [values]
   );
 
-  socket.on('connect', () => {
-    socket.on('socket-id', (socketId) => {
-      setSocket(socketId);
-      console.log('socket connected');
-    });
+  useEffect(() => {
+    socket.on('connect', () => {
+      socket.on('socket-id', (socketId) => {
+        setSocket(socketId);
+        console.log('socket connected');
+      });
 
-    socket.on('upload-done', (file) => {
-      if (file) {
-        setValues((prev) => ({ ...prev, pending: false }));
-        setPopup((prev) => ({ ...prev, popup: true, presentationId: file.id }));
-        setList(file.imageSlides);
-      }
+      socket.on('upload-done', (file) => {
+        console.log('log 1');
+        if (file) {
+          console.log('log 2');
+
+          setValues((prev) => ({ ...prev, pending: false }));
+          setPopup((prev) => ({
+            ...prev,
+            popup: true,
+            presentationId: file.id,
+          }));
+          setList(file.imageSlides);
+        }
+      });
     });
-  });
+  }, []);
 
   const updateIndex = (index) => {
     if (index < 0) index = 0;

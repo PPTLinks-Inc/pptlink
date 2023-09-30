@@ -1,16 +1,16 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect } from "react";
-import CarouselItems from "./assets/carousel/CarouselItems";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { useOrientation } from "react-use";
-import img from "../layout/assets/annie-spratt-ixtJA53Z0CU-unsplash.jpg";
-import img1 from "../layout/assets/victoria-nazaruk-2cpW5zq93yY-unsplash.jpg";
-import img2 from "../layout/assets/ranurte-kSdi_gqbGGs-unsplash.jpg";
-import img3 from "../layout/assets/karsten-winegeart-Ss0A5IX6-XE-unsplash.jpg";
-import img4 from "../layout/assets/musa-ortac-A6uObQ0JjGM-unsplash.jpg";
+import { useState, useRef, useEffect } from 'react';
+import CarouselItems from './assets/carousel/CarouselItems';
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+import { useOrientation } from 'react-use';
+import img from '../layout/assets/annie-spratt-ixtJA53Z0CU-unsplash.jpg';
+import img1 from '../layout/assets/victoria-nazaruk-2cpW5zq93yY-unsplash.jpg';
+import img2 from '../layout/assets/ranurte-kSdi_gqbGGs-unsplash.jpg';
+import img3 from '../layout/assets/karsten-winegeart-Ss0A5IX6-XE-unsplash.jpg';
+import img4 from '../layout/assets/musa-ortac-A6uObQ0JjGM-unsplash.jpg';
 const test_img1 =
-  "https://res.cloudinary.com/drll74ba7/image/upload/v1695738116/ppt/6504761e0cf0deca9eae6481/hel%201/images/slide_1_ply1sz.jpg";
+  'https://res.cloudinary.com/drll74ba7/image/upload/v1695738116/ppt/6504761e0cf0deca9eae6481/hel%201/images/slide_1_ply1sz.jpg';
 
 import {
   FaChevronLeft,
@@ -18,11 +18,9 @@ import {
   FaExpand,
   FaDownload,
   FaFileDownload,
-} from "react-icons/fa";
+} from 'react-icons/fa';
 
 // swiper
-import SwiperMySlide from "./assets/carousel/Swiper";
-
 
 export const Carousel = () => {
   const list = [test_img1, img1, img2, img3, img4];
@@ -90,51 +88,50 @@ export const Carousel = () => {
     <FullScreen handle={handle}>
       <div
         className={`carousel relative h-[600px] w-[90%]  mx-auto ${
-          enableFullscreen && "h-full w-full rotate-90"
+          enableFullscreen && 'h-full w-full rotate-90'
         }`}
         ref={userRef}
       >
-        {/* <button
+        <button
           className={`absolute top-1/2 -translate-y-1/2 z-10  ${
-            enableFullscreen ? "left-0" : "-left-12"
+            enableFullscreen ? 'left-0' : '-left-12'
           }`}
           onClick={() => updateIndex(activeIndex - 1)}
         >
           <FaChevronLeft
             className={`${
-              enableFullscreen ? "text-white" : "text-black"
+              enableFullscreen ? 'text-white' : 'text-black'
             } w-8 h-8`}
           />
-        </button> */}
-        <div className="carousel__track-container h-full relative">
-          <ul className="h-full w-full flex  ">
-            {/* {list.map((item, index) => {
+        </button>
+        <div className='carousel__track-container h-full relative'>
+          <ul className='h-full w-full flex  '>
+            {list.map((item, index) => {
               return (
                 <CarouselItems key={index} item={item} active={activeIndex} />
               );
-            })} */}
-            <SwiperMySlide list={list}/>
-  
+            })}
+            {/* <SwiperMySlide list={list}/> */}
           </ul>
         </div>
-        {/* <button
+        <button
           className={`absolute top-1/2 -translate-y-1/2 ${
-            enableFullscreen ? "right-0" : "-right-12"
+            enableFullscreen ? 'right-0' : '-right-12'
           }`}
           onClick={() => updateIndex(activeIndex + 1)}
         >
           <FaChevronRight
             className={`${
-              enableFullscreen ? "text-white" : "text-black"
+              enableFullscreen ? 'text-white' : 'text-black'
             } w-8 h-8`}
           />
-        </button> */}
-
-        <button type="button" className="absolute right-1 z-50 bottom-14">
-          <FaExpand size="30px" onClick={toggleFullScreen} color="#eee" />
         </button>
-        <button type="button" className="absolute right-1 bottom-4">
-          <FaFileDownload size="30px" className="text-slate-700"/>
+
+        <button type='button' className='absolute right-1 z-50 bottom-14'>
+          <FaExpand size='30px' onClick={toggleFullScreen} color='#eee' />
+        </button>
+        <button type='button' className='absolute right-1 bottom-4'>
+          <FaFileDownload size='30px' className='text-slate-700' />
         </button>
       </div>
     </FullScreen>
