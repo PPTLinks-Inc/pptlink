@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import { FaBars } from 'react-icons/fa';
 import { useState } from 'react';
-// import shareIcon from '../layout/assets/shareIcon.svg'
+import shareIcon from '../layout/assets/shareIcon.svg'
 import { toast } from 'react-toastify';
 
 // eslint-disable-next-line react/prop-types
