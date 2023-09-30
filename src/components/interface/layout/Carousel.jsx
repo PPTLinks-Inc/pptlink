@@ -1,9 +1,9 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 import { useState, useRef, useEffect } from 'react';
-import CarouselItems from './assets/carousel/CarouselItems';
+
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
-import { useOrientation } from 'react-use';
+
 import img from '../layout/assets/annie-spratt-ixtJA53Z0CU-unsplash.jpg';
 import img1 from '../layout/assets/victoria-nazaruk-2cpW5zq93yY-unsplash.jpg';
 import img2 from '../layout/assets/ranurte-kSdi_gqbGGs-unsplash.jpg';
@@ -32,14 +32,6 @@ export const Carousel = () => {
 
   const [mobile, setMobile] = useState(false);
 
-  const updateIndex = (index) => {
-    if (index < 0) {
-      index = 0;
-    } else if (index >= list.length) {
-      index = 0;
-    }
-    setActiveIndex(index);
-  };
   const handleClick = () => {};
   const onClick = () => {
     if (enableFullscreen) {
@@ -82,7 +74,6 @@ export const Carousel = () => {
     }
     setEnableFullScreen((prevState) => !prevState);
   }
-  console.log(userRef.current);
 
   return (
     <FullScreen handle={handle}>
