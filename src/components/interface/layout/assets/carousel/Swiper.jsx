@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { Swiper , SwiperSlide} from 'swiper/react'
 import 'swiper/css'
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { Navigation, Pagination, Scrollbar, A11y,Keyboard,Zoom } from 'swiper/modules';
 
 import 'swiper/swiper-bundle.css'
 
@@ -15,10 +15,12 @@ function SwiperMySlide({list}) {
 
     return (
     <Swiper
-    modules={[Navigation, Pagination, Scrollbar, A11y]}
+    modules={[Navigation, Pagination, Scrollbar, A11y,Keyboard]}
       spaceBetween={50}
       slidesPerView={1}
+      Zoom={true}
       navigation
+      keyboard={{enabled:true}}
       pagination={{clickable:true}}
       scrollbar={{draggable:true}}
       onSlideChange={() => console.log('slide change')}
