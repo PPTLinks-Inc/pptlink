@@ -11,6 +11,7 @@ import img3 from '../layout/assets/karsten-winegeart-Ss0A5IX6-XE-unsplash.jpg';
 import img4 from '../layout/assets/musa-ortac-A6uObQ0JjGM-unsplash.jpg';
 const test_img1 =
   'https://res.cloudinary.com/drll74ba7/image/upload/v1695738116/ppt/6504761e0cf0deca9eae6481/hel%201/images/slide_1_ply1sz.jpg';
+  import SwiperMySlide from './assets/carousel/Swiper';
 
 import {
   FaChevronLeft,
@@ -83,7 +84,7 @@ export const Carousel = () => {
         }`}
         ref={userRef}
       >
-        <button
+        {/* <button
           className={`absolute top-1/2 -translate-y-1/2 z-10  ${
             enableFullscreen ? 'left-0' : '-left-12'
           }`}
@@ -94,18 +95,18 @@ export const Carousel = () => {
               enableFullscreen ? 'text-white' : 'text-black'
             } w-8 h-8`}
           />
-        </button>
+        </button> */}
         <div className='carousel__track-container h-full relative'>
           <ul className='h-full w-full flex  '>
-            {list.map((item, index) => {
+            {/* {list.map((item, index) => {
               return (
                 <CarouselItems key={index} item={item} active={activeIndex} />
               );
-            })}
-            {/* <SwiperMySlide list={list}/> */}
+            })} */}
+            <SwiperMySlide list={list}/>
           </ul>
         </div>
-        <button
+        {/* <button
           className={`absolute top-1/2 -translate-y-1/2 ${
             enableFullscreen ? 'right-0' : '-right-12'
           }`}
@@ -116,7 +117,7 @@ export const Carousel = () => {
               enableFullscreen ? 'text-white' : 'text-black'
             } w-8 h-8`}
           />
-        </button>
+        </button> */}
 
         <button type='button' className='absolute right-1 z-50 bottom-14'>
           <FaExpand size='30px' onClick={toggleFullScreen} color='#eee' />

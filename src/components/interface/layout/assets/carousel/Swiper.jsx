@@ -15,10 +15,11 @@ function SwiperMySlide({list}) {
 
     return (
     <Swiper
-    modules={[Navigation, Pagination, Scrollbar, A11y,Keyboard]}
+    modules={[Navigation, Pagination, Scrollbar, A11y,Keyboard,Zoom]}
       spaceBetween={50}
       slidesPerView={1}
       Zoom={true}
+      loop={true}
       navigation
       keyboard={{enabled:true}}
       pagination={{clickable:true}}
