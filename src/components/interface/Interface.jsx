@@ -7,12 +7,10 @@ import Header from './layout/Header';
 import { Carousel } from './layout/Carousel';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Spinner from './layout/assets/spinner/Spinner';
 
 
 function Interface() {
   const [sidebar, setSidebar] = useState(false);
-  const [loading, setLoading] = useState(false)
 
   const handleSideBar = (item) => {
     setSidebar(item);
@@ -25,9 +23,6 @@ function Interface() {
     e.target.classList.remove('hovered');
   };
 
-  if(loading){
-   return <Spinner/>
-  }
   return (
     <main className={` min-h-screen overflow-hidden relative duration-300 transition-all bg-black ${sidebar && 'bg-white'}`}>
       <Header handleSideBar={handleSideBar} />
