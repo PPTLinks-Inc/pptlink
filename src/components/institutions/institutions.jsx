@@ -1,61 +1,60 @@
 /* eslint-disable no-unused-vars */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import profile from '../../images/profile.jfif';
-import { AiFillCaretDown } from 'react-icons/ai';
-import { GrAdd } from 'react-icons/gr';
-import beginnersguide from '../../images/beginners-guide.webp';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { FaPlus } from 'react-icons/fa';
-import { LoadingAssetBig2, LoadingAssetSmall2 } from '../../assets/assets';
-import { useNavigate } from 'react-router-dom';
-import { UPLOAD } from '../../constants/routes';
+import { useParams } from 'react-router-dom';
+import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
+import { AiFillCaretDown } from 'react-icons/ai';
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
 
 let pageNo = 1;
-let observer;
 let isFetching = false;
-const Dashboard = () => {
-  const controller = new AbortController();
+let observer;
 
-  const navigate = useNavigate();
+const Institutions = () => {
+  const controller = new AbortController();
+  const arrowRef = useRef();
+
+  const { id } = useParams();
 
   const [values, setValues] = useState({
+    pending: true,
+
+    isIntersecting: false,
+
     error: false,
 
-    setPresentations: [],
+    instition: 'Nasomsoft Embedded',
 
-    pending: true,
-    isIntersecting: false,
+    presentations: [],
   });
-
-  const arrowRef = useRef();
 
   const getPresentations = () => {
     setValues((prev) => ({ ...prev, pending: true }));
 
     axios
-      .get(`/api/v1/ppt/presentations?noPerPage=10&pageNo=${pageNo}`, {
+      .get(`/api/v1/institution/${id}?noPerPage=10&pageNo=${pageNo}`, {
         signal: controller.signal,
       })
-      .then((data) => {
+      .then(({ data }) => {
+        console.log(data);
+
         setValues((prev) => ({
           ...prev,
-          setPresentations: [...prev.setPresentations, ...data],
+          presentations: [...prev.presentations, ...data.presentations],
+          pending: false,
         }));
+
         isFetching = false;
         pageNo++;
-        if (data.presentationCount < 10) observer && observer.disconnect();
+
+        if (data.pagePresentationCount < 10) observer && observer.disconnect();
 
         controller.abort();
       })
       .catch((err) => {
-        setValues((prev) => ({
-          ...prev,
-          pending: false,
-          error: true,
-        }));
+        setValues((prev) => ({ ...prev, pending: false, error: true }));
       });
   };
 
@@ -84,7 +83,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (isFetching) return;
-
     if (values.isIntersecting) {
       isFetching = true;
       getPresentations();
@@ -97,23 +95,26 @@ const Dashboard = () => {
   }, [values]);
 
   return (
-    <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around'>
+    <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around px-[20px]'>
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`Dashboard - PPTLink `}</title>
+        <title>{`${values.instition} - PPTLink `}</title>
         <meta
           name='description'
           content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
         />
         <meta
           name='tags'
-          content={`PPT, Presentations, Powerpoint, PPTLink, Dashboard`}
+          content={`PPT, Presentations, Powerpoint, PPTLink, ${values.instition}`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property='og:type' content='website' />
-        <meta property='og:url' content={`https://www.PPTLink.com/dashboard`} />
-        <meta property='og:title' content={`Dashboard - PPTLink `} />
+        <meta
+          property='og:url'
+          content={`https://www.PPTLink.com/institutions`}
+        />
+        <meta property='og:title' content={`${values.instition} - PPTLink `} />
         <meta
           property='og:description'
           content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
@@ -124,10 +125,13 @@ const Dashboard = () => {
         <meta property='twitter:card' content='website' />
         <meta
           property='twitter:url'
-          content={`https://www.PPTLink.com/dashboard`}
+          content={`https://www.PPTLink.com/institutions`}
         />
 
-        <meta property='twitter:title' content={`Dashboard - PPTLink `} />
+        <meta
+          property='twitter:title'
+          content={`${values.instition} - PPTLink `}
+        />
         <meta
           property='twitter:description'
           content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
@@ -135,50 +139,18 @@ const Dashboard = () => {
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
 
-      <div className='flex flex-col md:flex-row max-w-[80%] mx-auto gap-20 items-center mb-[40px]'>
-        <label
-          htmlFor='uploadImg'
-          className='block min-w-[250px] h-fit relative rounded-full'
-        >
-          <img
-            className='w-[250px] h-[250px] rounded-full mb-[40px]'
-            src={profile}
-            alt='your profile'
-            draggable='false'
-            loading='lazy'
-          />
-          <FaPlus
-            size='30px'
-            className='absolute z-10 top-[65%] right-0 border rounded border-slate-200 text-slate-200 '
-          />
-          <input type='file' id='uploadImg' className='absolute' hidden />
-        </label>
-
-        <div className=''>
-          <h2 className='text-xl mb-6 font-bold'>Welcome to PPTLink,</h2>
-          <p className='mb-6'>
-            Your upload list and all other activities carried out on the
-            platform will appear here. Feel free to upload more presentations,
-            lets make this world paperless.
-          </p>
-
-          <button className='' onClick={() => navigate(UPLOAD)}>
-            <span className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce'>
-              <GrAdd /> <span className='ml-3'>Upload</span>
-            </span>
-          </button>
-        </div>
+      <div className='w-full flex flex-col justify-between'>
+        <h1 className='text-[40px] font-medium mb-[45px]'>
+          {values.instition}
+        </h1>
       </div>
 
       <div className=''>
-        <div className='w-full flex justify-between items-center'>
-          <h2 className='text-xl mb-6'>Your presentations</h2>
-
-          <button className='px-7 rounded-xl py-1 bg-slate-200 text-black'>
-            Log out
-          </button>
+        <div className='w-full flex justify-start items-center'>
+          <h2 className='text-xl mb-6'>Presentations</h2>
         </div>
-        {values.pending && values.setPresentations.length < 1 ? (
+
+        {values.pending && values.presentations.length < 1 ? (
           <div className='w-full h-[25vh] flex justify-center items-center'>
             <LoadingAssetBig2 />
           </div>
@@ -196,12 +168,12 @@ const Dashboard = () => {
             ) : (
               <>
                 <div className='w-full h-fit flex justify-start flex-wrap gap-x-5 gap-y-[60px]'>
-                  {values.setPresentations.length < 1 ? (
+                  {values.presentations.length < 1 ? (
                     <div className='w-full h-[25vh] flex justify-center items-center'>
                       <LoadingAssetBig2 />
                     </div>
                   ) : (
-                    values.setPresentations.map((_, i) => (
+                    values.presentations.map((_, i) => (
                       <div key={i} className='w-[300px] cursor-pointer'>
                         <img
                           src={beginnersguide}
@@ -217,7 +189,7 @@ const Dashboard = () => {
 
                         <span className='w-[40%] flex justify-between'>
                           <small>11/9/2023</small>
-                          <small>private</small>
+                          <small>Public</small>
                         </span>
                       </div>
                     ))
@@ -228,10 +200,10 @@ const Dashboard = () => {
                   ref={arrowRef}
                   className='w-full h-[40px] flex items-center justify-center'
                 >
-                  {values.setPresentations.length > 0 && values.pending ? (
+                  {values.presentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />
                   ) : (
-                    values.setPresentations.length > 0 && (
+                    values.presentations.length > 0 && (
                       <AiFillCaretDown
                         className='text-2xl cursor-pointer'
                         onClick={getPresentations}
@@ -247,4 +219,5 @@ const Dashboard = () => {
     </section>
   );
 };
-export default Dashboard;
+
+export default Institutions;

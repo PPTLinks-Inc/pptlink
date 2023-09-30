@@ -8,6 +8,7 @@ import List from './components/list/list';
 import Upload from './components/upload/upload';
 import Interface from './components/interface/Interface';
 import Root from './components/root/root';
+import Institutions from './components/institutions/institutions';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -32,21 +33,22 @@ axios.interceptors.response.use(function (response) {
 function App() {
   return (
     <>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Root />}>
-          <Route path='/' element={<Home />} />
-          <Route path='*' element={<NotFound />} />
-          <Route path='login' element={<Login />} />
-          <Route path='signup' element={<Login />} />
-          <Route path='dashboard' element={<Dashboard />} />
-          <Route path='institutions' element={<List />} />
-          <Route path='upload' element={<Upload />} />
-        </Route>
-        <Route path='interface' element={<Interface />} />
-      </Routes>
-    </BrowserRouter>
-    <ToastContainer/>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Root />}>
+            <Route path='/' element={<Home />} />
+            <Route path='*' element={<NotFound />} />
+            <Route path='login' element={<Login />} />
+            <Route path='signup' element={<Login />} />
+            <Route path='dashboard' element={<Dashboard />} />
+            <Route path='institutions' element={<List />} />
+            <Route path='institutions/:id' element={<Institutions />} />
+            <Route path='upload' element={<Upload />} />
+          </Route>
+          <Route path='interface' element={<Interface />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer />
     </>
   );
 }
