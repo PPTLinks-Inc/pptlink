@@ -1,20 +1,17 @@
 /* eslint-disable no-unused-vars */
 
-import { LoadingAssetSmall, LoadingAssetSmall2 } from '../../assets/assets';
-import { RiFilePpt2Fill } from 'react-icons/ri';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { userContext } from '../../contexts/userContext';
-import axios from 'axios';
-import { MdClose } from 'react-icons/md';
-import { socketContext } from '../../contexts/socketContext';
-import { socket } from '../../socket';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import beginnersGuide from '../../images/beginners-guide.webp';
-import beginnersGuide1 from '../../images/beginners-guide.webp';
-import beginnersGuide2 from '../../images/beginners-guide.webp';
-import CarouselItems from '../interface/layout/assets/carousel/CarouselItems';
-import { Helmet } from 'react-helmet';
-import LogoBlack from '../../images/Logo-Black.png';
+import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../assets/assets";
+import { RiFilePpt2Fill } from "react-icons/ri";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { userContext } from "../../contexts/userContext";
+import axios from "axios";
+import { MdClose } from "react-icons/md";
+import { socketContext } from "../../contexts/socketContext";
+import { socket } from "../../socket";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import CarouselItems from "../interface/layout/assets/carousel/CarouselItems";
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
 
 const Upload = () => {
   const controller = new AbortController();
@@ -26,16 +23,16 @@ const Upload = () => {
 
   const presentationData = () => {
     if (user && user.institution) {
-      return ['PUBLIC', false, 'opacity-[1]'];
+      return ["PUBLIC", false, "opacity-[1]"];
     } else {
-      return ['PRIVATE', true, 'opacity-[.4]'];
+      return ["PRIVATE", true, "opacity-[.4]"];
     }
   };
 
   const [values, setValues] = useState({
     pending: false,
 
-    fileName: '',
+    fileName: "",
     file: null,
     presentationType: presentationData()[0],
 
@@ -46,7 +43,7 @@ const Upload = () => {
     popup: false,
     cancelPending: false,
     popupErr: [],
-    presentationId: '',
+    presentationId: "",
   });
 
   const [list, setList] = useState([]);
@@ -58,25 +55,25 @@ const Upload = () => {
     tempArr = [];
 
     if (values.fileName.length === 0) {
-      tempArr = [...tempArr, 'Type in name of presentation'];
+      tempArr = [...tempArr, "Type in name of presentation"];
     } else if (values.fileName.length < 4) {
-      tempArr = [...tempArr, 'Presentation name is too short'];
+      tempArr = [...tempArr, "Presentation name is too short"];
     }
 
     if (!values.file) {
-      tempArr = [...tempArr, 'Upload a presentation file'];
+      tempArr = [...tempArr, "Upload a presentation file"];
     }
 
     if (values.file) {
       const [file] = values.file;
 
       if (file.size > 31457280) {
-        tempArr = [...tempArr, 'The file is too large'];
+        tempArr = [...tempArr, "The file is too large"];
       }
     }
 
     if (values.presentationType.length === 0) {
-      tempArr = [...tempArr, 'Choose presentation visibility'];
+      tempArr = [...tempArr, "Choose presentation visibility"];
     }
 
     setValues({ ...values, uploadError: tempArr });
@@ -90,24 +87,24 @@ const Upload = () => {
 
       if (tempArr.length === 0) {
         const form = new FormData();
-        form.append('name', values.fileName);
-        form.append('ppt', values.file[0]);
-        form.append('linkType', values.presentationType);
-        form.append('socketId', sockets);
+        form.append("name", values.fileName);
+        form.append("ppt", values.file[0]);
+        form.append("linkType", values.presentationType);
+        form.append("socketId", sockets);
 
         setValues({ ...values, pending: true, uploadError: tempArr });
 
         axios
-          .post('/api/v1/ppt/upload', form, {
+          .post("/api/v1/ppt/upload", form, {
             signal: controller.signal,
             headers: {
-              'Content-Type': 'multipart/form-data',
+              "Content-Type": "multipart/form-data",
             },
           })
           .then((data) => {
-            controller.abort();
             setValues({ ...values, pending: true });
-            console.log('submitted and pending');
+            console.log("submitted and pending");
+            controller.abort();
           })
           .catch((err) => {
             setValues({
@@ -122,28 +119,36 @@ const Upload = () => {
   );
 
   useEffect(() => {
-    socket.on('connect', () => {
-      socket.on('socket-id', (socketId) => {
-        setSocket(socketId);
-        console.log('socket connected');
-      });
-
-      socket.on('upload-done', (file) => {
-        console.log('log 1');
-        if (file) {
-          console.log('log 2');
-
-          setValues((prev) => ({ ...prev, pending: false }));
-          setPopup((prev) => ({
-            ...prev,
-            popup: true,
-            presentationId: file.id,
-          }));
-          setList(file.imageSlides);
-        }
-      });
-    });
+    socket.connect();
   }, []);
+
+  socket.on("connect", () => {
+    console.log("socket connected");
+  });
+
+  socket.on("socket-id", (socketId) => {
+    setSocket(socketId);
+    console.log("socket connected");
+  });
+
+  socket.on("upload-done", (file) => {
+    console.log("log 1");
+    if (file) {
+      console.log("log 2");
+
+      setValues((prev) => ({ ...prev, pending: false }));
+      setPopup((prev) => ({
+        ...prev,
+        popup: true,
+        presentationId: file.id,
+      }));
+      setList(file.imageSlides);
+    }
+  });
+
+  socket.on("upload-error", (err) => {
+    setPopup((prev) => ({ ...prev, cancelPending: true, popupErr: [err] }));
+  });
 
   const updateIndex = (index) => {
     if (index < 0) index = 0;
@@ -166,14 +171,14 @@ const Upload = () => {
         setPopup((prev) => ({
           ...prev,
           popup: false,
-          presentationId: '',
+          presentationId: "",
           cancelPending: false,
         }));
         setList([]);
         setValues((prev) => ({
           ...prev,
           pending: false,
-          fileName: '',
+          fileName: "",
           file: null,
           uploadError: [],
         }));
@@ -187,140 +192,140 @@ const Upload = () => {
   }, [values]);
 
   return (
-    <section className='flex justify-center'>
+    <section className="flex justify-center">
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Upload - PPTLink `}</title>
         <meta
-          name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
         />
         <meta
-          name='tags'
+          name="tags"
           content={`PPT, Presentations, Powerpoint, PPTLink,`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-        <meta property='og:type' content='website' />
-        <meta property='og:url' content={`https://www.PPTLink.com/upload`} />
-        <meta property='og:title' content={`Upload - PPTLink `} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.PPTLink.com/upload`} />
+        <meta property="og:title" content={`Upload - PPTLink `} />
         <meta
-          property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
         />
-        <meta property='og:image' content={LogoBlack} />
+        <meta property="og:image" content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
-        <meta property='twitter:card' content='website' />
+        <meta property="twitter:card" content="website" />
         <meta
-          property='twitter:url'
+          property="twitter:url"
           content={`https://www.PPTLink.com/upload`}
         />
 
-        <meta property='twitter:title' content={`Upload - PPTLink `} />
+        <meta property="twitter:title" content={`Upload - PPTLink `} />
         <meta
-          property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
         />
-        <meta property='twitter:image' content={LogoBlack} />
+        <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
 
       {!popup.popup && (
-        <form onSubmit={handleSubmit} autoComplete='false'>
-          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
-            <div className='border-b border-slate-200 w-full p-[30px]'>
-              <h1 className='text-xl font-bold'>Upload</h1>
+        <form onSubmit={handleSubmit} autoComplete="false">
+          <div className="w-[450px] border border-slate-200 rounded-xl border-collapse">
+            <div className="border-b border-slate-200 w-full p-[30px]">
+              <h1 className="text-xl font-bold">Upload</h1>
               Click and select the presentation file you want to upload to our
               servers. Once this is done you can easily make your presentation
               and carry your audience along
             </div>
 
             <input
-              type='text'
+              type="text"
               value={values.fileName}
               onChange={(e) =>
                 setValues({ ...values, fileName: e.target.value })
               }
-              className='w-full p-[30px] bg-transparent border-b border-slate-200'
-              placeholder='Presentation name'
+              className="w-full p-[30px] bg-transparent border-b border-slate-200"
+              placeholder="Presentation name"
             />
 
             <label
-              htmlFor='file'
-              className='w-full p-[30px] bg-transparent block border-b border-slate-200'
+              htmlFor="file"
+              className="w-full p-[30px] bg-transparent block border-b border-slate-200"
             >
               <input
-                type='file'
+                type="file"
                 hidden
                 onChange={(e) => setValues({ ...values, file: e.target.files })}
-                name='file'
-                id='file'
-                accept='.ppt, .pptx'
+                name="file"
+                id="file"
+                accept=".ppt, .pptx"
               />
-              <div className='h-[140px] flex items-center justify-center w-full'>
+              <div className="h-[140px] flex items-center justify-center w-full">
                 <RiFilePpt2Fill
-                  className={`text-[140px] ${values.file && 'text-[#D04423]'}`}
+                  className={`text-[140px] ${values.file && "text-[#D04423]"}`}
                 />
               </div>
               {values.file
                 ? values.file[0].name
-                : 'Note: Click on this to select a file'}
+                : "Note: Click on this to select a file"}
             </label>
 
             <div
               className={`w-full p-[30px] bg-transparent flex justify-between  ${
-                values.uploadError.length > 0 && 'border-b border-slate-200'
+                values.uploadError.length > 0 && "border-b border-slate-200"
               }`}
             >
-              <label htmlFor='priv'>
+              <label htmlFor="priv">
                 <input
-                  type='radio'
-                  name='type'
-                  id='Priv'
-                  checked={values.presentationType === 'PRIVATE'}
+                  type="radio"
+                  name="type"
+                  id="Priv"
+                  checked={values.presentationType === "PRIVATE"}
                   onChange={() =>
-                    setValues({ ...values, presentationType: 'PRIVATE' })
+                    setValues({ ...values, presentationType: "PRIVATE" })
                   }
-                />{' '}
+                />{" "}
                 Private
               </label>
 
-              <label htmlFor='pub' className={presentationData()[2]}>
+              <label htmlFor="pub" className={presentationData()[2]}>
                 <input
-                  type='radio'
-                  name='type'
-                  id='Pub'
-                  checked={values.presentationType === 'PUBLIC'}
+                  type="radio"
+                  name="type"
+                  id="Pub"
+                  checked={values.presentationType === "PUBLIC"}
                   disabled={presentationData()[1]}
                   onChange={() =>
-                    setValues({ ...values, presentationType: 'PUBLIC' })
+                    setValues({ ...values, presentationType: "PUBLIC" })
                   }
-                />{' '}
+                />{" "}
                 Public
               </label>
 
-              <label htmlFor='temp' className={presentationData()[2]}>
+              <label htmlFor="temp" className={presentationData()[2]}>
                 <input
-                  type='radio'
-                  name='type'
-                  id='Temp'
-                  checked={values.presentationType === 'TEMP'}
+                  type="radio"
+                  name="type"
+                  id="Temp"
+                  checked={values.presentationType === "TEMP"}
                   disabled={presentationData()[1]}
                   onChange={() =>
                     setValues({
                       ...values,
-                      presentationType: 'TEMP',
+                      presentationType: "TEMP",
                     })
                   }
-                />{' '}
+                />{" "}
                 Temporary
               </label>
             </div>
 
             {values.uploadError.length > 0 && (
-              <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
+              <ul className="flex flex-col justify-between p-[30px] list-[disc]">
                 {values.uploadError.map((error, i) => (
-                  <li key={i} className='text-rose-600'>
+                  <li key={i} className="text-rose-600">
                     {error}
                   </li>
                 ))}
@@ -329,56 +334,56 @@ const Upload = () => {
           </div>
 
           <button
-            type='submit'
-            className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+            type="submit"
+            className="px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]"
           >
-            {values.pending ? <LoadingAssetSmall /> : 'Submit'}
+            {values.pending ? <LoadingAssetSmall /> : "Submit"}
           </button>
         </form>
       )}
 
       {popup.popup && (
-        <div className='w-[450px] border border-slate-200 rounded-xl min-h-[450px] flex flex-col border-collapse'>
-          <div className='flex flex-row justify-between p-[30px]'>
-            <h1 className='text-xl font-bold'>Confirm upload</h1>
+        <div className="w-[450px] border border-slate-200 rounded-xl min-h-[450px] flex flex-col border-collapse">
+          <div className="flex flex-row justify-between p-[30px]">
+            <h1 className="text-xl font-bold">Confirm upload</h1>
 
             <button
-              className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100'
+              className="border-none p-2 rounded-full transition duration-300 hover:bg-slate-100"
               onClick={handleCancel}
             >
-              <MdClose className='text-slate-200 w-[25px] h-[25px] ' />
+              <MdClose className="text-slate-200 w-[25px] h-[25px] " />
             </button>
           </div>
 
-          <div className='flex-grow-[.8] border-y border-slate-200 p-[30px] relative'>
+          <div className="flex-grow-[.8] border-y border-slate-200 p-[30px] relative">
             <button
-              className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 left-0'
+              className="border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 left-0"
               onClick={() => updateIndex(activeIndex - 1)}
             >
-              <FaChevronLeft className='text-slate-200 w-[25px] h-[25px] ' />
+              <FaChevronLeft className="text-slate-200 w-[25px] h-[25px] " />
             </button>
 
-            <ul className='h-full w-full flex overflow-hidden'>
+            <ul className="h-full w-full flex overflow-hidden">
               {list.map((item, i) => (
                 <CarouselItems key={i} item={item} active={activeIndex} />
               ))}
             </ul>
 
             <button
-              className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 right-0'
+              className="border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 right-0"
               onClick={() => updateIndex(activeIndex + 1)}
             >
-              <FaChevronRight className='text-slate-200 w-[25px] h-[25px] ' />
+              <FaChevronRight className="text-slate-200 w-[25px] h-[25px] " />
             </button>
           </div>
 
           <div
             className={`flex-grow-[.2] px-[30px] flex items-center ${
-              popup.popupErr.length > 0 && 'border-b border-slate-200'
+              popup.popupErr.length > 0 && "border-b border-slate-200"
             }`}
           >
-            <div className='flex justify-between w-[230px] my-3'>
-              <button className='px-7 rounded-xl py-[15px] bg-slate-200 text-black'>
+            <div className="flex justify-between w-[230px] my-3">
+              <button className="px-7 rounded-xl py-[15px] bg-slate-200 text-black">
                 Confirm
               </button>
 
@@ -386,15 +391,15 @@ const Upload = () => {
                 className={`px-7 rounded-xl bg-black border border-slate-200 text-slate-200 `}
                 onClick={handleCancel}
               >
-                {popup.cancelPending ? <LoadingAssetSmall2 /> : 'Cancel'}
+                {popup.cancelPending ? <LoadingAssetSmall2 /> : "Cancel"}
               </button>
             </div>
           </div>
 
           {popup.popupErr.length > 0 && (
-            <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
+            <ul className="flex flex-col justify-between p-[30px] list-[disc]">
               {popup.popupErr.map((error, i) => (
-                <li key={i} className='text-rose-600'>
+                <li key={i} className="text-rose-600">
                   {error}
                 </li>
               ))}
