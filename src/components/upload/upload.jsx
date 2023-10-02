@@ -9,9 +9,6 @@ import { MdClose } from 'react-icons/md';
 import { socketContext } from '../../contexts/socketContext';
 import { socket } from '../../socket';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import beginnersGuide from '../../images/beginners-guide.webp';
-import beginnersGuide1 from '../../images/beginners-guide.webp';
-import beginnersGuide2 from '../../images/beginners-guide.webp';
 import CarouselItems from '../interface/layout/assets/carousel/CarouselItems';
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
@@ -136,9 +133,9 @@ const Upload = () => {
             },
           })
           .then((data) => {
-            controller.abort();
             setValues({ ...values, pending: true });
             console.log('submitted and pending');
+            controller.abort();
           })
           .catch((err) => {
             setValues({
@@ -152,26 +149,36 @@ const Upload = () => {
     [values]
   );
 
+  useEffect(() => {
+    socket.connect();
+  }, []);
+
   socket.on('connect', () => {
-    socket.on('socket-id', (socketId) => {
-      setSocket(socketId);
-      console.log('socket connected');
-    });
+    console.log('socket connected');
+  });
 
-    socket.on('upload-done', (file) => {
-      console.log('log 1');
-      if (file) {
-        console.log('log 2');
+  socket.on('socket-id', (socketId) => {
+    setSocket(socketId);
+    console.log('socket connected');
+  });
 
-        setValues((prev) => ({ ...prev, pending: false }));
-        setPopup((prev) => ({
-          ...prev,
-          popup: true,
-          presentationId: file.id,
-        }));
-        setList(file.imageSlides);
-      }
-    });
+  socket.on('upload-done', (file) => {
+    console.log('log 1');
+    if (file) {
+      console.log('log 2');
+
+      setValues((prev) => ({ ...prev, pending: false }));
+      setPopup((prev) => ({
+        ...prev,
+        popup: true,
+        presentationId: file.id,
+      }));
+      setList(file.imageSlides);
+    }
+  });
+
+  socket.on('upload-error', (err) => {
+    setPopup((prev) => ({ ...prev, cancelPending: true, popupErr: [err] }));
   });
 
   const updateIndex = (index) => {
