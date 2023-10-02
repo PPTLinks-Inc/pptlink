@@ -67,11 +67,42 @@ const Upload = () => {
       tempArr = [...tempArr, 'Upload a presentation file'];
     }
 
-    if (values.file) {
+    if (values.file && values.file[0]) {
       const [file] = values.file;
 
       if (file.size > 31457280) {
         tempArr = [...tempArr, 'The file is too large'];
+      }
+    }
+
+    if (values.file) {
+      const [file] = values.file;
+
+      if (file.name.length < 3) {
+        tempArr = [...tempArr, 'Upload a presentation file'];
+      }
+    }
+
+    if (values.file && values.file[0]) {
+      const [file] = values.file;
+
+      const mimeTypes = [
+        'application/vnd.ms-powerpoint',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/vnd.openxmlformats-officedocument.presentationml.template',
+        'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+        'application/vnd.ms-powerpoint.addin.macroEnabled.12',
+        'application/vnd.ms-powerpoint.presentation.macroEnabled.12',
+        'application/vnd.ms-powerpoint.template.macroEnabled.12',
+        'application/vnd.ms-powerpoint.slideshow.macroEnabled.12',
+      ];
+
+      // Check if the file extension is either "ppt" or "pptx"
+      if (!mimeTypes.includes(file.type)) {
+        tempArr = [...tempArr, 'Upload a ppt or pptx file type'];
       }
     }
 
@@ -121,29 +152,27 @@ const Upload = () => {
     [values]
   );
 
-  useEffect(() => {
-    socket.on('connect', () => {
-      socket.on('socket-id', (socketId) => {
-        setSocket(socketId);
-        console.log('socket connected');
-      });
-
-      socket.on('upload-done', (file) => {
-        console.log('log 1');
-        if (file) {
-          console.log('log 2');
-
-          setValues((prev) => ({ ...prev, pending: false }));
-          setPopup((prev) => ({
-            ...prev,
-            popup: true,
-            presentationId: file.id,
-          }));
-          setList(file.imageSlides);
-        }
-      });
+  socket.on('connect', () => {
+    socket.on('socket-id', (socketId) => {
+      setSocket(socketId);
+      console.log('socket connected');
     });
-  }, []);
+
+    socket.on('upload-done', (file) => {
+      console.log('log 1');
+      if (file) {
+        console.log('log 2');
+
+        setValues((prev) => ({ ...prev, pending: false }));
+        setPopup((prev) => ({
+          ...prev,
+          popup: true,
+          presentationId: file.id,
+        }));
+        setList(file.imageSlides);
+      }
+    });
+  });
 
   const updateIndex = (index) => {
     if (index < 0) index = 0;
@@ -259,10 +288,12 @@ const Upload = () => {
               />
               <div className='h-[140px] flex items-center justify-center w-full'>
                 <RiFilePpt2Fill
-                  className={`text-[140px] ${values.file && 'text-[#D04423]'}`}
+                  className={`text-[140px] ${
+                    values.file && values.file[0] && 'text-[#D04423]'
+                  }`}
                 />
               </div>
-              {values.file
+              {values.file && values.file[0]
                 ? values.file[0].name
                 : 'Note: Click on this to select a file'}
             </label>
