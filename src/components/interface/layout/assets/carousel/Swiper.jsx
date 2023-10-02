@@ -8,18 +8,12 @@ import 'swiper/swiper-bundle.css'
 
 
 function SwiperMySlide({list}) {
-
-    list.forEach((item,index)=>{
-        console.log(item)
-    })
-
     return (
     <Swiper
     modules={[Navigation, Pagination, Scrollbar, A11y,Keyboard,Zoom]}
       spaceBetween={50}
       slidesPerView={1}
-      Zoom={true}
-      loop={true}
+      zoom={true}
       navigation
       keyboard={{enabled:true}}
       pagination={{clickable:true}}
