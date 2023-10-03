@@ -12,6 +12,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import CarouselItems from '../interface/layout/assets/carousel/CarouselItems';
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
+import { useNavigate } from 'react-router-dom';
 
 const Upload = () => {
   const controller = new AbortController();
@@ -19,7 +20,18 @@ const Upload = () => {
   // socket context
   const { sockets, setSocket } = useContext(socketContext);
 
+  const navigate = useNavigate();
+
   const { user, setUser } = useContext(userContext);
+
+  useEffect(() => {
+    if (!user) navigate('login');
+    socket.connect();
+
+    () => {
+      return socket.disconnect();
+    };
+  }, [user]);
 
   const presentationData = () => {
     if (user && user.institution) {
@@ -148,10 +160,6 @@ const Upload = () => {
     },
     [values]
   );
-
-  useEffect(() => {
-    socket.connect();
-  }, []);
 
   socket.on('connect', () => {
     console.log('socket connected');
