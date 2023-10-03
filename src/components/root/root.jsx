@@ -158,7 +158,7 @@ export default function Root() {
     );
   };
 
-  console.log(user)
+  console.log(user);
 
   return (
     <>
@@ -280,9 +280,9 @@ export default function Root() {
           ) : (
             <Outlet />
           )}
-          <footer className='w-[100%] m-auto h-[100%] mt-[10vh] flex flex-col '>
+          <footer className='w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col '>
             <div className='w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between'>
-              <div className='w-[100%] px-[2.5rem] m-auto flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
+              <div className='w-[100%] px-[2.5rem]  m-auto lg:m-0 flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
                 <div className='h-[100%] flex flex-col'>
                   <h4 className='text-lg font-bold my-1'>Internal</h4>
                   <Link to={HOME} className='py-2'>
@@ -339,7 +339,7 @@ export default function Root() {
               </div>
 
               <form
-                className='lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto flex flex-col items-start'
+                className='lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto lg:m-0 flex flex-col items-start'
                 onSubmit={handleSubmit}
               >
                 <div className='w-full m-0 border border-slate-200 rounded-xl border-collapse'>
@@ -368,7 +368,7 @@ export default function Root() {
                     onChange={(e) =>
                       setPage({ ...page, message: e.target.value })
                     }
-                    className={`w-full p-[30px] bg-transparent ${
+                    className={`w-full resize-none p-[30px] bg-transparent ${
                       page.submitErrors.length > 0 &&
                       'border-b border-slate-200'
                     }`}
