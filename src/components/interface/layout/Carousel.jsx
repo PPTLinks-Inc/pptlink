@@ -1,6 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 import { useState, useRef, useEffect } from "react";
+import debounce from "lodash.debounce";
 
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
@@ -81,9 +82,6 @@ export const Carousel = () => {
   }
   const onMouseEnter = () => {
     setActive(true);
-    setTimeout(() => {
-      setActive(false);
-    }, 5000);
   };
   const onMouseLeave = () => {
     setActive(false);
@@ -97,12 +95,11 @@ export const Carousel = () => {
 
   const throttleFunction = (delay) => {
     setTimeout(() => {
-      
       let now = new Date().getTime();
-      console.log()
+      console.log();
 
       if (active === false) {
-        console.log('ran')
+        console.log("ran");
         setActive(true);
       }
 
@@ -112,8 +109,20 @@ export const Carousel = () => {
     }, delay);
   };
 
+  let mouseIdleTimer;
+  function resetMouseIdleTimeout() {
+    clearTimeout(mouseIdleTimer);
+    // setActive(true);
+    console.log(window.scrollX);
+    mouseIdleTimer = setTimeout(() => {
+      console.log("resetMouseIdleTimeout");
+      // setActive(false);
+    }, 2000);
+  }
+  // resetMouseIdleTimeout();
+
   return (
-    <FullScreen handle={handle}>
+  
       <div
         className={`carousel relative h-[600px] w-[90%]  mx-auto ${
           enableFullscreen && "h-full w-full rotate-90"
@@ -121,7 +130,7 @@ export const Carousel = () => {
         ref={userRef}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
-        onMouseMove={throttleFunction(10000)}
+        // onMouseMove={resetMouseIdleTimeout}
       >
         <div className="carousel__track-container h-full relative">
           <ul className="h-full w-full flex  ">
@@ -145,6 +154,6 @@ export const Carousel = () => {
           <FaDownload size="30px" className="text-slate-600" />
         </button>
       </div>
-    </FullScreen>
+    
   );
 };
