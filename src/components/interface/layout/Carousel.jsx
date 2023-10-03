@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import debounce from "lodash.debounce";
 
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 
@@ -88,7 +89,7 @@ export const Carousel = () => {
   );
 
   return (
-    <FullScreen handle={handle}>
+  
       <div
         className={`carousel relative h-[600px] w-[90%]  mx-auto ${
           enableFullscreen && 'h-full w-full rotate-90'
@@ -120,6 +121,6 @@ export const Carousel = () => {
           <FaDownload size='30px' className='text-slate-600' />
         </button>
       </div>
-    </FullScreen>
+    
   );
 };
