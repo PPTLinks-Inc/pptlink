@@ -25,7 +25,7 @@ const Upload = () => {
   const { user, setUser } = useContext(userContext);
 
   useEffect(() => {
-    if (!user) navigate('login');
+    if (!user) navigate('/login');
     socket.connect();
 
     () => {
@@ -299,7 +299,7 @@ const Upload = () => {
                 onChange={(e) => setValues({ ...values, file: e.target.files })}
                 name='file'
                 id='file'
-                accept='.ppt, .pptx'
+                accept='.ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm'
               />
               <div className='h-[140px] flex items-center justify-center w-full'>
                 <RiFilePpt2Fill
@@ -429,10 +429,14 @@ const Upload = () => {
               </button>
 
               <button
-                className={`px-7 rounded-xl bg-black border border-slate-200 text-slate-200 `}
+                className={`px-7 text-center rounded-xl flex items-center justify-center bg-black border border-slate-200 text-slate-200 `}
                 onClick={handleCancel}
               >
-                {popup.cancelPending ? <LoadingAssetSmall2 /> : 'Cancel'}
+                {popup.cancelPending ? (
+                  <LoadingAssetSmall2 />
+                ) : (
+                  <p className='py-[9px]'>Cancel</p>
+                )}
               </button>
             </div>
           </div>
