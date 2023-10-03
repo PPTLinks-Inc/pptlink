@@ -1,18 +1,18 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect } from "react";
+
+import { useState, useRef, useEffect, useCallback } from 'react';
 import debounce from "lodash.debounce";
 
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 
-import img from "../layout/assets/annie-spratt-ixtJA53Z0CU-unsplash.jpg";
-import img1 from "../layout/assets/victoria-nazaruk-2cpW5zq93yY-unsplash.jpg";
-import img2 from "../layout/assets/ranurte-kSdi_gqbGGs-unsplash.jpg";
-import img3 from "../layout/assets/karsten-winegeart-Ss0A5IX6-XE-unsplash.jpg";
-import img4 from "../layout/assets/musa-ortac-A6uObQ0JjGM-unsplash.jpg";
+import img1 from '../layout/assets/victoria-nazaruk-2cpW5zq93yY-unsplash.jpg';
+import img2 from '../layout/assets/ranurte-kSdi_gqbGGs-unsplash.jpg';
+import img3 from '../layout/assets/karsten-winegeart-Ss0A5IX6-XE-unsplash.jpg';
+import img4 from '../layout/assets/musa-ortac-A6uObQ0JjGM-unsplash.jpg';
 const test_img1 =
-  "https://res.cloudinary.com/drll74ba7/image/upload/v1695738116/ppt/6504761e0cf0deca9eae6481/hel%201/images/slide_1_ply1sz.jpg";
-import SwiperMySlide from "./assets/carousel/Swiper";
+  'https://res.cloudinary.com/drll74ba7/image/upload/v1695738116/ppt/6504761e0cf0deca9eae6481/hel%201/images/slide_1_ply1sz.jpg';
+import SwiperMySlide from './assets/carousel/Swiper';
 
 import {
   FaChevronLeft,
@@ -20,10 +20,10 @@ import {
   FaExpand,
   FaDownload,
   FaFileDownload,
-} from "react-icons/fa";
+} from 'react-icons/fa';
 
-import { ImDownload } from "react-icons/im";
-
+import { ImDownload } from 'react-icons/im';
+import debounce from 'lodash.debounce';
 // swiper
 
 export const Carousel = () => {
@@ -36,15 +36,6 @@ export const Carousel = () => {
 
   const [mobile, setMobile] = useState(false);
 
-  const handleClick = () => {};
-  const onClick = () => {
-    if (enableFullscreen) {
-      handle.exit();
-    } else {
-      handle.enter();
-    }
-    setEnableFullScreen((prevState) => !prevState);
-  };
   function toggleFullScreen() {
     const element = userRef.current;
 
@@ -80,78 +71,54 @@ export const Carousel = () => {
     }
     // setEnableFullScreen((prevState) => !prevState);
   }
-  const onMouseEnter = () => {
-    setActive(true);
-  };
-  const onMouseLeave = () => {
-    setActive(false);
-  };
-  const onMouseMove = () => {
-    setActive(true);
-    setTimeout(() => {
+
+  const debouncedFunctionLead = debounce(
+    () => {
+      setActive(true);
+    },
+    3000,
+    { leading: true, trailing: false }
+  );
+
+  const debouncedFunctionTrail = debounce(
+    () => {
       setActive(false);
-    }, 3000);
-  };
-
-  const throttleFunction = (delay) => {
-    setTimeout(() => {
-      let now = new Date().getTime();
-      console.log();
-
-      if (active === false) {
-        console.log("ran");
-        setActive(true);
-      }
-
-      if (now > delay) {
-        setActive(false);
-      }
-    }, delay);
-  };
-
-  let mouseIdleTimer;
-  function resetMouseIdleTimeout() {
-    clearTimeout(mouseIdleTimer);
-    // setActive(true);
-    console.log(window.scrollX);
-    mouseIdleTimer = setTimeout(() => {
-      console.log("resetMouseIdleTimeout");
-      // setActive(false);
-    }, 2000);
-  }
-  // resetMouseIdleTimeout();
+    },
+    3000,
+    { leading: false, trailing: true }
+  );
 
   return (
   
       <div
         className={`carousel relative h-[600px] w-[90%]  mx-auto ${
-          enableFullscreen && "h-full w-full rotate-90"
+          enableFullscreen && 'h-full w-full rotate-90'
         }`}
         ref={userRef}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        // onMouseMove={resetMouseIdleTimeout}
+        onMouseMove={() => {
+          debouncedFunctionTrail(), debouncedFunctionLead();
+        }}
       >
-        <div className="carousel__track-container h-full relative">
-          <ul className="h-full w-full flex  ">
+        <div className='carousel__track-container h-full relative'>
+          <ul className='h-full w-full flex  '>
             <SwiperMySlide list={list} />
           </ul>
         </div>
 
         <button
-          type="button"
+          type='button'
           className={`absolute right-4 z-50 bottom-14 ${
-            active ? "block" : "hidden"
+            active ? 'block' : 'hidden'
           }`}
         >
           <FaExpand
-            size="30px"
+            size='30px'
             onClick={toggleFullScreen}
-            className="text-slate-600"
+            className='text-slate-600'
           />
         </button>
-        <button type="button" className="absolute right-16 bottom-14 z-50 ">
-          <FaDownload size="30px" className="text-slate-600" />
+        <button type='button' className='absolute right-16 bottom-14 z-50 '>
+          <FaDownload size='30px' className='text-slate-600' />
         </button>
       </div>
     
