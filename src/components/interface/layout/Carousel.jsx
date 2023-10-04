@@ -140,7 +140,7 @@ export const Carousel = ({ nav }) => {
         onMouseMove={() => {
           debouncedFunctionTrail(), debouncedFunctionLead();
         }}
-       
+        
         onTouchStart={() => {
           debouncedFunctionTrail(), debouncedFunctionLead();
         }}
