@@ -7,7 +7,7 @@ import shareIcon from '../layout/assets/shareIcon.svg'
 import { toast } from 'react-toastify';
 
 // eslint-disable-next-line react/prop-types
-function Header({ handleSideBar }) {
+function Header() {
   const [copy, setCopy] = useState(false);
   const [sidebar, setSidebar] = useState(false);
 
@@ -25,17 +25,7 @@ function Header({ handleSideBar }) {
 
    </div> */}
       <header className='p-4 pl-6 flex justify-between items-center bg-black relative shadow-[white] z-50 w-full'>
-        <div className='mr-4 flex items-center'>
-          <button
-            className='border-none p-2 rounded-full transition duration-400 hover:bg-blue'
-            onClick={() => {
-              setSidebar(!sidebar);
-              handleSideBar(!sidebar);
-            }}
-          >
-            <FaBars className='text-white w-[35px] h-[35px] lg:w-[25px] lg:h-[25px]' />{' '}
-          </button>
-        </div>
+      
         <div className='flex-1 relative '>
           <p
             className='max-w-full bg-slate-500 py-3 px-2 rounded-md md:max-w-sm flex justify-between '
