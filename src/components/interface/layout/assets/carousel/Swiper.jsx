@@ -8,13 +8,14 @@ import 'swiper/swiper-bundle.css'
 
 
 function SwiperMySlide({list,active}) {
+  const onEnter = false
     return (
     <Swiper
     modules={[Navigation, Scrollbar, A11y,Keyboard,Zoom]}
       spaceBetween={50}
       slidesPerView={1}
       zoom={true}
-      navigation
+      navigation = {onEnter}
       keyboard={{enabled:true}}
       scrollbar={{draggable:true}}
       onSlideChange={() => console.log('slide change')}
