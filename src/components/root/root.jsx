@@ -158,8 +158,6 @@ export default function Root() {
     );
   };
 
-  console.log(user);
-
   return (
     <>
       <div className='w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col'>
@@ -386,10 +384,14 @@ export default function Root() {
                 </div>
 
                 <button
-                  className='px-7 text-center rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+                  className='px-7 text-center rounded-xl flex items-center justify-center bg-slate-200 text-black my-[20px]'
                   type='submit'
                 >
-                  {page.submitPending ? <LoadingAssetSmall /> : 'Send'}
+                  {page.submitPending ? (
+                    <LoadingAssetSmall />
+                  ) : (
+                    <p className='py-[9px]'>Send</p>
+                  )}
                 </button>
               </form>
             </div>
