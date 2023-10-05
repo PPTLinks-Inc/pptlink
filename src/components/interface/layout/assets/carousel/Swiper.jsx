@@ -8,7 +8,14 @@ import 'swiper/swiper-bundle.css'
 
 
 function SwiperMySlide({list,active}) {
-  const onEnter = false
+  let  onEnter
+  if(window.innerWidth < 900 ){
+    onEnter = false 
+  }else{
+    onEnter = true
+  }
+
+
     return (
     <Swiper
     modules={[Navigation, Scrollbar, A11y,Keyboard,Zoom]}
