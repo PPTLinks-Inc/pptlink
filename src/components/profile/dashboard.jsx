@@ -225,7 +225,7 @@ const Dashboard = () => {
                     values.setPresentations.map((_, i) => (
                       <div key={i} className="w-[300px] cursor-pointer">
                         <img
-                          src={_.imageSlide}
+                          src={_.thumbnail}
                           alt="presentation image"
                           className="rounded-xl w-full h-[190px]"
                           draggable="false"
