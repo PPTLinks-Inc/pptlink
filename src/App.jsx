@@ -12,7 +12,8 @@ import Institutions from './components/institutions/institutions';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-axios.defaults.baseURL = 'http://10.42.0.1:4000';
+// axios.defaults.baseURL = 'http://10.42.0.1:4000';
+axios.defaults.baseURL = 'https://pptlink-node-backend.onrender.com/';
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
