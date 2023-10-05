@@ -140,6 +140,10 @@ export const Carousel = ({ nav }) => {
         onMouseMove={() => {
           debouncedFunctionTrail(), debouncedFunctionLead();
         }}
+        
+        onTouchStart={() => {
+          debouncedFunctionTrail(), debouncedFunctionLead();
+        }}
       >
         <div className="carousel__track-container h-full relative">
           <ul className="h-full w-full flex  ">
@@ -167,7 +171,7 @@ export const Carousel = ({ nav }) => {
             navbar ? "" : "active"
           } ${active ? "block" : "hidden"}`}
         >
-          <ul className="w-full h-full flex items-center justify-center ">
+          <ul className="w-full h-full flex items-center justify-center select-none ">
             {/* <button type="button" className="absolute right-16 bottom-14 z-50 ">
             <FaDownload size="30px" className="text-slate-600" />
           </button> */}
