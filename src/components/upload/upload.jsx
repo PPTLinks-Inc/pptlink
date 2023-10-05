@@ -14,6 +14,8 @@ import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
 import { useNavigate } from 'react-router-dom';
 
+let eventSourse = null;
+
 const Upload = () => {
   const controller = new AbortController();
 
@@ -26,12 +28,80 @@ const Upload = () => {
 
   useEffect(() => {
     if (!user) navigate('/login');
-    socket.connect();
+    if (!eventSourse) {
+      eventSourse = new EventSource(
+        `https://pptlink-node-backend.onrender.com/api/v1/ppt/presentations/upload-notification/${user.id}`
+      );
+      eventSourse.onmessage = (event) => {
+        const data = JSON.parse(event.data);
 
-    () => {
-      return socket.disconnect();
+        console.log(data);
+        if (data.event === 'upload-done') {
+          setValues((prev) => ({ ...prev, pending: false }));
+          setPopup((prev) => ({
+            ...prev,
+            popup: true,
+            presentationId: data.id,
+          }));
+          setList(data.imageSlides);
+        }
+
+        if (data.event === 'upload-error') {
+          setPopup((prev) => ({
+            ...prev,
+            cancelPending: true,
+            popupErr: [data.message],
+          }));
+        }
+      };
+
+      console.log('SErver');
+
+      // eventSourse.onerror = () => {
+      //   console.log('Connection Error');
+      // };
+    }
+
+    // socket.connect();
+
+    // console.log('Socket ->', socket.connected);
+
+    return () => {
+      if (eventSourse) {
+        eventSourse.close();
+        eventSourse = null;
+      }
+      // socket.disconnect();
     };
-  }, [user]);
+  }, []);
+
+  // socket.on('connect', () => {
+  //   console.log('socket connected');
+  // });
+
+  // socket.on('socket-id', (socketId) => {
+  //   setSocket(socketId);
+  //   console.log('socket connected');
+  // });
+
+  // socket.on('upload-done', (file) => {
+  //   console.log('log 1');
+  //   if (file) {
+  //     console.log('log 2');
+
+  //     setValues((prev) => ({ ...prev, pending: false }));
+  //     setPopup((prev) => ({
+  //       ...prev,
+  //       popup: true,
+  //       presentationId: file.id,
+  //     }));
+  //     setList(file.imageSlides);
+  //   }
+  // });
+
+  // socket.on('upload-error', (err) => {
+  //   setPopup((prev) => ({ ...prev, cancelPending: true, popupErr: [err] }));
+  // });
 
   const presentationData = () => {
     if (user && user.institution) {
@@ -160,34 +230,6 @@ const Upload = () => {
     },
     [values]
   );
-
-  socket.on('connect', () => {
-    console.log('socket connected');
-  });
-
-  socket.on('socket-id', (socketId) => {
-    setSocket(socketId);
-    console.log('socket connected');
-  });
-
-  socket.on('upload-done', (file) => {
-    console.log('log 1');
-    if (file) {
-      console.log('log 2');
-
-      setValues((prev) => ({ ...prev, pending: false }));
-      setPopup((prev) => ({
-        ...prev,
-        popup: true,
-        presentationId: file.id,
-      }));
-      setList(file.imageSlides);
-    }
-  });
-
-  socket.on('upload-error', (err) => {
-    setPopup((prev) => ({ ...prev, cancelPending: true, popupErr: [err] }));
-  });
 
   const updateIndex = (index) => {
     if (index < 0) index = 0;

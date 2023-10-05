@@ -158,8 +158,6 @@ export default function Root() {
     );
   };
 
-  console.log(user);
-
   return (
     <>
       <div className='w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col'>

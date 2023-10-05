@@ -88,38 +88,36 @@ export const Carousel = () => {
   );
 
   return (
-    <FullScreen handle={handle}>
-      <div
-        className={`carousel relative h-[600px] w-[90%]  mx-auto ${
-          enableFullscreen && 'h-full w-full rotate-90'
-        }`}
-        ref={userRef}
-        onMouseMove={() => {
-          debouncedFunctionTrail(), debouncedFunctionLead();
-        }}
-      >
-        <div className='carousel__track-container h-full relative'>
-          <ul className='h-full w-full flex  '>
-            <SwiperMySlide list={list} />
-          </ul>
-        </div>
-
-        <button
-          type='button'
-          className={`absolute right-4 z-50 bottom-14 ${
-            active ? 'block' : 'hidden'
-          }`}
-        >
-          <FaExpand
-            size='30px'
-            onClick={toggleFullScreen}
-            className='text-slate-600'
-          />
-        </button>
-        <button type='button' className='absolute right-16 bottom-14 z-50 '>
-          <FaDownload size='30px' className='text-slate-600' />
-        </button>
+    <div
+      className={`carousel relative h-[600px] w-[90%]  mx-auto ${
+        enableFullscreen && 'h-full w-full rotate-90'
+      }`}
+      ref={userRef}
+      onMouseMove={() => {
+        debouncedFunctionTrail(), debouncedFunctionLead();
+      }}
+    >
+      <div className='carousel__track-container h-full relative'>
+        <ul className='h-full w-full flex  '>
+          <SwiperMySlide list={list} />
+        </ul>
       </div>
-    </FullScreen>
+
+      <button
+        type='button'
+        className={`absolute right-4 z-50 bottom-14 ${
+          active ? 'block' : 'hidden'
+        }`}
+      >
+        <FaExpand
+          size='30px'
+          onClick={toggleFullScreen}
+          className='text-slate-600'
+        />
+      </button>
+      <button type='button' className='absolute right-16 bottom-14 z-50 '>
+        <FaDownload size='30px' className='text-slate-600' />
+      </button>
+    </div>
   );
 };
