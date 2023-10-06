@@ -29,7 +29,7 @@ import { useContext, useEffect } from 'react';
 import { userContext } from '../../contexts/userContext';
 import axios from 'axios';
 import { LoadingAssetBig2 } from '../../assets/assets';
-import { socket } from '../../socket';
+// import { socket } from '../../socket';
 
 export default function Root() {
   const controller = new AbortController();
@@ -59,11 +59,11 @@ export default function Root() {
         setPage({ ...page, pending: false });
       });
 
-    socket.connect();
+    // socket.connect();
 
     return () => {
       // if user leaves the page disconnect the socket.io connection
-      socket.disconnect();
+      // socket.disconnect();
     };
   }, []);
 
