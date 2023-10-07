@@ -1,29 +1,49 @@
 /* eslint-disable no-unused-vars */
 
-import { Link } from 'react-router-dom';
-import { AiFillCaretDown } from 'react-icons/ai';
-import axios from 'axios';
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
-import { Helmet } from 'react-helmet';
-import LogoBlack from '../../images/Logo-Black.png';
+import { Link } from "react-router-dom";
+import { AiFillCaretDown } from "react-icons/ai";
+import axios from "axios";
+import { useEffect, useRef, useState, useCallback, useReducer } from "react";
+import { LoadingAssetSmall2, LoadingAssetBig2 } from "../../assets/assets";
+import { Helmet } from "react-helmet";
+import { useInView } from "react-intersection-observer";
+import LogoBlack from "../../images/Logo-Black.png";
 
-let pageNo = 1;
+const initialPageNo = 1;
+let shouldFetchMoreData = true;
+
+const pageNoReducer = (state, action) => {
+  console.log({ state, action });
+  if (shouldFetchMoreData) return (action += 1);
+
+  return state;
+};
+
 let isFetching = false;
-let observer;
 const List = () => {
   const controller = new AbortController();
-  const arrowRef = useRef();
+
+  const {
+    ref: arrowRef,
+    inView
+  } = useInView({
+    threshold: 0.8,
+    rootMargin: "15%",
+  });
 
   const [values, setValues] = useState({
     pending: true,
-
-    isIntersecting: false,
 
     error: false,
 
     institutions: [],
   });
+
+  const [pageNo, pageNoDIspatch] = useReducer(pageNoReducer, initialPageNo);
+
+  useEffect(() => {
+    console.log({ pageNo });
+  }, [pageNo]);
 
   const getInstitutions = () => {
     setValues((prev) => ({ ...prev, pending: true }));
@@ -42,46 +62,33 @@ const List = () => {
         }));
 
         isFetching = false;
-        pageNo++;
-        if (data.pageInstitutionCount < 10) observer && observer.disconnect();
+        pageNoDIspatch(pageNo);
+        if (data.pageInstitutionCount < 10) {
+          shouldFetchMoreData = false;
+        }
 
         controller.abort();
       })
       .catch((err) => {
+        console.log(err);
         setValues((prev) => ({ ...prev, pending: false, error: true }));
       });
   };
 
   useEffect(() => {
-    if (!arrowRef.current) {
-      setValues((prev) => ({ ...prev, isIntersecting: true }));
-      return;
-    }
-
-    observer = new IntersectionObserver(
-      (entries) => {
-        setValues((prev) => ({
-          ...prev,
-          isIntersecting: entries[0].isIntersecting,
-        }));
-      },
-      {
-        root: null,
-        threshold: 0.8,
-        rootMargin: '15%',
-      }
-    );
-    observer.observe(arrowRef.current);
-    return () => observer.disconnect();
+    if (isFetching) return;
+    isFetching = true;
+    getInstitutions()
   }, []);
 
   useEffect(() => {
+    console.log("intersecting", inView);
     if (isFetching) return;
-    if (values.isIntersecting) {
+    if (inView) {
       isFetching = true;
       getInstitutions();
     }
-  }, [values.isIntersecting]);
+  }, [inView]);
 
   const handleRefresh = useCallback(() => {
     setValues({ ...values, pending: true, error: false });
@@ -89,80 +96,80 @@ const List = () => {
   }, [values]);
 
   return (
-    <section className='min-h-full w-full flex px-[25%] '>
+    <section className="min-h-full w-full flex px-[25%] ">
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Institutions - PPTLink `}</title>
         <meta
-          name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
         />
         <meta
-          name='tags'
+          name="tags"
           content={`PPT, Presentations, Powerpoint, PPTLink,`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-        <meta property='og:type' content='website' />
+        <meta property="og:type" content="website" />
         <meta
-          property='og:url'
+          property="og:url"
           content={`https://www.PPTLink.com/institions`}
         />
-        <meta property='og:title' content={`Institutions - PPTLink `} />
+        <meta property="og:title" content={`Institutions - PPTLink `} />
         <meta
-          property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
         />
-        <meta property='og:image' content={LogoBlack} />
+        <meta property="og:image" content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
-        <meta property='twitter:card' content='website' />
+        <meta property="twitter:card" content="website" />
         <meta
-          property='twitter:url'
+          property="twitter:url"
           content={`https://www.PPTLink.com/institions`}
         />
 
-        <meta property='twitter:title' content={`Institutions - PPTLink `} />
+        <meta property="twitter:title" content={`Institutions - PPTLink `} />
         <meta
-          property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
         />
-        <meta property='twitter:image' content={LogoBlack} />
+        <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
 
-      <div className='w-full flex flex-col justify-between'>
-        <h1 className='text-[40px] font-medium mb-[45px]'>
+      <div className="w-full flex flex-col justify-between">
+        <h1 className="text-[40px] font-medium mb-[45px]">
           List of all institutions
         </h1>
 
-        <p className='text-xl mb-[45px]'>
+        <p className="text-xl mb-[45px]">
           Click on an institution to find all public presentations made by them
         </p>
 
-        <form className='flex w-[305px] justify-between mb-[45px]'>
+        <form className="flex w-[305px] justify-between mb-[45px]">
           <input
-            type='text'
-            placeholder='Find institution'
-            className='border border-slate-200 px-[15px] py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1'
+            type="text"
+            placeholder="Find institution"
+            className="border border-slate-200 px-[15px] py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1"
           />
 
           <button
-            className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-1'
-            type='submit'
+            className="px-7 rounded-xl py-[9px] bg-slate-200 text-black my-1"
+            type="submit"
           >
             Find
           </button>
         </form>
         {values.pending && values.institutions.length < 1 ? (
-          <div className='w-full h-[25vh] flex justify-center items-center'>
+          <div className="w-full h-[25vh] flex justify-center items-center">
             <LoadingAssetBig2 />
           </div>
         ) : (
           <>
             {values.error ? (
-              <div className='w-full h-[25vh] flex justify-center items-center'>
+              <div className="w-full h-[25vh] flex justify-center items-center">
                 <button
-                  className='px-7 rounded-xl py-1 bg-slate-200 text-black'
+                  className="px-7 rounded-xl py-1 bg-slate-200 text-black"
                   onClick={handleRefresh}
                 >
                   Refresh
@@ -173,8 +180,8 @@ const List = () => {
                 {values.institutions.map((_, i) => (
                   <Link
                     key={i}
-                    to=''
-                    className='border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]'
+                    to=""
+                    className="border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]"
                   >
                     {_.name}
                   </Link>
@@ -183,15 +190,17 @@ const List = () => {
                 {
                   <div
                     ref={arrowRef}
-                    className='w-full h-[40px] flex items-center justify-center'
+                    className={`w-full h-[40px] flex items-center justify-center ${
+                      !shouldFetchMoreData && "hidden"
+                    }`}
                   >
                     {values.institutions.length > 0 && values.pending ? (
                       <LoadingAssetSmall2 />
                     ) : (
                       values.institutions.length > 0 && (
                         <AiFillCaretDown
-                          className='text-2xl cursor-pointer'
-                          onClick={getInstitutions}
+                          className="text-2xl cursor-pointer"
+                          onClick={shouldFetchMoreData ? getInstitutions : null}
                         />
                       )
                     )}
