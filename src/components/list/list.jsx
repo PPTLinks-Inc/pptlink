@@ -3,12 +3,20 @@
 import { Link } from 'react-router-dom';
 import { AiFillCaretDown } from 'react-icons/ai';
 import axios from 'axios';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useReducer } from 'react';
 import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
 
-let pageNo = 1;
+// let pageNo = 1;
+
+const initialPageNo = 1;
+
+const pageNoReducer = (state, action) => {
+  console.log({ state, action });
+  return state++;
+};
+
 let isFetching = false;
 let observer;
 const List = () => {
@@ -52,6 +60,13 @@ const List = () => {
       });
   };
 
+  const [pageNo, dispatch] = useReducer(pageNoReducer, initialPageNo);
+
+  useEffect(() => {
+    console.log('REACHED');
+    dispatch('add');
+  }, []);
+
   useEffect(() => {
     if (!arrowRef.current) {
       setValues((prev) => ({ ...prev, isIntersecting: true }));
@@ -87,6 +102,12 @@ const List = () => {
     setValues({ ...values, pending: true, error: false });
     getInstitutions();
   }, [values]);
+
+  function SpacesWithUnderscores(inputString) {
+    // Use the replace method with a regular expression to replace all spaces with underscores
+    var resultString = inputString.replace(/\s+/g, '_');
+    return resultString;
+  }
 
   return (
     <section className='min-h-full w-full flex px-[25%] '>
@@ -173,7 +194,7 @@ const List = () => {
                 {values.institutions.map((_, i) => (
                   <Link
                     key={i}
-                    to=''
+                    to={`/institutions/${SpacesWithUnderscores(_.name)}`}
                     className='border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]'
                   >
                     {_.name}
