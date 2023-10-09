@@ -23,7 +23,8 @@ const Upload = () => {
   const { user, setUser } = useContext(userContext);
 
   useEffect(() => {
-    if (!user) navigate("/login");
+    if (!user) return navigate("/login");
+    
     if (!eventSourse) {
       eventSourse = new EventSource(
         `${SERVER_URL}/api/v1/ppt/presentations/upload-notification/${user.id}`
@@ -45,6 +46,7 @@ const Upload = () => {
         if (data.event === "upload-error") {
           setPopup((prev) => ({
             ...prev,
+            pending: false,
             cancelPending: true,
             popupErr: [data.message],
           }));
