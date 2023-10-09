@@ -8,6 +8,7 @@ import {
   FaChevronUp,
   FaDownload,
   FaExpand,
+  FaSync,
 } from "react-icons/fa";
 import { useState } from "react";
 import Header from "./layout/Header";
@@ -17,7 +18,7 @@ import { Link } from "react-router-dom";
 
 const navItems = [
   {
-    name: "home",
+    name: "download",
     icon: <FaDownload className="text-2xl relative z-10" />,
     link: "/",
   },
@@ -27,21 +28,18 @@ const navItems = [
     link: "/",
   },
   {
-    name: "home",
-    icon: <FaUser className="text-2xl relative z-10" />,
-    link: "/",
-  },
-  {
-    name: "home",
-    icon: <FaUser className="text-2xl relative z-10" />,
-    link: "/",
-  },
-  {
-    name: "home",
-    icon: <FaUser className="text-2xl relative z-10" />,
+    name: "sync",
+    icon: <FaSync className="text-2xl relative z-10" />,
     link: "/",
   },
 ];
+let mobileHeader;
+
+if (window.innerWidth < 900) {
+  mobileHeader = false;
+} else {
+  mobileHeader = true;
+}
 
 function Interface() {
   const [navbar, setNavbar] = useState(false);
@@ -54,15 +52,15 @@ function Interface() {
     <main
       className={`overflow-hidden min-h-screen  relative duration-300 transition-all bg-black md:overflow-auto `}
     >
-      <Header handleNavBar={handleNavBar} />
+      {mobileHeader && <Header handleNavBar={handleNavBar} />}
       {/* navigation */}
       {/* body */}
       <section
-        className={`main-body ${
-          navbar ? "" : "active"
-        } w-full  px-2  rounded-2xl relative  transition-all duration-500 bg-white`}
+        className={`main-body ${navbar ? "" : "active"} w-full ${
+          mobileHeader && "px-0"
+        }  rounded-2xl relative  transition-all duration-500 bg-white`}
       >
-        <div className=" h-fit min-h-[100%] px-8">
+        <div className=" h-fit min-h-[100%]">
           <Carousel nav={{ navbar, setNavbar, navItems }} />
         </div>
       </section>
