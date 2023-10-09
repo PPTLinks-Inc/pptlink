@@ -245,7 +245,7 @@ const Dashboard = () => {
                           {_.name}
                         </p>
 
-                        <span className="w-[40%] flex justify-between">
+                        <span className="w-[40%] flex justify-between flex-col">
                           <small>{new Date(_.createdAt).toDateString()}</small>
                           <small>{_.linkType}</small>
                         </span>
