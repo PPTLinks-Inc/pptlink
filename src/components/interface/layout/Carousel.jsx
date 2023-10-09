@@ -233,9 +233,9 @@ export const Carousel = ({ nav }) => {
                 >
                   <span className="">{icon}</span>
                   <span
-                    className={`text-black absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all ${
+                    className={`text-white absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all border-white border ${
                       navBar ? "opacity-100" : "opacity-0"
-                    } duration-500 font-bold bg-white`}
+                    } duration-500 font-bold bg-black`}
                   >
                     {name}
                   </span>

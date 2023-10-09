@@ -1,6 +1,13 @@
 /* eslint-disable no-unused-vars */
 
-import { useState, useEffect, useCallback, useRef, useContext } from "react";
+import {
+  useState,
+  useReducer,
+  useEffect,
+  useCallback,
+  useRef,
+  useContext,
+} from "react";
 import profile from "../../images/profile.jfif";
 import { AiFillCaretDown } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
@@ -12,12 +19,29 @@ import { UPLOAD } from "../../constants/routes";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { userContext } from "../../contexts/userContext";
+import { useInView } from "react-intersection-observer";
 
-let pageNo = 1;
-let observer;
+const initialPageNo = 1;
+let shouldFetchMoreData = true;
+
+const pageNoReducer = (state, action) => {
+  console.log({ state, action });
+  if (shouldFetchMoreData) return (action += 1);
+
+  return state;
+};
+
 let isFetching = false;
 const Dashboard = () => {
   const controller = new AbortController();
+
+  const {
+    ref: arrowRef,
+    inView
+  } = useInView({
+    threshold: 0.8,
+    rootMargin: "15%",
+  });
 
   const navigate = useNavigate();
 
@@ -32,7 +56,7 @@ const Dashboard = () => {
     isIntersecting: false,
   });
 
-  const arrowRef = useRef();
+  const [pageNo, pageNoDIspatch] = useReducer(pageNoReducer, initialPageNo);
 
   const getPresentations = () => {
     setValues((prev) => ({ ...prev, pending: true }));
@@ -49,9 +73,11 @@ const Dashboard = () => {
           pending: false,
         }));
         isFetching = false;
-        pageNo++;
-        if (data.pagePresentationCount < 10) observer && observer.disconnect();
-
+        pageNoDIspatch(pageNo);
+        console.log(data);
+        if (data.pagePresentationCount < 10) {
+          shouldFetchMoreData = false;
+        }
         controller.abort();
       })
       .catch((err) => {
@@ -64,36 +90,19 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if (!arrowRef.current) {
-      setValues((prev) => ({ ...prev, isIntersecting: true }));
-      return;
-    }
-
-    observer = new IntersectionObserver(
-      (entries) => {
-        setValues((prev) => ({
-          ...prev,
-          isIntersecting: entries[0].isIntersecting,
-        }));
-      },
-      {
-        root: null,
-        threshold: 0.8,
-        rootMargin: "15%",
-      }
-    );
-    observer.observe(arrowRef.current);
-    return () => observer.disconnect();
+    if (isFetching) return;
+    isFetching = true;
+    getPresentations();
   }, []);
 
   useEffect(() => {
     if (isFetching) return;
 
-    if (values.isIntersecting) {
+    if (inView) {
       isFetching = true;
       getPresentations();
     }
-  }, [values.isIntersecting]);
+  }, [inView]);
 
   const handleRefresh = useCallback(() => {
     setValues({ ...values, pending: true, error: false });
@@ -225,7 +234,7 @@ const Dashboard = () => {
                     values.setPresentations.map((_, i) => (
                       <div key={i} className="w-[300px] cursor-pointer">
                         <img
-                          src={_.imageSlide}
+                          src={_.thumbnail}
                           alt="presentation image"
                           className="rounded-xl w-full h-[190px]"
                           draggable="false"
@@ -247,7 +256,9 @@ const Dashboard = () => {
 
                 <div
                   ref={arrowRef}
-                  className="w-full h-[40px] flex items-center justify-center"
+                  className={`w-full h-[40px] flex items-center justify-center ${
+                    !shouldFetchMoreData && "hidden"
+                  }`}
                 >
                   {values.setPresentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />
