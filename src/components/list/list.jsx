@@ -92,6 +92,10 @@ const List = () => {
     getInstitutions();
   }, [values]);
 
+  const withUnderscore = (value) => {
+    
+  }
+
   return (
     <section className='min-h-full w-full flex px-[25%] '>
       {/* meta and SEO information */}
@@ -177,7 +181,7 @@ const List = () => {
                 {values.institutions.map((_, i) => (
                   <Link
                     key={i}
-                    to=''
+                    to='/institutions/'
                     className='border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]'
                   >
                     {_.name}

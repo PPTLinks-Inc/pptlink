@@ -11,9 +11,11 @@ import animation2 from "./assets/images/animation2.gif";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import shareIcon from "../layout/assets/shareIcon.svg";
 import { toast } from "react-toastify";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 
 import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import { Button, IconButton } from "@mui/material";
 
 let stopFunction = false;
 let navBar = false;
@@ -26,6 +28,7 @@ export const Carousel = ({ nav }) => {
   const [timer, setTimer] = useState(4000);
   const handle = useFullScreenHandle();
   const [copy, setCopy] = useState(false);
+  const [isLive, setIsLive] = useState(true);
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
@@ -171,7 +174,22 @@ export const Carousel = ({ nav }) => {
             <SwiperMySlide list={imageUrls} active={active} />
           </ul>
         </div>
-
+        <div
+          className={`absolute lg:hidden z-20 top-6 right-6  ${
+            active ? "block" : "hidden"
+          }`}
+        >
+          <Button
+            title={isLive ? "End live" : "Go live"}
+            onClick={() => setIsLive((prev) => !prev)}
+            className={` w-32 !text-slate-200 !rounded-xl space-x-2  ${
+              isLive ? "!bg-rose-500/20" : " !bg-green-500/20"
+            }  `}
+          >
+            <p>{isLive ? "End live" : "Go live"}</p>
+            <RadioButtonCheckedIcon className={`!text-3xl !text-slate-200`} />
+          </Button>
+        </div>
         <nav
           className={`h-16 w-16 rounded-full bottom-12 right-12  z-30 fixed transition-all duration-500 ${
             navbar ? "" : "active"
@@ -209,9 +227,11 @@ export const Carousel = ({ nav }) => {
                 navBar = !navBar;
                 stopFunction = !stopFunction;
               }}
-              className="text-slate-200 text-2xl rounded-full border active:scale-75 duration-200 border-white bg-black flex items-center z-20 justify-center w-full h-full"
+              className={`text-slate-200 text-2xl rounded-full border active:scale-75 duration-200 border-white bg-black flex items-center z-20 justify-center w-full h-full active:bg-slate-200 transition-all select-none ${
+                navBar ? "rotate-180" : "rotate-0"
+              }`}
             >
-              {navBar ? <FaChevronDown /> : <FaChevronUp />}
+              <FaChevronUp />
             </button>
             {navItems.map(({ icon, link, name }, i) => (
               <li

@@ -100,7 +100,6 @@ const Institutions = () => {
     observer.observe(arrowRef.current);
     return () => {
       observer.disconnect();
-      pageNumber = 1;
       isFetching = false;
       observer = null;
     };
