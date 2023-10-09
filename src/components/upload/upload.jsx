@@ -23,7 +23,8 @@ const Upload = () => {
   const { user, setUser } = useContext(userContext);
 
   useEffect(() => {
-    if (!user) navigate('/login');
+    if (!user) return navigate('/login');
+
     if (!eventSourse) {
       eventSourse = new EventSource(
         `${SERVER_URL}/api/v1/ppt/presentations/upload-notification/${user.id}`
@@ -432,7 +433,7 @@ const Upload = () => {
                 {popup.cancelPending ? (
                   <LoadingAssetSmall2 />
                 ) : (
-                  <p className='py-[9px]'>Cancel</p>
+                  <p className='py-[9px]'>Delete</p>
                 )}
               </button>
             </div>
