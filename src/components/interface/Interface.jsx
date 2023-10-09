@@ -1,20 +1,10 @@
 /* eslint-disable no-unused-vars */
 
 import "./interface.css";
-import {
-  FaUser,
-  FaHome,
-  FaAndroid,
-  FaChevronUp,
-  FaDownload,
-  FaExpand,
-  FaSync,
-} from "react-icons/fa";
+import { FaHome, FaDownload, FaSync } from "react-icons/fa";
 import { useState } from "react";
 import Header from "./layout/Header";
 import { Carousel } from "./layout/Carousel";
-import axios from "axios";
-import { Link } from "react-router-dom";
 
 const navItems = [
   {
