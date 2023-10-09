@@ -7,14 +7,24 @@ import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
+import { useReducer } from 'react';
 
-let pageNo = 1;
+// let pageNo = 1;
 let isFetching = false;
 let observer;
+
+const initialPageNo = 1;
+
+const pageNoReducer = (state, action) => {
+  console.log({ state, action });
+  return state++;
+};
 
 const Institutions = () => {
   const controller = new AbortController();
   const arrowRef = useRef();
+
+  const [pageNo, dispatch] = useReducer(pageNoReducer, initialPageNo);
 
   const { id } = useParams();
 
@@ -25,7 +35,7 @@ const Institutions = () => {
 
     error: false,
 
-    instition: 'Nasomsoft Embedded',
+    instition: '',
 
     presentations: [],
   });
@@ -34,9 +44,12 @@ const Institutions = () => {
     setValues((prev) => ({ ...prev, pending: true }));
 
     axios
-      .get(`/api/v1/institution/${id}?noPerPage=10&pageNo=${pageNo}`, {
-        signal: controller.signal,
-      })
+      .get(
+        `/api/v1/institution/presentations/${id}?noPerPage=10&pageNo=${pageNo}`,
+        {
+          signal: controller.signal,
+        }
+      )
       .then(({ data }) => {
         console.log(data);
 
@@ -47,7 +60,7 @@ const Institutions = () => {
         }));
 
         isFetching = false;
-        pageNo++;
+        dispatch('add');
 
         if (data.pagePresentationCount < 10) observer && observer.disconnect();
 
@@ -59,6 +72,13 @@ const Institutions = () => {
   };
 
   useEffect(() => {
+    console.log('REACHED');
+    dispatch('add');
+  }, []);
+
+  useEffect(() => {
+    setValues((prev) => ({ ...prev, instition: withoutUnderscore(id) }));
+
     if (!arrowRef.current) {
       setValues((prev) => ({ ...prev, isIntersecting: true }));
       return;
@@ -78,7 +98,12 @@ const Institutions = () => {
       }
     );
     observer.observe(arrowRef.current);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      pageNumber = 1;
+      isFetching = false;
+      observer = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -93,6 +118,10 @@ const Institutions = () => {
     setValues({ ...values, pending: true, error: false });
     getPresentations();
   }, [values]);
+
+  const withoutUnderscore = (input) => {
+    return input.replace(/_/g, ' ');
+  };
 
   return (
     <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around px-[20px]'>
@@ -176,7 +205,7 @@ const Institutions = () => {
                     values.presentations.map((_, i) => (
                       <div key={i} className='w-[300px] cursor-pointer'>
                         <img
-                          src={beginnersguide}
+                          src={_.thumbnail}
                           alt='presentation image'
                           className='rounded-xl w-full h-[190px]'
                           draggable='false'
@@ -184,12 +213,12 @@ const Institutions = () => {
                         />
 
                         <p className='font-bold leading-10 treading-6'>
-                          My first presentation
+                          {_.name}
                         </p>
 
                         <span className='w-[40%] flex justify-between'>
-                          <small>11/9/2023</small>
-                          <small>Public</small>
+                          <small>{new Date(_.createdAt).toDateString()}</small>
+                          <small>{_.linkType}</small>
                         </span>
                       </div>
                     ))
