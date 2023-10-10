@@ -18,25 +18,19 @@ let stopFunction = false;
 let navBar = false;
 let timer = 5000;
 
-export const Carousel = ({ nav, slides }) => {
+export const Carousel = ({ nav, presentation, makeLive }) => {
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
-  const [isLive, setIsLive] = useState(true);
+  const [timer, setTimer] = useState(4000);
+  const handle = useFullScreenHandle();
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
     animation1: false,
     animation2: false,
   });
-
-  // const imageUrls = [
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923280/ppt/6515b6cac871bd812e932f38/Best/images/slide_3_leeqln.jpg",
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923277/ppt/6515b6cac871bd812e932f38/Best/images/slide_2_avpukc.jpg",
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923274/ppt/6515b6cac871bd812e932f38/Best/images/slide_1_m2meqk.jpg",
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923270/ppt/6515b6cac871bd812e932f38/Best/images/slide_0_dwrjkr.jpg",
-  // ];
 
   const removeSpecialMedia = async () => {
     if (specialMedia.toggled === true) {
@@ -157,9 +151,9 @@ export const Carousel = ({ nav, slides }) => {
             <span>{window.location.href}</span> <CopyAllRounded />
           </p>
         )}
-        <div className='carousel__track-container h-full relative'>
-          <ul className='h-full w-full flex  '>
-            <SwiperMySlide list={slides} active={active} />
+        <div className="carousel__track-container h-full relative">
+          <ul className="h-full w-full flex  ">
+            <SwiperMySlide list={presentation.imageSlides} active={active} />
           </ul>
         </div>
         <div
@@ -167,16 +161,18 @@ export const Carousel = ({ nav, slides }) => {
             active ? 'block' : 'hidden'
           }`}
         >
-          <Button
-            title={isLive ? 'End live' : 'Go live'}
-            onClick={() => setIsLive((prev) => !prev)}
-            className={` min-w-32 !text-slate-200 !rounded-xl space-x-2  ${
-              isLive ? '!bg-rose-500/20' : ' !bg-green-500/20'
-            }  `}
-          >
-            <p>{isLive ? 'End live' : 'Go live'}</p>
-            <RadioButtonCheckedIcon className={`!text-3xl !text-slate-200`} />
-          </Button>
+          {presentation.User === "HOST" && (
+            <Button
+              title={presentation.live ? "End live" : "Go live"}
+              onClick={makeLive}
+              className={` m-w-32 !text-slate-200 !rounded-xl space-x-2  ${
+                presentation.live ? "!bg-rose-500/20" : " !bg-green-500/20"
+              }  `}
+            >
+              <p>{presentation.live ? "End live" : "Go live"}</p>
+              <RadioButtonCheckedIcon className={`!text-3xl !text-slate-200`} />
+            </Button>
+          )}
         </div>
 
         <nav
