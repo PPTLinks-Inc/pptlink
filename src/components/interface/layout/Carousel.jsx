@@ -20,7 +20,7 @@ import { Button, IconButton } from "@mui/material";
 let stopFunction = false;
 let navBar = false;
 
-export const Carousel = ({ nav }) => {
+export const Carousel = ({ nav, slides }) => {
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
@@ -36,12 +36,12 @@ export const Carousel = ({ nav }) => {
     animation2: false,
   });
 
-  const imageUrls = [
-    "https://res.cloudinary.com/drll74ba7/image/upload/v1695923280/ppt/6515b6cac871bd812e932f38/Best/images/slide_3_leeqln.jpg",
-    "https://res.cloudinary.com/drll74ba7/image/upload/v1695923277/ppt/6515b6cac871bd812e932f38/Best/images/slide_2_avpukc.jpg",
-    "https://res.cloudinary.com/drll74ba7/image/upload/v1695923274/ppt/6515b6cac871bd812e932f38/Best/images/slide_1_m2meqk.jpg",
-    "https://res.cloudinary.com/drll74ba7/image/upload/v1695923270/ppt/6515b6cac871bd812e932f38/Best/images/slide_0_dwrjkr.jpg",
-  ];
+  // const imageUrls = [
+  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923280/ppt/6515b6cac871bd812e932f38/Best/images/slide_3_leeqln.jpg",
+  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923277/ppt/6515b6cac871bd812e932f38/Best/images/slide_2_avpukc.jpg",
+  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923274/ppt/6515b6cac871bd812e932f38/Best/images/slide_1_m2meqk.jpg",
+  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923270/ppt/6515b6cac871bd812e932f38/Best/images/slide_0_dwrjkr.jpg",
+  // ];
 
   const removeSpecialMedia = async () => {
     if (specialMedia.toggled === true) {
@@ -171,7 +171,7 @@ export const Carousel = ({ nav }) => {
         )}
         <div className="carousel__track-container h-full relative">
           <ul className="h-full w-full flex  ">
-            <SwiperMySlide list={imageUrls} active={active} />
+            <SwiperMySlide list={slides} active={active} />
           </ul>
         </div>
         <div
