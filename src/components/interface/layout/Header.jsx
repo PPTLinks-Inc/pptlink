@@ -9,10 +9,9 @@ import { Button } from "@mui/material";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 
 // eslint-disable-next-line react/prop-types
-function Header() {
+function Header({ presentation, makeLive }) {
   const [copy, setCopy] = useState(false);
   const [sidebar, setSidebar] = useState(false);
-  const [isLive, setIsLive] = useState(true);
 
   // const handleClick = () => {
   //   console.log('hello')
@@ -28,7 +27,7 @@ function Header() {
 
    </div> */}
       <header className="p-4 pl-6 flex justify-between items-center bg-black relative shadow-[white] z-50 w-full">
-        <div className="flex-1 relative ">
+        {presentation?.User === "HOST" ? <div className="flex-1 relative ">
           <p
             className="max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between "
             onClick={() => {
@@ -43,20 +42,22 @@ function Header() {
           >
             <span>{window.location.href}</span> <img src={shareIcon} alt="" />
           </p>
-        </div>
-        <div className="absolute hidden lg:inline-block z-20 top-6 right-6 ml-auto">
-          <Button
-            variant="contained"
-            title={isLive ? "End live" : "Go live"}
-            onClick={() => setIsLive((prev) => !prev)}
-            className={` w-32 !text-slate-200 !rounded-xl space-x-2 ${
-              isLive ? "!bg-rose-500" : " !bg-green-500"
-            }`}
-          >
-            <p>{isLive ? "End live" : "Go live"}</p>
-            <RadioButtonCheckedIcon className={`!text-3xl !text-slate-200`} />
-          </Button>
-        </div>
+        </div> : (<h1 className="text-3xl text-white text-center flex-1 font-bold ">PPTLink</h1>)}
+        {presentation && presentation?.User === "HOST" && (
+          <div className="absolute hidden lg:inline-block z-20 top-6 right-6 ml-auto">
+            <Button
+              variant="contained"
+              title={presentation.live ? "End live" : "Go live"}
+              onClick={makeLive}
+              className={` m-w-32 !text-slate-200 !rounded-xl space-x-2 ${
+                presentation.live ? "!bg-rose-500" : " !bg-green-500"
+              }`}
+            >
+              <p>{presentation.live ? "End live" : "Go live"}</p>
+              <RadioButtonCheckedIcon className={`!text-3xl !text-slate-200`} />
+            </Button>
+          </div>
+        )}
       </header>
     </>
   );
