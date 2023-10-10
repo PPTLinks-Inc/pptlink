@@ -49,9 +49,3 @@ function Header() {
 }
 
 export default Header;
-
-<input
-  type='text'
-  className='rounded-lg mb-3 py-3 px-6 w-full lg:py-2 lg:w-3/5 outline-none text-gray-500 bg-white'
-  placeholder='Search'
-/>;

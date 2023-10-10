@@ -9,7 +9,6 @@ import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
 import { useReducer } from 'react';
 
-// let pageNo = 1;
 let isFetching = false;
 let observer;
 
