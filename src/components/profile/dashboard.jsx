@@ -5,9 +5,9 @@ import {
   useReducer,
   useEffect,
   useCallback,
-  useRef,
   useContext,
 } from "react";
+import { Link } from "react-router-dom";
 import profile from "../../images/profile.jfif";
 import { AiFillCaretDown } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
@@ -35,10 +35,7 @@ let isFetching = false;
 const Dashboard = () => {
   const controller = new AbortController();
 
-  const {
-    ref: arrowRef,
-    inView
-  } = useInView({
+  const { ref: arrowRef, inView } = useInView({
     threshold: 0.8,
     rootMargin: "15%",
   });
@@ -233,22 +230,26 @@ const Dashboard = () => {
                   ) : (
                     values.setPresentations.map((_, i) => (
                       <div key={i} className="w-[300px] cursor-pointer">
-                        <img
-                          src={_.thumbnail}
-                          alt="presentation image"
-                          className="rounded-xl w-full h-[190px]"
-                          draggable="false"
-                          loading="lazy"
-                        />
+                        <Link to={`/${_.liveId}`}>
+                          <img
+                            src={_.thumbnail}
+                            alt="presentation image"
+                            className="rounded-xl w-full h-[190px]"
+                            draggable="false"
+                            loading="lazy"
+                          />
 
-                        <p className="font-bold leading-10 treading-6">
-                          {_.name}
-                        </p>
+                          <p className="font-bold leading-10 treading-6">
+                            {_.name}
+                          </p>
 
-                        <span className="w-[40%] flex justify-between flex-col">
-                          <small>{new Date(_.createdAt).toDateString()}</small>
-                          <small>{_.linkType}</small>
-                        </span>
+                          <span className="w-[40%] flex justify-between flex-col">
+                            <small>
+                              {new Date(_.createdAt).toDateString()}
+                            </small>
+                            <small>{_.linkType}</small>
+                          </span>
+                        </Link>
                       </div>
                     ))
                   )}
