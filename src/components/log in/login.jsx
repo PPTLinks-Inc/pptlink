@@ -7,6 +7,8 @@ import { LoadingAssetSmall } from '../../assets/assets';
 import { userContext } from '../../contexts/userContext';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import LogoBlack from '../../images/Logo-Black.png';
 
 const Login = () => {
   const controller = new AbortController();
@@ -19,6 +21,7 @@ const Login = () => {
   const [values, setValues] = useState({
     signup: false,
 
+    userName: '',
     email: '',
     password: '',
 
@@ -43,6 +46,10 @@ const Login = () => {
 
   const formValidation = () => {
     tempArr = [];
+
+    if (values.signup && values.userName.length < 3) {
+      tempArr = [...tempArr, 'Your user name is too short'];
+    }
 
     if (values.email.length < 5) {
       tempArr = [...tempArr, 'Your Email is too short'];
@@ -91,6 +98,8 @@ const Login = () => {
             controller.abort();
           })
           .catch((err) => {
+            console.log(err);
+
             setValues({
               ...values,
               loginPending: false,
@@ -109,7 +118,11 @@ const Login = () => {
       formValidation();
 
       if (tempArr.length === 0) {
-        const sendData = { email: values.email, password: values.password };
+        const sendData = {
+          email: values.email,
+          password: values.password,
+          username: values.userName,
+        };
         setValues({ ...values, signupPending: true, validateError: tempArr });
 
         axios
@@ -142,15 +155,51 @@ const Login = () => {
 
   return (
     <section className='flex justify-center my-9'>
+      {/* meta and SEO information */}
+      <Helmet>
+        <title>{`Login - PPTLink `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/login`} />
+        <meta property='og:title' content={`Login - PPTLink `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/login`}
+        />
+
+        <meta property='twitter:title' content={`Login - PPTLink `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
+
       {!values.signup && (
         <form onSubmit={handleLogin} autoComplete='false'>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse lg:w-[450px]'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Log in</h1>
               Note: If you belong to an institution, log in using your email and
               the institution password
             </div>
-
             <input
               type='email'
               value={values.email}
@@ -158,7 +207,6 @@ const Login = () => {
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
-
             <div
               className={`w-full h-fit flex bg-transparent ${
                 values.validateError.length > 0 && 'border-b border-slate-200'
@@ -186,23 +234,28 @@ const Login = () => {
                 )}
               </div>
             </div>
-
             {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
                 {values.validateError.map((error, i) => (
-                  <li key={i}>{error}</li>
+                  <li key={i} className='text-rose-600'>
+                    {error}
+                  </li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className='flex m-auto mx-2 gap-3 px-3 justify-between items-center'>
+          <div className='flex m-auto gap-3 px-3 justify-between items-center lg:px-0'>
             <button
               type='submit'
               disabled={values.loginPending}
-              className='px-0.5  py-2 w-36 lg:px-7 rounded-xl lg:py-[9px] bg-slate-200 text-black my-[20px]'
+              className='px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]'
             >
-              {values.loginPending ? <LoadingAssetSmall /> : 'Log in'}
+              {values.loginPending ? (
+                <LoadingAssetSmall />
+              ) : (
+                <p className='py-3 lg:py-[9px]'>Log in</p>
+              )}
             </button>
 
             <p className='text-right '>
@@ -220,11 +273,20 @@ const Login = () => {
 
       {values.signup && (
         <form onSubmit={handleSignup}>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse'>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse lg:w-[450px]'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Sign up</h1>
               Please input the necessary information and create an account
             </div>
+            <input
+              type='text'
+              value={values.userName}
+              className='w-full p-[30px] bg-transparent border-b border-slate-200'
+              placeholder='Username'
+              onChange={(e) =>
+                setValues({ ...values, userName: e.target.value })
+              }
+            />
 
             <input
               type='email'
@@ -233,7 +295,6 @@ const Login = () => {
               placeholder='Email'
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
-
             <div
               className={`w-full h-fit flex bg-transparent ${
                 values.validateError.length > 0 && 'border-b border-slate-200'
@@ -261,23 +322,28 @@ const Login = () => {
                 )}
               </div>
             </div>
-
             {values.validateError.length > 0 && (
               <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
                 {values.validateError.map((error, i) => (
-                  <li key={i}>{error}</li>
+                  <li key={i} className='text-rose-600'>
+                    {error}
+                  </li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className='flex m-auto mx-2 gap-3 px-3 justify-between items-center'>
+          <div className='flex m-auto gap-3 px-3 justify-between items-center lg:px-0'>
             <button
               type='submit'
-              className='px-0.5  py-2 w-36 lg:px-7 rounded-xl lg:py-[9px] bg-slate-200 text-black my-[20px]'
+              className='px-0.5 flex items-center justify-center w-36 lg:px-7 rounded-xl bg-slate-200 text-black my-[20px]'
               disabled={values.signupPending}
             >
-              {values.signupPending ? <LoadingAssetSmall /> : 'Sign up'}
+              {values.signupPending ? (
+                <LoadingAssetSmall />
+              ) : (
+                <p className='py-2 lg:py-[9px]'>Sign up</p>
+              )}
             </button>
 
             <p className='text-right '>

@@ -14,7 +14,6 @@ import { FiTwitter } from 'react-icons/fi';
 import { TbWorldWww } from 'react-icons/tb';
 import { useState } from 'react';
 import { LoadingAssetSmall } from '../../assets/assets';
-import { useEffect } from 'react';
 import {
   ABOUT,
   DASHBOARD,
@@ -26,10 +25,11 @@ import {
   UPLOAD,
 } from '../../constants/routes';
 import { useRef } from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { userContext } from '../../contexts/userContext';
 import axios from 'axios';
 import { LoadingAssetBig2 } from '../../assets/assets';
+// import { socket } from '../../socket';
 
 export default function Root() {
   const controller = new AbortController();
@@ -58,6 +58,13 @@ export default function Root() {
         setUser(null);
         setPage({ ...page, pending: false });
       });
+
+    // socket.connect();
+
+    return () => {
+      // if user leaves the page disconnect the socket.io connection
+      // socket.disconnect();
+    };
   }, []);
 
   const [page, setPage] = useState({
@@ -181,27 +188,27 @@ export default function Root() {
         <div className='flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row '>
           <Link
             to={INSTITUTIONS}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             Institutions
           </Link>
 
           <Link
             to={ABOUT}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             About
           </Link>
 
           <Link
             to={LEGAL}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14 '
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14 '
           >
             Legal
           </Link>
           <Link
             to={UPLOAD}
-            className='border text-center border-collapse border-slate-100 w-[90%] font-medium py-5 mx-auto text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center lg:mx-0 lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
           >
             Upload
           </Link>
@@ -237,10 +244,10 @@ export default function Root() {
 
         <div
           ref={mainRef}
-          className={`min-h-screen bg-black w-[100%] absolute top-[0] lg:rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${
+          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] lg:rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${
             page.dropdown
               ? 'transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500'
-              : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300'
+              : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]'
           }`}
         >
           <div className='h-[6rem]'>
@@ -271,9 +278,9 @@ export default function Root() {
           ) : (
             <Outlet />
           )}
-          <footer className='w-[100%] m-auto h-[100%] mt-[10vh] flex flex-col '>
+          <footer className='w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col '>
             <div className='w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between'>
-              <div className='w-[100%] px-[2.5rem] m-auto flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
+              <div className='w-[100%] px-[2.5rem]  m-auto lg:m-0 flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
                 <div className='h-[100%] flex flex-col'>
                   <h4 className='text-lg font-bold my-1'>Internal</h4>
                   <Link to={HOME} className='py-2'>
@@ -330,7 +337,7 @@ export default function Root() {
               </div>
 
               <form
-                className='lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto flex flex-col items-start'
+                className='lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto lg:m-0 flex flex-col items-start'
                 onSubmit={handleSubmit}
               >
                 <div className='w-full m-0 border border-slate-200 rounded-xl border-collapse'>
@@ -359,7 +366,7 @@ export default function Root() {
                     onChange={(e) =>
                       setPage({ ...page, message: e.target.value })
                     }
-                    className={`w-full p-[30px] bg-transparent ${
+                    className={`w-full resize-none p-[30px] bg-transparent ${
                       page.submitErrors.length > 0 &&
                       'border-b border-slate-200'
                     }`}
@@ -368,17 +375,23 @@ export default function Root() {
                   {page.submitErrors.length > 0 && (
                     <ul className='flex flex-col justify-between p-[30px] list-[disc]'>
                       {page.submitErrors.map((error, i) => (
-                        <li key={i}>{error}</li>
+                        <li key={i} className='text-rose-600'>
+                          {error}
+                        </li>
                       ))}
                     </ul>
                   )}
                 </div>
 
                 <button
-                  className='px-7 text-center rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+                  className='px-7 text-center rounded-xl flex items-center justify-center bg-slate-200 text-black my-[20px]'
                   type='submit'
                 >
-                  {page.submitPending ? <LoadingAssetSmall /> : 'Send'}
+                  {page.submitPending ? (
+                    <LoadingAssetSmall />
+                  ) : (
+                    <p className='py-[9px]'>Send</p>
+                  )}
                 </button>
               </form>
             </div>
