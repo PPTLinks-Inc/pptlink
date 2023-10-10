@@ -1,21 +1,12 @@
-// import logo from "./assets/logo.png";
-// import headerImg from './assets/header-gradient.webp'
 /* eslint-disable no-unused-vars */
-import { FaBars } from "react-icons/fa";
-import { useState } from "react";
-import shareIcon from "../layout/assets/shareIcon.svg";
-import { toast } from "react-toastify";
-import { Button } from "@mui/material";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-
 // eslint-disable-next-line react/prop-types
-function Header({ presentation, makeLive }) {
-  const [copy, setCopy] = useState(false);
-  const [sidebar, setSidebar] = useState(false);
+import { useState } from 'react';
+import shareIcon from '../layout/assets/shareIcon.svg';
+import { toast } from 'react-toastify';
+import { Button } from '@mui/material';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
-  // const handleClick = () => {
-  //   console.log('hello')
-  // }
+function Header({ presentation, makeLive }) {
   return (
     <>
       {/* <div className="absolute w-full top-0 left-0 right-0 ">
@@ -29,18 +20,18 @@ function Header({ presentation, makeLive }) {
       <header className="p-4 pl-6 flex justify-between items-center bg-black relative shadow-[white] z-50 w-full">
         {presentation?.User === "HOST" ? <div className="flex-1 relative ">
           <p
-            className="max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between "
+            className='max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between '
             onClick={() => {
               navigator.clipboard &&
                 navigator.clipboard.writeText(window.location.href);
               setCopy(true);
-              toast.success("Link Copied successfully");
+              toast.success('Link Copied successfully');
               setTimeout(() => {
                 setCopy(false);
               }, 3000);
             }}
           >
-            <span>{window.location.href}</span> <img src={shareIcon} alt="" />
+            <span>{window.location.href}</span> <img src={shareIcon} alt='' />
           </p>
         </div> : (<h1 className="text-3xl text-white text-center flex-1 font-bold ">PPTLink</h1>)}
         {presentation && presentation?.User === "HOST" && (
@@ -64,9 +55,3 @@ function Header({ presentation, makeLive }) {
 }
 
 export default Header;
-
-<input
-  type="text"
-  className="rounded-lg mb-3 py-3 px-6 w-full lg:py-2 lg:w-3/5 outline-none text-gray-500 bg-white"
-  placeholder="Search"
-/>;
