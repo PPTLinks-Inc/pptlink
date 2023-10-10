@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import Header from "./layout/Header";
 import { Carousel } from "./layout/Carousel";
 import axios from "axios";
+import { LoadingAssetBig2 } from "../../assets/assets";
 
 const navItems = [
   {
@@ -36,7 +37,6 @@ if (window.innerWidth < 900) {
 function Interface() {
   const controller = new AbortController();
   const [navbar, setNavbar] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const [presentation, setPresentation] = useState(null);
 
@@ -54,20 +54,39 @@ function Interface() {
       .then(({ data }) => {
         controller.abort();
         setPresentation(data.presentation);
-        setLoading(false);
         console.log(data.presentation);
       })
       .catch((err) => {
-        setLoading(false);
         console.log(err);
       });
   }, []);
+
+  const makeLive = () => {
+    if (presentation) {
+      axios
+        .put(`/api/v1/ppt/presentations/make-live/${presentation.id}`, {
+          data: !presentation.live,
+        })
+        .then(({ data }) => {
+          setPresentation((prev) => ({ ...prev, live: !prev.live }));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
   return (
     <main
       className={`overflow-hidden min-h-screen  relative duration-300 transition-all bg-black md:overflow-auto `}
     >
-      {mobileHeader && <Header handleNavBar={handleNavBar} />}
+      {mobileHeader && (
+        <Header
+          handleNavBar={handleNavBar}
+          presentation={presentation}
+          makeLive={makeLive}
+        />
+      )}
       {/* navigation */}
       {/* body */}
       <section
@@ -75,16 +94,21 @@ function Interface() {
           mobileHeader && "px-0"
         }  rounded-2xl relative  transition-all duration-500 bg-white`}
       >
-        {presentation && (
+        {presentation ? (
           <div className=" h-fit min-h-[100%]">
             {presentation.live || presentation.User === "HOST" ? (
               <Carousel
                 nav={{ navbar, setNavbar, navItems }}
-                slides={presentation.imageSlides}
+                presentation={presentation}
+                makeLive={makeLive}
               />
             ) : (
               <p className="text-8xl text-center">Presentation not live</p>
             )}
+          </div>
+        ) : (
+          <div className="w-full h-[85vh] flex justify-center bg-black items-center">
+            <LoadingAssetBig2 />
           </div>
         )}
       </section>

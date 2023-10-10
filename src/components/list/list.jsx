@@ -93,7 +93,6 @@ const List = () => {
   }, [values]);
 
   function SpacesWithUnderscores(inputString) {
-    // Use the replace method with a regular expression to replace all spaces with underscores
     var resultString = inputString.replace(/\s+/g, '_');
     return resultString;
   }

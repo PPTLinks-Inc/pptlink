@@ -12,6 +12,7 @@ import Institutions from "./components/institutions/institutions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
+import About from "./components/about-us/about";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -46,6 +47,7 @@ function App() {
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="upload" element={<Upload />} />
           </Route>
+          <Route path="about-us" element={<About />} />
           <Route path="/:id" element={<Interface />} />
         </Routes>
       </BrowserRouter>
