@@ -1,13 +1,20 @@
 /* eslint-disable no-unused-vars */
 
-import './interface.css';
-import { FaHome, FaDownload, FaSync } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import Header from './layout/Header';
-import { Carousel } from './layout/Carousel';
-import axios from 'axios';
-import { LoadingAssetBig2 } from '../../assets/assets';
+
+import "./interface.css";
+import { FaHome, FaDownload, FaSync } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Header from "./layout/Header";
+import { Carousel } from "./layout/Carousel";
+import axios from "axios";
+import io from "socket.io-client";
+import { useSwiper } from "swiper/react";
+import { LoadingAssetBig2 } from "../../assets/assets";
+import { SERVER_URL } from "../../constants/routes";
+
+const socket = io(SERVER_URL);
+
 
 const navItems = [
   {
@@ -41,10 +48,23 @@ function Interface() {
   const [presentation, setPresentation] = useState(null);
 
   const params = useParams();
+  const swiper = useSwiper();
 
   const handleNavBar = (item) => {
     setNavbar(item);
   };
+
+  useEffect(() => {
+    console.log(socket.connected);
+    socket.on("connect", () => {
+      socket.emit("join-presentation", params.id);
+
+      socket.on("client-live", (live) => {
+        console.log(presentation);
+        setPresentation((prev) => ({ ...prev, live }));
+      });
+    });
+  }, []);
 
   useEffect(() => {
     axios
@@ -71,6 +91,12 @@ function Interface() {
           data: !presentation.live,
         })
         .then(({ data }) => {
+          if (socket.connected) {
+            socket.emit("client-live", {
+              liveId: params.id,
+              live: !presentation.live,
+            });
+          }
           setPresentation((prev) => ({ ...prev, live: !prev.live }));
           setLivePending(false);
         })
@@ -106,7 +132,11 @@ function Interface() {
                 nav={{ navbar, setNavbar, navItems }}
                 presentation={presentation}
                 makeLive={makeLive}
+
+                socket={socket}
+
                 livePending={livePending}
+
               />
             ) : (
               <p className='text-8xl text-center'>Presentation not live</p>
