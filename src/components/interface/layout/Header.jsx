@@ -2,11 +2,9 @@
 /* eslint-disable no-unused-vars */
 
 import { useState } from 'react';
-
-
-import shareIcon from '../layout/assets/shareIcon.svg';
 import { toast } from 'react-toastify';
 import { Button } from '@mui/material';
+import Copy from '@mui/icons-material/CopyAll'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import { LoadingAssetSmall, LoadingAssetSmall2 } from '../../../assets/assets';
 
@@ -34,7 +32,7 @@ function Header({ presentation, makeLive, livePending }) {
               toast.success('Link Copied successfully');
             }}
           >
-            <span>{window.location.href}</span> <img src={shareIcon} alt='' />
+            <span>{window.location.href}</span> <Copy/>
           </p>
         </div> : (<h1 className="text-3xl text-white text-center flex-1 font-bold ">PPTLink</h1>)}
         {presentation && presentation?.User === "HOST" && (

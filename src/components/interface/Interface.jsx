@@ -11,9 +11,13 @@ import axios from "axios";
 import io from "socket.io-client";
 import { useSwiper } from "swiper/react";
 import { LoadingAssetBig2 } from "../../assets/assets";
+
+import Spinner from "./layout/assets/spinner/Spinner";
+
 import { SERVER_URL } from "../../constants/routes";
 
 const socket = io(SERVER_URL);
+
 
 
 const navItems = [
@@ -139,8 +143,11 @@ function Interface() {
 
               />
             ) : (
-              <p className='text-8xl text-center'>Presentation not live</p>
-            )}
+
+              <Spinner/>
+
+)}
+
           </div>
         ) : (
           <div className='w-full h-[85vh] flex justify-center bg-black items-center'>
