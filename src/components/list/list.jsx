@@ -99,7 +99,7 @@ const List = () => {
   }
 
   return (
-    <section className='min-h-full w-full flex px-[25%] '>
+    <section className='min-h-full w-full flex px-[5rem] md:px-[25%]'>
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Institutions - PPTLink `}</title>
@@ -140,20 +140,20 @@ const List = () => {
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
 
-      <div className='w-full flex flex-col justify-between'>
-        <h1 className='text-[40px] font-medium mb-[45px]'>
+      <div className='w-full flex flex-col mt-7 justify-between'>
+        <h1 className='text-[40px] font-medium mb-7 md:mb-[45px]'>
           List of all institutions
         </h1>
 
-        <p className='text-xl mb-[45px]'>
+        <p className='text-xl  mb-7 md:mb-[45px]'>
           Click on an institution to find all public presentations made by them
         </p>
 
-        <form className='flex w-[305px] justify-between mb-[45px]'>
+        <form className='flex w-[100%] md:w-[305px] justify-center gap-3 mb-[45px]'>
           <input
             type='text'
             placeholder='Find institution'
-            className='border border-slate-200 px-[15px] py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1'
+            className='border border-slate-200 px-[15px] mr-2 py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1'
           />
 
           <button
@@ -170,7 +170,7 @@ const List = () => {
         ) : (
           <>
             {values.error ? (
-              <div className='w-full h-[25vh] flex justify-center items-center'>
+              <div className='w-full h-[10vh] md:h-[25vh] flex justify-center items-center'>
                 <button
                   className='px-7 rounded-xl py-1 bg-slate-200 text-black'
                   onClick={handleRefresh}

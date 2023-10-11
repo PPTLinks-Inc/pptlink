@@ -194,7 +194,7 @@ const Login = () => {
 
       {!values.signup && (
         <form onSubmit={handleLogin} autoComplete='false'>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse lg:w-[450px]'>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse md:w-[450px]'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Log in</h1>
               Note: If you belong to an institution, log in using your email and
@@ -245,16 +245,16 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex m-auto gap-3 px-3 justify-between items-center lg:px-0'>
+          <div className='flex m-auto gap-3 px-7 justify-between items-center md:px-0'>
             <button
               type='submit'
               disabled={values.loginPending}
-              className='px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]'
+              className='px-0.5 w-36 md:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]'
             >
               {values.loginPending ? (
                 <LoadingAssetSmall />
               ) : (
-                <p className='py-3 lg:py-[9px]'>Log in</p>
+                <p className='py-3 md:py-[9px]'>Log in</p>
               )}
             </button>
 
@@ -273,7 +273,7 @@ const Login = () => {
 
       {values.signup && (
         <form onSubmit={handleSignup}>
-          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse lg:w-[450px]'>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse md:w-[450px]'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Sign up</h1>
               Please input the necessary information and create an account
@@ -333,16 +333,16 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex m-auto gap-3 px-3 justify-between items-center lg:px-0'>
+          <div className='flex m-auto gap-3 px-7 justify-between items-center md:px-0'>
             <button
               type='submit'
-              className='px-0.5 flex items-center justify-center w-36 lg:px-7 rounded-xl bg-slate-200 text-black my-[20px]'
+              className='px-0.5 flex items-center justify-center w-36 md:px-7 rounded-xl bg-slate-200 text-black my-[20px]'
               disabled={values.signupPending}
             >
               {values.signupPending ? (
                 <LoadingAssetSmall />
               ) : (
-                <p className='py-2 lg:py-[9px]'>Sign up</p>
+                <p className='py-2 md:py-[9px]'>Sign up</p>
               )}
             </button>
 
