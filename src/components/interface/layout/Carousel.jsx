@@ -24,7 +24,6 @@ export const Carousel = ({ nav, presentation, makeLive }) => {
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
-  const handle = useFullScreenHandle();
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,

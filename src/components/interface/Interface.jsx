@@ -8,6 +8,7 @@ import Header from "./layout/Header";
 import { Carousel } from "./layout/Carousel";
 import axios from "axios";
 import { LoadingAssetBig2 } from "../../assets/assets";
+import Spinner from "./layout/assets/spinner/Spinner";
 
 const navItems = [
   {
@@ -103,8 +104,9 @@ function Interface() {
                 makeLive={makeLive}
               />
             ) : (
-              <p className="text-8xl text-center">Presentation not live</p>
-            )}
+              <Spinner/>
+
+)}
           </div>
         ) : (
           <div className="w-full h-[85vh] flex justify-center bg-black items-center">

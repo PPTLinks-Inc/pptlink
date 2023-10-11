@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line react/prop-types
 import { useState } from 'react';
-import shareIcon from '../layout/assets/shareIcon.svg';
 import { toast } from 'react-toastify';
 import { Button } from '@mui/material';
+import Copy from '@mui/icons-material/CopyAll'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
 function Header({ presentation, makeLive }) {
@@ -24,14 +25,10 @@ function Header({ presentation, makeLive }) {
             onClick={() => {
               navigator.clipboard &&
                 navigator.clipboard.writeText(window.location.href);
-              setCopy(true);
               toast.success('Link Copied successfully');
-              setTimeout(() => {
-                setCopy(false);
-              }, 3000);
             }}
           >
-            <span>{window.location.href}</span> <img src={shareIcon} alt='' />
+            <span>{window.location.href}</span> <Copy/>
           </p>
         </div> : (<h1 className="text-3xl text-white text-center flex-1 font-bold ">PPTLink</h1>)}
         {presentation && presentation?.User === "HOST" && (
