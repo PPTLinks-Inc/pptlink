@@ -1,11 +1,13 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-// eslint-disable-next-line react/prop-types
+/* eslint-disable-next-line react/prop-types */
 import { useState } from 'react';
 import shareIcon from '../layout/assets/shareIcon.svg';
 import { toast } from 'react-toastify';
 import { Button } from '@mui/material';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
+// eslint-disable-next-line react/prop-types
 function Header({ presentation, makeLive }) {
   return (
     <>
@@ -24,11 +26,7 @@ function Header({ presentation, makeLive }) {
             onClick={() => {
               navigator.clipboard &&
                 navigator.clipboard.writeText(window.location.href);
-              setCopy(true);
               toast.success('Link Copied successfully');
-              setTimeout(() => {
-                setCopy(false);
-              }, 3000);
             }}
           >
             <span>{window.location.href}</span> <img src={shareIcon} alt='' />
