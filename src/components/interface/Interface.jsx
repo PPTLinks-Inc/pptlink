@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+
 import "./interface.css";
 import { FaHome, FaDownload, FaSync } from "react-icons/fa";
 import { useEffect, useState } from "react";
@@ -14,21 +15,22 @@ import { SERVER_URL } from "../../constants/routes";
 
 const socket = io(SERVER_URL);
 
+
 const navItems = [
   {
-    name: "download",
-    icon: <FaDownload className="text-2xl relative z-10" />,
-    link: "/",
+    name: 'download',
+    icon: <FaDownload className='text-2xl relative z-10' />,
+    link: '/',
   },
   {
-    name: "home",
-    icon: <FaHome className="text-2xl relative z-10" />,
-    link: "/",
+    name: 'home',
+    icon: <FaHome className='text-2xl relative z-10' />,
+    link: '/',
   },
   {
-    name: "sync",
-    icon: <FaSync className="text-2xl relative z-10" />,
-    link: "/",
+    name: 'sync',
+    icon: <FaSync className='text-2xl relative z-10' />,
+    link: '/',
   },
 ];
 let mobileHeader;
@@ -79,8 +81,11 @@ function Interface() {
       });
   }, []);
 
+  const [livePending, setLivePending] = useState(false);
+
   const makeLive = () => {
     if (presentation) {
+      setLivePending(true);
       axios
         .put(`/api/v1/ppt/presentations/make-live/${presentation.id}`, {
           data: !presentation.live,
@@ -93,6 +98,7 @@ function Interface() {
             });
           }
           setPresentation((prev) => ({ ...prev, live: !prev.live }));
+          setLivePending(false);
         })
         .catch((err) => {
           console.log(err);
@@ -109,30 +115,35 @@ function Interface() {
           handleNavBar={handleNavBar}
           presentation={presentation}
           makeLive={makeLive}
+          livePending={livePending}
         />
       )}
       {/* navigation */}
       {/* body */}
       <section
-        className={`main-body ${navbar ? "" : "active"} w-full ${
-          mobileHeader && "px-0"
+        className={`main-body ${navbar ? '' : 'active'} w-full ${
+          mobileHeader && 'px-0'
         }  rounded-2xl relative  transition-all duration-500 bg-white`}
       >
         {presentation ? (
-          <div className=" h-fit min-h-[100%]">
-            {presentation.live || presentation.User === "HOST" ? (
+          <div className=' h-fit min-h-[100%]'>
+            {presentation.live || presentation.User === 'HOST' ? (
               <Carousel
                 nav={{ navbar, setNavbar, navItems }}
                 presentation={presentation}
                 makeLive={makeLive}
+
                 socket={socket}
+
+                livePending={livePending}
+
               />
             ) : (
-              <p className="text-8xl text-center">Presentation not live</p>
+              <p className='text-8xl text-center'>Presentation not live</p>
             )}
           </div>
         ) : (
-          <div className="w-full h-[85vh] flex justify-center bg-black items-center">
+          <div className='w-full h-[85vh] flex justify-center bg-black items-center'>
             <LoadingAssetBig2 />
           </div>
         )}

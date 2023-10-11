@@ -43,31 +43,45 @@ const Home = () => {
       </Helmet>
 
       <img
+        draggable='false'
+        loading='lazy'
         src={Ellipse}
         alt='Ellipse'
         className='hidden z-20 w-6 lg:block  lg:absolute left-4 top-10 lg:left-24 lg:top-56'
       />
 
       <img
+        draggable='false'
+        loading='lazy'
         src={Ellipse}
         alt='Ellipse'
         className='hidden z-20 w-6 lg:block lg:absolute right-10 top-10 lg:right-36 lg:top-16'
       />
 
       <img
+        draggable='false'
+        loading='lazy'
         src={Ellipse}
         alt='Ellipse'
         className=' hidden z-20 w-6 lg:block lg:absolute lg:left-65 bottom-24'
       />
 
       <img
+        draggable='false'
+        loading='lazy'
         src={Ellipse}
         alt='Ellipse'
         className='hidden z-20 w-6 lg:block lg:absolute lg:right-40 lg:bottom-40'
       />
 
       <div className='hidden lg:block flex-1'>
-        <img src={loading} alt='loading' className='w-9/12' />
+        <img
+          draggable='false'
+          loading='lazy'
+          src={loading}
+          alt='loading'
+          className='w-9/12'
+        />
       </div>
 
       <div className='flex-1 pt-7 flex justify-center'>

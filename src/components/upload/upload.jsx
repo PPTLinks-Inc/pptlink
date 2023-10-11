@@ -23,8 +23,8 @@ const Upload = () => {
   const { user, setUser } = useContext(userContext);
 
   useEffect(() => {
-    if (!user) return navigate("/login");
-    
+    if (!user) return navigate('/login');
+
     if (!eventSourse) {
       eventSourse = new EventSource(
         `${SERVER_URL}/api/v1/ppt/presentations/upload-notification/${user.id}`
@@ -375,9 +375,13 @@ const Upload = () => {
 
           <button
             type='submit'
-            className='px-7 rounded-xl py-[9px] bg-slate-200 text-black my-[20px]'
+            className='px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]'
           >
-            {values.pending ? <LoadingAssetSmall /> : 'Submit'}
+            {values.pending ? (
+              <LoadingAssetSmall />
+            ) : (
+              <p className='py-3 lg:py-[9px]'>Submit</p>
+            )}
           </button>
         </form>
       )}
