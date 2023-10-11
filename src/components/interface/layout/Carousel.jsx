@@ -13,18 +13,17 @@ import { ToastContainer } from 'react-toastify';
 import CopyAllRounded from '@mui/icons-material/CopyAllOutlined';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import { Button } from '@mui/material';
+import { LoadingAssetSmall, LoadingAssetSmall2 } from '../../../assets/assets';
 
 let stopFunction = false;
 let navBar = false;
-let timer = 5000;
 
-export const Carousel = ({ nav, presentation, makeLive }) => {
+export const Carousel = ({ nav, presentation, makeLive, livePending }) => {
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
-  const handle = useFullScreenHandle();
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
@@ -151,8 +150,8 @@ export const Carousel = ({ nav, presentation, makeLive }) => {
             <span>{window.location.href}</span> <CopyAllRounded />
           </p>
         )}
-        <div className="carousel__track-container h-full relative">
-          <ul className="h-full w-full flex  ">
+        <div className='carousel__track-container h-full relative'>
+          <ul className='h-full w-full flex  '>
             <SwiperMySlide list={presentation.imageSlides} active={active} />
           </ul>
         </div>
@@ -161,16 +160,24 @@ export const Carousel = ({ nav, presentation, makeLive }) => {
             active ? 'block' : 'hidden'
           }`}
         >
-          {presentation.User === "HOST" && (
+          {presentation.User === 'HOST' && (
             <Button
-              title={presentation.live ? "End live" : "Go live"}
+              title={presentation.live ? 'End live' : 'Go live'}
               onClick={makeLive}
               className={` m-w-32 !text-slate-200 !rounded-xl space-x-2  ${
-                presentation.live ? "!bg-rose-500/20" : " !bg-green-500/20"
+                presentation.live ? '!bg-rose-500/50' : ' !bg-green-500/50'
               }  `}
             >
-              <p>{presentation.live ? "End live" : "Go live"}</p>
-              <RadioButtonCheckedIcon className={`!text-3xl !text-slate-200`} />
+              {livePending ? (
+                <LoadingAssetSmall2 />
+              ) : (
+                <>
+                  <p>{presentation.live ? 'End live' : 'Go live'}</p>
+                  <RadioButtonCheckedIcon
+                    className={`!text-3xl !text-slate-200`}
+                  />
+                </>
+              )}
             </Button>
           )}
         </div>
