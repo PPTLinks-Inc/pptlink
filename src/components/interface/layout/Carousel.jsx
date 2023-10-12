@@ -14,7 +14,7 @@ import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { Button } from "@mui/material";
 import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../../assets/assets";
-import { isMobile, isIOS } from "react-device-detect";
+import { isIOS } from "react-device-detect";
 
 let stopFunction = false;
 let navBar = false;
@@ -91,7 +91,7 @@ export const Carousel = ({
   const debouncedFunctionLead = debounce(
     () => {
       setActive(true);
-      console.log('wait');
+      // console.log('wait');
     },
     200,
     { leading: true, trailing: false }
