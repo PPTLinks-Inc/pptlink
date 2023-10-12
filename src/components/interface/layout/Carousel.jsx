@@ -2,18 +2,19 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 
-import { useState, useRef, useEffect } from 'react';
-import debounce from 'lodash.debounce';
-import SwiperMySlide from './assets/carousel/Swiper';
-import { FaExpand, FaChevronUp } from 'react-icons/fa';
-import animation1 from './assets/images/animation1.gif';
-import animation2 from './assets/images/animation2.gif';
-import { toast } from 'react-toastify';
-import { ToastContainer } from 'react-toastify';
-import CopyAllRounded from '@mui/icons-material/CopyAllOutlined';
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
-import { Button } from '@mui/material';
-import { LoadingAssetSmall2 } from '../../../assets/assets';
+import { useState, useRef, useEffect } from "react";
+import debounce from "lodash.debounce";
+import SwiperMySlide from "./assets/carousel/Swiper";
+import { FaExpand, FaChevronUp } from "react-icons/fa";
+import animation1 from "./assets/images/animation1.gif";
+import animation2 from "./assets/images/animation2.gif";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import { Button } from "@mui/material";
+import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../../assets/assets";
+import { isIOS } from "react-device-detect";
 
 let stopFunction = false;
 let navBar = false;
@@ -52,35 +53,37 @@ export const Carousel = ({
   function toggleFullScreen() {
     const element = userRef.current;
 
-    if (
-      !document.fullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.msFullscreenElement &&
-      !document.webkitCurrentFullScreenElement
-    ) {
-      // None of the elements are in full-screen mode, so enter full-screen
-      if (element.webkitEnterFullScreen) {
-        element.webkitEnterFullScreen();
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      } else if (element.requestFullscreen) {
-        element.requestFullscreen();
-      }
-    } else {
-      // An element is already in full-screen mode, so exit full-screen
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+    if (!isIOS) {
+      if (
+        !document.fullscreenElement &&
+        !document.mozFullScreenElement &&
+        !document.webkitFullscreenElement &&
+        !document.msFullscreenElement &&
+        !document.webkitCurrentFullScreenElement
+      ) {
+        // None of the elements are in full-screen mode, so enter full-screen
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+          element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+          element.msRequestFullscreen();
+        } else if (element.webkitEnterFullScreen) {
+          element.webkitEnterFullScreen();
+        }
+      } else {
+        // An element is already in full-screen mode, so exit full-screen
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
       }
     }
   }
@@ -88,7 +91,7 @@ export const Carousel = ({
   const debouncedFunctionLead = debounce(
     () => {
       setActive(true);
-      console.log('wait');
+      // console.log('wait');
     },
     200,
     { leading: true, trailing: false }
@@ -110,25 +113,26 @@ export const Carousel = ({
       }));
     }
 
-    screen.orientation.addEventListener('change', (event) => {
-      if (event.target.type.includes('landscape') && window.innerWidth < 900) {
-        setSpecialMedia((prev) => ({
-          ...prev,
-          animation1: false,
-          animation2: true,
-        }));
-      } else if (
-        event.target.type.includes('portrait') &&
-        window.innerWidth < 900
-      ) {
-        setSpecialMedia((prev) => ({
-          ...prev,
-          toggled: true,
-          animation1: true,
-        }));
-      }
-    });
-  }, [screen.orientation.type]);
+  
+
+    window
+      .matchMedia("(orientation: landscape)")
+      .addEventListener("change", (e) => {
+        if (e.matches) {
+          setSpecialMedia((prev) => ({
+            ...prev,
+            animation1: false,
+            animation2: true,
+          }));
+        } else if (!e.matches && window.innerWidth < 900) {
+          setSpecialMedia((prev) => ({
+            ...prev,
+            toggled: true,
+            animation1: true,
+          }));
+        }
+      });
+  }, [window.matchMedia("(orientation: landscape)").matches]);
 
   return (
     <>
@@ -172,9 +176,9 @@ export const Carousel = ({
             active ? 'block' : 'hidden'
           }`}
         >
-          {presentation.User === 'HOST' && (
+          {presentation.User === "HOST" && (
             <Button
-              title={presentation.live ? 'End live' : 'Go live'}
+              title={presentation.live ? "End live" : "Go live"}
               onClick={makeLive}
               className={`w-[140px] h-[40px] !text-slate-200 !rounded-xl space-x-2 ${
                 presentation.live ? '!bg-rose-500/50' : ' !bg-green-500/50'
@@ -184,7 +188,7 @@ export const Carousel = ({
                 <LoadingAssetSmall2 />
               ) : (
                 <>
-                  <p>{presentation.live ? 'End live' : 'Go live'}</p>
+                  <p>{presentation.live ? "End live" : "Go live"}</p>
                   <RadioButtonCheckedIcon
                     className={`!text-3xl !text-slate-200`}
                   />

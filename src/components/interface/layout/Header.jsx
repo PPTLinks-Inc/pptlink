@@ -26,7 +26,7 @@ function Header({ presentation, makeLive, livePending }) {
             <p
               className='max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between '
               onClick={() => {
-                navigator.clipboard &&
+                navigator.clipboard && 
                   navigator.clipboard.writeText(window.location.href);
                 toast.success('Link Copied successfully');
               }}

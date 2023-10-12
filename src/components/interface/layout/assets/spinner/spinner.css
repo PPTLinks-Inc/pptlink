@@ -1,21 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Sarpanch&display=swap');
 
 .spinner__container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #001122;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
 }
-
+@layer {
+  .presentation__spinner{
+    @apply  absolute text-slate-200 top-28 font-semibold
+  }
+}
 .svg-frame {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  transform-style: preserve-3d;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: relative;
+    width: 300px;
+    height: 300px;
+    transform-style: preserve-3d;
+    display: flex;
+    justify-content: center;
+    align-items: center;   
 }
 
 .svg-frame svg {
@@ -89,4 +93,17 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+@media(max-width:750px){
+    .svg-frame {
+        width: 200px;
+        aspect-ratio: 1;
+        pointer-events: none;
+    }
+    .svg-frame svg {
+        transform: scale(0.7,0.7);
+        pointer-events: initial;
+
+    }
 }
