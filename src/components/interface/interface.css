@@ -10,9 +10,8 @@
   
 } */
 
-
 .nav-item li:hover .nav-side::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -50px;
   right: 0px;
@@ -26,7 +25,7 @@
 }
 
 .nav-item li:hover .nav-side::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -50px;
   right: 0px;
@@ -49,19 +48,17 @@
   left: 80px;
 } */
 
-
-@media (max-width:765px){
-    .main-body {
-        width: 100%;
-        left: 0px;
-    }
-    .active .nav-item li:hover .nav-side::after {
-        box-shadow: 35px -35px 0 10px white;
-      }
-      .active .nav-item li:hover .nav-side::before {
-        box-shadow: 35px 35px 0 10px white;
-      }
- 
+@media (max-width: 765px) {
+  .main-body {
+    width: 100%;
+    left: 0px;
+  }
+  .active .nav-item li:hover .nav-side::after {
+    box-shadow: 35px -35px 0 10px white;
+  }
+  .active .nav-item li:hover .nav-side::before {
+    box-shadow: 35px 35px 0 10px white;
+  }
 }
 
 /* Landscape styles for mobile devices */
@@ -77,5 +74,3 @@
       left: 0;
   }
 } */
-
-
