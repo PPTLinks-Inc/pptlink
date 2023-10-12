@@ -6,7 +6,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #001122;
+    background: #000000;
 }
 
 .svg-frame {
@@ -16,7 +16,7 @@
     transform-style: preserve-3d;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;   
 }
 
 .svg-frame svg {
@@ -91,10 +91,15 @@
     }
 }
 
-p {
-    position: absolute;
-    color: #00ffff40;
-    top: -80px;
-    font-family: 'Sarpanch', sans-serif;
-	font-size: 1.2rem;
+@media(max-width:750px){
+    .svg-frame {
+        width: 200px;
+        aspect-ratio: 1;
+        pointer-events: none;
+    }
+    .svg-frame svg {
+        transform: scale(0.7,0.7);
+        pointer-events: initial;
+
+    }
 }
