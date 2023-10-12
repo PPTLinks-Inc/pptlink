@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { Helmet } from 'react-helmet';
