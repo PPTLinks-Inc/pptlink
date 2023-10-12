@@ -142,7 +142,7 @@ export const Carousel = ({ nav, presentation, makeLive, socket,livePending }) =>
           debouncedFunctionLead(), debouncedFunctionTrail();
         }}
       >
-        {active && (
+        {presentation.User === "HOST" && active && (
           <p
             className="max-w-full bg-[white]/10 backdrop-blur-md text-[white]/50 absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between "
             onClick={() => {
@@ -158,7 +158,6 @@ export const Carousel = ({ nav, presentation, makeLive, socket,livePending }) =>
         <div className="carousel__track-container h-full relative">
           <ul className="h-full w-full flex  ">
             <SwiperMySlide
-              list={presentation.imageSlides}
               active={active}
               socket={socket}
               presentation={presentation}

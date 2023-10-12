@@ -1,30 +1,22 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useRef } from "react";
-import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
+import { useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { Navigation, Scrollbar, A11y, Keyboard, Zoom } from "swiper/modules";
+import { Navigation, A11y, Keyboard, Zoom } from "swiper/modules";
 
 import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
 
-// function SwiperControl({ socket, presentation }) {
-//   const swiper = useSwiper();
-//   useEffect(() => {
-//     if (socket.connected && presentation.User !== "HOST") {
-//       socket.on("change-slide", (currentSlide) => {
-//         console.log(swiper);
-//         console.log(currentSlide);
-//         swiper.slideTo(currentSlide, 1500, true);
-//       });
-//     }
-//   }, []);
+let maxNext = 0;
+let myCurrent = 0;
 
-//   return <></>;
-// }
-
-function SwiperMySlide({ list, active, socket, presentation }) {
+function SwiperMySlide({ active, socket, presentation }) {
   const swiperRef = useRef();
+  const [goNext, setGoNext] = useState(false);
+  const [sync, setSync] = useState(true);
+  const [hostBack, setHostBack] = useState(false);
+
   let onEnter;
   if (window.innerWidth < 900) {
     onEnter = false;
@@ -33,28 +25,67 @@ function SwiperMySlide({ list, active, socket, presentation }) {
   }
 
   const slideChange = (slide) => {
-    console.log(presentation.User);
+    console.log(slide);
     if (socket.connected && presentation.User === "HOST") {
       socket.emit("change-slide", {
         liveId: presentation.liveId,
         currentSlide: slide.activeIndex,
+        previousSlide: slide.previousIndex,
       });
+    } else {
+      myCurrent = slide.activeIndex;
+      if (slide.activeIndex < maxNext) {
+        if (!hostBack) {
+          setSync(false);
+          setGoNext(true);
+          return;
+        }
+        setHostBack(false);
+      }
+      if (slide.activeIndex === maxNext) {
+        setGoNext(false);
+        setSync(true);
+      }
     }
   };
 
   useEffect(() => {
-    if (socket.connected && presentation.User !== "HOST") {
-      socket.on("change-slide", (currentSlide) => {
-        console.log(swiperRef.current);
-        console.log(currentSlide);
-        swiperRef.current.slideTo(currentSlide, 1000, true);
-      });
+    if (presentation.User !== "HOST") {
+      if (sync) {
+        swiperRef.current.slideTo(myCurrent, 1000, true);
+        setGoNext(false);
+      }
+    }
+  }, [goNext]);
+
+  useEffect(() => {
+    if (presentation.User === "HOST") {
+      setGoNext(true);
+    } else {
+      if (socket.connected) {
+        socket.on("change-slide", (data) => {
+          if (data.current > maxNext) {
+            console.log(data.current, maxNext);
+            maxNext = data.current;
+            setHostBack(false);
+          }
+          else if (sync) {
+            setHostBack(true);
+            setGoNext(true);
+          }
+          if (sync) {
+            myCurrent = data.current;
+            console.log("next", maxNext);
+            setGoNext(true);
+          }
+        });
+      }
     }
   }, []);
 
   return (
     <Swiper
-      modules={[Navigation, Scrollbar, A11y, Keyboard, Zoom]}
+      modules={[Navigation, A11y, Keyboard, Zoom]}
       spaceBetween={50}
       slidesPerView={1}
       zoom={true}
@@ -62,13 +93,14 @@ function SwiperMySlide({ list, active, socket, presentation }) {
       keyboard={{ enabled: true }}
       scrollbar={{ draggable: true }}
       onSlideChange={slideChange}
+      allowSlideNext={goNext}
       onSwiper={(swiper) => {
         swiperRef.current = swiper;
       }}
       className={active ? "enabledBtn " : ""}
     >
       {/* <SwiperControl socket={socket} presentation={presentation} /> */}
-      {list.map((slide) => {
+      {presentation.imageSlides.map((slide) => {
         return (
           <SwiperSlide key={slide.id}>
             <img

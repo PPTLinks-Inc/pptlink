@@ -90,11 +90,3 @@
         transform: rotate(360deg);
     }
 }
-
-p {
-    position: absolute;
-    color: #00ffff40;
-    top: -80px;
-    font-family: 'Sarpanch', sans-serif;
-	font-size: 1.2rem;
-}
