@@ -9,13 +9,11 @@ import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
 
 let maxNext = 0;
-let myCurrent = 0;
+let auto = false;
+let sync = true;
 
 function SwiperMySlide({ active, socket, presentation }) {
   const swiperRef = useRef();
-  const [goNext, setGoNext] = useState(false);
-  const [sync, setSync] = useState(true);
-  const [hostBack, setHostBack] = useState(false);
 
   let onEnter;
   if (window.innerWidth < 900) {
@@ -25,61 +23,47 @@ function SwiperMySlide({ active, socket, presentation }) {
   }
 
   const slideChange = (slide) => {
-    console.log(slide);
     if (socket.connected && presentation.User === "HOST") {
       socket.emit("change-slide", {
         liveId: presentation.liveId,
         currentSlide: slide.activeIndex,
         previousSlide: slide.previousIndex,
       });
-    } else {
-      myCurrent = slide.activeIndex;
-      if (slide.activeIndex < maxNext) {
-        if (!hostBack) {
-          setSync(false);
-          setGoNext(true);
-          return;
-        }
-        setHostBack(false);
-      }
+    }
+    else {
       if (slide.activeIndex === maxNext) {
-        setGoNext(false);
-        setSync(true);
+        swiperRef.current.allowSlideNext = false;
+        sync = true;
+        return;
+      }
+      
+      if (!auto) {
+        sync = false;
+        swiperRef.current.allowSlideNext = true;
       }
     }
   };
 
   useEffect(() => {
-    if (presentation.User !== "HOST") {
-      if (sync) {
-        swiperRef.current.slideTo(myCurrent, 1000, true);
-        setGoNext(false);
-      }
-    }
-  }, [goNext]);
-
-  useEffect(() => {
-    if (presentation.User === "HOST") {
-      setGoNext(true);
-    } else {
-      if (socket.connected) {
-        socket.on("change-slide", (data) => {
-          if (data.current > maxNext) {
-            console.log(data.current, maxNext);
-            maxNext = data.current;
-            setHostBack(false);
-          }
-          else if (sync) {
-            setHostBack(true);
-            setGoNext(true);
-          }
+    if (socket.connected && presentation.User !== "HOST") {
+      socket.on("change-slide", (data) => {
+        if (data.current > maxNext) {
+          maxNext = data.current;
+          auto = true;
+          swiperRef.current.allowSlideNext = true;
           if (sync) {
-            myCurrent = data.current;
-            console.log("next", maxNext);
-            setGoNext(true);
+            swiperRef.current.slideTo(data.current, 1000, true);
+            swiperRef.current.allowSlideNext = false;
           }
-        });
-      }
+          auto = false;
+          return;
+        }
+
+        if (data.previous === swiperRef.current.activeIndex) {
+          swiperRef.current.allowSlideNext = true;
+          swiperRef.current.slideTo(data.current, 1000, true);
+        }
+      });
     }
   }, []);
 
@@ -93,13 +77,11 @@ function SwiperMySlide({ active, socket, presentation }) {
       keyboard={{ enabled: true }}
       scrollbar={{ draggable: true }}
       onSlideChange={slideChange}
-      allowSlideNext={goNext}
       onSwiper={(swiper) => {
         swiperRef.current = swiper;
       }}
       className={active ? "enabledBtn " : ""}
     >
-      {/* <SwiperControl socket={socket} presentation={presentation} /> */}
       {presentation.imageSlides.map((slide) => {
         return (
           <SwiperSlide key={slide.id}>
