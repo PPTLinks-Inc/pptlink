@@ -4,11 +4,11 @@ export const BASE_URL =
 
 
 // export const SERVER_URL = "http://192.168.43.79:4000";
-export const SERVER_URL = "http://192.168.0.102:4000";
+// export const SERVER_URL = "http://192.168.0.102:4000";
 
 // https://pptlink-node-backend.onrender.com/
 
-// export const SERVER_URL = 'https://pptlink-node-backend.onrender.com';
+export const SERVER_URL = 'https://pptlink-node-backend.onrender.com';
 
 
 export const HOME = '/';
