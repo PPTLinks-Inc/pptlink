@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 
 import "./interface.css";
@@ -29,11 +30,7 @@ const navItems = [
     icon: <FaHome className="text-2xl relative z-10" />,
     link: "/",
   },
-  {
-    name: "sync",
-    icon: <FaSync className="text-2xl relative z-10" />,
-    link: "/",
-  },
+ 
 ];
 let mobileHeader;
 
