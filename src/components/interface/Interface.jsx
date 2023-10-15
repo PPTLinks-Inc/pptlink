@@ -9,7 +9,6 @@ import Header from "./layout/Header";
 import { Carousel } from "./layout/Carousel";
 import axios from "axios";
 import io from "socket.io-client";
-import { useSwiper } from "swiper/react";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import { isIOS } from "react-device-detect";
 
@@ -40,6 +39,9 @@ if (window.innerWidth < 900) {
   mobileHeader = true;
 }
 
+let requestCurrentIndex = true;
+let socketId = null;
+
 function Interface() {
   const controller = new AbortController();
   const [navbar, setNavbar] = useState(false);
@@ -47,7 +49,6 @@ function Interface() {
   const [presentation, setPresentation] = useState(null);
 
   const params = useParams();
-  const swiper = useSwiper();
 
   const handleNavBar = (item) => {
     setNavbar(item);
@@ -55,15 +56,26 @@ function Interface() {
 
   useEffect(() => {
     console.log(socket.connected);
-    socket.on("connect", () => {
-      socket.emit("join-presentation", params.id);
 
-      socket.on("client-live", (live) => {
-        console.log(presentation);
-        setPresentation((prev) => ({ ...prev, live }));
-      });
+    socket.on("client-live", (live) => {
+      requestCurrentIndex = false;
+      setPresentation((prev) => ({ ...prev, live }));
+    });
+
+    socket.on("socketId", (id) => {
+      socketId = id;
     });
   }, []);
+
+  useEffect(() => {
+    if (socket.connected && presentation) {
+      socket.emit("join-presentation", {
+        liveId: params.id,
+        user: presentation.User,
+        socketId
+      });
+    }
+  }, [presentation]);
 
   useEffect(() => {
     axios
@@ -73,7 +85,6 @@ function Interface() {
       .then(({ data }) => {
         controller.abort();
         setPresentation(data.presentation);
-        console.log(data.presentation);
       })
       .catch((err) => {
         console.log(err);
@@ -133,6 +144,8 @@ function Interface() {
                 makeLive={makeLive}
                 socket={socket}
                 livePending={livePending}
+                requestIndex={requestCurrentIndex}
+                socketId={socketId}
               />
             ) : !isIOS ? (
               <Spinner />
