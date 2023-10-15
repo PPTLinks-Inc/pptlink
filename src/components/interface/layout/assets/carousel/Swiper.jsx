@@ -9,10 +9,11 @@ import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
 
 let maxNext = 0;
+let hostSlideIndex = 0;
 let auto = false;
 let sync = true;
 
-function SwiperMySlide({ active, socket, presentation }) {
+function SwiperMySlide({ active, socket, presentation, requestIndex, socketId }) {
   const swiperRef = useRef();
 
   let onEnter;
@@ -36,6 +37,10 @@ function SwiperMySlide({ active, socket, presentation }) {
         sync = true;
         return;
       }
+
+      if (slide.activeIndex === hostSlideIndex) {
+        sync = true;
+      }
       
       if (!auto) {
         sync = false;
@@ -45,8 +50,34 @@ function SwiperMySlide({ active, socket, presentation }) {
   };
 
   useEffect(() => {
-    if (socket.connected && presentation.User !== "HOST") {
+    if (socket.connected && presentation.User === "HOST") {
+      socket.on("request-slide", (guestSocketId) => {
+        socket.emit("send-request-slide", {
+          guestSocketId,
+          currentSlide: swiperRef.current.activeIndex
+        });
+      });
+    }
+    else if (socket.connected && presentation.User !== "HOST") {
+      if (requestIndex) {
+        socket.emit("request-slide", {
+          hostSocketId: presentation.hostSocketId,
+          guestSocketId: socketId
+        });
+
+        socket.on("receive-request-id", (currentSlide) => {
+          maxNext = currentSlide;
+          auto = true;
+          swiperRef.current.allowSlideNext = true;
+          if (sync) {
+            swiperRef.current.slideTo(currentSlide, 1000, true);
+            swiperRef.current.allowSlideNext = false;
+          }
+          auto = false;
+        });
+      }
       socket.on("change-slide", (data) => {
+        hostSlideIndex = data.current;
         if (data.current > maxNext) {
           maxNext = data.current;
           auto = true;
@@ -79,6 +110,10 @@ function SwiperMySlide({ active, socket, presentation }) {
       onSlideChange={slideChange}
       onSwiper={(swiper) => {
         swiperRef.current = swiper;
+        if (presentation.User !== "HOST")
+          swiperRef.current.allowSlideNext = false;
+        else
+          hostSlideIndex = swiper.activeIndex;
       }}
       className={active ? "enabledBtn " : ""}
     >

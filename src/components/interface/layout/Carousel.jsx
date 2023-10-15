@@ -25,6 +25,8 @@ export const Carousel = ({
   makeLive,
   socket,
   livePending,
+  requestIndex,
+  socketId
 }) => {
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
@@ -167,6 +169,8 @@ export const Carousel = ({
               active={active}
               socket={socket}
               presentation={presentation}
+              requestIndex={requestIndex}
+              socketId={socketId}
             />
           </ul>
         </div>
