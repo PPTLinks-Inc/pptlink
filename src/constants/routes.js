@@ -2,14 +2,12 @@
 export const BASE_URL =
   process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
 
-
 // export const SERVER_URL = "http://10.42.0.1:4000";
 // export const SERVER_URL = "http://192.168.0.102:4000";
 
 // https://pptlink-node-backend.onrender.com/
 
 export const SERVER_URL = 'https://pptlink-node-backend.onrender.com';
-
 
 export const HOME = '/';
 
