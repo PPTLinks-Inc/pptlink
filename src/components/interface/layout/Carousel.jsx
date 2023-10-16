@@ -1,34 +1,40 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import debounce from "lodash.debounce";
 import SwiperMySlide from "./assets/carousel/Swiper";
-import { FaExpand, FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
 import animation1 from "./assets/images/animation1.gif";
 import animation2 from "./assets/images/animation2.gif";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import shareIcon from "../layout/assets/shareIcon.svg";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
-
 import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import { Button, IconButton } from "@mui/material";
+import { Button } from "@mui/material";
+import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../../assets/assets";
+import { isIOS } from "react-device-detect";
 
 let stopFunction = false;
 let navBar = false;
 
-export const Carousel = ({ nav, slides }) => {
+export const Carousel = ({
+  nav,
+  presentation,
+  makeLive,
+  socket,
+  livePending,
+  requestIndex,
+  socketId
+}) => {
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
-  const handle = useFullScreenHandle();
-  const [copy, setCopy] = useState(false);
-  const [isLive, setIsLive] = useState(true);
+  const [syncButton, setSyncButton] = useState(false);
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
@@ -36,12 +42,7 @@ export const Carousel = ({ nav, slides }) => {
     animation2: false,
   });
 
-  // const imageUrls = [
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923280/ppt/6515b6cac871bd812e932f38/Best/images/slide_3_leeqln.jpg",
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923277/ppt/6515b6cac871bd812e932f38/Best/images/slide_2_avpukc.jpg",
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923274/ppt/6515b6cac871bd812e932f38/Best/images/slide_1_m2meqk.jpg",
-  //   "https://res.cloudinary.com/drll74ba7/image/upload/v1695923270/ppt/6515b6cac871bd812e932f38/Best/images/slide_0_dwrjkr.jpg",
-  // ];
+  const list = ["", "", "", ""];
 
   const removeSpecialMedia = async () => {
     if (specialMedia.toggled === true) {
@@ -58,35 +59,37 @@ export const Carousel = ({ nav, slides }) => {
   function toggleFullScreen() {
     const element = userRef.current;
 
-    if (
-      !document.fullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.msFullscreenElement &&
-      !document.webkitCurrentFullScreenElement
-    ) {
-      // None of the elements are in full-screen mode, so enter full-screen
-      if (element.webkitEnterFullScreen) {
-        element.webkitEnterFullScreen();
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      } else if (element.requestFullscreen) {
-        element.requestFullscreen();
-      }
-    } else {
-      // An element is already in full-screen mode, so exit full-screen
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+    if (!isIOS) {
+      if (
+        !document.fullscreenElement &&
+        !document.mozFullScreenElement &&
+        !document.webkitFullscreenElement &&
+        !document.msFullscreenElement &&
+        !document.webkitCurrentFullScreenElement
+      ) {
+        // None of the elements are in full-screen mode, so enter full-screen
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+          element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+          element.msRequestFullscreen();
+        } else if (element.webkitEnterFullScreen) {
+          element.webkitEnterFullScreen();
+        }
+      } else {
+        // An element is already in full-screen mode, so exit full-screen
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
       }
     }
   }
@@ -94,20 +97,17 @@ export const Carousel = ({ nav, slides }) => {
   const debouncedFunctionLead = debounce(
     () => {
       setActive(true);
+      // console.log('wait');
     },
-    timer,
+    4000,
     { leading: true, trailing: false }
   );
 
-  const debouncedFunctionTrail = debounce(
-    () => {
-      if (stopFunction) return;
+  const debouncedFunctionTrail = debounce(() => {
+    if (stopFunction) return;
 
-      setActive(false);
-    },
-    timer,
-    { leading: false, trailing: true }
-  );
+    setActive(false);
+  }, timer);
 
   // check if window is mobile view
   useEffect(() => {
@@ -119,25 +119,27 @@ export const Carousel = ({ nav, slides }) => {
       }));
     }
 
-    screen.orientation.addEventListener("change", (event) => {
-      if (event.target.type.includes("landscape") && window.innerWidth < 900) {
-        setSpecialMedia((prev) => ({
-          ...prev,
-          animation1: false,
-          animation2: true,
-        }));
-      } else if (
-        event.target.type.includes("portrait") &&
-        window.innerWidth < 900
-      ) {
-        setSpecialMedia((prev) => ({
-          ...prev,
-          toggled: true,
-          animation1: true,
-        }));
-      }
-    });
-  }, [screen.orientation.type]);
+    window
+      .matchMedia("(orientation: landscape)")
+      .addEventListener("change", (e) => {
+        if (e.matches) {
+          setSpecialMedia((prev) => ({
+            ...prev,
+            animation1: false,
+            animation2: true,
+          }));
+        } else if (!e.matches && window.innerWidth < 900) {
+          setSpecialMedia((prev) => ({
+            ...prev,
+            toggled: true,
+            animation1: true,
+          }));
+        }
+      });
+  }, [window.matchMedia("(orientation: landscape)").matches]);
+const syncFunction = () => {
+  
+}
 
   return (
     <>
@@ -147,31 +149,34 @@ export const Carousel = ({ nav, slides }) => {
         }`}
         ref={userRef}
         onMouseMove={() => {
-          debouncedFunctionTrail(), debouncedFunctionLead();
+          debouncedFunctionLead(), debouncedFunctionTrail();
         }}
         onClick={() => {
-          debouncedFunctionTrail(), debouncedFunctionLead();
+          debouncedFunctionLead(), debouncedFunctionTrail();
         }}
       >
-        {active && (
+        {presentation.User === "HOST" && active && (
           <p
             className="max-w-full bg-[white]/10 backdrop-blur-md text-[white]/50 absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between "
             onClick={() => {
               navigator.clipboard &&
                 navigator.clipboard.writeText(window.location.href);
-              setCopy(true);
               toast.success("Link Copied successfully");
-              setTimeout(() => {
-                setCopy(false);
-              }, 3000);
             }}
           >
             <span>{window.location.href}</span> <CopyAllRounded />
           </p>
         )}
+
         <div className="carousel__track-container h-full relative">
           <ul className="h-full w-full flex  ">
-            <SwiperMySlide list={slides} active={active} />
+            <SwiperMySlide
+              active={active}
+              socket={socket}
+              presentation={presentation}
+              requestIndex={requestIndex}
+              socketId={socketId}
+            />
           </ul>
         </div>
         <div
@@ -179,17 +184,28 @@ export const Carousel = ({ nav, slides }) => {
             active ? "block" : "hidden"
           }`}
         >
-          <Button
-            title={isLive ? "End live" : "Go live"}
-            onClick={() => setIsLive((prev) => !prev)}
-            className={` w-32 !text-slate-200 !rounded-xl space-x-2  ${
-              isLive ? "!bg-rose-500/20" : " !bg-green-500/20"
-            }  `}
-          >
-            <p>{isLive ? "End live" : "Go live"}</p>
-            <RadioButtonCheckedIcon className={`!text-3xl !text-slate-200`} />
-          </Button>
+          {presentation.User === "HOST" && (
+            <Button
+              title={presentation.live ? "End live" : "Go live"}
+              onClick={makeLive}
+              className={`w-[140px] h-[40px] !text-slate-200 !rounded-xl space-x-2 ${
+                presentation.live ? "!bg-rose-500/50" : " !bg-green-500/50"
+              }`}
+            >
+              {livePending ? (
+                <LoadingAssetSmall2 />
+              ) : (
+                <>
+                  <p>{presentation.live ? "End live" : "Go live"}</p>
+                  <RadioButtonCheckedIcon
+                    className={`!text-3xl !text-slate-200`}
+                  />
+                </>
+              )}
+            </Button>
+          )}
         </div>
+
         <nav
           className={`h-16 w-16 rounded-full bottom-12 right-12  z-30 fixed transition-all duration-500 ${
             navbar ? "" : "active"
@@ -210,7 +226,7 @@ export const Carousel = ({ nav, slides }) => {
               title="Toggle fullscreen"
               aria-label="Toggle fullscreen"
               type="button"
-              className={`absolute -left-14 z-50 rounded-full bg-black p-2 bottom-2
+              className={`absolute -left-14 z-50 rounded-full bg-black p-2 bottom-2 hover:bg-slate-400
             ${active ? "block" : "hidden"}
           `}
             >
@@ -220,12 +236,56 @@ export const Carousel = ({ nav, slides }) => {
                 className="text-slate-200"
               />
             </button>
+            
+         
+         {/* sync button for viewers */}
+
+          {presentation.User === "USER" || syncButton && (
+<>
+<button
+              onClick={() => {}}
+              title={!syncButton ? "" : "Sync"}
+              className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
+                syncButton ? "bg-black" : "bg-slate-400 "
+              } z-50`}
+            >
+              <FaSync size="28px" className="text-slate-200" />
+           
+            </button>
+<div
+style={{
+  animationDelay: "-1s",
+}}
+className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+></div>
+<div
+style={{
+  animationDelay: "-2s",
+}}
+className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+></div>
+<div
+style={{
+  animationDelay: "-3s",
+}}
+className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+></div>
+</>
+
+          ) }
+            {/* <div
+              style={{
+                transitionDelay: "0s",
+              }}
+              className="pulsing__animation aspect-square absolute bg-blue w-11 h-11  rounded-full -left-28 bottom-2  "
+            ></div> */}
 
             <button
               onClick={() => {
+                stopFunction = !stopFunction;
                 setNavbar((prev) => !prev);
                 navBar = !navBar;
-                stopFunction = !stopFunction;
+                console.log(stopFunction);
               }}
               className={`text-slate-200 text-2xl rounded-full border active:scale-75 duration-200 border-white bg-black flex items-center z-20 justify-center w-full h-full active:bg-slate-200 transition-all select-none ${
                 navBar ? "rotate-180" : "rotate-0"

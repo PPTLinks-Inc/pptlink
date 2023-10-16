@@ -93,7 +93,6 @@ const List = () => {
   }, [values]);
 
   function SpacesWithUnderscores(inputString) {
-    // Use the replace method with a regular expression to replace all spaces with underscores
     var resultString = inputString.replace(/\s+/g, '_');
     return resultString;
   }
@@ -183,7 +182,7 @@ const List = () => {
                 {values.institutions.map((_, i) => (
                   <Link
                     key={i}
-                    to=''
+                    to={`/institutions/${SpacesWithUnderscores(_.name)}`}
                     className='border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]'
                   >
                     {_.name}

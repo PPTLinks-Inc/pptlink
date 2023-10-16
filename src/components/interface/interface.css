@@ -64,18 +64,20 @@
  
 }
 
-/* Landscape styles for mobile devices */
-/* @media screen and (max-width: 768px) {
-  carousel {
-      transform: rotate(-90deg);
-      transform-origin: left top;
-      width: 100vh;
-      height: 100vw;
-      overflow-x: hidden;
-      position: absolute;
-      top: 100%;
-      left: 0;
+.pulsing__animation{
+  animation:  animate1 4s infinite linear;
+  
+ 
+}
+@keyframes animate1{
+  0%{
+    transform: scale(1);
+    @apply opacity-50
   }
-} */
-
+ 
+  100%{
+    transform: scale(2);
+    @apply opacity-0
+  }
+}
 

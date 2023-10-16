@@ -1,29 +1,29 @@
 /* eslint-disable no-undef */
 export const BASE_URL =
-  process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
+  process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
 
-// export const SERVER_URL = "http://10.42.0.1:4000";
+
 // export const SERVER_URL = "http://192.168.0.102:4000";
-export const SERVER_URL = "http://localhost:4000";
+
 // https://pptlink-node-backend.onrender.com/
 
-// export const SERVER_URL =
-//   process.env.NODE_ENV === 'development' ? 'http://10.42.0.1:4000' : '';
+export const SERVER_URL = 'https://pptlink-node-backend.onrender.com';
 
-export const HOME = "/";
 
-export const INSTITUTIONS = "/institutions";
+export const HOME = '/';
 
-export const INSTITUTIONS_ID = "/institutions/:id";
+export const INSTITUTIONS = '/institutions';
 
-export const ABOUT = "/about";
+export const INSTITUTIONS_ID = '/institutions/:id';
 
-export const DASHBOARD = "/dashboard";
+export const ABOUT = '/about';
 
-export const LEGAL = "/legal";
+export const DASHBOARD = '/dashboard';
 
-export const UPLOAD = "/upload";
+export const LEGAL = '/legal';
 
-export const SIGNUP = "/signup";
+export const UPLOAD = '/upload';
 
-export const LOGIN = "/login";
+export const SIGNUP = '/signup';
+
+export const LOGIN = '/login';

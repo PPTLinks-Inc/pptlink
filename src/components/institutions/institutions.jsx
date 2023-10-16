@@ -2,14 +2,13 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
 import { useReducer } from 'react';
 
-// let pageNo = 1;
 let isFetching = false;
 let observer;
 
@@ -195,7 +194,7 @@ const Institutions = () => {
               </div>
             ) : (
               <>
-                <div className='w-full h-fit flex justify-start flex-wrap gap-x-5 gap-y-[60px]'>
+                <div className='w-full h-fit flex justify-items-start flex-wrap gap-x-5 gap-y-[60px]'>
                   {values.presentations.length < 1 ? (
                     <div className='w-full h-[25vh] flex justify-center items-center'>
                       <LoadingAssetBig2 />
@@ -203,22 +202,26 @@ const Institutions = () => {
                   ) : (
                     values.presentations.map((_, i) => (
                       <div key={i} className='w-[300px] cursor-pointer'>
-                        <img
-                          src={_.thumbnail}
-                          alt='presentation image'
-                          className='rounded-xl w-full h-[190px]'
-                          draggable='false'
-                          loading='lazy'
-                        />
+                        <Link to={`/${_.liveId}`}>
+                          <img
+                            src={_.thumbnail}
+                            alt='presentation image'
+                            className='rounded-xl w-full h-[190px]'
+                            draggable='false'
+                            loading='lazy'
+                          />
 
-                        <p className='font-bold leading-10 treading-6'>
-                          {_.name}
-                        </p>
+                          <p className='font-bold leading-10 treading-6'>
+                            {_.name}
+                          </p>
 
-                        <span className='w-[40%] flex justify-between'>
-                          <small>{new Date(_.createdAt).toDateString()}</small>
-                          <small>{_.linkType}</small>
-                        </span>
+                          <span className='w-[40%] flex justify-between flex-col'>
+                            <small>
+                              {new Date(_.createdAt).toDateString()}
+                            </small>
+                            <small>{_.linkType}</small>
+                          </span>
+                        </Link>
                       </div>
                     ))
                   )}
