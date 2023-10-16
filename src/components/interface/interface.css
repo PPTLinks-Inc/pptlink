@@ -62,8 +62,7 @@
 }
 
 .pulsing__animation {
-  animation: animate1 2s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
-  z-index: 50;
+  animation: animate1 4s infinite linear;
 }
 @keyframes animate1 {
   0% {
