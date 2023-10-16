@@ -236,35 +236,37 @@ const syncFunction = () => {
                 className="text-slate-200"
               />
             </button>
-            <button
+            
+         
+         {/* sync button for viewers */}
+
+          {presentation.User === "USER" || syncButton && (
+<>
+<button
               onClick={() => {}}
               title={!syncButton ? "" : "Sync"}
               className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
-                syncButton ? "bg-black" : "bg-slate-400 animate-pulse"
+                syncButton ? "bg-black" : "bg-slate-400 "
               } z-50`}
             >
               <FaSync size="28px" className="text-slate-200" />
            
             </button>
-         
-
-          {presentation.User === "USER" && syncButton && (
-<>
 <div
 style={{
-  transitionDelay: "-1s",
+  animationDelay: "-1s",
 }}
 className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
 ></div>
 <div
 style={{
-  transitionDelay: "-2s",
+  animationDelay: "-2s",
 }}
 className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
 ></div>
 <div
 style={{
-  transitionDelay: "-3s",
+  animationDelay: "-3s",
 }}
 className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
 ></div>
