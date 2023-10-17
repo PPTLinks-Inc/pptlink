@@ -166,7 +166,7 @@ export default function Root() {
             <div className='h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]'>
               <div>
                 <p className='text-xl tracking-widest font-bold cursor-pointer'>
-                  <Link to='/'>PPTLink.</Link>
+                  <Link to='/'>PPTLinks.</Link>
                 </p>
               </div>
 
@@ -255,7 +255,7 @@ export default function Root() {
               <div className='h-[10rem] px-[1.5rem] flex justify-between items-center'>
                 <div>
                   <p className='text-xl tracking-widest font-bold cursor-pointer '>
-                    <Link to='/'>PPTLink.</Link>
+                    <Link to='/'>PPTLinks.</Link>
                   </p>
                 </div>
 
@@ -399,12 +399,12 @@ export default function Root() {
             <div className='grow-[.3] px-[1.5rem] py-16 w-[100%] border-t border-slate-950 flex flex-row justify-between items-center'>
               <div>
                 <p className='text-xl tracking-widest font-bold cursor-pointer'>
-                  <Link to='/'>PPTLink.</Link>
+                  <Link to='/'>PPTLinks.</Link>
                 </p>
               </div>
 
               <small>
-                &copy; PPTLink {new Date().getFullYear()}. All rights reserved
+                &copy; PPTLinks {new Date().getFullYear()}. All rights reserved
               </small>
             </div>
           </footer>
