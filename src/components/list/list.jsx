@@ -98,7 +98,7 @@ const List = () => {
   }
 
   return (
-    <section className='min-h-full w-full flex px-[5rem] md:px-[25%]'>
+    <section className='min-h-full w-full flex px-[3rem] md:px-[25%]'>
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Institutions - PPTLink `}</title>
