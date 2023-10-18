@@ -28,8 +28,7 @@ const navItems = [
     name: "home",
     icon: <FaHome className="text-2xl relative z-10" />,
     link: "/",
-  },
- 
+  }
 ];
 let mobileHeader;
 

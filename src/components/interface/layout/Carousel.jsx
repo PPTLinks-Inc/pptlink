@@ -139,9 +139,6 @@ export const Carousel = ({
         }
       });
   }, [window.matchMedia("(orientation: landscape)").matches]);
-  const syncFunction = (item) => {
-    setSyncButton(item);
-  };
 
   return (
     <>
@@ -246,7 +243,7 @@ export const Carousel = ({
             {presentation.User !== "HOST" && !syncButton && (
               <>
                 <button
-                  onClick={() => swiperRef.current.syncSlide()}
+                  onClick={() => swiperRef.current?.syncSlide()}
                   title={syncButton ? "" : "Sync"}
                   className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
                     syncButton ? "bg-black" : "bg-slate-400 "
@@ -310,8 +307,9 @@ export const Carousel = ({
                 }}
               >
                 <a
-                  href={link}
+                  href={name === "download" ? presentation.pptLink : link}
                   className="w-full relative h-full flex items-center  justify-center flex-row-reverse"
+                  download={presentation.name}
                 >
                   <span className="">{icon}</span>
                   <span
