@@ -124,23 +124,23 @@ const Dashboard = () => {
     <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around">
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`Dashboard - PPTLink `}</title>
+        <title>{`Dashboard - PPTLinks `}</title>
         <meta
           name="description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
           name="tags"
-          content={`PPT, Presentations, Powerpoint, PPTLink, Dashboard`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks, Dashboard`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.PPTLink.com/dashboard`} />
-        <meta property="og:title" content={`Dashboard - PPTLink `} />
+        <meta property="og:title" content={`Dashboard - PPTLinks `} />
         <meta
           property="og:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="og:image" content={LogoBlack} />
 
@@ -151,10 +151,10 @@ const Dashboard = () => {
           content={`https://www.PPTLink.com/dashboard`}
         />
 
-        <meta property="twitter:title" content={`Dashboard - PPTLink `} />
+        <meta property="twitter:title" content={`Dashboard - PPTLinks `} />
         <meta
           property="twitter:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
@@ -179,7 +179,7 @@ const Dashboard = () => {
         </label>
 
         <div className="">
-          <h2 className="text-xl mb-6 font-bold">Welcome to PPTLink,</h2>
+          <h2 className="text-xl mb-6 font-bold">Welcome to PPTLinks,</h2>
           <p className="mb-6">
             Your upload list and all other activities carried out on the
             platform will appear here. Feel free to upload more presentations,

@@ -34,15 +34,13 @@ export const Carousel = ({
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
-  const [syncButton, setSyncButton] = useState(false);
+  const [syncButton, setSyncButton] = useState(true);
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
     animation1: false,
     animation2: false,
   });
-
-  const list = ["", "", "", ""];
 
   const removeSpecialMedia = async () => {
     if (specialMedia.toggled === true) {
@@ -174,6 +172,7 @@ export const Carousel = ({
               presentation={presentation}
               requestIndex={requestIndex}
               socketId={socketId}
+              setSyncButton={setSyncButton}
             />
           </ul>
         </div>
@@ -235,6 +234,7 @@ export const Carousel = ({
               />
             </button>
 
+<<<<<<< HEAD
             {/* sync button for viewers */}
 
             {presentation.User === "GUEST" ||
@@ -269,6 +269,61 @@ export const Carousel = ({
                   ></div>
                 </>
               ))}
+=======
+          {presentation.User === "USER" || syncButton && (
+<>
+<button
+              onClick={() => {}}
+              title={!syncButton ? "" : "Sync"}
+              className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
+                syncButton ? "bg-black" : "bg-slate-400 "
+              } z-50`}
+            >
+              <FaSync size="28px" className="text-slate-200" />
+            </button>
+<div
+style={{
+  animationDelay: "-1s",
+}}
+className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+></div>
+<div
+style={{
+  animationDelay: "-2s",
+}}
+className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+></div>
+<div
+style={{
+  animationDelay: "-3s",
+}}
+className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+></div>
+</>
+
+            {presentation.User === "USER" && syncButton && (
+              <>
+                <div
+                  style={{
+                    animationDelay: "-1s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+                <div
+                  style={{
+                    animationDelay: "-2s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+                <div
+                  style={{
+                    animationDelay: "-3s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+              </>
+            )}
+>>>>>>> 653e770f3a9a81d1d5842250be4ba06d48bed998
             {/* <div
               style={{
                 transitionDelay: "0s",

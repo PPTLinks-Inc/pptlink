@@ -157,23 +157,23 @@ const Login = () => {
     <section className="flex justify-center my-9">
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`Login - PPTLink `}</title>
+        <title>{`Login - PPTLinks `}</title>
         <meta
           name="description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
           name="tags"
-          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks,`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.PPTLink.com/login`} />
-        <meta property="og:title" content={`Login - PPTLink `} />
+        <meta property="og:title" content={`Login - PPTLinks `} />
         <meta
           property="og:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="og:image" content={LogoBlack} />
 
@@ -184,10 +184,10 @@ const Login = () => {
           content={`https://www.PPTLink.com/login`}
         />
 
-        <meta property="twitter:title" content={`Login - PPTLink `} />
+        <meta property="twitter:title" content={`Login - PPTLinks `} />
         <meta
           property="twitter:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
