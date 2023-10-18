@@ -27,22 +27,20 @@ export const Carousel = ({
   socket,
   livePending,
   requestIndex,
-  socketId
+  socketId,
 }) => {
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
-  const [syncButton, setSyncButton] = useState(false);
+  const [syncButton, setSyncButton] = useState(true);
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
     animation1: false,
     animation2: false,
   });
-
-  const list = ["", "", "", ""];
 
   const removeSpecialMedia = async () => {
     if (specialMedia.toggled === true) {
@@ -137,9 +135,7 @@ export const Carousel = ({
         }
       });
   }, [window.matchMedia("(orientation: landscape)").matches]);
-const syncFunction = () => {
-  
-}
+  const syncFunction = () => {};
 
   return (
     <>
@@ -176,6 +172,7 @@ const syncFunction = () => {
               presentation={presentation}
               requestIndex={requestIndex}
               socketId={socketId}
+              setSyncButton={setSyncButton}
             />
           </ul>
         </div>
@@ -244,33 +241,30 @@ const syncFunction = () => {
               } z-50`}
             >
               <FaSync size="28px" className="text-slate-200" />
-           
             </button>
-         
 
-          {presentation.User === "USER" && syncButton && (
-<>
-<div
-style={{
-  transitionDelay: "-1s",
-}}
-className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-></div>
-<div
-style={{
-  transitionDelay: "-2s",
-}}
-className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-></div>
-<div
-style={{
-  transitionDelay: "-3s",
-}}
-className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-></div>
-</>
-
-          ) }
+            {presentation.User === "USER" && syncButton && (
+              <>
+                <div
+                  style={{
+                    animationDelay: "-1s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+                <div
+                  style={{
+                    animationDelay: "-2s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+                <div
+                  style={{
+                    animationDelay: "-3s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+              </>
+            )}
             {/* <div
               style={{
                 transitionDelay: "0s",
