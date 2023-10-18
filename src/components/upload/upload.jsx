@@ -233,23 +233,23 @@ const Upload = () => {
     <section className='flex justify-center'>
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`Upload - PPTLink `}</title>
+        <title>{`Upload - PPTLinks `}</title>
         <meta
           name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta
           name='tags'
-          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks,`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property='og:type' content='website' />
         <meta property='og:url' content={`https://www.PPTLink.com/upload`} />
-        <meta property='og:title' content={`Upload - PPTLink `} />
+        <meta property='og:title' content={`Upload - PPTLinks `} />
         <meta
           property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta property='og:image' content={LogoBlack} />
 
@@ -260,10 +260,10 @@ const Upload = () => {
           content={`https://www.PPTLink.com/upload`}
         />
 
-        <meta property='twitter:title' content={`Upload - PPTLink `} />
+        <meta property='twitter:title' content={`Upload - PPTLinks `} />
         <meta
           property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>

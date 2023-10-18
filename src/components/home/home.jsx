@@ -10,23 +10,23 @@ const Home = () => {
     <section className='min-h-full w-full flex flex-col flex-reverse px-[10%] py-[6%] relative lg:flex-row'>
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`Home - PPTLink `}</title>
+        <title>{`Home - PPTLinks `}</title>
         <meta
           name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta
           name='tags'
-          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks,`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property='og:type' content='website' />
         <meta property='og:url' content={`https://www.PPTLink.com`} />
-        <meta property='og:title' content={`Home - PPTLink `} />
+        <meta property='og:title' content={`Home - PPTLinks `} />
         <meta
           property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta property='og:image' content={LogoBlack} />
 
@@ -34,10 +34,10 @@ const Home = () => {
         <meta property='twitter:card' content='website' />
         <meta property='twitter:url' content={`https://www.PPTLink.com`} />
 
-        <meta property='twitter:title' content={`Home - PPTLink `} />
+        <meta property='twitter:title' content={`Home - PPTLinks `} />
         <meta
           property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>

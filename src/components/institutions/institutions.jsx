@@ -125,14 +125,14 @@ const Institutions = () => {
     <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around px-[20px]'>
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`${values.instition} - PPTLink `}</title>
+        <title>{`${values.instition} - PPTLinks `}</title>
         <meta
           name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta
           name='tags'
-          content={`PPT, Presentations, Powerpoint, PPTLink, ${values.instition}`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks, ${values.instition}`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
@@ -141,10 +141,10 @@ const Institutions = () => {
           property='og:url'
           content={`https://www.PPTLink.com/institutions`}
         />
-        <meta property='og:title' content={`${values.instition} - PPTLink `} />
+        <meta property='og:title' content={`${values.instition} - PPTLinks `} />
         <meta
           property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta property='og:image' content={LogoBlack} />
 
@@ -157,11 +157,11 @@ const Institutions = () => {
 
         <meta
           property='twitter:title'
-          content={`${values.instition} - PPTLink `}
+          content={`${values.instition} - PPTLinks `}
         />
         <meta
           property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLink'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>

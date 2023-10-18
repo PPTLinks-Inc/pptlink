@@ -36,7 +36,7 @@ function Header({ presentation, makeLive, livePending }) {
           </div>
         ) : (
           <h1 className='text-3xl text-white text-center flex-1 font-bold '>
-            PPTLink
+            PPTLinks
           </h1>
         )}
         {presentation && presentation?.User === 'HOST' && (
