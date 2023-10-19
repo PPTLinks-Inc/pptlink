@@ -87,7 +87,7 @@ const Login = () => {
           .then(({ data }) => {
             setUser(data.user);
 
-            // navigate('/');
+            navigate('/');
 
             setValues({
               ...values,
