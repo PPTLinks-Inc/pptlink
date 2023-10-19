@@ -6,7 +6,7 @@ export const BASE_URL =
 
 // https://pptlink-node-backend.onrender.com/
 
-export const SERVER_URL = "https://pptlink-node-backend.onrender.com";
+export const SERVER_URL = "https://pptlinks-backend.onrender.com";
 
 export const HOME = "/";
 
