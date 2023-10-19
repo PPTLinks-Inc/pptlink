@@ -163,7 +163,7 @@ export default function Root() {
       <div className='w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col'>
         <div>
           {page.dropdown ? (
-            <div className='h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]'>
+            <div className='h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border md:p-[2.5rem] md:h-[10rem]'>
               <div>
                 <p className='text-xl tracking-widest font-bold cursor-pointer'>
                   <Link to='/'>PPTLinks.</Link>
@@ -181,40 +181,40 @@ export default function Root() {
               </div>
             </div>
           ) : (
-            <div className='h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]'></div>
+            <div className='h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border md:p-[2.5rem] md:h-[10rem]'></div>
           )}
         </div>
 
-        <div className='flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row '>
+        <div className='flex-col w-[100%] flex-1 border justify-center flex md:flex-wrap md:flex-row '>
           <Link
             to={INSTITUTIONS}
-            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 md:w-1/2 md:flex md:items-center  md:px-14  md:text-[40px] md:py-14'
           >
             Institutions
           </Link>
 
           <Link
             to={ABOUT}
-            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 md:w-1/2 md:flex md:items-center  md:px-14  md:text-[40px] md:py-14'
           >
             About
           </Link>
 
           <Link
             to={LEGAL}
-            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14 '
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 md:w-1/2 md:flex md:items-center  md:px-14  md:text-[40px] md:py-14 '
           >
             Legal
           </Link>
           <Link
             to={UPLOAD}
-            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14'
+            className='border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 md:w-1/2 md:flex md:items-center  md:px-14  md:text-[40px] md:py-14'
           >
             Upload
           </Link>
         </div>
 
-        <div className=' border border-slate-100 border-collapse text-left flex flex-col lg:flex-row lg:h-[7.5rem] lg:mb-4'>
+        <div className=' border border-slate-100 border-collapse text-left flex flex-col md:flex-row md:h-[7.5rem] md:mb-4'>
           <div className='px-5 border flex-1'>
             <h2 className='text-2xl mt-4 mb-6 font-medium'>Our location</h2>
 
@@ -244,10 +244,10 @@ export default function Root() {
 
         <div
           ref={mainRef}
-          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] lg:rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${
+          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 md:px-[2.5rem] md:top-[5px] ${
             page.dropdown
-              ? 'transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500'
-              : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]'
+              ? 'transition-transform translate-y-[100vh] rounded-t-[2.7rem]  top-[5rem] md:top-[7rem] md:translate-y-[100vh] ease-in-out duration-500 '
+              : 'transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[5px]'
           }`}
         >
           <div className='h-[6rem]'>
@@ -279,10 +279,10 @@ export default function Root() {
             <Outlet />
           )}
           <footer className='w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col '>
-            <div className='w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between'>
-              <div className='w-[100%] px-[2.5rem]  m-auto lg:m-0 flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between'>
+            <div className='w-[100%]  flex justify-center m-auto flex-col md:flex-row md:justify-between'>
+              <div className='w-[100%] px-[2.5rem]  m-auto md:m-0 flex  mt-0 justify-around  md:flex-row md:w-[40%] md:justify-between'>
                 <div className='h-[100%] flex flex-col'>
-                  <h4 className='text-lg font-bold my-1'>Internal</h4>
+                  <h4 className='text-md font-bold my-1'>Internal</h4>
                   <Link to={HOME} className='py-2'>
                     Home
                   </Link>
@@ -301,7 +301,7 @@ export default function Root() {
                 </div>
 
                 <div className='h-full flex flex-col mx-4'>
-                  <h4 className='text-lg font-bold my-1'>Documentation</h4>
+                  <h4 className='text-md font-bold my-1'>Documentation</h4>
                   <Link to={ABOUT} className='py-2'>
                     About us
                   </Link>
@@ -314,7 +314,7 @@ export default function Root() {
                 </div>
 
                 <div className='h-full flex flex-col mx-2'>
-                  <h4 className='text-lg font-bold my-1'>External</h4>
+                  <h4 className='text-md font-bold my-1'>External</h4>
                   <Link to='zutayah.com' className='py-2'>
                     Zutayah
                   </Link>
@@ -337,13 +337,13 @@ export default function Root() {
               </div>
 
               <form
-                className='lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto lg:m-0 flex flex-col items-start'
+                className='md:w-[40%] w-[100%] pt-7 px-[1rem] m-auto md:m-0 flex flex-col items-start'
                 onSubmit={handleSubmit}
               >
                 <div className='w-full m-0 border border-slate-200 rounded-xl border-collapse'>
                   <div className='border-b border-slate-200 w-[100%] p-[30px] flex flex-wrap flex-row'>
-                    <h4 className='text-lg font-bold my-1'>Send us an email</h4>
-                    <p className='my-1 text-sm   lg:w-[410px]'>
+                    <h4 className='text-md font-bold my-1'>Send us an email</h4>
+                    <p className='my-1 text-sm   md:w-[410px]'>
                       If you have any suggestions, corrections or want to get in
                       contact with us, simply send us an email and we would be
                       excited to hear from you
