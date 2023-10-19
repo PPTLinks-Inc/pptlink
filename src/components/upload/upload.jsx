@@ -38,6 +38,7 @@ const Upload = () => {
             ...prev,
             popup: true,
             presentationId: data.id,
+            liveId: data.liveId
           }));
           setList(data.imageSlides);
         }
@@ -84,6 +85,7 @@ const Upload = () => {
     cancelPending: false,
     popupErr: [],
     presentationId: '',
+    liveId: '',
   });
 
   const [list, setList] = useState([]);
@@ -228,6 +230,10 @@ const Upload = () => {
         }))
       );
   }, [values]);
+
+  const toInterface = () => {
+    navigate(`/${popup.liveId}`)
+  }
 
   return (
     <section className='flex justify-center'>
@@ -427,7 +433,7 @@ const Upload = () => {
             }`}
           >
             <div className='flex justify-between w-[230px] my-3'>
-              <button className='px-7 rounded-xl py-[15px] bg-slate-200 text-black'>
+              <button className='px-7 rounded-xl py-[15px] bg-slate-200 text-black' onClick={toInterface}>
                 Confirm
               </button>
 
