@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 
 const Home = () => {
   return (
-    <section className='min-h-full w-full flex flex-col flex-reverse px-[10%] py-[6%] relative lg:flex-row'>
+    <section className='min-h-full w-full flex flex-col flex-reverse px-[10%] py-[6%] relative md:flex-row'>
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Home - PPTLinks `}</title>
@@ -47,7 +47,7 @@ const Home = () => {
         loading='lazy'
         src={Ellipse}
         alt='Ellipse'
-        className='hidden z-20 w-6 lg:block  lg:absolute left-4 top-10 lg:left-24 lg:top-56'
+        className='hidden z-20 w-6 md:block  md:absolute left-4 top-10 md:left-24 md:top-56'
       />
 
       <img
@@ -55,7 +55,7 @@ const Home = () => {
         loading='lazy'
         src={Ellipse}
         alt='Ellipse'
-        className='hidden z-20 w-6 lg:block lg:absolute right-10 top-10 lg:right-36 lg:top-16'
+        className='hidden z-20 w-6 md:block md:absolute right-10 top-10 md:right-36 md:top-16'
       />
 
       <img
@@ -63,7 +63,7 @@ const Home = () => {
         loading='lazy'
         src={Ellipse}
         alt='Ellipse'
-        className=' hidden z-20 w-6 lg:block lg:absolute lg:left-65 bottom-24'
+        className=' hidden z-20 w-6 md:block md:absolute md:left-65 bottom-24'
       />
 
       <img
@@ -71,10 +71,10 @@ const Home = () => {
         loading='lazy'
         src={Ellipse}
         alt='Ellipse'
-        className='hidden z-20 w-6 lg:block lg:absolute lg:right-40 lg:bottom-40'
+        className='hidden z-20 w-6 md:block md:absolute md:right-40 md:bottom-40'
       />
 
-      <div className='hidden lg:block flex-1'>
+      <div className='hidden md:block flex-1'>
         <img
           draggable='false'
           loading='lazy'
@@ -85,7 +85,7 @@ const Home = () => {
       </div>
 
       <div className='flex-1 pt-7 flex justify-center'>
-        <div className='lg:absolute'>
+        <div className='md:absolute'>
           <h1 className='text-2xl leading-normal py-6'>
             Make your presentation, <br />
             and as you move from page <br />
@@ -93,11 +93,11 @@ const Home = () => {
             <span className='underline decoration-slate-200'>Audience</span>
           </h1>
 
-          <form className='flex w-[305px] justify-between'>
+          <form className='flex w-[305px] justify-between gap-3'>
             <input
               type='text'
               placeholder='Input presentation link'
-              className='border border-slate-200 px-[15px] py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1'
+              className='border border-slate-200 px-[15px] py-[12px] mr-3 text-slate-200 decoration-black rounded-xl bg-transparent my-1'
             />
 
             <button

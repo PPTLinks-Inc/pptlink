@@ -275,8 +275,8 @@ const Upload = () => {
       </Helmet>
 
       {!popup.popup && (
-        <form onSubmit={handleSubmit} autoComplete='false'>
-          <div className='w-[450px] border border-slate-200 rounded-xl border-collapse'>
+        <form onSubmit={handleSubmit} autoComplete='false' className='px-3'>
+          <div className='w-[100%] m-auto mt-5 md:w-[450px] border  border-slate-200 rounded-xl border-collapse'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Upload</h1>
               Click and select the presentation file you want to upload to our
@@ -393,7 +393,7 @@ const Upload = () => {
       )}
 
       {popup.popup && (
-        <div className='w-[450px] border border-slate-200 rounded-xl min-h-[450px] flex flex-col border-collapse'>
+        <div className='w-[100%] m-auto mt-5 md:w-[450px] border border-slate-200 rounded-xl min-h-[450px] flex flex-col border-collapse'>
           <div className='flex flex-row justify-between p-[30px]'>
             <h1 className='text-xl font-bold'>Confirm upload</h1>
 
