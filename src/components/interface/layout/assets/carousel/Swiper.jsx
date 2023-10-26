@@ -83,7 +83,6 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
         });
 
         socket.on("receive-request-id", (currentSlide) => {
-          console.log("receive", currentSlide, state.maxNext);
           if (state.maxNext !== currentSlide) {
             state.maxNext = currentSlide;
             swiperRef.current.allowSlideNext = true;
@@ -98,7 +97,6 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
           state.maxNext = data.current;
           state.auto = true;
           swiperRef.current.allowSlideNext = true;
-          console.log("got");
           if (state.sync) {
             swiperRef.current.slideTo(data.current, 1000, true);
             swiperRef.current.allowSlideNext = false;
@@ -108,7 +106,6 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
         }
 
         if (data.previous === swiperRef.current.activeIndex) {
-          console.log("sssss");
           swiperRef.current.allowSlideNext = true;
           swiperRef.current.slideTo(data.current, 1000, true);
         }
@@ -126,9 +123,6 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
       keyboard={{ enabled: true }}
       scrollbar={{ draggable: true }}
       onSlideChange={slideChange}
-      onDestroy={() => {
-        console.log("destroy");
-      }}
       onSwiper={(swiper) => {
         swiperRef.current = swiper;
         if (presentation.User !== "HOST") {

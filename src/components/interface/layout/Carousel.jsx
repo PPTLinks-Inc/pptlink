@@ -19,6 +19,7 @@ import { isIOS } from "react-device-detect";
 
 let stopFunction = false;
 let navBar = false;
+let wakeLock = null;
 
 export const Carousel = ({
   nav,
@@ -61,7 +62,7 @@ export const Carousel = ({
   function toggleFullScreen() {
     const element = userRef.current;
 
-    if (!isIOS) {
+    if (!isIOS && document.fullscreenEnabled) {
       if (
         !document.fullscreenElement &&
         !document.mozFullScreenElement &&
@@ -111,6 +112,30 @@ export const Carousel = ({
     setActive(false);
   }, timer);
 
+  const requireWakeLock = async () => {
+    try {
+      if (wakeLock !== null && document.visibilityState === "visible") {
+        wakeLock = await navigator.wakeLock.request("screen");
+      }
+    } catch(err) {
+      console.error(`${err.name}, ${err.message}`);
+    }
+  }
+  const handleScreenOrientation = (e) => {
+    if (e.matches) {
+      setSpecialMedia((prev) => ({
+        ...prev,
+        animation1: false,
+        animation2: true,
+      }));
+    } else if (!e.matches && window.innerWidth < 900) {
+      setSpecialMedia((prev) => ({
+        ...prev,
+        toggled: true,
+        animation1: true,
+      }));
+    }
+  }
   // check if window is mobile view
   useEffect(() => {
     if (window.innerWidth < 900) {
@@ -121,24 +146,40 @@ export const Carousel = ({
       }));
     }
 
+    handleScreenOrientation(window.matchMedia("(orientation: landscape)"));
+
+    (async function() {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen");
+
+          document.addEventListener("visibilitychange", requireWakeLock);
+        }
+        else {
+          console.log("not available");
+        }
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    })();
+
     window
       .matchMedia("(orientation: landscape)")
-      .addEventListener("change", (e) => {
-        if (e.matches) {
-          setSpecialMedia((prev) => ({
-            ...prev,
-            animation1: false,
-            animation2: true,
-          }));
-        } else if (!e.matches && window.innerWidth < 900) {
-          setSpecialMedia((prev) => ({
-            ...prev,
-            toggled: true,
-            animation1: true,
-          }));
-        }
-      });
-  }, [window.matchMedia("(orientation: landscape)").matches]);
+      .addEventListener("change", handleScreenOrientation);
+
+    return () => {
+      window
+      .matchMedia("(orientation: landscape)")
+      .removeEventListener("change", handleScreenOrientation);
+
+      if (wakeLock) {
+        document.removeEventListener("visibilitychange", requireWakeLock);
+        wakeLock.release().then(() => {
+          wakeLock = null;
+        });
+      }
+    }
+  }, []);
 
   return (
     <>
