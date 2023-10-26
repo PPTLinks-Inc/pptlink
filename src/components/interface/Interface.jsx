@@ -127,7 +127,7 @@ function Interface() {
     }
   };
 
-  return (!notFound ? (
+  return !notFound ? (
     <main
       className={`overflow-hidden min-h-screen  relative duration-300 transition-all bg-black md:overflow-auto `}
     >
@@ -159,9 +159,9 @@ function Interface() {
                 socketId={socketId}
               />
             ) : !isIOS ? (
-              <Spinner />
+              <Spinner presentation={presentation} />
             ) : (
-              <SpinnerIos />
+              <SpinnerIos presentation={presentation} />
             )}
           </div>
         ) : (
@@ -173,7 +173,7 @@ function Interface() {
     </main>
   ) : (
     <PresentationNotFound />
-  ));
+  );
 }
 
 export default Interface;

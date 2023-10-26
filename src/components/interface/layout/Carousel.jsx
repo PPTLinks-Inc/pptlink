@@ -271,14 +271,6 @@ export const Carousel = ({
                 ></div>
               </>
             )}
-
-            {/* <div
-              style={{
-                transitionDelay: "0s",
-              }}
-              className="pulsing__animation aspect-square absolute bg-blue w-11 h-11  rounded-full -left-28 bottom-2  "
-            ></div> */}
-
             <button
               onClick={() => {
                 stopFunction = !stopFunction;
@@ -309,7 +301,7 @@ export const Carousel = ({
                 <a
                   href={name === "download" ? presentation.pptLink : link}
                   className="w-full relative h-full flex items-center  justify-center flex-row-reverse"
-                  download={presentation.name}
+                  download={name === "download" && presentation.name}
                 >
                   <span className="">{icon}</span>
                   <span
