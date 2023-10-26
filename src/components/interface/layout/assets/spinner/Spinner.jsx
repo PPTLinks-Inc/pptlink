@@ -1,17 +1,14 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import { FaSync, FaDownload } from "react-icons/fa";
 import "./spinner.css";
 import "./spinner2.css";
 import { useState } from "react";
 
-const Spinner = () => {
-	let choice
-	if (window.innerWidth < 900 ){
-		choice = 'tap'
-	}else{
-		choice = 'hover'
-	}
+const Spinner = ({ presentation }) => {
   return (
     <div className="spinner__container ">
-        <p className="presentation__spinner">Presentation about to start</p>
+      <p className="presentation__spinner">Presentation about to start</p>
       <div className="svg-frame">
         <svg style={{ "--i": "0", "--j": "0" }}>
           <g id="out1">
@@ -92,12 +89,20 @@ const Spinner = () => {
           />
         </svg>
       </div>
-      <p className="click__presentation">{choice} animation to trigger </p>
+      <a
+        href={presentation.pptLink}
+        download={presentation.name}
+        className=" absolute right-8 bottom-20 bg-blue-500 hover:bg-blue-700 text-white_ font-bold w-12 aspect-square rounded-full bg-white flex justify-center items-center "
+      >
+        <span>
+          <FaDownload size="1.5rem" />
+        </span>
+      </a>
     </div>
   );
 };
 
-const SpinnerIos = () => {
+const SpinnerIos = ({ presentation }) => {
   const devices = ["iphone", "mini", "ipad", "macbook", "imac"];
   const [activeDevice, setActiveDevice] = useState("iphone");
   const [active, setActive] = useState(0);
@@ -130,7 +135,6 @@ const SpinnerIos = () => {
           ></span>
         </div>
       </div>
-      <p className="click__presentation">Click button to trigger animation</p>
     </div>
   );
 };
