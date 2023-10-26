@@ -189,7 +189,10 @@ const Institutions = () => {
                     </div>
                   ) : (
                     values.presentations.map((_, i) => (
-                      <div key={i} className="w-[300px] cursor-pointer">
+                      <div
+                        key={i}
+                        className="w-[95%] m-auto git  md:w-[300px] cursor-pointer"
+                      >
                         <Link to={`/${_.liveId}`}>
                           <img
                             src={_.thumbnail}

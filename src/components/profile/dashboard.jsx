@@ -165,7 +165,7 @@ const Dashboard = () => {
           className="block min-w-[250px] h-fit relative rounded-full"
         >
           <img
-            className="w-[250px] h-[250px] rounded-full mb-[40px]"
+            className="w-[250px] h-[250px] rounded-full mt-[40px] mb-4 md:mb-[40px]"
             src={profile}
             alt="your profile"
             draggable="false"
@@ -194,12 +194,12 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="">
-        <div className="w-full flex justify-between items-center">
-          <h2 className="text-xl mb-6">Your presentations</h2>
+      <div className="px-5 md:px-0">
+        <div className="w-full px-3 flex justify-between items-center">
+          <h2 className="text-xl mt-4 mb-6">Your presentations</h2>
 
           <button
-            className="px-7 rounded-xl py-1 bg-slate-200 text-black"
+            className="px-7 rounded-xl py-2 bg-slate-200 text-black"
             onClick={handleLogout}
           >
             Log out
@@ -229,7 +229,7 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     values.setPresentations.map((_, i) => (
-                      <div key={i} className="w-[300px] cursor-pointer">
+                      <div key={i} className="m-auto md:w-[300px] cursor-pointer">
                         <Link to={`/${_.liveId}`}>
                           <img
                             src={_.thumbnail}

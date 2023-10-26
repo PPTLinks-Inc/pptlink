@@ -23,7 +23,7 @@ module.exports = {
         lightBorder: "#ebebeb",
       },
       screens: {
-        tall: { raw: "(min-width: 1800px)" },
+        tall: { raw: "(min-width: 2000px)" },
         // => @media (min-width: 1440px) { ... }
       },
     },

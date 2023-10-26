@@ -244,7 +244,7 @@ export default function Root() {
 
         <div
           ref={mainRef}
-          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] lg:rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 lg:px-[2.5rem] lg:top-[5px] ${
+          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 md:px-[2.5rem] md:top-[5px] ${
             page.dropdown
               ? "transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500"
               : "transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]"
