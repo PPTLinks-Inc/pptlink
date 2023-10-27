@@ -4,8 +4,28 @@ import Ellipse from "./../../images/Ellipse.png";
 import loading from "./../../images/loading.png";
 import LogoBlack from "../../images/Logo-Black.png";
 import { Helmet } from "react-helmet";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+let code = "";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const [codeOrLink, setCodeOrLink] = useState("");
+
+  const findPresentation = (e) => {
+    e.preventDefault();
+    try {
+      const url = new URL(codeOrLink);
+      code = url.pathname.split("/")[1];
+    } catch (e) { 
+      code = codeOrLink;
+    }
+    finally {
+      navigate(`/${code}`);
+    }
+  }
+
   return (
     <section className="min-h-full w-full flex flex-col flex-reverse px-[10%] py-[6%] relative md:flex-row">
       {/* meta and SEO information */}
@@ -21,9 +41,9 @@ const Home = () => {
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://www.PPTLink.com`} />
-        <meta property="og:title" content={`Home - PPTLinks `} />
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.pptlinks.com`} />
+        <meta property='og:title' content={`Home - PPTLinks `} />
         <meta
           property="og:description"
           content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
@@ -31,8 +51,8 @@ const Home = () => {
         <meta property="og:image" content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
-        <meta property="twitter:card" content="website" />
-        <meta property="twitter:url" content={`https://www.PPTLink.com`} />
+        <meta property='twitter:card' content='website' />
+        <meta property='twitter:url' content={`https://www.pptlinks.com`} />
 
         <meta property="twitter:title" content={`Home - PPTLinks `} />
         <meta
@@ -93,11 +113,13 @@ const Home = () => {
             <span className="underline decoration-slate-200">Audience</span>
           </h1>
 
-          <form className="flex w-[305px] justify-between gap-3">
+          <form className='flex w-[305px] justify-between gap-3' onSubmit={findPresentation}>
             <input
-              type="text"
-              placeholder="Input presentation link"
-              className="border border-slate-200 px-[15px] py-[12px] mr-3 text-slate-200 decoration-black rounded-xl bg-transparent my-1"
+              type='text'
+              placeholder='Enter a code or link'
+              className='border border-slate-200 px-[15px] py-[12px] mr-3 text-slate-200 decoration-black rounded-xl bg-transparent my-1'
+              value={codeOrLink}
+              onChange={(e) => setCodeOrLink(e.target.value)}
             />
 
             <button
