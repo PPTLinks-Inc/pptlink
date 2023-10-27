@@ -36,6 +36,10 @@ export const Carousel = ({
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
   const [syncButton, setSyncButton] = useState(true);
+  const [status, setStatus] = useState({
+    online: false,
+    offline: false,
+  });
 
   const swiperRef = useRef();
 
@@ -97,6 +101,28 @@ export const Carousel = ({
     }
   }
 
+  useEffect(() => {
+    const updateOnlineStatus = () => {
+      setStatus((prevState) => ({
+        ...prevState,
+        online: navigator.onLine ? true : "null",
+        offline: !navigator.onLine ? true : "null",
+      }));
+    };
+
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+  }, [status.offline, status.online]);
+
+  if (status.online === true) {
+    setTimeout(() => {
+      setStatus((prevState) => ({
+        ...prevState,
+        online: false,
+      }));
+    }, 3000);
+  }
+
   const debouncedFunctionLead = debounce(
     () => {
       setActive(true);
@@ -117,10 +143,10 @@ export const Carousel = ({
       if (wakeLock !== null && document.visibilityState === "visible") {
         wakeLock = await navigator.wakeLock.request("screen");
       }
-    } catch(err) {
+    } catch (err) {
       console.error(`${err.name}, ${err.message}`);
     }
-  }
+  };
   const handleScreenOrientation = (e) => {
     if (e.matches) {
       setSpecialMedia((prev) => ({
@@ -135,7 +161,7 @@ export const Carousel = ({
         animation1: true,
       }));
     }
-  }
+  };
   // check if window is mobile view
   useEffect(() => {
     if (window.innerWidth < 900) {
@@ -148,14 +174,13 @@ export const Carousel = ({
 
     handleScreenOrientation(window.matchMedia("(orientation: landscape)"));
 
-    (async function() {
+    (async function () {
       try {
         if ("wakeLock" in navigator) {
           wakeLock = await navigator.wakeLock.request("screen");
 
           document.addEventListener("visibilitychange", requireWakeLock);
-        }
-        else {
+        } else {
           console.log("not available");
         }
       } catch (err) {
@@ -169,8 +194,8 @@ export const Carousel = ({
 
     return () => {
       window
-      .matchMedia("(orientation: landscape)")
-      .removeEventListener("change", handleScreenOrientation);
+        .matchMedia("(orientation: landscape)")
+        .removeEventListener("change", handleScreenOrientation);
 
       if (wakeLock) {
         document.removeEventListener("visibilitychange", requireWakeLock);
@@ -178,13 +203,13 @@ export const Carousel = ({
           wakeLock = null;
         });
       }
-    }
+    };
   }, []);
 
   return (
     <>
       <div
-        className={`carousel relative lg:h-[650px] w-[100%] overflow-y-auto  mx-auto select-none ${
+        className={`carousel relative lg:h-[650px] w-[100%] overflow-y-hidden  mx-auto select-none  ${
           enableFullscreen && "h-full w-full rotate-90"
         }`}
         ref={userRef}
@@ -358,6 +383,22 @@ export const Carousel = ({
           </ul>
         </nav>
         <ToastContainer />
+        {status.online === true ? (
+          <div
+            className={`online text-center absolute bottom-0 transition-all duration-500 z-40  text-white w-full bg-green-500 font-bold px-2  translate-y-4 opacity-0`}
+          >
+            {" "}
+            Back online{" "}
+          </div>
+        ) : (
+          status.offline === true && (
+            <div
+              className={`offline absolute bottom-0 text-center transition-all duration-500 z-40  text-white w-full bg-[#ff0000] font-bold px-2  translate-y-4 opacity-0`}
+            >
+              No internet connection
+            </div>
+          )
+        )}
       </div>
 
       {specialMedia.toggled && (
