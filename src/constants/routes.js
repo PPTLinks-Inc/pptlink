@@ -5,14 +5,12 @@ export const BASE_URL =
 // export const SERVER_URL = "http://localhost:4000";
 
 export const SERVER_URL = "https://pptlinks-backend.onrender.com";
-// export const SERVER_URL = "http://192.168.0.102:4000";
 
 export const HOME = "/";
 
 export const INSTITUTIONS = "/institutions";
 
 export const INSTITUTIONS_ID = "/institutions/:id";
-export const SERVER_URL = 'https://pptlink-node-backend.onrender.com';
 
 export const ABOUT = "/about";
 
