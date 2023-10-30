@@ -19,6 +19,7 @@ import { isIOS } from "react-device-detect";
 
 let stopFunction = false;
 let navBar = false;
+let wakeLock = null;
 
 export const Carousel = ({
   nav,
@@ -27,14 +28,20 @@ export const Carousel = ({
   socket,
   livePending,
   requestIndex,
-  socketId
+  socketId,
 }) => {
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
-  const [syncButton, setSyncButton] = useState(false);
+  const [syncButton, setSyncButton] = useState(true);
+  const [status, setStatus] = useState({
+    online: false,
+    offline: false,
+  });
+
+  const swiperRef = useRef();
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
@@ -59,7 +66,7 @@ export const Carousel = ({
   function toggleFullScreen() {
     const element = userRef.current;
 
-    if (!isIOS) {
+    if (!isIOS && document.fullscreenEnabled) {
       if (
         !document.fullscreenElement &&
         !document.mozFullScreenElement &&
@@ -94,6 +101,28 @@ export const Carousel = ({
     }
   }
 
+  useEffect(() => {
+    const updateOnlineStatus = () => {
+      setStatus((prevState) => ({
+        ...prevState,
+        online: navigator.onLine ? true : "null",
+        offline: !navigator.onLine ? true : "null",
+      }));
+    };
+
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+  }, [status.offline, status.online]);
+
+  if (status.online === true) {
+    setTimeout(() => {
+      setStatus((prevState) => ({
+        ...prevState,
+        online: false,
+      }));
+    }, 3000);
+  }
+
   const debouncedFunctionLead = debounce(
     () => {
       setActive(true);
@@ -109,6 +138,30 @@ export const Carousel = ({
     setActive(false);
   }, timer);
 
+  const requireWakeLock = async () => {
+    try {
+      if (wakeLock !== null && document.visibilityState === "visible") {
+        wakeLock = await navigator.wakeLock.request("screen");
+      }
+    } catch (err) {
+      console.error(`${err.name}, ${err.message}`);
+    }
+  };
+  const handleScreenOrientation = (e) => {
+    if (e.matches) {
+      setSpecialMedia((prev) => ({
+        ...prev,
+        animation1: false,
+        animation2: true,
+      }));
+    } else if (!e.matches && window.innerWidth < 900) {
+      setSpecialMedia((prev) => ({
+        ...prev,
+        toggled: true,
+        animation1: true,
+      }));
+    }
+  };
   // check if window is mobile view
   useEffect(() => {
     if (window.innerWidth < 900) {
@@ -119,32 +172,44 @@ export const Carousel = ({
       }));
     }
 
+    handleScreenOrientation(window.matchMedia("(orientation: landscape)"));
+
+    (async function () {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen");
+
+          document.addEventListener("visibilitychange", requireWakeLock);
+        } else {
+          console.log("not available");
+        }
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    })();
+
     window
       .matchMedia("(orientation: landscape)")
-      .addEventListener("change", (e) => {
-        if (e.matches) {
-          setSpecialMedia((prev) => ({
-            ...prev,
-            animation1: false,
-            animation2: true,
-          }));
-        } else if (!e.matches && window.innerWidth < 900) {
-          setSpecialMedia((prev) => ({
-            ...prev,
-            toggled: true,
-            animation1: true,
-          }));
-        }
-      });
-  }, [window.matchMedia("(orientation: landscape)").matches]);
-const syncFunction = () => {
-  
-}
+      .addEventListener("change", handleScreenOrientation);
+
+    return () => {
+      window
+        .matchMedia("(orientation: landscape)")
+        .removeEventListener("change", handleScreenOrientation);
+
+      if (wakeLock) {
+        document.removeEventListener("visibilitychange", requireWakeLock);
+        wakeLock.release().then(() => {
+          wakeLock = null;
+        });
+      }
+    };
+  }, []);
 
   return (
     <>
       <div
-        className={`carousel relative lg:h-[650px] w-[100%] overflow-y-auto  mx-auto select-none ${
+        className={`carousel relative lg:h-[650px] w-[100%] overflow-y-hidden  mx-auto select-none  ${
           enableFullscreen && "h-full w-full rotate-90"
         }`}
         ref={userRef}
@@ -169,13 +234,15 @@ const syncFunction = () => {
         )}
 
         <div className="carousel__track-container h-full relative">
-          <ul className="h-full w-full flex  ">
+          <ul className="h-full w-full flex relative ">
             <SwiperMySlide
               active={active}
               socket={socket}
               presentation={presentation}
               requestIndex={requestIndex}
               socketId={socketId}
+              setSyncButton={setSyncButton}
+              ref={swiperRef}
             />
           </ul>
         </div>
@@ -236,50 +303,40 @@ const syncFunction = () => {
                 className="text-slate-200"
               />
             </button>
-            
-         
-         {/* sync button for viewers */}
 
-          {presentation.User === "USER" || syncButton && (
-<>
-<button
-              onClick={() => {}}
-              title={!syncButton ? "" : "Sync"}
-              className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
-                syncButton ? "bg-black" : "bg-slate-400 "
-              } z-50`}
-            >
-              <FaSync size="28px" className="text-slate-200" />
-           
-            </button>
-<div
-style={{
-  animationDelay: "-1s",
-}}
-className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-></div>
-<div
-style={{
-  animationDelay: "-2s",
-}}
-className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-></div>
-<div
-style={{
-  animationDelay: "-3s",
-}}
-className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-></div>
-</>
+            {/* sync button for viewers */}
 
-          ) }
-            {/* <div
-              style={{
-                transitionDelay: "0s",
-              }}
-              className="pulsing__animation aspect-square absolute bg-blue w-11 h-11  rounded-full -left-28 bottom-2  "
-            ></div> */}
-
+            {presentation.User !== "HOST" && !syncButton && (
+              <>
+                <button
+                  onClick={() => swiperRef.current?.syncSlide()}
+                  title={syncButton ? "" : "Sync"}
+                  className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
+                    syncButton ? "bg-black" : "bg-slate-400 "
+                  } z-50`}
+                >
+                  <FaSync size="28px" className="text-slate-200" />
+                </button>
+                <div
+                  style={{
+                    animationDelay: "-1s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+                <div
+                  style={{
+                    animationDelay: "-2s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+                <div
+                  style={{
+                    animationDelay: "-3s",
+                  }}
+                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
+                ></div>
+              </>
+            )}
             <button
               onClick={() => {
                 stopFunction = !stopFunction;
@@ -308,8 +365,9 @@ className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rou
                 }}
               >
                 <a
-                  href={link}
+                  href={name === "download" ? presentation.pptLink : link}
                   className="w-full relative h-full flex items-center  justify-center flex-row-reverse"
+                  download={name === "download" && presentation.name}
                 >
                   <span className="">{icon}</span>
                   <span
@@ -325,6 +383,22 @@ className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rou
           </ul>
         </nav>
         <ToastContainer />
+        {status.online === true ? (
+          <div
+            className={`online text-center absolute bottom-0 transition-all duration-500 z-40  text-white w-full bg-green-500 font-bold px-2  translate-y-4 opacity-0`}
+          >
+            {" "}
+            Back online{" "}
+          </div>
+        ) : (
+          status.offline === true && (
+            <div
+              className={`offline absolute bottom-0 text-center transition-all duration-500 z-40  text-white w-full bg-[#ff0000] font-bold px-2  translate-y-4 opacity-0`}
+            >
+              No internet connection
+            </div>
+          )
+        )}
       </div>
 
       {specialMedia.toggled && (

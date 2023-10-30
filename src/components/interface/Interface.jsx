@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 import "./interface.css";
-import { FaHome, FaDownload, FaSync } from "react-icons/fa";
+import { FaHome, FaDownload } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "./layout/Header";
@@ -15,6 +15,7 @@ import { isIOS } from "react-device-detect";
 import { Spinner, SpinnerIos } from "./layout/assets/spinner/Spinner";
 
 import { SERVER_URL } from "../../constants/routes";
+import PresentationNotFound from "./404";
 
 const socket = io(SERVER_URL);
 
@@ -29,7 +30,6 @@ const navItems = [
     icon: <FaHome className="text-2xl relative z-10" />,
     link: "/",
   },
- 
 ];
 let mobileHeader;
 
@@ -42,11 +42,15 @@ if (window.innerWidth < 900) {
 let requestCurrentIndex = true;
 let socketId = null;
 
+let fetching = false;
+
 function Interface() {
   const controller = new AbortController();
   const [navbar, setNavbar] = useState(false);
 
   const [presentation, setPresentation] = useState(null);
+
+  const [notFound, setNotFound] = useState(false);
 
   const params = useParams();
 
@@ -72,22 +76,29 @@ function Interface() {
       socket.emit("join-presentation", {
         liveId: params.id,
         user: presentation.User,
-        socketId
+        socketId,
       });
     }
   }, [presentation]);
 
   useEffect(() => {
+    if (fetching) return;
+
+    fetching = true;
     axios
       .get(`/api/v1/ppt/presentations/present/${params.id}`, {
         signal: controller.signal,
       })
       .then(({ data }) => {
+        fetching = false;
         controller.abort();
         setPresentation(data.presentation);
+        setNotFound(false);
       })
       .catch((err) => {
         console.log(err);
+        fetching = false;
+        setNotFound(true);
       });
   }, []);
 
@@ -116,7 +127,7 @@ function Interface() {
     }
   };
 
-  return (
+  return !notFound ? (
     <main
       className={`overflow-hidden min-h-screen  relative duration-300 transition-all bg-black md:overflow-auto `}
     >
@@ -148,9 +159,9 @@ function Interface() {
                 socketId={socketId}
               />
             ) : !isIOS ? (
-              <Spinner />
+              <Spinner presentation={presentation} />
             ) : (
-              <SpinnerIos />
+              <SpinnerIos presentation={presentation} />
             )}
           </div>
         ) : (
@@ -160,6 +171,8 @@ function Interface() {
         )}
       </section>
     </main>
+  ) : (
+    <PresentationNotFound />
   );
 }
 

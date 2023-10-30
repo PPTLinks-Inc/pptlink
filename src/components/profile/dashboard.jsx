@@ -124,23 +124,23 @@ const Dashboard = () => {
     <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around">
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`Dashboard - PPTLink `}</title>
+        <title>{`Dashboard - PPTLinks `}</title>
         <meta
           name="description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
           name="tags"
-          content={`PPT, Presentations, Powerpoint, PPTLink, Dashboard`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks, Dashboard`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.PPTLink.com/dashboard`} />
-        <meta property="og:title" content={`Dashboard - PPTLink `} />
+        <meta property="og:title" content={`Dashboard - PPTLinks `} />
         <meta
           property="og:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="og:image" content={LogoBlack} />
 
@@ -151,10 +151,10 @@ const Dashboard = () => {
           content={`https://www.PPTLink.com/dashboard`}
         />
 
-        <meta property="twitter:title" content={`Dashboard - PPTLink `} />
+        <meta property="twitter:title" content={`Dashboard - PPTLinks `} />
         <meta
           property="twitter:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
@@ -165,7 +165,7 @@ const Dashboard = () => {
           className="block min-w-[250px] h-fit relative rounded-full"
         >
           <img
-            className="w-[250px] h-[250px] rounded-full mb-[40px]"
+            className="w-[250px] h-[250px] rounded-full mt-[40px] mb-4 md:mb-[40px]"
             src={profile}
             alt="your profile"
             draggable="false"
@@ -179,7 +179,7 @@ const Dashboard = () => {
         </label>
 
         <div className="">
-          <h2 className="text-xl mb-6 font-bold">Welcome to PPTLink,</h2>
+          <h2 className="text-xl mb-6 font-bold">Welcome to PPTLinks,</h2>
           <p className="mb-6">
             Your upload list and all other activities carried out on the
             platform will appear here. Feel free to upload more presentations,
@@ -194,12 +194,12 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="">
-        <div className="w-full flex justify-between items-center">
-          <h2 className="text-xl mb-6">Your presentations</h2>
+      <div className="px-5 md:px-0">
+        <div className="w-full px-3 flex justify-between items-center">
+          <h2 className="text-xl mt-4 mb-6">Your presentations</h2>
 
           <button
-            className="px-7 rounded-xl py-1 bg-slate-200 text-black"
+            className="px-7 rounded-xl py-2 bg-slate-200 text-black"
             onClick={handleLogout}
           >
             Log out
@@ -229,7 +229,7 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     values.setPresentations.map((_, i) => (
-                      <div key={i} className="w-[300px] cursor-pointer">
+                      <div key={i} className="m-auto md:w-[300px] cursor-pointer">
                         <Link to={`/${_.liveId}`}>
                           <img
                             src={_.thumbnail}

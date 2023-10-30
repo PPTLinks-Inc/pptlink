@@ -48,6 +48,13 @@
   left: 80px;
 } */
 
+.online {
+  @apply translate-y-0 opacity-100;
+}
+.offline {
+  @apply translate-y-0 opacity-100;
+}
+
 @media (max-width: 765px) {
   .main-body {
     width: 100%;

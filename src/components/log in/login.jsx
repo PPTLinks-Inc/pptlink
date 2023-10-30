@@ -87,7 +87,7 @@ const Login = () => {
           .then(({ data }) => {
             setUser(data.user);
 
-            // navigate('/');
+            navigate('/');
 
             setValues({
               ...values,
@@ -157,23 +157,23 @@ const Login = () => {
     <section className="flex justify-center my-9">
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`Login - PPTLink `}</title>
+        <title>{`Login - PPTLinks `}</title>
         <meta
           name="description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
           name="tags"
-          content={`PPT, Presentations, Powerpoint, PPTLink,`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks,`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.PPTLink.com/login`} />
-        <meta property="og:title" content={`Login - PPTLink `} />
+        <meta property="og:title" content={`Login - PPTLinks `} />
         <meta
           property="og:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="og:image" content={LogoBlack} />
 
@@ -184,10 +184,10 @@ const Login = () => {
           content={`https://www.PPTLink.com/login`}
         />
 
-        <meta property="twitter:title" content={`Login - PPTLink `} />
+        <meta property="twitter:title" content={`Login - PPTLinks `} />
         <meta
           property="twitter:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLink"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
@@ -245,16 +245,16 @@ const Login = () => {
             )}
           </div>
 
-          <div className="flex m-auto gap-3 px-3 justify-between items-center lg:px-0">
+          <div className='flex m-auto gap-3 px-7 justify-between items-center md:px-0'>
             <button
               type="submit"
               disabled={values.loginPending}
-              className="px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]"
+              className='px-0.5 w-36 md:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]'
             >
               {values.loginPending ? (
                 <LoadingAssetSmall />
               ) : (
-                <p className="py-3 lg:py-[9px]">Log in</p>
+                <p className='py-3 md:py-[9px]'>Log in</p>
               )}
             </button>
 
@@ -273,9 +273,9 @@ const Login = () => {
 
       {values.signup && (
         <form onSubmit={handleSignup}>
-          <div className="w-[90%] m-auto border border-slate-200 rounded-xl border-collapse lg:w-[450px]">
-            <div className="border-b border-slate-200 w-full p-[30px]">
-              <h1 className="text-xl font-bold">Sign up</h1>
+          <div className='w-[90%] m-auto border border-slate-200 rounded-xl border-collapse md:w-[450px]'>
+            <div className='border-b border-slate-200 w-full p-[30px]'>
+              <h1 className='text-xl font-bold'>Sign up</h1>
               Please input the necessary information and create an account
             </div>
             <input
@@ -333,16 +333,16 @@ const Login = () => {
             )}
           </div>
 
-          <div className="flex m-auto gap-3 px-3 justify-between items-center lg:px-0">
+          <div className='flex m-auto gap-3 px-7 justify-between items-center md:px-0'>
             <button
-              type="submit"
-              className="px-0.5 flex items-center justify-center w-36 lg:px-7 rounded-xl bg-slate-200 text-black my-[20px]"
+              type='submit'
+              className='px-0.5 flex items-center justify-center w-36 md:px-7 rounded-xl bg-slate-200 text-black my-[20px]'
               disabled={values.signupPending}
             >
               {values.signupPending ? (
                 <LoadingAssetSmall />
               ) : (
-                <p className="py-2 lg:py-[9px]">Sign up</p>
+                <p className='py-2 md:py-[9px]'>Sign up</p>
               )}
             </button>
 
