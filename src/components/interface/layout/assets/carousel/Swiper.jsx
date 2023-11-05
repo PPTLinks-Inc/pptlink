@@ -10,7 +10,6 @@ import "swiper/swiper-bundle.css";
 const state = {
   maxNext: 0,
   hostSlideIndex: 0,
-  auto: false,
   sync: true,
 };
 
@@ -19,7 +18,6 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
   ref
 ) {
   const swiperRef = useRef();
-  // const [syncButton, setSyncButton] = useState(false);
   let onEnter;
   if (window.innerWidth < 900) {
     onEnter = false;
@@ -28,7 +26,7 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
   }
 
   const slideChange = (slide) => {
-    if (socket.connected && presentation.User === "HOST") {
+    if (presentation.User === "HOST") {
       socket.emit("change-slide", {
         liveId: presentation.liveId,
         currentSlide: slide.activeIndex,
@@ -53,7 +51,7 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
         return;
       }
 
-      if (!state.auto) {
+      if (!state.sync) {
         swiperRef.current.allowSlideNext = true;
       }
     }
@@ -75,7 +73,7 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
           currentSlide: swiperRef.current.activeIndex,
         });
       });
-    } else if (socket.connected && presentation.User !== "HOST") {
+    } else if (presentation.User !== "HOST") {
       if (requestIndex) {
         socket.emit("request-slide", {
           hostSocketId: presentation.hostSocketId,
@@ -85,6 +83,7 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
         socket.on("receive-request-id", (currentSlide) => {
           if (state.maxNext !== currentSlide) {
             state.maxNext = currentSlide;
+            state.hostSlideIndex = currentSlide;
             swiperRef.current.allowSlideNext = true;
             swiperRef.current.slideTo(currentSlide, 1000, true);
           }
@@ -92,25 +91,22 @@ const SwiperMySlide = forwardRef(function SwiperMySlide(
         });
       }
       socket.on("change-slide", (data) => {
+        console.log(data);
         state.hostSlideIndex = data.current;
         if (data.current > state.maxNext) {
           state.maxNext = data.current;
-          state.auto = true;
-          swiperRef.current.allowSlideNext = true;
-          if (state.sync) {
-            swiperRef.current.slideTo(data.current, 1000, true);
-            swiperRef.current.allowSlideNext = false;
-          }
-          state.auto = false;
-          return;
         }
 
-        if (data.previous === swiperRef.current.activeIndex) {
+        if (state.sync) {
           swiperRef.current.allowSlideNext = true;
           swiperRef.current.slideTo(data.current, 1000, true);
         }
       });
     }
+
+    return () => {
+      console.log("Bye");
+    };
   }, []);
 
   return (
