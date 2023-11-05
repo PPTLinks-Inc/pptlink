@@ -17,7 +17,7 @@ import { Spinner, SpinnerIos } from "./layout/assets/spinner/Spinner";
 import { SERVER_URL } from "../../constants/routes";
 import PresentationNotFound from "./404";
 
-const socket = io(SERVER_URL);
+const socket = io(SERVER_URL); 
 
 const navItems = [
   {
@@ -52,14 +52,36 @@ function Interface() {
 
   const [notFound, setNotFound] = useState(false);
 
+  const [socketCount, setSocketCount] = useState(0);
   const params = useParams();
 
   const handleNavBar = (item) => {
     setNavbar(item);
   };
+  
+  // const joinRoom = () => {
+  //   console.log(presentation);
+  //   if (socket.connected && presentation) {
+  //     socket.emit("join-presentation", {
+  //       liveId: params.id,
+  //       user: presentation.User,
+  //       socketId,
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
-    console.log(socket.connected);
+    socket.on("connect", () => {
+      setSocketCount(prev => {
+        if (prev > 5)
+          return 0;
+        return prev + 1
+      });
+    });
+
+    socket.on("disconnect", (reason)=> {
+      console.log(reason);
+    })
 
     socket.on("client-live", (live) => {
       requestCurrentIndex = false;
@@ -79,7 +101,7 @@ function Interface() {
         socketId,
       });
     }
-  }, [presentation]);
+  }, [presentation, socketCount]);
 
   useEffect(() => {
     if (fetching) return;

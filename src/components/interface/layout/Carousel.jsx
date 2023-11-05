@@ -103,6 +103,9 @@ export const Carousel = ({
 
   useEffect(() => {
     const updateOnlineStatus = () => {
+      if (navigator.onLine) {
+        socket.connect();
+      }
       setStatus((prevState) => ({
         ...prevState,
         online: navigator.onLine ? true : "null",
@@ -112,7 +115,12 @@ export const Carousel = ({
 
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
-  }, [status.offline, status.online]);
+    
+    return () => {
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
+    }
+  }, []);
 
   if (status.online === true) {
     setTimeout(() => {
