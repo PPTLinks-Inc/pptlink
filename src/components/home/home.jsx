@@ -7,8 +7,6 @@ import { Helmet } from "react-helmet";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-let code = "";
-
 const Home = () => {
   const navigate = useNavigate();
   const [codeOrLink, setCodeOrLink] = useState("");
@@ -17,12 +15,10 @@ const Home = () => {
     e.preventDefault();
     try {
       const url = new URL(codeOrLink);
-      code = url.pathname.split("/")[1];
-    } catch (e) { 
-      code = codeOrLink;
-    }
-    finally {
+      const code = url.pathname.split("/")[1];
       navigate(`/${code}`);
+    } catch (e) { 
+      navigate(`/${codeOrLink}`);
     }
   }
 

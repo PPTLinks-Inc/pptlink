@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { FaSync, FaDownload } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 import "./spinner.css";
 import "./spinner2.css";
 import { useState } from "react";
