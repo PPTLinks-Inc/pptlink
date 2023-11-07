@@ -4,13 +4,6 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Close } from "@material-ui/icons";
 
-type Element = {
-  row: React.HTMLAttributes<HTMLInputElement>["className"];
-  col: React.HTMLAttributes<HTMLDivElement>["className"];
-  image: string;
-  index: number;
-};
-
 const members = [
   {
     bannerColor: "bg-green-400",
@@ -134,7 +127,7 @@ I am passionate about teaching and passing my knowledge to make the world a bett
   },
 ];
 
-let focusedMember: number | null = null;
+let focusedMember = null;
 
 const memberReducer = (memberState, action) => {
   return action;
@@ -148,15 +141,13 @@ export default function About() {
   const [active, setActive] = useState(false);
   const [intro, setIntro] = useState(true);
 
-  const membersRef = useRef<HTMLDivElement>();
+  const membersRef = useRef();
   // .ref?: React.LegacyRef<HTMLElement> | undefined
-  const memberRef = useRef<HTMLDivElement>();
-  const topRef = useRef<HTMLDivElement>();
+  const memberRef = useRef();
+  const topRef = useRef();
 
-  const [memberState, memberDispatch] = useReducer<any>(
-    memberReducer,
-    focusedMember
-  );
+  const [memberState, memberDispatch] =
+    useReducer < any > (memberReducer, focusedMember);
 
   // const [showState, showDispatch] = useReducer<any>(showReducer, false);
   null;
