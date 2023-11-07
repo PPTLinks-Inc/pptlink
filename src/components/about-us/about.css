@@ -1,38 +1,152 @@
-/* ignore */
-body {
-  margin: 0;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-#grid {
-  height: 100vh;
+@keyframes anti-spin {
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
-#left {
-  background: crimson;
+.trigger-cell.col-span-2 {
+  animation: animate-col-2 1s forwards ease;
 }
 
-#right {
-  background: navajowhite;
-  border: 3rem solid rgb(0 0 0 / 10%);
+.trigger-cell.col-span-1 {
+  animation: animate-col-1 1s forwards ease;
 }
 
-/* the magic */
-#grid {
-  transition: 300ms;
-  display: grid;
-  grid-template-columns: 48px auto;
+.trigger-cell.row-span-2 {
+  animation: animate-row-2 1s forwards ease;
 }
 
-#grid:has(#left:hover) {
-  grid-template-columns: 30% auto;
-}
-/* magic + CSS variable */
-#grid {
-  transition: 300ms;
-  display: grid;
-  grid-template-columns: var(--left, 48px) auto;
+.trigger-cell.row-span-4 {
+  animation: animate-row-4 1s forwards ease;
 }
 
-#grid:has(#left:hover) {
-  --left: 30%;
+.open-cell {
+  animation: animate-full 1s forwards ease;
+}
+
+@keyframes animate-full {
+  0% {
+    @apply w-[40vw];
+  }
+  100% {
+    @apply w-[80vw];
+  }
+}
+
+@keyframes animate-col-2 {
+  0% {
+    @apply w-[80vw];
+  }
+  70% {
+    @apply w-[40vw];
+  }
+  100% {
+    @apply w-auto;
+  }
+}
+
+@keyframes animate-col-1 {
+  0% {
+    @apply w-[80vw];
+  }
+  70% {
+    @apply w-[20vw];
+  }
+  100% {
+    @apply w-auto;
+  }
+}
+
+@keyframes animate-row-2 {
+  0% {
+    @apply h-[80vh];
+  }
+  70% {
+    @apply h-[20vh];
+  }
+  100% {
+    @apply h-auto;
+  }
+}
+
+@keyframes animate-row-4 {
+  0% {
+    @apply h-[80vh];
+  }
+  70% {
+    @apply h-[40vh];
+  }
+  100% {
+    @apply h-auto;
+  }
+}
+
+.animate-rotate-xs {
+  animation: spin 25s linear infinite;
+}
+
+.-animate-rotate-xs {
+  animation: anti-spin 25s linear infinite;
+}
+
+.animate-rotate-sm {
+  animation: spin 20s linear infinite;
+}
+
+.-animate-rotate-sm {
+  animation: anti-spin 20s linear infinite;
+}
+
+.animate-rotate-md {
+  animation: spin 15s linear infinite;
+}
+
+.-animate-rotate-md {
+  animation: anti-spin 15s linear infinite;
+}
+
+.animate-rotate-lg {
+  animation: spin 10s linear infinite;
+}
+
+.-animate-rotate-lg {
+  animation: anti-spin 10s linear infinite;
+}
+
+.animate-rotate-xl {
+  animation: spin 5s linear infinite;
+}
+
+.-animate-rotate-xl {
+  animation: anti-spin 5s linear infinite;
+}
+
+.animate-rotate-2xl {
+  animation: spin 1s linear infinite;
+}
+
+.-animate-rotate-2xl {
+  animation: anti-spin 1s linear infinite;
+}
+
+section {
+  @apply backdrop-blur;
+}
+
+.text-grid {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  /* background-color: #9c27b0; */
+}
+
+.grid-rows-10 {
+  grid-template-rows: repeat(10, minmax(0, 1fr));
 }
