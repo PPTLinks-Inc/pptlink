@@ -1,8 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import "./about.css";
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Close } from "@material-ui/icons";
+import { FaClose } from "react-icons/fa";
 
 const members = [
   {
@@ -227,7 +226,7 @@ export default function About() {
                   }, 600);
                 }}
               >
-                X
+                <FaClose />
               </button>
             )}
             {!memberState && (
