@@ -115,11 +115,11 @@ export const Carousel = ({
 
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
-    
+
     return () => {
       window.removeEventListener("online", updateOnlineStatus);
       window.removeEventListener("offline", updateOnlineStatus);
-    }
+    };
   }, []);
 
   if (status.online === true) {
@@ -416,7 +416,9 @@ export const Carousel = ({
               <div className="w-fit h-fit flex flex-col justify-between">
                 <img src={animation1} alt="animation image" />
 
-                <p className="text-slate-200">Rotate to landscape mode</p>
+                <p className="text-slate-200">
+                  Change Orientation to Landscape
+                </p>
               </div>
             </div>
           )}
