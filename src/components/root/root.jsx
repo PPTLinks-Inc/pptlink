@@ -146,11 +146,10 @@ export default function Root() {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${
-          color === "black"
-            ? " bg-black text-slate-200"
-            : "bg-slate-200 text-black"
-        }`}
+        className={`px-7 rounded-xl py-1 ${color === "black"
+          ? " bg-black text-slate-200"
+          : "bg-slate-200 text-black"
+          }`}
         onClick={() => handleClick()}
       >
         Present
@@ -161,9 +160,9 @@ export default function Root() {
   return (
     <>
       <div className="w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col tall:w-[1440px] tall:m-auto">
-        <div>
+        <div className="w-full h-fit">
           {page.dropdown ? (
-            <div className="h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]">
+            <div className="h-[10rem] flex justify-between items-center py-3 w-[95%] m-auto border lg:p-[2.5rem] lg:h-[10rem]">
               <div>
                 <p className="text-xl tracking-widest font-bold cursor-pointer">
                   <Link to="/">PPTLinks.</Link>
@@ -187,12 +186,17 @@ export default function Root() {
 
         <div className="flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row ">
           <Link
-            to={INSTITUTIONS}
+            to={LOGIN}
             className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
           >
-            Institutions
+            Login
           </Link>
-
+          <Link
+            to={UPLOAD}
+            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
+          >
+            Upload
+          </Link>
           <Link
             to={ABOUT}
             className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
@@ -205,12 +209,6 @@ export default function Root() {
             className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14 "
           >
             Legal
-          </Link>
-          <Link
-            to={UPLOAD}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
-          >
-            Upload
           </Link>
         </div>
 
@@ -244,17 +242,16 @@ export default function Root() {
 
         <div
           ref={mainRef}
-          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 md:px-[2.5rem] md:top-[5px] ${
-            page.dropdown
-              ? "transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500"
-              : "transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]"
-          }`}
+          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 md:px-[2.5rem] md:top-[5px] ${page.dropdown
+            ? "transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500"
+            : "transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]"
+            }`}
         >
-          <div className="h-[6rem]">
+          <div className="w-full h-[fit-content]">
             {!page.dropdown && (
-              <div className="h-[10rem] px-[1.5rem] flex justify-between items-center">
+              <div className="w-[95%] m-auto h-[10rem] flex justify-between items-center">
                 <div>
-                  <p className="text-xl tracking-widest font-bold cursor-pointer ">
+                  <p className="md:text-xl tracking-widest font-bold cursor-pointer ">
                     <Link to="/">PPTLinks.</Link>
                   </p>
                 </div>
@@ -280,7 +277,7 @@ export default function Root() {
           )}
           <footer className="w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col ">
             <div className="w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between">
-              <div className="w-[100%] px-[2.5rem]  m-auto lg:m-0 flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between">
+              <div className="w-[95%] m-auto lg:m-0 flex  mt-0 justify-between lg:w-[50%] lg:px-6">
                 <div className="h-[100%] flex flex-col">
                   <h4 className="text-lg font-bold my-1">Internal</h4>
                   <Link to={HOME} className="py-2">
@@ -300,7 +297,7 @@ export default function Root() {
                   </Link>
                 </div>
 
-                <div className="h-full flex flex-col mx-4">
+                <div className="h-full flex flex-col">
                   <h4 className="text-lg font-bold my-1">Documentation</h4>
                   <Link to={ABOUT} className="py-2">
                     About us
@@ -313,7 +310,7 @@ export default function Root() {
                   </Link>
                 </div>
 
-                <div className="h-full flex flex-col mx-2">
+                <div className="h-full flex flex-col">
                   <h4 className="text-lg font-bold my-1">External</h4>
                   <Link to="zutayah.com" className="py-2">
                     Zutayah
@@ -366,10 +363,9 @@ export default function Root() {
                     onChange={(e) =>
                       setPage({ ...page, message: e.target.value })
                     }
-                    className={`w-full resize-none p-[30px] bg-transparent ${
-                      page.submitErrors.length > 0 &&
+                    className={`w-full resize-none p-[30px] bg-transparent ${page.submitErrors.length > 0 &&
                       "border-b border-slate-200"
-                    }`}
+                      }`}
                   />
 
                   {page.submitErrors.length > 0 && (
@@ -396,14 +392,14 @@ export default function Root() {
               </form>
             </div>
 
-            <div className="grow-[.3] px-[1.5rem] py-16 w-[100%] border-t border-slate-950 flex flex-row justify-between items-center">
+            <div className="grow-[.3] w-[95%] m-auto py-16 border-t border-slate-950 flex flex-row flex-wrap justify-between !items-center">
               <div>
-                <p className="text-xl tracking-widest font-bold cursor-pointer">
+                <p className="basis-[300px] tracking-widest font-bold cursor-pointer">
                   <Link to="/">PPTLinks.</Link>
                 </p>
               </div>
 
-              <small>
+              <small className="block w-fit h-fit">
                 &copy; PPTLinks {new Date().getFullYear()}. All rights reserved
               </small>
             </div>

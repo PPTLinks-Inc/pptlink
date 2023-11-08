@@ -13,7 +13,7 @@ html {
   scroll-behavior: smooth;
 }
 
-button {
+button {  
   @apply hover:animate-none active:scale-95 transition-all duration-200;
 }
 
