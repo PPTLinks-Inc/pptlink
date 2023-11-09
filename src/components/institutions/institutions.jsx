@@ -182,7 +182,7 @@ const Institutions = () => {
               </div>
             ) : (
               <>
-                <div className="w-full h-fit flex justify-items-start flex-wrap gap-x-5 gap-y-[60px]">
+                <div className="w-full h-fit flex md:grid md:grid-cols-3 justify-items-start flex-wrap gap-x-5 gap-y-[60px]">
                   {values.presentations.length < 1 ? (
                     <div className="w-full h-[25vh] flex justify-center items-center">
                       <LoadingAssetBig2 />

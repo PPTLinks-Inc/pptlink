@@ -91,7 +91,7 @@ function Interface() {
     socket.on("socketId", (id) => {
       socketId = id;
     });
-  }, []);
+  }, [presentation]);
 
   useEffect(() => {
     if (socket.connected && presentation) {
