@@ -184,36 +184,35 @@ export default function Root() {
           )}
         </div>
 
-        <div className="flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row ">
+        <div className="flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row">
           <Link
             to={LOGIN}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
+            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
           >
             Login
           </Link>
           <Link
             to={UPLOAD}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
+            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
           >
             Upload
           </Link>
           <Link
-            to={ABOUT}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
-          >
-            About
-          </Link>
-
-          <Link
             to={LEGAL}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14 "
+            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
           >
             Legal
           </Link>
+          <Link
+            to={ABOUT}
+            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
+          >
+            About
+          </Link>
         </div>
 
-        <div className=" border border-slate-100 border-collapse text-left flex flex-col lg:flex-row lg:h-[7.5rem] lg:mb-4">
-          <div className="px-5 border flex-1">
+        <div className="w-[95%] m-auto border-slate-100 border-collapse text-left flex flex-col lg:flex-row lg:h-[7.5rem] lg:mb-4">
+          <div className="px-5 flex-1">
             <h2 className="text-2xl mt-4 mb-6 font-medium">Our location</h2>
 
             <p>
@@ -221,10 +220,10 @@ export default function Root() {
               opposite Elim church, 740102, Yelwa, Bauchi Nigeria
             </p>
           </div>
-          <div className="px-5 border  flex-1">
-            <div className="text-xl font-medium my-6">External</div>
+          <div className="px-5  flex-1">
+            <h3 className="text-xl font-medium my-6">External</h3>
 
-            <div className="flex m-auto  mb-6 flex-row justify-between w-[230px]">
+            <div className="flex m-auto  mb-6 flex-row justify-between w-full">
               <TbWorldWww className="text-black text-2xl cursor-pointer" />
 
               <BsInstagram className="text-black text-2xl cursor-pointer" />
