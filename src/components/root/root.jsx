@@ -18,7 +18,6 @@ import {
   ABOUT,
   DASHBOARD,
   HOME,
-  INSTITUTIONS,
   LEGAL,
   LOGIN,
   SIGNUP,
@@ -285,7 +284,7 @@ export default function Root() {
                   <Link to={UPLOAD} className="py-2">
                     Upload
                   </Link>
-                  <Link to={INSTITUTIONS} className="py-2">
+                  <Link to={HOME} className="py-2">
                     Institutions
                   </Link>
                   <Link to={SIGNUP} className="py-2">
