@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import "./about.css";
-import React from "react";
-import { FaClose } from "react-icons/fa";
+// import React from "react";
+// import { FaClose } from "react-icons/fa";
 
 const members = [
   {
@@ -14,7 +14,8 @@ const members = [
     text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam qui dolorem recusandae expedita pariatur, reprehenderit placeat quo dolorum, consequatur consequuntur blanditiis cupiditate delectus officia aliquam? At accusamus nostrum vero iusto distinctio molestias facere cupiditate hic reiciendis repudiandae?",
   },
   {
-    bannerColor: "bg-red-400",
+    // ///////////////////////////////////////////////////
+    bannerColor: "bg-cyan-900",
     row: "row-span-2",
     col: "col-span-2 md:col-span-1",
     image: "/team/dorathy.jpg",
@@ -42,7 +43,7 @@ const members = [
 [11/5, 20:49] +234 706 553 7567: I am Dorathy Paul, a web developer with a passion for creati`,
   },
   {
-    bannerColor: "bg-blue-400",
+    bannerColor: "bg-cyan-600",
     row: "row-span-2",
     col: "col-span-2 md:col-span-1",
     image: "/team/mujeeb.jpg",
@@ -132,21 +133,21 @@ const memberReducer = (memberState, action) => {
   return action;
 };
 
-const showReducer = (showState, action) => {
-  return action;
-};
+// const showReducer = (showState, action) => {
+//   return action;
+// };
 
 export default function About() {
-  const [active, setActive] = useState(false);
+  // const [active, setActive] = useState(false);
   const [intro, setIntro] = useState(true);
 
   const membersRef = useRef();
   // .ref?: React.LegacyRef<HTMLElement> | undefined
-  const memberRef = useRef();
+  // const memberRef = useRef();
   const topRef = useRef();
 
   const [memberState, memberDispatch] =
-    useReducer < any > (memberReducer, focusedMember);
+    useReducer(memberReducer, focusedMember);
 
   // const [showState, showDispatch] = useReducer<any>(showReducer, false);
   null;
@@ -169,9 +170,9 @@ export default function About() {
   }, [memberState]);
 
   return (
-    <main className="relative w-screen h-screen overflow-auto">
+    <main className="relative w-screen_ h-screen mt-12">
       <div
-        className={`fixed flex items-center transition-all duration-500 justify-center z-50 top-0 left-0 w-full h-full bg-gray-500 ${
+        className={`fixed flex items-center transition-all duration-500 justify-center z-50 top-0 left-0 w-full h-full ${
           intro ? "opacity-1 -translate-y-0" : "opacity-0 translate-y-full"
         }`}
       >
@@ -186,8 +187,8 @@ export default function About() {
           memberState
             ? "grid-cols-6 translate-y-[90vh]"
             : "grid-cols-6 translate-y-0"
-        } md:p-12 ${
-          !memberState && "grid-rows-10 md:grid-rows-6"
+        } md:p-12_ ${
+          !memberState && "grid-rows-10_ md:grid-rows-6"
         } grid-flow-dense_ transition-all duration-1000 gap-2`}
       >
         {members.map((element, index) => (
@@ -197,17 +198,17 @@ export default function About() {
               e.preventDefault();
               memberDispatch(index + 1);
             }}
-            className={`cell overflow-auto flex flex-col md:flex-row items-stretch rounded-r-md  ${
+            className={`cell overflow-auto flex flex-col md:flex-row items-stretch rounded-r-md   ${
               element.bannerColor
             } ${
               memberState === index ? "z-20 gap-2 p-2" : "z-20 gap-0"
             } group transition-all duration-1000 overflow-clip cursor-pointer ${
               memberState
-                ? "md:aspect-square max-h-sm !col-span-1 !row-span-1"
+                ? "md:aspect-square max-h-sm_ !col-span-1 !row-span-1"
                 : `${element.col} ${element.row} aspect-auto`
             } ${
               memberState === index + 1
-                ? "absolute w-[80vw] m-auto border inset-0 -translate-y-[90vh] h-[80vh] open-cell"
+                ? "absolute w-[80vw] m-auto inset-0 -translate-y-[90vh] h-[80vh] open-cell"
                 : "relative border-none trigger-cell"
             } `}
             key={index}
@@ -226,7 +227,7 @@ export default function About() {
                   }, 600);
                 }}
               >
-                <FaClose />
+                X
               </button>
             )}
             {!memberState && (
@@ -246,14 +247,14 @@ export default function About() {
             )}
 
             <div
-              className={`overflow-clip absolute top-0 left-0 md:static self-center_ ${
-                memberState ? "w-80 h-96" : "w-full h-full"
+              className={`overflow-clip absolute top-0 left-0 md:static self-center_  ${
+                memberState ? "w-80 h-full" : "w-full h-full"
               }`}
             >
               <img
                 src={element.image}
                 alt=""
-                className="object-cover transition-all duration-1000 group-hover:scale-105"
+                className="object-cover transition-all h-full duration-1000 group-hover:scale-105 w-full"
               />
             </div>
             {

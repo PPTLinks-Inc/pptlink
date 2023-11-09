@@ -46,8 +46,9 @@ function App() {
             <Route path="institutions" element={<List />} />
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="upload" element={<Upload />} />
+            <Route path="about" element={<About />} />
           </Route>
-          <Route path="about-us" element={<About />} />
+          {/* <Route path="about-us" element={<About />} /> */}
           <Route path="/:id" element={<Interface />} />
         </Routes>
       </BrowserRouter>

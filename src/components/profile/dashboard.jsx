@@ -121,7 +121,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around">
+    <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around_">
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Dashboard - PPTLinks `}</title>
@@ -222,7 +222,7 @@ const Dashboard = () => {
               </div>
             ) : (
               <>
-                <div className="w-full h-fit flex justify-start flex-wrap gap-x-5 gap-y-[60px]">
+                <div className="w-full h-fit flex md:grid md:grid-cols-3 justify-start flex-wrap gap-x-5 gap-y-[60px]">
                   {values.setPresentations.length < 1 ? (
                     <div className="w-full h-[25vh] flex justify-center items-center">
                       <LoadingAssetBig2 />
