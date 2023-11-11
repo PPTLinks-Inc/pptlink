@@ -158,86 +158,89 @@ export default function Root() {
 
   return (
     <>
-      <div className="w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col tall:w-[1440px] tall:m-auto">
-        <div className="w-full h-fit">
-          {page.dropdown ? (
-            <div className="h-[10rem] flex justify-between items-center py-3 w-[95%] m-auto border lg:p-[2.5rem] lg:h-[10rem]">
-              <div>
-                <p className="text-xl tracking-widest font-bold cursor-pointer">
-                  <Link to="/">PPTLinks.</Link>
+      <div className="w-full h-[100vh] bg-slate-200 relative flex-wrap flex-col tall:w-[1440px] tall:m-auto">
+        <div className="w-full h-full maxScreenMobile:overflow-auto">
+          <div className="w-full h-fit">
+            {page.dropdown ? (
+              <div className="h-[10rem] flex justify-between items-center py-3 w-[95%] m-auto border lg:p-[2.5rem] lg:h-[10rem]">
+                <div>
+                  <p className="text-xl tracking-widest font-bold cursor-pointer">
+                    <Link to="/">PPTLinks.</Link>
+                  </p>
+                </div>
+
+                <div className="w-[10rem] flex justify-between items-center">
+                  <PresentButton color={"black"} />
+                  <button
+                    className="border-none p-2 rounded-full transition duration-300 hover:bg-slate-100"
+                    onClick={handleDropdown}
+                  >
+                    <MdClose className="text-black w-[25px] h-[25px] " />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]"></div>
+            )}
+          </div>
+
+          <div className="w-full h-[90vh]">
+            <div className="flex-col w-[100%] h-[50%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row">
+              <Link
+                to={LOGIN}
+                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                Login
+              </Link>
+              <Link
+                to={UPLOAD}
+                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                Upload
+              </Link>
+              <Link
+                to={LEGAL}
+                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                Legal
+              </Link>
+              <Link
+                to={ABOUT}
+                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                About
+              </Link>
+            </div>
+
+            <div className="w-[95%] m-auto border-slate-100 border-collapse text-left flex flex-col lg:flex-row">
+              <div className="px-5 flex-1">
+                <h2 className="text-2xl mt-4 mb-6 font-medium">Our location</h2>
+
+                <p>
+                  You can find us at Nascomsoft in Anguwan Cashew, Off dass road,
+                  opposite Elim church, 740102, Yelwa, Bauchi Nigeria
                 </p>
               </div>
+              <div className="px-5  flex-1">
+                <h3 className="text-xl font-medium my-6">External</h3>
 
-              <div className="w-[10rem] flex justify-between items-center">
-                <PresentButton color={"black"} />
-                <button
-                  className="border-none p-2 rounded-full transition duration-300 hover:bg-slate-100"
-                  onClick={handleDropdown}
-                >
-                  <MdClose className="text-black w-[25px] h-[25px] " />
-                </button>
+                <div className="flex  mb-6 flex-row justify-between items-start w-full md:w-2/5">
+                  <TbWorldWww className="text-black text-2xl cursor-pointer" />
+
+                  <BsInstagram className="text-black text-2xl cursor-pointer" />
+
+                  <AiFillFacebook className="text-black text-2xl cursor-pointer" />
+
+                  <FiTwitter className="text-black text-2xl cursor-pointer" />
+
+                  <AiFillGithub className="text-black text-2xl cursor-pointer" />
+
+                  <AiOutlineLinkedin className="text-black text-2xl  cursor-pointer" />
+                </div>
               </div>
             </div>
-          ) : (
-            <div className="h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]"></div>
-          )}
-        </div>
-
-        <div className="flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row">
-          <Link
-            to={LOGIN}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
-          >
-            Login
-          </Link>
-          <Link
-            to={UPLOAD}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
-          >
-            Upload
-          </Link>
-          <Link
-            to={LEGAL}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
-          >
-            Legal
-          </Link>
-          <Link
-            to={ABOUT}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px]"
-          >
-            About
-          </Link>
-        </div>
-
-        <div className="w-[95%] m-auto border-slate-100 border-collapse text-left flex flex-col lg:flex-row lg:h-[7.5rem] lg:mb-4">
-          <div className="px-5 flex-1">
-            <h2 className="text-2xl mt-4 mb-6 font-medium">Our location</h2>
-
-            <p>
-              You can find us at Nascomsoft in Anguwan Cashew, Off dass road,
-              opposite Elim church, 740102, Yelwa, Bauchi Nigeria
-            </p>
-          </div>
-          <div className="px-5  flex-1">
-            <h3 className="text-xl font-medium my-6">External</h3>
-
-            <div className="flex m-auto  mb-6 flex-row justify-between w-full">
-              <TbWorldWww className="text-black text-2xl cursor-pointer" />
-
-              <BsInstagram className="text-black text-2xl cursor-pointer" />
-
-              <AiFillFacebook className="text-black text-2xl cursor-pointer" />
-
-              <FiTwitter className="text-black text-2xl cursor-pointer" />
-
-              <AiFillGithub className="text-black text-2xl cursor-pointer" />
-
-              <AiOutlineLinkedin className="text-black text-2xl  cursor-pointer" />
-            </div>
           </div>
         </div>
-
         <div
           ref={mainRef}
           className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 md:px-[2.5rem] md:top-[5px] ${page.dropdown
@@ -245,7 +248,7 @@ export default function Root() {
             : "transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]"
             }`}
         >
-          <div className="w-full h-[fit-content]">
+          <div className="w-full h-[10rem]">
             {!page.dropdown && (
               <div className="w-[95%] m-auto h-[10rem] flex justify-between items-center">
                 <div>
