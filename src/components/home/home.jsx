@@ -8,8 +8,8 @@ import { LoadingAssetSmall2, LoadingAssetBig2 } from "../../assets/assets";
 import { Helmet } from "react-helmet";
 import { useInView } from "react-intersection-observer";
 import LogoBlack from "../../images/Logo-Black.png";
-import Ellipse from "./../../images/Ellipse.png";
 import loading from "./../../images/loading.png";
+import MovingEllipses from "../MovingEllipes"
 
 const initialPageNo = 1;
 let shouldFetchMoreData = true;
@@ -149,11 +149,11 @@ const Home = () => {
         <form className="flex flex-wrap w-[100%] md:w-[100%] justify-between lg:justify-start gap-3 mb-[45px]">
           <input
             type="text"
-            placeholder="Find institution"    
+            placeholder="Find institution"
             className="block w-[70%] grow shrink basis-[300px] lg:max-w-[450px] border border-slate-200 px-[15px] mr-2 py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1"
           />
 
-          <button         
+          <button
             className="block w-[fit-content] px-7 rounded-xl py-[9px] bg-slate-200 text-black my-1"
             type="submit"
           >
@@ -220,9 +220,10 @@ const Home = () => {
           className="w-full"
         />
       </div>
+      <MovingEllipses />
     </section>
 
-   
+
   );
 };
 

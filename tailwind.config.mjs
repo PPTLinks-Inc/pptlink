@@ -24,8 +24,8 @@ module.exports = {
       },
       screens: {
         tall: { raw: "(min-width: 2000px)" },
-        // => @media (min-width: 1440px) { ... }
         maxScreen: { raw: "(max-width: 1050px)" },
+        maxScreenMobile: { raw: "(max-width: 768px)" },
       },
     },
   },
