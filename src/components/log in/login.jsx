@@ -194,7 +194,7 @@ const Login = () => {
 
       {!values.signup && (
         <form onSubmit={handleLogin} autoComplete="false" className="w-full">
-          <div className="w-full m-auto border border-slate-200 rounded-xl border-collapse lg:w-[50%]">
+          <div className="w-full m-auto border border-slate-200 rounded-xl border-collapse lg:w-[500px]">
             <div className="border-b border-slate-200 w-full p-[30px]">
               <h1 className="text-xl font-bold">Log in</h1>
               Note: If you belong to an institution, log in using your email and
@@ -208,9 +208,8 @@ const Login = () => {
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
             <div
-              className={`w-full h-fit flex bg-transparent ${
-                values.validateError.length > 0 && "border-b border-slate-200"
-              }`}
+              className={`w-full h-fit flex bg-transparent ${values.validateError.length > 0 && "border-b border-slate-200"
+                }`}
             >
               <input
                 type={values.showPassword ? "text" : "password"}
@@ -222,9 +221,8 @@ const Login = () => {
                 }
               />
               <div
-                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
-                  values.validateError.length === 0 && "rounded-br-xl"
-                }`}
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${values.validateError.length === 0 && "rounded-br-xl"
+                  }`}
                 onClick={showPassword}
               >
                 {values.showPassword ? (
@@ -245,7 +243,7 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex m-auto gap-3 justify-between items-center lg:w-[50%]'>
+          <div className='flex m-auto gap-3 justify-between items-center lg:w-[500px]'>
             <button
               type="submit"
               disabled={values.loginPending}
@@ -273,7 +271,7 @@ const Login = () => {
 
       {values.signup && (
         <form onSubmit={handleSignup} className="w-full">
-          <div className='w-full m-auto border border-slate-200 rounded-xl border-collapse lg:w-[50%]'>
+          <div className='w-full m-auto border border-slate-200 rounded-xl border-collapse lg:w-[500px]'>
             <div className='border-b border-slate-200 w-full p-[30px]'>
               <h1 className='text-xl font-bold'>Sign up</h1>
               Please input the necessary information and create an account
@@ -296,9 +294,8 @@ const Login = () => {
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
             <div
-              className={`w-full h-fit flex bg-transparent ${
-                values.validateError.length > 0 && "border-b border-slate-200"
-              }`}
+              className={`w-full h-fit flex bg-transparent ${values.validateError.length > 0 && "border-b border-slate-200"
+                }`}
             >
               <input
                 type={values.showPassword ? "text" : "password"}
@@ -310,9 +307,8 @@ const Login = () => {
                 }
               />
               <div
-                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
-                  values.validateError.length === 0 && "rounded-br-xl"
-                }`}
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${values.validateError.length === 0 && "rounded-br-xl"
+                  }`}
                 onClick={showPassword}
               >
                 {values.showPassword ? (
@@ -333,7 +329,7 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex m-auto gap-3 justify-between items-center lg:w-[50%]'>
+          <div className='flex m-auto gap-3 justify-between items-center lg:w-[500px]'>
             <button
               type='submit'
               className='px-0.5 flex items-center justify-center w-36 md:px-7 rounded-xl bg-slate-200 text-black my-[20px]'
