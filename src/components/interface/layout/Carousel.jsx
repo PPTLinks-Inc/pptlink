@@ -3,7 +3,7 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import debounce from "lodash.debounce";
 import SwiperMySlide from "./assets/carousel/Swiper";
 import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
@@ -14,32 +14,26 @@ import { ToastContainer } from "react-toastify";
 import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { Button } from "@mui/material";
-import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../../assets/assets";
+import { LoadingAssetSmall2 } from "../../../assets/assets";
 import { isIOS } from "react-device-detect";
+import { PresentationContext } from "../../../contexts/presentationContext";
 
 let stopFunction = false;
 let navBar = false;
 let wakeLock = null;
 
-export const Carousel = ({
-  nav,
-  presentation,
-  makeLive,
-  socket,
-  livePending,
-  requestIndex,
-  socketId,
-}) => {
+export const Carousel = ({nav}) => {
+  const {presentation, makeLive, socket, livePending, syncButton, syncSlide} = useContext(PresentationContext);
   const [active, setActive] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
   const [timer, setTimer] = useState(4000);
-  const [syncButton, setSyncButton] = useState(true);
   const [status, setStatus] = useState({
     online: false,
     offline: false,
   });
+  const [noFullScreen, setNoFullScreen] = useState(false);
 
   const swiperRef = useRef();
 
@@ -48,8 +42,6 @@ export const Carousel = ({
     animation1: false,
     animation2: false,
   });
-
-  const list = ["", "", "", ""];
 
   const removeSpecialMedia = async () => {
     if (specialMedia.toggled === true) {
@@ -98,21 +90,33 @@ export const Carousel = ({
           document.msExitFullscreen();
         }
       }
+    } else {
+      setNoFullScreen(true);
     }
   }
 
-  useEffect(() => {
-    const updateOnlineStatus = () => {
-      if (navigator.onLine) {
-        socket.connect();
-      }
-      setStatus((prevState) => ({
-        ...prevState,
-        online: navigator.onLine ? true : "null",
-        offline: !navigator.onLine ? true : "null",
-      }));
-    };
+  const updateOnlineStatus = () => {
+    if (navigator.onLine) {
+      socket.connect();
+    }
+    setStatus((prevState) => ({
+      ...prevState,
+      online: navigator.onLine ? true : "null",
+      offline: !navigator.onLine ? true : "null",
+    }));
+  };
 
+  useEffect(() => {
+    if (status.online === true) {
+      setTimeout(() => {
+        setStatus((prevState) => ({
+          ...prevState,
+          online: false,
+        }));
+      }, 3000);
+    }
+  }, [status]);
+  useEffect(() => {
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
 
@@ -121,15 +125,6 @@ export const Carousel = ({
       window.removeEventListener("offline", updateOnlineStatus);
     };
   }, []);
-
-  if (status.online === true) {
-    setTimeout(() => {
-      setStatus((prevState) => ({
-        ...prevState,
-        online: false,
-      }));
-    }, 3000);
-  }
 
   const debouncedFunctionLead = debounce(
     () => {
@@ -230,7 +225,7 @@ export const Carousel = ({
       >
         {presentation.User === "HOST" && active && (
           <p
-            className="max-w-full bg-[white]/10 backdrop-blur-md text-[white]/50 absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between "
+            className="max-w-full bg-black/50 text-white absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between "
             onClick={() => {
               navigator.clipboard &&
                 navigator.clipboard.writeText(window.location.href);
@@ -245,12 +240,6 @@ export const Carousel = ({
           <ul className="h-full w-full flex relative ">
             <SwiperMySlide
               active={active}
-              socket={socket}
-              presentation={presentation}
-              requestIndex={requestIndex}
-              socketId={socketId}
-              setSyncButton={setSyncButton}
-              ref={swiperRef}
             />
           </ul>
         </div>
@@ -317,7 +306,7 @@ export const Carousel = ({
             {presentation.User !== "HOST" && !syncButton && (
               <>
                 <button
-                  onClick={() => swiperRef.current?.syncSlide()}
+                  onClick={() => syncSlide()}
                   title={syncButton ? "" : "Sync"}
                   className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
                     syncButton ? "bg-black" : "bg-slate-400 "
@@ -423,7 +412,7 @@ export const Carousel = ({
             </div>
           )}
 
-          {!specialMedia.animation1 && specialMedia.animation2 && (
+          {!specialMedia.animation1 && specialMedia.animation2 && !noFullScreen && (
             <div className="w-full h-full grid place-content-center">
               <div className="w-fit h-fit flex flex-col justify-between">
                 <FaExpand
