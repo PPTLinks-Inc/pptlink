@@ -28,6 +28,7 @@ import { useContext, useEffect } from "react";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { LoadingAssetBig2 } from "../../assets/assets";
+import MovingEllipses from "../animation/MovingEllipes"
 // import { socket } from '../../socket';
 
 export default function Root() {
@@ -186,25 +187,25 @@ export default function Root() {
             <div className="flex-col w-[100%] h-[50%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row">
               <Link
                 to={LOGIN}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 Login
               </Link>
               <Link
                 to={UPLOAD}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 Upload
               </Link>
               <Link
                 to={LEGAL}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 Legal
               </Link>
               <Link
                 to={ABOUT}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 About
               </Link>
@@ -273,6 +274,9 @@ export default function Root() {
           ) : (
             <Outlet />
           )}
+
+          <MovingEllipses />
+
           <footer className="w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col ">
             <div className="w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between">
               <div className="w-[95%] m-auto lg:m-0 flex  mt-0 justify-between lg:w-[50%] lg:px-6">
@@ -284,9 +288,9 @@ export default function Root() {
                   <Link to={UPLOAD} className="py-2">
                     Upload
                   </Link>
-                  <Link to={HOME} className="py-2">
+                  {/* <Link to={HOME} className="py-2">
                     Institutions
-                  </Link>
+                  </Link> */}
                   <Link to={SIGNUP} className="py-2">
                     sign up
                   </Link>
