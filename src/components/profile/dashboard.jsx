@@ -257,9 +257,8 @@ const Dashboard = () => {
 
                 <div
                   ref={arrowRef}
-                  className={`w-full h-[40px] flex items-center justify-center ${
-                    !shouldFetchMoreData && "hidden"
-                  }`}
+                  className={`w-full h-[40px] flex items-center justify-center ${!shouldFetchMoreData && "hidden"
+                    }`}
                 >
                   {values.setPresentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />

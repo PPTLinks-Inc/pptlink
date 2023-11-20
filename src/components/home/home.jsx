@@ -9,7 +9,6 @@ import { Helmet } from "react-helmet";
 import { useInView } from "react-intersection-observer";
 import LogoBlack from "../../images/Logo-Black.png";
 import loading from "./../../images/loading.png";
-import MovingEllipses from "../MovingEllipes"
 
 const initialPageNo = 1;
 let shouldFetchMoreData = true;
@@ -220,10 +219,7 @@ const Home = () => {
           className="w-full"
         />
       </div>
-      <MovingEllipses />
     </section>
-
-
   );
 };
 
