@@ -28,6 +28,7 @@ import { useContext, useEffect } from "react";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { LoadingAssetBig2 } from "../../assets/assets";
+import MovingEllipses from "../animation/MovingEllipes"
 // import { socket } from '../../socket';
 
 export default function Root() {
@@ -160,71 +161,68 @@ export default function Root() {
     <>
       <div className="w-full h-[100vh] bg-slate-200 relative flex-wrap flex-col tall:w-[1440px] tall:m-auto">
         <div className="w-full h-full maxScreenMobile:overflow-auto">
-          <div className="w-full h-fit">
-            {page.dropdown ? (
-              <div className="h-[10rem] flex justify-between items-center py-3 w-[95%] m-auto border lg:p-[2.5rem] lg:h-[10rem]">
-                <div>
-                  <p className="text-xl tracking-widest font-bold cursor-pointer">
-                    <Link to="/">PPTLinks.</Link>
-                  </p>
-                </div>
-
-                <div className="w-[10rem] flex justify-between items-center">
-                  <PresentButton color={"black"} />
-                  <button
-                    className="border-none p-2 rounded-full transition duration-300 hover:bg-slate-100"
-                    onClick={handleDropdown}
-                  >
-                    <MdClose className="text-black w-[25px] h-[25px] " />
-                  </button>
-                </div>
+          {page.dropdown ? (
+            <div className="h-[10rem] flex justify-between items-center py-3 w-[95%] m-auto border">
+              <div>
+                <p className="text-xl tracking-widest font-bold cursor-pointer">
+                  <Link to="/">PPTLinks.</Link>
+                </p>
               </div>
-            ) : (
-              <div className="h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]"></div>
-            )}
-          </div>
+
+              <div className="w-[10rem] flex justify-between items-center">
+                <PresentButton color={"black"} />
+                <button
+                  className="border-none p-2 rounded-full transition duration-300 hover:bg-slate-100"
+                  onClick={handleDropdown}
+                >
+                  <MdClose className="text-black w-[25px] h-[25px] " />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]"></div>
+          )}
 
           <div className="w-full h-[90vh]">
             <div className="flex-col w-[100%] h-[50%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row">
               <Link
                 to={LOGIN}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 Login
               </Link>
               <Link
                 to={UPLOAD}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 Upload
               </Link>
               <Link
                 to={LEGAL}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 Legal
               </Link>
               <Link
                 to={ABOUT}
-                className="border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] flex items-center justify-start maxScreenMobile:pl-[6%] md:pl-[3rem] font-medium py-0 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
               >
                 About
               </Link>
             </div>
 
             <div className="w-[95%] m-auto border-slate-100 border-collapse text-left flex flex-col lg:flex-row">
-              <div className="px-5 flex-1">
+              <div className="flex-1 pr-5">
                 <h2 className="text-2xl mt-4 mb-6 font-medium">Our location</h2>
-
                 <p>
                   You can find us at Nascomsoft in Anguwan Cashew, Off dass road,
                   opposite Elim church, 740102, Yelwa, Bauchi Nigeria
                 </p>
               </div>
-              <div className="px-5  flex-1">
+              <div className="flex-1 lg:pl-[2.5%]">
                 <h3 className="text-xl font-medium my-6">External</h3>
 
-                <div className="flex  mb-6 flex-row justify-between items-start w-full md:w-2/5">
+                <div className="flex  mb-6 flex-row justify-between items-start w-full md:w-3/5">
                   <TbWorldWww className="text-black text-2xl cursor-pointer" />
 
                   <BsInstagram className="text-black text-2xl cursor-pointer" />
@@ -276,6 +274,9 @@ export default function Root() {
           ) : (
             <Outlet />
           )}
+
+          <MovingEllipses />
+
           <footer className="w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col ">
             <div className="w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between">
               <div className="w-[95%] m-auto lg:m-0 flex  mt-0 justify-between lg:w-[50%] lg:px-6">
@@ -287,9 +288,9 @@ export default function Root() {
                   <Link to={UPLOAD} className="py-2">
                     Upload
                   </Link>
-                  <Link to={HOME} className="py-2">
+                  {/* <Link to={HOME} className="py-2">
                     Institutions
-                  </Link>
+                  </Link> */}
                   <Link to={SIGNUP} className="py-2">
                     sign up
                   </Link>
@@ -335,7 +336,7 @@ export default function Root() {
               </div>
 
               <form
-                className="lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto lg:m-0 flex flex-col items-start"
+                className="lg:w-[40%] w-[95%] pt-7 m-auto lg:m-0 flex flex-col items-start"
                 onSubmit={handleSubmit}
               >
                 <div className="w-full m-0 border border-slate-200 rounded-xl border-collapse">
