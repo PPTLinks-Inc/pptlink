@@ -21,6 +21,7 @@ import { PresentationContext } from "../../../contexts/presentationContext";
 let stopFunction = false;
 let navBar = false;
 let wakeLock = null;
+let setTimerActive = null;
 
 export const Carousel = ({nav}) => {
   const {presentation, makeLive, socket, livePending, syncButton, syncSlide} = useContext(PresentationContext);
@@ -34,8 +35,6 @@ export const Carousel = ({nav}) => {
     offline: false,
   });
   const [noFullScreen, setNoFullScreen] = useState(false);
-
-  const swiperRef = useRef();
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
@@ -209,6 +208,29 @@ export const Carousel = ({nav}) => {
     };
   }, []);
 
+  const handleMouseMove = () => {
+    setActive(true);
+    if (setTimerActive) {
+      clearTimeout(setTimerActive);
+    }
+
+    setTimerActive = setTimeout(() => {
+      setActive(false);
+    }, 5000);
+  }
+
+  const handleMouseClick = (e) => {
+    if (e.target.tagName !== "IMG") return;
+    if (active) {
+      setActive(false);
+      if (setTimerActive) {
+        clearTimeout(setTimerActive);
+      } 
+    } else {
+      setActive(true);
+    }
+  }
+
   return (
     <>
       <div
@@ -216,12 +238,8 @@ export const Carousel = ({nav}) => {
           enableFullscreen && "h-full w-full rotate-90"
         }`}
         ref={userRef}
-        onMouseMove={() => {
-          debouncedFunctionLead(), debouncedFunctionTrail();
-        }}
-        onClick={() => {
-          debouncedFunctionLead(), debouncedFunctionTrail();
-        }}
+        onMouseMove={handleMouseMove}
+        onClick={(e) => handleMouseClick(e)}
       >
         {presentation.User === "HOST" && active && (
           <p
@@ -274,14 +292,6 @@ export const Carousel = ({nav}) => {
           className={`h-16 w-16 rounded-full bottom-12 right-12  z-30 fixed transition-all duration-500 ${
             navbar ? "" : "active"
           } ${active ? "block" : "hidden"}`}
-          onMouseEnter={() => {
-            stopFunction = true;
-          }}
-          onMouseLeave={() => {
-            if (!navBar) {
-              stopFunction = false;
-            }
-          }}
         >
           <ul
             className={`w-full h-full flex items-center justify-center select-none`}

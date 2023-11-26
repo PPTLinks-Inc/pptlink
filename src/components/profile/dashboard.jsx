@@ -13,7 +13,7 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa";
-import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
+import { LoadingAssetBig2, LoadingAssetSmall2, LoadingAssetSmall } from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { UPLOAD } from "../../constants/routes";
 import { Helmet } from "react-helmet";
@@ -43,6 +43,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const { user, setUser } = useContext(userContext);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const [values, setValues] = useState({
     error: false,
@@ -71,7 +72,6 @@ const Dashboard = () => {
         }));
         isFetching = false;
         pageNoDIspatch(pageNo);
-        console.log(data);
         if (data.pagePresentationCount < 10) {
           shouldFetchMoreData = false;
         }
@@ -106,7 +106,8 @@ const Dashboard = () => {
     getPresentations();
   }, [values]);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = () => {
+    setLoggingOut(true);
     const sendData = { email: user.email };
     axios
       .post("/api/v1/auth/logout", sendData, { signal: controller.signal })
@@ -117,8 +118,11 @@ const Dashboard = () => {
 
         controller.abort();
       })
-      .catch((err) => console.log(err));
-  }, []);
+      .catch((err) => {
+        setLoggingOut(false);
+        console.log(err)
+      });
+  };
 
   return (
     <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around_">
@@ -201,8 +205,9 @@ const Dashboard = () => {
           <button
             className="px-7 rounded-xl py-2 bg-slate-200 text-black"
             onClick={handleLogout}
+            disabled={loggingOut}
           >
-            Log out
+            { loggingOut ? <LoadingAssetSmall /> : "Log out" }
           </button>
         </div>
         {values.pending && values.setPresentations.length < 1 ? (
