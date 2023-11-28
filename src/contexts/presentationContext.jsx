@@ -34,12 +34,11 @@ const PresentationContextProvider = (props) => {
   };
 
   const joinRoom = () => {
-    if (!swiperRef.current) return;
     if (socket.connected && presentation) {
       socket.emit("join-presentation", {
         liveId: params.id,
         user: presentation.User,
-        hostCurrentSlide: swiperRef.current.activeIndex
+        hostCurrentSlide: swiperRef.current ? swiperRef.current.activeIndex : 0
       }, (response) => {
         if (presentation.User != "HOST") {
           state = {
@@ -47,6 +46,7 @@ const PresentationContextProvider = (props) => {
             maxNext: response.maxSlide,
             hostSlideIndex: response.currentSlide
           }
+          if (!swiperRef.current) return;
           if (state.sync && swiperRef.current.activeIndex !== state.hostSlideIndex) {
             syncSlide();
           }
@@ -90,6 +90,7 @@ const PresentationContextProvider = (props) => {
     });
 
     socket.on("client-live", (live) => {
+      console.log(live);
       setPresentation((prev) => ({ ...prev, live }));
     });
     if (fetching) return;
