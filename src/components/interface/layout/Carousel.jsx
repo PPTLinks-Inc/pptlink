@@ -4,7 +4,6 @@
 /* eslint-disable no-unused-vars */
 
 import { useState, useRef, useEffect, useContext } from "react";
-import debounce from "lodash.debounce";
 import SwiperMySlide from "./assets/carousel/Swiper";
 import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
 import animation1 from "./assets/images/animation1.gif";
@@ -25,11 +24,10 @@ let setTimerActive = null;
 
 export const Carousel = ({nav}) => {
   const {presentation, makeLive, socket, livePending, syncButton, syncSlide} = useContext(PresentationContext);
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(true);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
-  const [timer, setTimer] = useState(4000);
   const [status, setStatus] = useState({
     online: false,
     offline: false,
@@ -119,26 +117,13 @@ export const Carousel = ({nav}) => {
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
 
+    handleMouseMove();
+
     return () => {
       window.removeEventListener("online", updateOnlineStatus);
       window.removeEventListener("offline", updateOnlineStatus);
     };
   }, []);
-
-  const debouncedFunctionLead = debounce(
-    () => {
-      setActive(true);
-      // console.log('wait');
-    },
-    4000,
-    { leading: true, trailing: false }
-  );
-
-  const debouncedFunctionTrail = debounce(() => {
-    if (stopFunction) return;
-
-    setActive(false);
-  }, timer);
 
   const requireWakeLock = async () => {
     try {
@@ -146,7 +131,7 @@ export const Carousel = ({nav}) => {
         wakeLock = await navigator.wakeLock.request("screen");
       }
     } catch (err) {
-      console.error(`${err.name}, ${err.message}`);
+      console.error(`Wake lock not available`);
     }
   };
   const handleScreenOrientation = (e) => {
@@ -225,9 +210,9 @@ export const Carousel = ({nav}) => {
       setActive(false);
       if (setTimerActive) {
         clearTimeout(setTimerActive);
-      } 
+      }
     } else {
-      setActive(true);
+      handleMouseMove();
     }
   }
 
