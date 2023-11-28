@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Ellipse from "../images/Ellipse.png";
-import "./MovingEllipes.css"
+import Ellipse from "../../images/Ellipse.png";
+import './anim.css'
 export default function MovingEllipses() {
     const [ellipses, setEllipses] = useState([]);
 
