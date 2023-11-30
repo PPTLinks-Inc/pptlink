@@ -59,8 +59,6 @@ const Institutions = () => {
         }
       )
       .then(({ data }) => {
-        console.log(data);
-
         setValues((prev) => ({
           ...prev,
           presentations: [...prev.presentations, ...data.presentations],
@@ -93,8 +91,8 @@ const Institutions = () => {
     getPresentations();
 
     const institution = withoutUnderscore(id);
-    setValues(prev => {
-      return {...prev, institution}
+    setValues((prev) => {
+      return { ...prev, institution };
     });
   }, []);
 
@@ -131,7 +129,10 @@ const Institutions = () => {
           property="og:url"
           content={`https://www.PPTLink.com/institutions`}
         />
-        <meta property="og:title" content={`${values.institution} - PPTLinks `} />
+        <meta
+          property="og:title"
+          content={`${values.institution} - PPTLinks `}
+        />
         <meta
           property="og:description"
           content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
@@ -186,9 +187,15 @@ const Institutions = () => {
               <>
                 <div className="w-full h-fit flex md:grid md:grid-cols-3 justify-items-start flex-wrap gap-x-5 gap-y-[60px]">
                   {values.presentations.length < 1 ? (
-                    <div className="w-full h-[25vh] flex justify-center items-center">
-                      <LoadingAssetBig2 />
-                    </div>
+                    <>
+                      {shouldFetchMoreData ? (
+                        <div className="w-full h-[25vh] flex justify-center items-center">
+                          <LoadingAssetBig2 />
+                        </div>
+                      ) : (
+                        <p>No presentation</p>
+                      )}
+                    </>
                   ) : (
                     values.presentations.map((_, i) => (
                       <div
