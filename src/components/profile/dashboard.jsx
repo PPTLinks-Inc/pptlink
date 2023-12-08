@@ -203,7 +203,8 @@ const Dashboard = () => {
           <h2 className="text-xl mt-4 mb-6">Your presentations</h2>
 
           <button
-            className="px-7 rounded-xl py-2 bg-slate-200 text-black"
+            type="button"
+            className="px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]"
             onClick={handleLogout}
             disabled={loggingOut}
           >
