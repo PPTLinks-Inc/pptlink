@@ -22,8 +22,9 @@ let navBar = false;
 let wakeLock = null;
 let setTimerActive = null;
 
-export const Carousel = ({nav}) => {
-  const {presentation, makeLive, socket, livePending, syncButton, syncSlide} = useContext(PresentationContext);
+export const Carousel = ({ nav }) => {
+  const { presentation, makeLive, socket, livePending, syncButton, syncSlide } =
+    useContext(PresentationContext);
   const [active, setActive] = useState(true);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
@@ -202,7 +203,7 @@ export const Carousel = ({nav}) => {
     setTimerActive = setTimeout(() => {
       setActive(false);
     }, 5000);
-  }
+  };
 
   const handleMouseClick = (e) => {
     if (e.target.tagName !== "IMG") return;
@@ -214,7 +215,7 @@ export const Carousel = ({nav}) => {
     } else {
       handleMouseMove();
     }
-  }
+  };
 
   return (
     <>
@@ -241,9 +242,7 @@ export const Carousel = ({nav}) => {
 
         <div className="carousel__track-container h-full relative">
           <ul className="h-full w-full flex relative ">
-            <SwiperMySlide
-              active={active}
-            />
+            <SwiperMySlide active={active} />
           </ul>
         </div>
         <div
@@ -343,34 +342,40 @@ export const Carousel = ({nav}) => {
               <FaChevronUp />
             </button>
             {navItems.map(({ icon, link, name }, i) => (
-              <li
-                key={i}
-                className={`absolute w-[80%] rounded-full p-2 h-[80%] bg-black z-10 text-slate-200 border border-white transition-all  duration-500 ${
-                  navbar && "duration-300"
-                }`}
-                style={{
-                  transform: navbar
-                    ? `translatey(-${(i + 1.1) * 100 + (i + 1) * 8}%)`
-                    : "translateY(0)",
-                  transitionDelay: `${(i + 1) / 10}s`,
-                  zIndex: navItems.length - (i + 1),
-                }}
-              >
-                <a
-                  href={name === "download" ? presentation.pptLink : link}
-                  className="w-full relative h-full flex items-center  justify-center flex-row-reverse"
-                  download={name === "download" && presentation.name}
-                >
-                  <span className="">{icon}</span>
-                  <span
-                    className={`text-white absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all border-white border ${
-                      navBar ? "opacity-100" : "opacity-0"
-                    } duration-500 font-bold bg-black`}
+              <>
+                {name === "download" && !presentation.pptLink ? (
+                  <></>
+                ) : (
+                  <li
+                    key={i}
+                    className={`absolute w-[80%] rounded-full p-2 h-[80%] bg-black z-10 text-slate-200 border border-white transition-all  duration-500 ${
+                      navbar && "duration-300"
+                    }`}
+                    style={{
+                      transform: navbar
+                        ? `translatey(-${(i + 1.1) * 100 + (i + 1) * 8}%)`
+                        : "translateY(0)",
+                      transitionDelay: `${(i + 1) / 10}s`,
+                      zIndex: navItems.length - (i + 1),
+                    }}
                   >
-                    {name}
-                  </span>
-                </a>
-              </li>
+                    <a
+                      href={name === "download" ? presentation.pptLink : link}
+                      className="w-full relative h-full flex items-center  justify-center flex-row-reverse"
+                      download={name === "download" && presentation.name}
+                    >
+                      <span className="">{icon}</span>
+                      <span
+                        className={`text-white absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all border-white border ${
+                          navBar ? "opacity-100" : "opacity-0"
+                        } duration-500 font-bold bg-black`}
+                      >
+                        {name}
+                      </span>
+                    </a>
+                  </li>
+                )}
+              </>
             ))}
           </ul>
         </nav>
@@ -407,24 +412,26 @@ export const Carousel = ({nav}) => {
             </div>
           )}
 
-          {!specialMedia.animation1 && specialMedia.animation2 && !noFullScreen && (
-            <div className="w-full h-full grid place-content-center">
-              <div className="w-fit h-fit flex flex-col justify-between">
-                <FaExpand
-                  onClick={removeSpecialMedia}
-                  className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
-                />
+          {!specialMedia.animation1 &&
+            specialMedia.animation2 &&
+            !noFullScreen && (
+              <div className="w-full h-full grid place-content-center">
+                <div className="w-fit h-fit flex flex-col justify-between">
+                  <FaExpand
+                    onClick={removeSpecialMedia}
+                    className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+                  />
 
-                <img
-                  src={animation2}
-                  alt="animation image"
-                  className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
-                />
+                  <img
+                    src={animation2}
+                    alt="animation image"
+                    className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
+                  />
 
-                <p className="text-slate-200">Click to make full screen</p>
+                  <p className="text-slate-200">Click to make full screen</p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       )}
     </>
