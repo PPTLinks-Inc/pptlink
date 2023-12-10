@@ -146,8 +146,10 @@ export default function About() {
   // const memberRef = useRef();
   const topRef = useRef();
 
-  const [memberState, memberDispatch] =
-    useReducer(memberReducer, focusedMember);
+  const [memberState, memberDispatch] = useReducer(
+    memberReducer,
+    focusedMember
+  );
 
   // const [showState, showDispatch] = useReducer<any>(showReducer, false);
   null;
@@ -170,126 +172,129 @@ export default function About() {
   }, [memberState]);
 
   return (
-    <main className="relative w-screen_ h-screen mt-12">
-      <div
-        className={`fixed flex items-center transition-all duration-500 justify-center z-50 top-0 left-0 w-full h-full ${
-          intro ? "opacity-1 -translate-y-0" : "opacity-0 translate-y-full"
-        }`}
-      >
-        <p className="capitalize text-3xl font-bold">
-          this page will not be black
-        </p>
-      </div>
+    // <main className="relative w-screen_ h-screen mt-12">
+    //   <div
+    //     className={`fixed flex items-center transition-all duration-500 justify-center z-50 top-0 left-0 w-full h-full ${
+    //       intro ? "opacity-1 -translate-y-0" : "opacity-0 translate-y-full"
+    //     }`}
+    //   >
+    //     <p className="capitalize text-3xl font-bold">
+    //       this page will not be black
+    //     </p>
+    //   </div>
 
-      <div className="absolute top-0 z-50 w-1 h-1 bg-red-600" ref={topRef} />
-      <section
-        className={`h-full grid ${
-          memberState
-            ? "grid-cols-6 translate-y-[90vh]"
-            : "grid-cols-6 translate-y-0"
-        } md:p-12_ ${
-          !memberState && "grid-rows-10_ md:grid-rows-6"
-        } grid-flow-dense_ transition-all duration-1000 gap-2`}
-      >
-        {members.map((element, index) => (
-          <div
-            // ref={membersRef}events/my-events
-            onClick={(e) => {
-              e.preventDefault();
-              memberDispatch(index + 1);
-            }}
-            className={`cell overflow-auto flex flex-col md:flex-row items-stretch rounded-r-md   ${
-              element.bannerColor
-            } ${
-              memberState === index ? "z-20 gap-2 p-2" : "z-20 gap-0"
-            } group transition-all duration-1000 overflow-clip cursor-pointer ${
-              memberState
-                ? "md:aspect-square max-h-sm_ !col-span-1 !row-span-1"
-                : `${element.col} ${element.row} aspect-auto`
-            } ${
-              memberState === index + 1
-                ? "absolute w-[80vw] m-auto inset-0 -translate-y-[90vh] h-[80vh] open-cell"
-                : "relative border-none trigger-cell"
-            } `}
-            key={index}
-          >
-            {memberState === index + 1 && (
-              <button
-                className="p-2 rounded-full bg-white text-4xl font-bold absolute top-4 right-4 z-[100] active:scale-75 transition-all duration-200 w-12 h-12 flex items-center justify-center"
-                onClick={() => {
-                  membersRef.current?.scrollIntoView({
-                    block: "start",
-                    behavior: "smooth",
-                  });
-                  setTimeout(() => {
-                    // showDispatch(false);
-                    memberDispatch(null);
-                  }, 600);
-                }}
-              >
-                X
-              </button>
-            )}
-            {!memberState && (
-              <div className="absolute top-0 left-0 z-50 flex w-full h-full text-white transition-all duration-200 opacity-0 group-hover:opacity-100 bg-black/40">
-                <div className="px-2 mt-auto h-fit">
-                  <h3 className="font-bold capitalize">{element.name}</h3>
-                  <p className="text-grid">{element.text}</p>
-                </div>
-              </div>
-            )}
-            <h1 className="absolute top-0 left-0 z-50 text-3xl text-black">
-              {index + 1}
-            </h1>
+    //   <div className="absolute top-0 z-50 w-1 h-1 bg-red-600" ref={topRef} />
+    //   <section
+    //     className={`h-full grid ${
+    //       memberState
+    //         ? "grid-cols-6 translate-y-[90vh]"
+    //         : "grid-cols-6 translate-y-0"
+    //     } md:p-12_ ${
+    //       !memberState && "grid-rows-10_ md:grid-rows-6"
+    //     } grid-flow-dense_ transition-all duration-1000 gap-2`}
+    //   >
+    //     {members.map((element, index) => (
+    //       <div
+    //         // ref={membersRef}events/my-events
+    //         onClick={(e) => {
+    //           e.preventDefault();
+    //           memberDispatch(index + 1);
+    //         }}
+    //         className={`cell overflow-auto flex flex-col md:flex-row items-stretch rounded-r-md   ${
+    //           element.bannerColor
+    //         } ${
+    //           memberState === index ? "z-20 gap-2 p-2" : "z-20 gap-0"
+    //         } group transition-all duration-1000 overflow-clip cursor-pointer ${
+    //           memberState
+    //             ? "md:aspect-square max-h-sm_ !col-span-1 !row-span-1"
+    //             : `${element.col} ${element.row} aspect-auto`
+    //         } ${
+    //           memberState === index + 1
+    //             ? "absolute w-[80vw] m-auto inset-0 -translate-y-[90vh] h-[80vh] open-cell"
+    //             : "relative border-none trigger-cell"
+    //         } `}
+    //         key={index}
+    //       >
+    //         {memberState === index + 1 && (
+    //           <button
+    //             className="p-2 rounded-full bg-white text-4xl font-bold absolute top-4 right-4 z-[100] active:scale-75 transition-all duration-200 w-12 h-12 flex items-center justify-center"
+    //             onClick={() => {
+    //               membersRef.current?.scrollIntoView({
+    //                 block: "start",
+    //                 behavior: "smooth",
+    //               });
+    //               setTimeout(() => {
+    //                 // showDispatch(false);
+    //                 memberDispatch(null);
+    //               }, 600);
+    //             }}
+    //           >
+    //             X
+    //           </button>
+    //         )}
+    //         {!memberState && (
+    //           <div className="absolute top-0 left-0 z-50 flex w-full h-full text-white transition-all duration-200 opacity-0 group-hover:opacity-100 bg-black/40">
+    //             <div className="px-2 mt-auto h-fit">
+    //               <h3 className="font-bold capitalize">{element.name}</h3>
+    //               <p className="text-grid">{element.text}</p>
+    //             </div>
+    //           </div>
+    //         )}
+    //         <h1 className="absolute top-0 left-0 z-50 text-3xl text-black">
+    //           {index + 1}
+    //         </h1>
 
-            {memberState === index + 1 && (
-              <div className="flex-[3] shrink-0 bg-transparent md:hidden" />
-            )}
+    //         {memberState === index + 1 && (
+    //           <div className="flex-[3] shrink-0 bg-transparent md:hidden" />
+    //         )}
 
-            <div
-              className={`overflow-clip absolute top-0 left-0 md:static self-center_  ${
-                memberState ? "w-80 h-full" : "w-full h-full"
-              }`}
-            >
-              <img
-                src={element.image}
-                alt=""
-                className="object-cover transition-all h-full duration-1000 group-hover:scale-105 w-full"
-              />
-            </div>
-            {
-              <div
-                className={`bg-gray-300/90_ text-white ${
-                  element.bannerColor
-                } overflow-hidden transition-all duration-1000 ${
-                  memberState === index + 1
-                    ? "md:w-[50vw] p-6 flex-[1] md:flex-[3] bg-gray-300/90_ space-y-4"
-                    : "w-4 h-0_ text-none "
-                }`}
-              >
-                <h2
-                  className={`transition-all capitalize duration-1000 text-3xl font-bold ${
-                    memberState && memberState === index + 1
-                      ? "opacity-100"
-                      : "opacity-0"
-                  }`}
-                >
-                  {element.name}
-                </h2>
-                <p
-                  className={`transition-all duration-1000 leading-loose ${
-                    memberState && memberState === index + 1
-                      ? "opacity-100"
-                      : "opacity-0"
-                  }`}
-                >
-                  {element.text}
-                </p>
-              </div>
-            }
-          </div>
-        ))}
-      </section>
+    //         <div
+    //           className={`overflow-clip absolute top-0 left-0 md:static self-center_  ${
+    //             memberState ? "w-80 h-full" : "w-full h-full"
+    //           }`}
+    //         >
+    //           <img
+    //             src={element.image}
+    //             alt=""
+    //             className="object-cover transition-all h-full duration-1000 group-hover:scale-105 w-full"
+    //           />
+    //         </div>
+    //         {
+    //           <div
+    //             className={`bg-gray-300/90_ text-white ${
+    //               element.bannerColor
+    //             } overflow-hidden transition-all duration-1000 ${
+    //               memberState === index + 1
+    //                 ? "md:w-[50vw] p-6 flex-[1] md:flex-[3] bg-gray-300/90_ space-y-4"
+    //                 : "w-4 h-0_ text-none "
+    //             }`}
+    //           >
+    //             <h2
+    //               className={`transition-all capitalize duration-1000 text-3xl font-bold ${
+    //                 memberState && memberState === index + 1
+    //                   ? "opacity-100"
+    //                   : "opacity-0"
+    //               }`}
+    //             >
+    //               {element.name}
+    //             </h2>
+    //             <p
+    //               className={`transition-all duration-1000 leading-loose ${
+    //                 memberState && memberState === index + 1
+    //                   ? "opacity-100"
+    //                   : "opacity-0"
+    //               }`}
+    //             >
+    //               {element.text}
+    //             </p>
+    //           </div>
+    //         }
+    //       </div>
+    //     ))}
+    //   </section>
+    // </main>
+    <main className="flex items-center justify-center">
+      <h1 className="text-7xl font-bold text-white">In the works...</h1>
     </main>
   );
 }
