@@ -12,7 +12,6 @@ import { isIOS } from "react-device-detect";
 import { Spinner, SpinnerIos } from "./layout/assets/spinner/Spinner";
 import PresentationNotFound from "./404";
 import { PresentationContext } from "../../contexts/presentationContext";
-import Chat from "./layout/Chat";
 
 const navItems = [
   {
@@ -59,7 +58,6 @@ function Interface() {
             ) : (
               <SpinnerIos />
             )}
-            <Chat />
           </div>
         ) : (
           <div className="w-full h-[85vh] flex justify-center bg-black items-center">
