@@ -2,12 +2,21 @@ import {
   ChatBubble,
   ChatBubbleRounded,
   Close,
+  CloseFullscreenOutlined,
   CloseOutlined,
   MessageRounded,
+  Minimize,
+  MinimizeRounded,
 } from "@mui/icons-material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { FaChevronUp, FaMicrophone, FaPaperPlane } from "react-icons/fa";
+import {
+  FaChevronUp,
+  FaMicrophone,
+  FaPaperPlane,
+  FaRegWindowMinimize,
+  FaWindowMinimize,
+} from "react-icons/fa";
 import Waves from "./assets/images/waves.svg";
 import MicGradient from "./assets/images/mic-gradient.svg";
 import Speaker from "./assets/images/speaker.svg";
@@ -31,6 +40,7 @@ export default function Chat() {
       open: false,
       expand: false,
       expandMax: false,
+      messaging: false,
     }));
     setChatHeight("2.5rem");
   };
@@ -89,7 +99,7 @@ export default function Chat() {
           drag={!matches.small && true}
           dragMomentum={false}
           dragElastic={false}
-          className={`text-white fixed  rounded-2xl border-gray-500 ${
+          className={`text-slate-200 fixed  rounded-2xl border-gray-500 ${
             !matches.small
               ? "bottom-20 right-24 cursor-grab active:cursor-grabbing"
               : "left-0 bottom-0 w-full"
@@ -100,7 +110,7 @@ export default function Chat() {
               onClick={() => {
                 !chatOpen.open
                   ? openChat()
-                  : !chatOpen.expand && chatOpen.open
+                  : !chatOpen.expand && chatOpen.open && chatOpen.join
                   ? expandChat()
                   : chatOpen.messaging
                   ? expandChat()
@@ -115,8 +125,8 @@ export default function Chat() {
               } w-fit flex items-center justify-center p-2 shrink-0`}
             >
               <FaChevronUp
-                className={`w-6 h-6 fill-white text-white transition-all duration-150 ${
-                  chatOpen.expand
+                className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${
+                  chatOpen.expand || !chatOpen.join
                     ? "rotate-180"
                     : chatOpen.messaging
                     ? "-rotate-90"
@@ -185,6 +195,20 @@ export default function Chat() {
               <JoinConversation closeChat={closeChat} joinChat={joinChat} />
             ) : null}
           </div>
+          <AnimateInOut
+            show={chatOpen.open && !!chatOpen.join}
+            initial={{ scale: 0 }}
+            exit={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="w-fit"
+          >
+            <button
+              onClick={() => closeChat()}
+              className="w-fit flex items-center justify-center p-2 shrink-0 absolute top-0 right-0 hover:bg-slate-200/10 rounded-full"
+            >
+              <FaWindowMinimize className="w-5 fill-slate-200 text-slate-200 transition-all duration-150" />
+            </button>
+          </AnimateInOut>
         </motion.div>
       )}
     </Media>
@@ -229,7 +253,7 @@ function Participant({
           alt=""
         />
       </div>
-      <small className="capitalize text-white">{role}</small>
+      <small className="capitalize text-slate-200">{role}</small>
       <div className="flex items-center gap-1">
         <span className="text-green-400">
           {status === "speaking" && "speaking"}
@@ -307,7 +331,7 @@ function Messaging() {
           className="flex h-fit items-center justify-center p-3 rounded-lg border"
           type="submit"
         >
-          <FaPaperPlane className="w-8 h-8 text-white fill-white" />
+          <FaPaperPlane className="w-8 h-8 text-slate-200 fill-slate-200" />
         </button>
       </form>
     </>
@@ -334,7 +358,7 @@ function JoinConversation({ closeChat, joinChat }) {
         </button>
         <button
           onClick={() => closeChat()}
-          className="py-3 px-4 border border-slate-200 rounded-xl text-slate-200 uppercase"
+          className="py-3 px-4 border border-slate-200/10 rounded-xl text-slate-200 uppercase"
         >
           no
         </button>
@@ -350,9 +374,25 @@ function JoinConversation({ closeChat, joinChat }) {
         <p className="text-slate-200 text-center text-xl font-semibold capitalize">
           Join Conversation As
         </p>
-        <div className="text-center_">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!username)
+              return setJoin((prev) => ({
+                ...prev,
+                error: "Please enter a valid username",
+              }));
+
+            setJoin((prev) => ({
+              ...prev,
+              error: "",
+            }));
+            joinChat();
+          }}
+          className="text-center_"
+        >
           <div className="flex justify-between h-12 gap-2 items-stretch">
-            <div className="flex-1 h-full overflow-clip border border-slate-200 rounded-md">
+            <div className="flex-1 h-full overflow-clip border border-slate-200/10 bg-[#968E8E]/20 rounded-md">
               <input
                 type="text"
                 placeholder="Enter Username"
@@ -362,32 +402,20 @@ function JoinConversation({ closeChat, joinChat }) {
               />
             </div>
             <button
-              onClick={() => {
-                if (!username)
-                  return setJoin((prev) => ({
-                    ...prev,
-                    error: "Please enter a valid username",
-                  }));
-
-                setJoin((prev) => ({
-                  ...prev,
-                  error: "",
-                }));
-                joinChat();
-              }}
-              className="py-3 px-6 font-bold text-slate-200 border border-slate-200 uppercase rounded-xl"
+              type="submit"
+              className="py-3 px-6 font-bold text-slate-200 border-[1px] border-slate-200/30 uppercase rounded-xl"
             >
               join
             </button>
           </div>
           {join.error && <small className="text-rose-600">{join.error}</small>}
-        </div>
+        </form>
       </div>
     );
   };
 
   return (
-    <div className="w-[80%] mx-auto border rounded-xl p-4">
+    <div className="w-[80%] mx-auto border border-slate-200/20 rounded-xl p-4">
       {join.joined ? <JoinAs /> : <RequestToJoin />}
     </div>
   );
