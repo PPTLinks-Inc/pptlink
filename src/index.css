@@ -46,3 +46,7 @@ textarea:focus,
 input:focus {
   outline: none;
 }
+
+img {
+  -webkit-user-drag: none;
+}
