@@ -60,7 +60,8 @@ export default function Chat({ setKeepChatOpen }) {
   const showMessaging = () => {
     setChatOpen((prev) => ({
       ...prev,
-      participants: true,
+      messaging: true,
+      participants: false,
       expand: false,
     }));
     setChatHeight("31rem");
@@ -102,9 +103,9 @@ export default function Chat({ setKeepChatOpen }) {
 
   return (
     // Media query to handle responsiveness
-    <Media queries={{ small: { maxWidth: 720 } }}>
+    <Media queries={{ small: { maxWidth: 900 } }}>
       {(matches) => (
-        <div className="fixed w-full z-40 h-fit bottom-0">
+        <div className="fixed w-full bg-red z-40 h-fit bottom-0">
           <motion.div
             animate={{
               width: !matches.small
@@ -114,7 +115,16 @@ export default function Chat({ setKeepChatOpen }) {
                   ? "100%"
                   : "10rem"
                 : "100%",
-              height: chatHeight,
+              height: matches.small
+                ? chatOpen.open
+                  ? chatOpen.expand ||
+                    chatOpen.participants ||
+                    chatOpen.messaging
+                    ? "90vh"
+                    : "12rem"
+                  : "3rem"
+                : chatHeight,
+
               // translateX: chatOpen.open
               //   ? "15rem"
               //   : matches.small
@@ -126,9 +136,7 @@ export default function Chat({ setKeepChatOpen }) {
             dragMomentum={false}
             dragElastic={false}
             className={`text-slate-200  rounded-2xl ${
-              !matches.small
-                ? "m-auto cursor-grab active:cursor-grabbing"
-                : "left-0 bottom-0 w-full"
+              !matches.small ? "m-auto cursor-grab active:cursor-grabbing" : ""
             }  overflow-clip_  bg-black border border-slate-200`}
           >
             <div className="flex flex-col h-full">
@@ -213,13 +221,25 @@ export default function Chat({ setKeepChatOpen }) {
                 // Components for when user joins the chat
                 <>
                   <AnimateInOut
-                    initial={{ opacity: 0, scale: 0, translateY: -70 }}
-                    exit={{ opacity: 0, scale: 0, translateY: -70 }}
-                    animate={{ opacity: 1, scale: 1, translateY: 0 }}
+                    initial={
+                      !matches.small
+                        ? { opacity: 0, scale: 0, translateY: -70 }
+                        : { opacity: 0 }
+                    }
+                    exit={
+                      !matches.small
+                        ? { opacity: 0, scale: 0, translateY: -70 }
+                        : { opacity: 0 }
+                    }
+                    animate={
+                      !matches.small
+                        ? { opacity: 1, scale: 1, translateY: 0 }
+                        : { opacity: 1 }
+                    }
                     show={chatOpen.open}
                     className="w-full flex gap-3 items-center p-2"
                   >
-                    <Host />{" "}
+                    <Host />
                     <div className="space-y-2 flex w-full flex-row-reverse gap-3">
                       <div className="p-2 flex-1 rounded-lg">
                         <p>Presentation name</p>
@@ -295,7 +315,7 @@ function Host() {
         <small className="ml-1">host</small>
       </div>
       {/* Circular avatar with ping animation */}
-      <div className="rounded-full_  overflow-clip_ w-20 h-20">
+      <div className="rounded-full_  overflow-clip_ w-14 h-14  md:w-20 md:h-20">
         <img
           src="/team/sam.jpg"
           className="w-full rounded-full h-full z-30 object-cover"
@@ -364,11 +384,11 @@ function Messaging() {
       {/* Header for the messaging component */}
       <div className="flex items-center gap-3 shrink-0">
         <Host />
-        <div className="">
-          <img src={Waves} />
+        <div className="w-16 md:w-32">
+          <img src={Waves} className="w-full h-full object-cover" />
         </div>
         <div className="p-2 rounded-lg">
-          <p>Presentation name</p>
+          <p className="font-bold">Presentation name</p>
         </div>
       </div>
       {/* Container for displaying messages */}

@@ -22,9 +22,9 @@ export default function Actions({
 
   return (
     <>
-      <div className={`${keepChatOpen || active ? "" : "hidden"}`}>
-        <Chat setKeepChatOpen={setKeepChatOpen} />
-      </div>
+      {/* <div className={`${keepChatOpen || active ? "" : "hidden"}`}> */}
+      {(keepChatOpen || active) && <Chat setKeepChatOpen={setKeepChatOpen} />}
+      {/* </div> */}
       <nav
         onMouseEnter={() => {
           setActionsHovered(true);
@@ -32,7 +32,7 @@ export default function Actions({
         onMouseLeave={() => setActionsHovered(false)}
         className={`h-16 w-16 rounded-full bottom-12 right-12  z-50 fixed transition-all duration-500 ${
           navbar ? "" : "active"
-        } ${active || hovered ? "block" : "hidden"}`}
+        } ${!keepChatOpen || active || hovered ? "block" : "hidden"}`}
       >
         <ul
           className={`w-full h-full flex items-center justify-center select-none`}
@@ -42,7 +42,7 @@ export default function Actions({
             aria-label="Toggle fullscreen"
             type="button"
             className={`absolute -left-14 z-50 rounded-full bg-black p-2 bottom-2 hover:bg-slate-400
-                ${active || hovered ? "block" : "hidden"}
+                ${!keepChatOpen || active || hovered ? "block" : "hidden"}
               `}
           >
             <FaExpand
