@@ -105,7 +105,7 @@ export default function Chat({ setKeepChatOpen }) {
     // Media query to handle responsiveness
     <Media queries={{ small: { maxWidth: 900 } }}>
       {(matches) => (
-        <div className="fixed w-full bg-red z-40 h-fit bottom-0">
+        <div className="fixed w-full z-40 h-fit bottom-0">
           <motion.div
             animate={{
               width: !matches.small
