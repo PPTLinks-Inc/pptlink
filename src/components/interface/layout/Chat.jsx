@@ -109,14 +109,14 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
     <Media queries={{ small: { maxWidth: 900 } }}>
       {(matches) => (
         <div
-          className={`transition-all  duration-200 ${
+          className={`transition-all duration-200 ${
             active || keepChatOpen ? "" : "hidden"
           } fixed w-full z-50 h-fit ${
             matches.small && chatOpen.open ? "bottom-0" : "bottom-[4.5rem]"
           } 
           `}
         >
-          <div className="relative flex items-center justify-center w-full h-full md:h-auto">
+          <div className="relative flex items-center justify-center w-full h-full md:h-auto_">
             <motion.div
               animate={{
                 width: !matches.small
@@ -164,7 +164,7 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
                 !matches.small
                   ? "m-auto w-full cursor-grab active:cursor-grabbing"
                   : chatOpen.open
-                  ? "bottom-0_" //COMEBACK
+                  ? "bottom-0" //COMEBACK
                   : ""
               }  overflow-clip_  bg-black border border-slate-200`}
             >
