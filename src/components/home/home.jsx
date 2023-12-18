@@ -113,11 +113,11 @@ const Home = () => {
             <span className="underline decoration-slate-200">Audience</span>
           </h1>
 
-          <form className='flex w-[305px] justify-between gap-3' onSubmit={findPresentation}>
+          <form className='flex w-[305px] justify-between gap-3 flex-wrap' onSubmit={findPresentation}>
             <input
               type='text'
               placeholder='Enter a code or link'
-              className='border border-slate-200 px-[15px] py-[12px] mr-3 text-slate-200 decoration-black rounded-xl bg-transparent my-1'
+              className='basis-80 grow shrink border border-slate-200 px-[15px] py-[12px] mr-3 text-slate-200 decoration-black rounded-xl bg-transparent my-1'
               value={codeOrLink}
               onChange={(e) => setCodeOrLink(e.target.value)}
             />

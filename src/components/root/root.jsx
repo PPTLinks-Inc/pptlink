@@ -280,7 +280,7 @@ export default function Root() {
           )}
           <footer className="w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col ">
             <div className="w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between">
-              <div className="w-[100%] px-[2.5rem]  m-auto lg:m-0 flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between">
+              <div className="w-[100%] px-[2.5rem]  m-auto lg:m-0 flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between text-[13px]">
                 <div className="h-[100%] flex flex-col">
                   <h4 className="text-lg font-bold my-1">Internal</h4>
                   <Link to={HOME} className="py-2">
@@ -300,7 +300,7 @@ export default function Root() {
                   </Link>
                 </div>
 
-                <div className="h-full flex flex-col mx-4">
+                <div className="h-full flex flex-col">
                   <h4 className="text-lg font-bold my-1">Documentation</h4>
                   <Link to={ABOUT} className="py-2">
                     About us
@@ -313,7 +313,7 @@ export default function Root() {
                   </Link>
                 </div>
 
-                <div className="h-full flex flex-col mx-2">
+                <div className="h-full flex flex-col">
                   <h4 className="text-lg font-bold my-1">External</h4>
                   <Link to="zutayah.com" className="py-2">
                     Zutayah
@@ -396,12 +396,10 @@ export default function Root() {
               </form>
             </div>
 
-            <div className="grow-[.3] px-[1.5rem] py-16 w-[100%] border-t border-slate-950 flex flex-row justify-between items-center">
-              <div>
+            <div className="grow-[.3] px-[1.5rem] py-16 w-[100%] border-t border-slate-950 flex flex-row flex-wrap justify-between items-center">
                 <p className="text-xl tracking-widest font-bold cursor-pointer">
                   <Link to="/">PPTLinks.</Link>
                 </p>
-              </div>
 
               <small>
                 &copy; PPTLinks {new Date().getFullYear()}. All rights reserved

@@ -1,6 +1,10 @@
 /* eslint-disable no-unused-vars */
 
-import { LoadingAssetSmall, LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
+import {
+  LoadingAssetSmall,
+  LoadingAssetSmall2,
+  LoadingAssetBig2,
+} from '../../assets/assets';
 import { RiFilePpt2Fill } from 'react-icons/ri';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { userContext } from '../../contexts/userContext';
@@ -39,7 +43,7 @@ const Upload = () => {
             popup: true,
             processingFile: false,
             presentationId: data.id,
-            liveId: data.liveId
+            liveId: data.liveId,
           }));
           setList(data.imageSlides);
         }
@@ -83,14 +87,14 @@ const Upload = () => {
   });
 
   const [uploadProgress, setUploadProgress] = useState(0);
-  
+
   const [popup, setPopup] = useState({
     popup: false,
     cancelPending: false,
     popupErr: [],
     presentationId: '',
     liveId: '',
-    processingFile: false
+    processingFile: false,
   });
 
   const [list, setList] = useState([]);
@@ -98,6 +102,7 @@ const Upload = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   let tempArr = [];
+
   const formValidation = () => {
     tempArr = [];
 
@@ -185,14 +190,14 @@ const Upload = () => {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
-            onUploadProgress
+            onUploadProgress,
           })
           .then((data) => {
             setValues({ ...values, pending: true });
-            setPopup(prev => ({
+            setPopup((prev) => ({
               ...prev,
               popup: true,
-              processingFile: true
+              processingFile: true,
             }));
             setUploadProgress(0);
             console.log('submitted and pending');
@@ -252,8 +257,8 @@ const Upload = () => {
   }, [values]);
 
   const toInterface = () => {
-    navigate(`/${popup.liveId}`)
-  }
+    navigate(`/${popup.liveId}`);
+  };
 
   return (
     <section className='flex justify-center'>
@@ -324,6 +329,7 @@ const Upload = () => {
                 onChange={(e) => setValues({ ...values, file: e.target.files })}
                 name='file'
                 id='file'
+                multiple='false'
                 accept='.ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm'
               />
               <div className='h-[140px] flex items-center justify-center w-full'>
@@ -405,7 +411,7 @@ const Upload = () => {
           >
             {values.pending ? (
               <>
-                <span className='mr-1'>{ uploadProgress }%</span>
+                <span className='mr-1'>{uploadProgress}%</span>
                 <LoadingAssetSmall />
               </>
             ) : (
@@ -417,63 +423,68 @@ const Upload = () => {
 
       {popup.popup && (
         <div className='w-[100%] m-auto mt-5 md:w-[450px] border border-slate-200 rounded-xl min-h-[450px] flex flex-col border-collapse'>
-          {!popup.processingFile ? (<>
-            <div className='flex flex-row justify-between p-[30px]'>
-              <h1 className='text-xl font-bold'>Confirm upload</h1>
-
-              <button
-                className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100'
-                onClick={handleCancel}
-              >
-                <MdClose className='text-slate-200 w-[25px] h-[25px] ' />
-              </button>
-            </div>
-
-            <div className='flex-grow-[.8] border-y border-slate-200 p-[30px] relative'>
-              <button
-                className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 left-0'
-                onClick={() => updateIndex(activeIndex - 1)}
-              >
-                <FaChevronLeft className='text-slate-200 w-[25px] h-[25px] ' />
-              </button>
-
-              <ul className='h-full w-full flex overflow-hidden'>
-                {list.map((item, i) => (
-                  <CarouselItems key={i} item={item} active={activeIndex} />
-                ))}
-              </ul>
-
-              <button
-                className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 right-0'
-                onClick={() => updateIndex(activeIndex + 1)}
-              >
-                <FaChevronRight className='text-slate-200 w-[25px] h-[25px] ' />
-              </button>
-            </div>
-
-            <div
-              className={`flex-grow-[.2] px-[30px] flex items-center ${
-                popup.popupErr.length > 0 && 'border-b border-slate-200'
-              }`}
-            >
-              <div className='flex justify-between w-[230px] my-3'>
-                <button className='px-7 rounded-xl py-[15px] bg-slate-200 text-black' onClick={toInterface}>
-                  Confirm
-                </button>
+          {!popup.processingFile ? (
+            <>
+              <div className='flex flex-row justify-between p-[30px]'>
+                <h1 className='text-xl font-bold'>Confirm upload</h1>
 
                 <button
-                  className={`px-7 text-center rounded-xl flex items-center justify-center bg-black border border-slate-200 text-slate-200 `}
+                  className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100'
                   onClick={handleCancel}
                 >
-                  {popup.cancelPending ? (
-                    <LoadingAssetSmall2 />
-                  ) : (
-                    <p className='py-[9px]'>Delete</p>
-                  )}
+                  <MdClose className='text-slate-200 w-[25px] h-[25px] ' />
                 </button>
               </div>
-            </div>
-          </>) : (
+
+              <div className='flex-grow-[.8] border-y border-slate-200 p-[30px] relative'>
+                <button
+                  className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 left-0'
+                  onClick={() => updateIndex(activeIndex - 1)}
+                >
+                  <FaChevronLeft className='text-slate-200 w-[25px] h-[25px] ' />
+                </button>
+
+                <ul className='h-full w-full flex overflow-hidden'>
+                  {list.map((item, i) => (
+                    <CarouselItems key={i} item={item} active={activeIndex} />
+                  ))}
+                </ul>
+
+                <button
+                  className='border-none p-2 rounded-full transition duration-300 hover:bg-slate-100 absolute z-10 top-1/2 -translate-y-1/2 right-0'
+                  onClick={() => updateIndex(activeIndex + 1)}
+                >
+                  <FaChevronRight className='text-slate-200 w-[25px] h-[25px] ' />
+                </button>
+              </div>
+
+              <div
+                className={`flex-grow-[.2] px-[30px] flex items-center ${
+                  popup.popupErr.length > 0 && 'border-b border-slate-200'
+                }`}
+              >
+                <div className='flex justify-between w-[230px] my-3'>
+                  <button
+                    className='px-7 rounded-xl py-[15px] bg-slate-200 text-black'
+                    onClick={toInterface}
+                  >
+                    Confirm
+                  </button>
+
+                  <button
+                    className={`px-7 text-center rounded-xl flex items-center justify-center bg-black border border-slate-200 text-slate-200 `}
+                    onClick={handleCancel}
+                  >
+                    {popup.cancelPending ? (
+                      <LoadingAssetSmall2 />
+                    ) : (
+                      <p className='py-[9px]'>Delete</p>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
             <div className='flex flex-col my-auto justify-center items-center'>
               <LoadingAssetBig2 />
               <p className='text-4xl'>Processing File...</p>
