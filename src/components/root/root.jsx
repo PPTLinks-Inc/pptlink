@@ -18,7 +18,6 @@ import {
   ABOUT,
   DASHBOARD,
   HOME,
-  INSTITUTIONS,
   LEGAL,
   LOGIN,
   SIGNUP,
@@ -29,6 +28,7 @@ import { useContext, useEffect } from "react";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { LoadingAssetBig2 } from "../../assets/assets";
+import MovingEllipses from "../animation/MovingEllipes"
 // import { socket } from '../../socket';
 
 export default function Root() {
@@ -146,11 +146,10 @@ export default function Root() {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${
-          color === "black"
-            ? " bg-black text-slate-200"
-            : "bg-slate-200 text-black"
-        }`}
+        className={`px-7 rounded-xl py-1 ${color === "black"
+          ? " bg-black text-slate-200"
+          : "bg-slate-200 text-black"
+          }`}
         onClick={() => handleClick()}
       >
         Present
@@ -160,10 +159,10 @@ export default function Root() {
 
   return (
     <>
-      <div className="w-full min-h-[100%] bg-slate-200 relative flex-wrap flex-col tall:w-[1440px] tall:m-auto">
-        <div>
+      <div className="w-full h-[100vh] bg-slate-200 relative flex-wrap flex-col tall:w-[1440px] tall:m-auto">
+        <div className="w-full h-full maxScreenMobile:overflow-auto">
           {page.dropdown ? (
-            <div className="h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]">
+            <div className="h-[10rem] flex justify-between items-center py-3 w-[95%] m-auto border">
               <div>
                 <p className="text-xl tracking-widest font-bold cursor-pointer">
                   <Link to="/">PPTLinks.</Link>
@@ -183,78 +182,75 @@ export default function Root() {
           ) : (
             <div className="h-[10rem] flex justify-between items-center py-3 px-[1.5rem] border lg:p-[2.5rem] lg:h-[10rem]"></div>
           )}
-        </div>
 
-        <div className="flex-col w-[100%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row ">
-          <Link
-            to={INSTITUTIONS}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
-          >
-            Institutions
-          </Link>
+          <div className="w-full h-[90vh]">
+            <div className="flex-col w-[100%] h-[50%] flex-1 border justify-center flex lg:flex-wrap lg:flex-row">
+              <Link
+                to={LOGIN}
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                Login
+              </Link>
+              <Link
+                to={UPLOAD}
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                Upload
+              </Link>
+              <Link
+                to={LEGAL}
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                Legal
+              </Link>
+              <Link
+                to={ABOUT}
+                className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center border text-center border-collapse border-slate-100 w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start maxScreenMobile:pl-[2.5%] md:pl-[2.5%] font-medium mx-0 text-[30px] md:text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:text-[40px]"
+              >
+                About
+              </Link>
+            </div>
 
-          <Link
-            to={ABOUT}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
-          >
-            About
-          </Link>
+            <div className="w-[95%] m-auto border-slate-100 border-collapse text-left flex flex-col lg:flex-row">
+              <div className="flex-1 pr-5">
+                <h2 className="text-2xl mt-4 mb-6 font-medium">Our location</h2>
+                <p>
+                  You can find us at Nascomsoft in Anguwan Cashew, Off dass road,
+                  opposite Elim church, 740102, Yelwa, Bauchi Nigeria
+                </p>
+              </div>
+              <div className="flex-1 lg:pl-[2.5%]">
+                <h3 className="text-xl font-medium my-6">External</h3>
 
-          <Link
-            to={LEGAL}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14 "
-          >
-            Legal
-          </Link>
-          <Link
-            to={UPLOAD}
-            className="border text-center border-collapse border-slate-100 w-[100%] font-medium py-5 mx-0 text-[40px] hover:bg-slate-100 lg:w-1/2 lg:flex lg:items-center  lg:px-14  lg:text-[40px] lg:py-14"
-          >
-            Upload
-          </Link>
-        </div>
+                <div className="flex  mb-6 flex-row justify-between items-start w-full md:w-3/5">
+                  <TbWorldWww className="text-black text-2xl cursor-pointer" />
 
-        <div className=" border border-slate-100 border-collapse text-left flex flex-col lg:flex-row lg:h-[7.5rem] lg:mb-4">
-          <div className="px-5 border flex-1">
-            <h2 className="text-2xl mt-4 mb-6 font-medium">Our location</h2>
+                  <BsInstagram className="text-black text-2xl cursor-pointer" />
 
-            <p>
-              You can find us at Nascomsoft in Anguwan Cashew, Off dass road,
-              opposite Elim church, 740102, Yelwa, Bauchi Nigeria
-            </p>
-          </div>
-          <div className="px-5 border  flex-1">
-            <div className="text-xl font-medium my-6">External</div>
+                  <AiFillFacebook className="text-black text-2xl cursor-pointer" />
 
-            <div className="flex m-auto  mb-6 flex-row justify-between w-[230px]">
-              <TbWorldWww className="text-black text-2xl cursor-pointer" />
+                  <FiTwitter className="text-black text-2xl cursor-pointer" />
 
-              <BsInstagram className="text-black text-2xl cursor-pointer" />
+                  <AiFillGithub className="text-black text-2xl cursor-pointer" />
 
-              <AiFillFacebook className="text-black text-2xl cursor-pointer" />
-
-              <FiTwitter className="text-black text-2xl cursor-pointer" />
-
-              <AiFillGithub className="text-black text-2xl cursor-pointer" />
-
-              <AiOutlineLinkedin className="text-black text-2xl  cursor-pointer" />
+                  <AiOutlineLinkedin className="text-black text-2xl  cursor-pointer" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
         <div
           ref={mainRef}
-          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 md:px-[2.5rem] md:top-[5px] ${
-            page.dropdown
-              ? "transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500"
-              : "transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]"
-          }`}
+          className={`min-h-screen bg-black w-[100%] absolute rounded-t-[2.7rem] overflow-x-hidden  text-slate-200 md:px-[2.5rem] md:top-[5px] ${page.dropdown
+            ? "transition-transform translate-y-[100vh] rounded-t-[2.7rem] top-[10%] lg:translate-y-[100vh]  ease-in-out duration-500"
+            : "transition-transform translate-y-0 display-hidden ease-in-out duration-300 top-[10px]"
+            }`}
         >
-          <div className="h-[6rem]">
+          <div className="w-full h-[10rem]">
             {!page.dropdown && (
-              <div className="h-[10rem] px-[1.5rem] flex justify-between items-center">
+              <div className="w-[95%] m-auto h-[10rem] flex justify-between items-center">
                 <div>
-                  <p className="text-xl tracking-widest font-bold cursor-pointer ">
+                  <p className="md:text-xl tracking-widest font-bold cursor-pointer ">
                     <Link to="/">PPTLinks.</Link>
                   </p>
                 </div>
@@ -278,9 +274,12 @@ export default function Root() {
           ) : (
             <Outlet />
           )}
+
+          <MovingEllipses />
+
           <footer className="w-[100%]  m-auto h-[100%] mt-[10vh] flex flex-col ">
             <div className="w-[100%]  flex justify-center m-auto flex-col lg:flex-row lg:justify-between">
-              <div className="w-[100%] px-[2.5rem]  m-auto lg:m-0 flex  mt-0 justify-around  lg:flex-row lg:w-[40%] lg:justify-between text-[13px]">
+              <div className="w-[95%] m-auto lg:m-0 flex  mt-0 justify-between lg:w-[50%] lg:px-6">
                 <div className="h-[100%] flex flex-col">
                   <h4 className="text-lg font-bold my-1">Internal</h4>
                   <Link to={HOME} className="py-2">
@@ -289,9 +288,9 @@ export default function Root() {
                   <Link to={UPLOAD} className="py-2">
                     Upload
                   </Link>
-                  <Link to={INSTITUTIONS} className="py-2">
+                  {/* <Link to={HOME} className="py-2">
                     Institutions
-                  </Link>
+                  </Link> */}
                   <Link to={SIGNUP} className="py-2">
                     sign up
                   </Link>
@@ -337,7 +336,7 @@ export default function Root() {
               </div>
 
               <form
-                className="lg:w-[40%] w-[100%] pt-7 px-[1rem] m-auto lg:m-0 flex flex-col items-start"
+                className="lg:w-[40%] w-[95%] pt-7 m-auto lg:m-0 flex flex-col items-start"
                 onSubmit={handleSubmit}
               >
                 <div className="w-full m-0 border border-slate-200 rounded-xl border-collapse">
@@ -366,10 +365,9 @@ export default function Root() {
                     onChange={(e) =>
                       setPage({ ...page, message: e.target.value })
                     }
-                    className={`w-full resize-none p-[30px] bg-transparent ${
-                      page.submitErrors.length > 0 &&
+                    className={`w-full resize-none p-[30px] bg-transparent ${page.submitErrors.length > 0 &&
                       "border-b border-slate-200"
-                    }`}
+                      }`}
                   />
 
                   {page.submitErrors.length > 0 && (
@@ -396,12 +394,13 @@ export default function Root() {
               </form>
             </div>
 
-            <div className="grow-[.3] px-[1.5rem] py-16 w-[100%] border-t border-slate-950 flex flex-row flex-wrap justify-between items-center">
-                <p className="text-xl tracking-widest font-bold cursor-pointer">
+            <div className="grow-[.3] w-[95%] m-auto py-16 border-t border-slate-950 flex flex-row flex-wrap justify-between !items-center">
+              <div>
+                <p className="basis-[300px] tracking-widest font-bold cursor-pointer">
                   <Link to="/">PPTLinks.</Link>
                 </p>
 
-              <small>
+              <small className="block w-fit h-fit">
                 &copy; PPTLinks {new Date().getFullYear()}. All rights reserved
               </small>
             </div>

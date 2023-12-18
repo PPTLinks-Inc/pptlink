@@ -10,13 +10,10 @@ import LogoBlack from "../../images/Logo-Black.png";
 import { useReducer } from "react";
 import { useInView } from "react-intersection-observer";
 
-let observer;
-
 const initialPageNo = 1;
 let shouldFetchMoreData = true;
 
 const pageNoReducer = (state, action) => {
-  console.log({ state, action });
   if (shouldFetchMoreData) return (action += 1);
 
   return state;
@@ -40,7 +37,7 @@ const Institutions = () => {
 
     error: false,
 
-    instition: "",
+    institution: "",
 
     presentations: [],
   });
@@ -62,8 +59,6 @@ const Institutions = () => {
         }
       )
       .then(({ data }) => {
-        console.log(data);
-
         setValues((prev) => ({
           ...prev,
           presentations: [...prev.presentations, ...data.presentations],
@@ -72,7 +67,8 @@ const Institutions = () => {
 
         isFetching = false;
         pageNoDIspatch(pageNo);
-        if (data.pageInstitutionCount < 10) {
+        console.log(data);
+        if (data.pagePresentationCount < 10) {
           shouldFetchMoreData = false;
         }
         // if (data.pagePresentationCount < 10) observer && observer.disconnect();
@@ -85,14 +81,22 @@ const Institutions = () => {
       });
   };
 
+  const withoutUnderscore = (input) => {
+    return input.replace(/_/g, " ");
+  };
+
   useEffect(() => {
     if (isFetching) return;
     isFetching = true;
     getPresentations();
+
+    const institution = withoutUnderscore(id);
+    setValues((prev) => {
+      return { ...prev, institution };
+    });
   }, []);
 
   useEffect(() => {
-    console.log("intersecting", inView);
     if (isFetching) return;
     if (inView) {
       isFetching = true;
@@ -105,22 +109,18 @@ const Institutions = () => {
     getPresentations();
   }, [values]);
 
-  const withoutUnderscore = (input) => {
-    return input.replace(/_/g, " ");
-  };
-
   return (
     <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around px-[20px]">
       {/* meta and SEO information */}
       <Helmet>
-        <title>{`${values.instition} - PPTLinks `}</title>
+        <title>{`${values.institution} - PPTLinks `}</title>
         <meta
           name="description"
           content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
           name="tags"
-          content={`PPT, Presentations, Powerpoint, PPTLinks, ${values.instition}`}
+          content={`PPT, Presentations, Powerpoint, PPTLinks, ${values.institution}`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
@@ -129,7 +129,10 @@ const Institutions = () => {
           property="og:url"
           content={`https://www.PPTLink.com/institutions`}
         />
-        <meta property="og:title" content={`${values.instition} - PPTLinks `} />
+        <meta
+          property="og:title"
+          content={`${values.institution} - PPTLinks `}
+        />
         <meta
           property="og:description"
           content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
@@ -145,7 +148,7 @@ const Institutions = () => {
 
         <meta
           property="twitter:title"
-          content={`${values.instition} - PPTLinks `}
+          content={`${values.institution} - PPTLinks `}
         />
         <meta
           property="twitter:description"
@@ -156,7 +159,7 @@ const Institutions = () => {
 
       <div className="w-full flex flex-col justify-between">
         <h1 className="text-[40px] font-medium mb-[45px]">
-          {values.instition}
+          {values.institution}
         </h1>
       </div>
 
@@ -182,11 +185,17 @@ const Institutions = () => {
               </div>
             ) : (
               <>
-                <div className="w-full h-fit flex justify-items-start flex-wrap gap-x-5 gap-y-[60px]">
+                <div className="w-full h-fit flex md:grid md:grid-cols-3 justify-items-start flex-wrap gap-x-5 gap-y-[60px]">
                   {values.presentations.length < 1 ? (
-                    <div className="w-full h-[25vh] flex justify-center items-center">
-                      <LoadingAssetBig2 />
-                    </div>
+                    <>
+                      {shouldFetchMoreData ? (
+                        <div className="w-full h-[25vh] flex justify-center items-center">
+                          <LoadingAssetBig2 />
+                        </div>
+                      ) : (
+                        <p>No presentation</p>
+                      )}
+                    </>
                   ) : (
                     values.presentations.map((_, i) => (
                       <div

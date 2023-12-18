@@ -22,9 +22,22 @@ module.exports = {
         borderDark: "#383737",
         lightBorder: "#ebebeb",
       },
+      keyframes: {
+        ping: {
+          "75%, 100%": {
+            content: "",
+            transform: "scale(2)",
+            opacity: 0,
+          },
+        },
+      },
+      animation: {
+        "ping-200": " ping 1s 200ms cubic-bezier(0, 0, 0.2, 1) infinite",
+      },
       screens: {
         tall: { raw: "(min-width: 2000px)" },
-        // => @media (min-width: 1440px) { ... }
+        maxScreen: { raw: "(max-width: 1050px)" },
+        maxScreenMobile: { raw: "(max-width: 768px)" },
       },
     },
   },

@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import About from "./components/about-us/about";
+import PresentationContextProvider from "./contexts/presentationContext";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -46,9 +47,17 @@ function App() {
             <Route path="institutions" element={<List />} />
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="upload" element={<Upload />} />
+            <Route path="about" element={<About />} />
           </Route>
-          <Route path="about-us" element={<About />} />
-          <Route path="/:id" element={<Interface />} />
+          {/* <Route path="about-us" element={<About />} /> */}
+          <Route
+            path="/:id"
+            element={
+              <PresentationContextProvider>
+                <Interface />
+              </PresentationContextProvider>
+            }
+          />
         </Routes>
       </BrowserRouter>
       <ToastContainer />

@@ -13,7 +13,7 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa";
-import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
+import { LoadingAssetBig2, LoadingAssetSmall2, LoadingAssetSmall } from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { UPLOAD } from "../../constants/routes";
 import { Helmet } from "react-helmet";
@@ -43,6 +43,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const { user, setUser } = useContext(userContext);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const [values, setValues] = useState({
     error: false,
@@ -71,7 +72,6 @@ const Dashboard = () => {
         }));
         isFetching = false;
         pageNoDIspatch(pageNo);
-        console.log(data);
         if (data.pagePresentationCount < 10) {
           shouldFetchMoreData = false;
         }
@@ -106,7 +106,8 @@ const Dashboard = () => {
     getPresentations();
   }, [values]);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = () => {
+    setLoggingOut(true);
     const sendData = { email: user.email };
     axios
       .post("/api/v1/auth/logout", sendData, { signal: controller.signal })
@@ -117,11 +118,14 @@ const Dashboard = () => {
 
         controller.abort();
       })
-      .catch((err) => console.log(err));
-  }, []);
+      .catch((err) => {
+        setLoggingOut(false);
+        console.log(err)
+      });
+  };
 
   return (
-    <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around">
+    <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around_">
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Dashboard - PPTLinks `}</title>
@@ -199,10 +203,12 @@ const Dashboard = () => {
           <h2 className="text-xl mt-4 mb-6">Your presentations</h2>
 
           <button
-            className="px-7 rounded-xl py-2 bg-slate-200 text-black"
+            type="button"
+            className="px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]"
             onClick={handleLogout}
+            disabled={loggingOut}
           >
-            Log out
+            { loggingOut ? <LoadingAssetSmall /> : "Log out" }
           </button>
         </div>
         {values.pending && values.setPresentations.length < 1 ? (
@@ -222,7 +228,7 @@ const Dashboard = () => {
               </div>
             ) : (
               <>
-                <div className="w-full h-fit flex justify-start flex-wrap gap-x-5 gap-y-[60px]">
+                <div className="w-full h-fit flex md:grid md:grid-cols-3 justify-start flex-wrap gap-x-5 gap-y-[60px]">
                   {values.setPresentations.length < 1 ? (
                     <div className="w-full h-[25vh] flex justify-center items-center">
                       <LoadingAssetBig2 />
@@ -257,9 +263,8 @@ const Dashboard = () => {
 
                 <div
                   ref={arrowRef}
-                  className={`w-full h-[40px] flex items-center justify-center ${
-                    !shouldFetchMoreData && "hidden"
-                  }`}
+                  className={`w-full h-[40px] flex items-center justify-center ${!shouldFetchMoreData && "hidden"
+                    }`}
                 >
                   {values.setPresentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />

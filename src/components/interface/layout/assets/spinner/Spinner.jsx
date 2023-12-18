@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { FaSync, FaDownload } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 import "./spinner.css";
 import "./spinner2.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { PresentationContext } from "../../../../../contexts/presentationContext";
 
-const Spinner = ({ presentation }) => {
+const Spinner = () => {
+  const {presentation} = useContext(PresentationContext);
   return (
     <div className="spinner__container ">
       <p className="presentation__spinner">Presentation about to start</p>
@@ -102,7 +104,8 @@ const Spinner = ({ presentation }) => {
   );
 };
 
-const SpinnerIos = ({ presentation }) => {
+const SpinnerIos = () => {
+  const {presentation} = useContext(PresentationContext);
   const devices = ["iphone", "mini", "ipad", "macbook", "imac"];
   const [activeDevice, setActiveDevice] = useState("iphone");
   const [active, setActive] = useState(0);
@@ -135,6 +138,15 @@ const SpinnerIos = ({ presentation }) => {
           ></span>
         </div>
       </div>
+      <a
+        href={presentation.pptLink}
+        download={presentation.name}
+        className=" absolute right-8 bottom-20 bg-blue-500 hover:bg-blue-700 text-white_ font-bold w-12 aspect-square rounded-full bg-white flex justify-center items-center "
+      >
+        <span>
+          <FaDownload size="1.5rem" />
+        </span>
+      </a>
     </div>
   );
 };

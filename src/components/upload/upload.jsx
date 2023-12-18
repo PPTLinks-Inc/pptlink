@@ -119,9 +119,9 @@ const Upload = () => {
     if (values.file && values.file[0]) {
       const [file] = values.file;
 
-      if (file.size > 31457280) {
-        tempArr = [...tempArr, 'The file is too large'];
-      }
+     if (file.size > 100 * 1024 * 1024) {
+    tempArr = [...tempArr, 'The file is too large'];
+}
     }
 
     if (values.file) {
