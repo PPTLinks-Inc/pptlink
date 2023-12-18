@@ -23,14 +23,20 @@ export default function Actions({
   return (
     <>
       {/* <div className={`${keepChatOpen || active ? "" : "hidden"}`}> */}
-      {(keepChatOpen || active) && <Chat setKeepChatOpen={setKeepChatOpen} />}
+      <div>
+        <Chat
+          setKeepChatOpen={setKeepChatOpen}
+          active={active}
+          keepChatOpen={keepChatOpen}
+        />
+      </div>
       {/* </div> */}
       <nav
         onMouseEnter={() => {
           setActionsHovered(true);
         }}
         onMouseLeave={() => setActionsHovered(false)}
-        className={`h-16 w-16 rounded-full bottom-12 right-12  z-50 fixed transition-all duration-500 ${
+        className={`h-16 w-16 rounded-full bottom-12 right-12  z-40 fixed transition-all duration-500 ${
           navbar ? "" : "active"
         } ${!keepChatOpen || active || hovered ? "block" : "hidden"}`}
       >
