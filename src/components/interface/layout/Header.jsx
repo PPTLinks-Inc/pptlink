@@ -9,19 +9,10 @@ import ShareIcon from "@mui/icons-material/Share";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { LoadingAssetSmall2 } from "../../../assets/assets";
 import { PresentationContext } from "../../../contexts/presentationContext";
-import { useState, useEffect } from "react";
 
 function Header() {
   const { presentation, makeLive, livePending } =
     useContext(PresentationContext);
-
-  const [shareAvailable, setShareAvailable] = useState(false);
-
-  useEffect(() => {
-    if (navigator.share) {
-      setShareAvailable(true);
-    }
-  }, [presentation]);
 
   function share() {
     navigator
@@ -49,7 +40,7 @@ function Header() {
           <div className="flex-1 relative ">
             <p className="max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between ">
               <span>{window.location.href}</span>
-              {shareAvailable ? (
+              {navigator.share ? (
                 <ShareIcon className="cursor-pointer"
                   onClick={() => {
                     share();
