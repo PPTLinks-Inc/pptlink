@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
 import {
@@ -13,13 +14,18 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa";
-import { LoadingAssetBig2, LoadingAssetSmall2, LoadingAssetSmall } from "../../assets/assets";
+import {
+  LoadingAssetBig2,
+  LoadingAssetSmall2,
+  LoadingAssetSmall,
+} from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { UPLOAD } from "../../constants/routes";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { userContext } from "../../contexts/userContext";
 import { useInView } from "react-intersection-observer";
+import { FaEllipsisV, FaTrash, FaLink } from "react-icons/fa";
 
 const initialPageNo = 1;
 let shouldFetchMoreData = true;
@@ -86,6 +92,17 @@ const Dashboard = () => {
       });
   };
 
+  const infoDetails = [
+    {
+      title: "Delete",
+      icon: <FaTrash />,
+    },
+    {
+      title: "Link",
+      icon: <FaLink />,
+    },
+  ];
+
   useEffect(() => {
     if (isFetching) return;
     isFetching = true;
@@ -120,7 +137,7 @@ const Dashboard = () => {
       })
       .catch((err) => {
         setLoggingOut(false);
-        console.log(err)
+        console.log(err);
       });
   };
 
@@ -208,7 +225,7 @@ const Dashboard = () => {
             onClick={handleLogout}
             disabled={loggingOut}
           >
-            { loggingOut ? <LoadingAssetSmall /> : "Log out" }
+            {loggingOut ? <LoadingAssetSmall /> : "Log out"}
           </button>
         </div>
         {values.pending && values.setPresentations.length < 1 ? (
@@ -235,36 +252,20 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     values.setPresentations.map((_, i) => (
-                      <div key={i} className="m-auto md:w-[300px] cursor-pointer">
-                        <Link to={`/${_.liveId}`}>
-                          <img
-                            src={_.thumbnail}
-                            alt="presentation image"
-                            className="rounded-xl w-full h-[190px]"
-                            draggable="false"
-                            loading="lazy"
-                          />
-
-                          <p className="font-bold leading-10 treading-6">
-                            {_.name}
-                          </p>
-
-                          <span className="w-[40%] flex justify-between flex-col">
-                            <small>
-                              {new Date(_.createdAt).toDateString()}
-                            </small>
-                            <small>{_.linkType}</small>
-                          </span>
-                        </Link>
-                      </div>
+                      <PresentationCard
+                        key={i}
+                        index={i}
+                        infoDetails={infoDetails}
+                      />
                     ))
                   )}
                 </div>
 
                 <div
                   ref={arrowRef}
-                  className={`w-full h-[40px] flex items-center justify-center ${!shouldFetchMoreData && "hidden"
-                    }`}
+                  className={`w-full h-[40px] flex items-center justify-center ${
+                    !shouldFetchMoreData && "hidden"
+                  }`}
                 >
                   {values.setPresentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />
@@ -285,4 +286,77 @@ const Dashboard = () => {
     </section>
   );
 };
+function PresentationCard({ index, _, infoDetails }) {
+  const [infoBtn, setInfoBtn] = useState(false);
+
+  const handleDropdown = (e) => {
+    e.preventDefault();
+    setInfoBtn((prev) => !prev);
+  };
+  return (
+    <div className="m-auto md:w-[300px] cursor-pointer relative overflow-hidden_">
+      <Link to={`/${_.liveId}`}>
+        <img
+          src={_.thumbnail}
+          alt="presentation image"
+          className="rounded-xl w-full h-[190px]"
+          draggable="false"
+          loading="lazy"
+        />
+
+        <p className="font-bold leading-10 treading-6">{_.name}</p>
+
+        <span className="w-[40%] flex justify-between flex-col">
+          <small>{new Date(_.createdAt).toDateString()}</small>
+          <small>{_.linkType}</small>
+        </span>
+        <button
+          type="button"
+          className="absolute top-[71%] right-0 p-2 rounded-full hover:bg-lightGray transition-colors duration-300 z-20"
+          onClick={handleDropdown}
+        >
+          <FaEllipsisV className="!text-slate-200 hover:!text-black_" />
+        </button>
+      </Link>
+
+      {/* <div
+          className={`absolute top-[78%] right-2 opacity-0 pointer-events-none transition-all duration-300 ${
+            infoBtn &&
+            "translate-y-6 !opacity-100 group !pointer-events-auto"
+          }`}
+        >
+          <button>
+            <FaTrash />
+          </button>
+          <p className="absolute -top-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all px-4 rounded-md bg-slate-300 duration-300">
+            Delete
+          </p>
+        </div> */}
+      {infoDetails.map(({ title, icon }, i) => {
+        return (
+          <div
+            key={i}
+            className={`absolute top-[73%] right-2 opacity-0 pointer-events-none transition-all duration-300 group ${
+              infoBtn && "opacity-100"
+            }`}
+            style={{
+              transform: infoBtn
+                ? `translateY(${(i === 0 ? 0.5 + 0.5 : i + 1) * 100}%)`
+                : " translateY(0px)",
+              opacity: infoBtn ? 1 : 0,
+              pointerEvents: infoBtn ? "auto" : "none",
+              transitionDelay: `${i * 100}ms`,
+            }}
+          >
+            <button>{icon}</button>
+            <p className="absolute -top-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-6 transition-all px-4 rounded-md border border-slate-300 duration-300">
+              {title}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default Dashboard;
