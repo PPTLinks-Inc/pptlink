@@ -11,7 +11,7 @@
 } */
 
 .nav-item li:hover .nav-side::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -50px;
   right: 0px;
@@ -25,7 +25,7 @@
 }
 
 .nav-item li:hover .nav-side::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -50px;
   right: 0px;
