@@ -3,20 +3,21 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 
-import { useState, useRef, useEffect, useContext } from 'react';
-import SwiperMySlide from './assets/carousel/Swiper';
-import { FaExpand, FaChevronUp, FaSync } from 'react-icons/fa';
-import animation1 from './assets/images/animation1.gif';
-import animation2 from './assets/images/animation2.gif';
-import { toast } from 'react-toastify';
-import { ToastContainer } from 'react-toastify';
-import CopyAllRounded from '@mui/icons-material/CopyAllOutlined';
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
-import { Button } from '@mui/material';
-import { LoadingAssetSmall2 } from '../../../assets/assets';
-import { isIOS } from 'react-device-detect';
-import { PresentationContext } from '../../../contexts/presentationContext';
-import Actions from '../PresentationActions';
+import { useState, useRef, useEffect, useContext } from "react";
+import SwiperMySlide from "./assets/carousel/Swiper";
+import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
+import animation1 from "./assets/images/animation1.gif";
+import animation2 from "./assets/images/animation2.gif";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
+import ShareIcon from "@mui/icons-material/ShareOutlined";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import { Button } from "@mui/material";
+import { LoadingAssetSmall2 } from "../../../assets/assets";
+import { isIOS } from "react-device-detect";
+import { PresentationContext } from "../../../contexts/presentationContext";
+import Actions from "../PresentationActions";
 
 // let stopFunction = false;
 // let navBar = false;
@@ -223,6 +224,18 @@ export const Carousel = ({ nav }) => {
     }
   };
 
+  const shareData = {
+    title: "PPTLinks",
+    text: "Join the presentation",
+    url: window.location.href,
+  };
+  function share() {
+    navigator
+      .share(shareData)
+      .then(() => console.log("Successful share"))
+      .catch((error) => console.log("Error sharing", error));
+  }
+
   return (
     <>
       <div
@@ -235,14 +248,26 @@ export const Carousel = ({ nav }) => {
       >
         {presentation.User === 'HOST' && actionsActive && (
           <p
-            className='max-w-full bg-black/50 text-white absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between '
-            onClick={() => {
-              navigator.clipboard &&
-                navigator.clipboard.writeText(window.location.href);
-              toast.success('Link Copied successfully');
-            }}
+            className="max-w-full bg-black/50 text-white absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between"
           >
-            <span>{window.location.href}</span> <CopyAllRounded />
+            <span>{window.location.href}</span>
+            {navigator?.share ? (
+              <ShareIcon
+                className="cursor-pointer"
+                onClick={() => {
+                  share();
+                }}
+              />
+            ) : (
+              <CopyAllRounded
+                className="cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard &&
+                    navigator.clipboard.writeText(window.location.href);
+                  toast.success("Link Copied successfully");
+                }}
+              />
+            )}
           </p>
         )}
 
