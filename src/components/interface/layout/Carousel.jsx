@@ -247,11 +247,6 @@ export const Carousel = ({ nav }) => {
         {presentation.User === "HOST" && actionsActive && (
           <p
             className="max-w-full bg-black/50 text-white absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between "
-            onClick={() => {
-              navigator.clipboard &&
-                navigator.clipboard.writeText(window.location.href);
-              toast.success("Link Copied successfully");
-            }}
           >
             <span>{window.location.href}</span>
             {navigator?.share ? (
