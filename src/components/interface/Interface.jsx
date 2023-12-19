@@ -53,7 +53,7 @@ function Interface() {
       >
         {presentation ? (
           <div className=" h-fit min-h-[100%]">
-            {presentation.live || presentation.User === "HOST" ? (
+            {presentation.view || presentation.User === "HOST" ? (
               <Carousel nav={{ navbar, setNavbar, navItems }} />
             ) : !isIOS ? (
               <Spinner />
