@@ -18,7 +18,7 @@ function Header() {
   const [shareAvailable, setShareAvailable] = useState(false);
 
   useEffect(() => {
-    if (navigator.canShare) {
+    if (navigator.share) {
       setShareAvailable(true);
     }
   }, [presentation]);
