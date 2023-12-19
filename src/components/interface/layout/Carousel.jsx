@@ -11,6 +11,7 @@ import animation2 from "./assets/images/animation2.gif";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
+import ShareIcon from "@mui/icons-material/ShareOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { Button } from "@mui/material";
 import { LoadingAssetSmall2 } from "../../../assets/assets";
@@ -221,6 +222,18 @@ export const Carousel = ({ nav }) => {
     }
   };
 
+  const shareData = {
+    title: "PPTLinks",
+    text: "Join the presentation",
+    url: window.location.href,
+  };
+  function share() {
+    navigator
+      .share(shareData)
+      .then(() => console.log("Successful share"))
+      .catch((error) => console.log("Error sharing", error));
+  }
+
   return (
     <>
       <div
@@ -240,7 +253,24 @@ export const Carousel = ({ nav }) => {
               toast.success("Link Copied successfully");
             }}
           >
-            <span>{window.location.href}</span> <CopyAllRounded />
+            <span>{window.location.href}</span>
+            {navigator?.share ? (
+              <ShareIcon
+                className="cursor-pointer"
+                onClick={() => {
+                  share();
+                }}
+              />
+            ) : (
+              <CopyAllRounded
+                className="cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard &&
+                    navigator.clipboard.writeText(window.location.href);
+                  toast.success("Link Copied successfully");
+                }}
+              />
+            )}
           </p>
         )}
 
