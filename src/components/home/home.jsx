@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 
-import { Link } from "react-router-dom";
-import { AiFillCaretDown } from "react-icons/ai";
-import axios from "axios";
-import { useEffect, useRef, useState, useCallback, useReducer } from "react";
-import { LoadingAssetSmall2, LoadingAssetBig2 } from "../../assets/assets";
-import { Helmet } from "react-helmet";
-import { useInView } from "react-intersection-observer";
-import LogoBlack from "../../images/Logo-Black.png";
-import loading from "./../../images/loading.png";
+import { Link } from 'react-router-dom';
+import { AiFillCaretDown } from 'react-icons/ai';
+import axios from 'axios';
+import { useEffect, useRef, useState, useCallback, useReducer } from 'react';
+import { LoadingAssetSmall2, LoadingAssetBig2 } from '../../assets/assets';
+import { Helmet } from 'react-helmet';
+import { useInView } from 'react-intersection-observer';
+import LogoBlack from '../../images/Logo-Black.png';
+import loading from './../../images/loading.png';
 
 const initialPageNo = 1;
 let shouldFetchMoreData = true;
@@ -26,7 +26,7 @@ const Home = () => {
 
   const { ref: arrowRef, inView } = useInView({
     threshold: 0.8,
-    rootMargin: "15%",
+    rootMargin: '15%',
   });
 
   const [values, setValues] = useState({
@@ -82,7 +82,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log("intersecting", inView);
+    console.log('intersecting', inView);
     if (isFetching) return;
     if (inView) {
       isFetching = true;
@@ -96,21 +96,21 @@ const Home = () => {
   }, [values]);
 
   function SpacesWithUnderscores(inputString) {
-    var resultString = inputString.replace(/\s+/g, "_");
+    var resultString = inputString.replace(/\s+/g, '_');
     return resultString;
   }
 
   return (
-    <section className="h-[fit-content] w-[95%] m-auto flex justify-between relative my-5">
+    <section className='h-[fit-content] w-[95%] m-auto flex justify-between relative my-5'>
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Home - PPTLinks `}</title>
         <meta
-          name="description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta
-          name="tags"
+          name='tags'
           content={`PPT, Presentations, Powerpoint, PPTLinks,`}
         />
 
@@ -119,56 +119,56 @@ const Home = () => {
         <meta property='og:url' content={`https://www.pptlinks.com`} />
         <meta property='og:title' content={`Home - PPTLinks `} />
         <meta
-          property="og:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
-        <meta property="og:image" content={LogoBlack} />
+        <meta property='og:image' content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
         <meta property='twitter:card' content='website' />
         <meta property='twitter:url' content={`https://www.pptlinks.com`} />
 
-        <meta property="twitter:title" content={`Home - PPTLinks `} />
+        <meta property='twitter:title' content={`Home - PPTLinks `} />
         <meta
-          property="twitter:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
-        <meta property="twitter:image" content={LogoBlack} />
+        <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
 
-      <div className="w-[70%] flex flex-col mt-7 justify-between maxScreen:w-full">
-        <h1 className="text-[40px] font-medium mb-7 md:mb-[45px]">
+      <div className='w-[70%] flex flex-col mt-7 justify-between maxScreen:w-full'>
+        <h1 className='text-[40px] font-medium mb-7 md:mb-[45px]'>
           List of all institutions
         </h1>
 
-        <p className="text-xl  mb-7 md:mb-[45px]">
+        <p className='text-xl  mb-7 md:mb-[45px]'>
           Click on an institution to find all public presentations made by them
         </p>
 
-        <form className="flex flex-wrap w-[100%] md:w-[100%] justify-between lg:justify-start gap-3 mb-[45px]">
+        <form className='flex flex-wrap w-[100%] md:w-[100%] justify-between lg:justify-start gap-3 mb-[45px]'>
           <input
-            type="text"
-            placeholder="Find institution"
-            className="block w-[70%] grow shrink basis-[300px] lg:max-w-[450px] border border-slate-200 px-[15px] mr-2 py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1"
+            type='text'
+            placeholder='Find institution'
+            className='block w-[70%] grow shrink basis-[300px] lg:max-w-[450px] border border-slate-200 px-[15px] mr-2 py-[12px] text-slate-200 decoration-black rounded-xl bg-transparent my-1'
           />
 
           <button
-            className="block w-[fit-content] px-7 rounded-xl py-[9px] bg-slate-200 text-black my-1"
-            type="submit"
+            className='block w-[fit-content] px-7 rounded-xl py-[9px] bg-slate-200 text-black my-1'
+            type='submit'
           >
             Find
           </button>
         </form>
         {values.pending && values.institutions.length < 1 ? (
-          <div className="w-full h-[25vh] flex justify-center items-center">
+          <div className='w-full h-[25vh] flex justify-center items-center'>
             <LoadingAssetBig2 />
           </div>
         ) : (
           <>
             {values.error ? (
-              <div className="w-full h-[10vh] md:h-[25vh] flex justify-center items-center">
+              <div className='w-full h-[10vh] md:h-[25vh] flex justify-center items-center'>
                 <button
-                  className="px-7 rounded-xl py-1 bg-slate-200 text-black"
+                  className='px-7 rounded-xl py-1 bg-slate-200 text-black'
                   onClick={handleRefresh}
                 >
                   Refresh
@@ -180,7 +180,7 @@ const Home = () => {
                   <Link
                     key={i}
                     to={`/institutions/${SpacesWithUnderscores(_.name)}`}
-                    className="border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]"
+                    className='border-l-4 pl-2 border-slate-200 h-[50px] flex items-center mb-[45px]'
                   >
                     {_.name}
                   </Link>
@@ -189,15 +189,16 @@ const Home = () => {
                 {
                   <div
                     ref={arrowRef}
-                    className={`w-full h-[40px] flex items-center justify-center ${!shouldFetchMoreData && "hidden"
-                      }`}
+                    className={`w-full h-[40px] flex items-center justify-center ${
+                      !shouldFetchMoreData && 'hidden'
+                    }`}
                   >
                     {values.institutions.length > 0 && values.pending ? (
                       <LoadingAssetSmall2 />
                     ) : (
                       values.institutions.length > 0 && (
                         <AiFillCaretDown
-                          className="text-2xl cursor-pointer"
+                          className='text-2xl cursor-pointer'
                           onClick={shouldFetchMoreData ? getInstitutions : null}
                         />
                       )
@@ -210,13 +211,13 @@ const Home = () => {
         )}
       </div>
 
-      <div className="w-[30%] h-[fit-content] absolute right-[3rem] top-[4rem] maxScreen:hidden">
+      <div className='w-[30%] h-[fit-content] absolute right-[3rem] top-[4rem] maxScreen:hidden'>
         <img
-          draggable="false"
-          loading="lazy"
+          draggable='false'
+          loading='lazy'
           src={loading}
-          alt="Ellipse"
-          className="w-full"
+          alt='Ellipse'
+          className='w-full'
         />
       </div>
     </section>
