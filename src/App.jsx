@@ -25,14 +25,6 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-// Add a response interceptor
-axios.interceptors.response.use(function (response) {
-  if (response.data.token) {
-    localStorage.setItem("accessToken", response.data.token);
-  }
-  return response;
-});
-
 function App() {
   return (
     <>
