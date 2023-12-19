@@ -11,9 +11,7 @@ import { isIOS } from "react-device-detect";
 
 import { Spinner, SpinnerIos } from "./layout/assets/spinner/Spinner";
 import PresentationNotFound from "./404";
-import {
-  PresentationContext,
-} from "../../contexts/presentationContext";
+import { PresentationContext } from "../../contexts/presentationContext";
 
 const navItems = [
   {

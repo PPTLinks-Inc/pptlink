@@ -16,16 +16,18 @@ import { Button } from "@mui/material";
 import { LoadingAssetSmall2 } from "../../../assets/assets";
 import { isIOS } from "react-device-detect";
 import { PresentationContext } from "../../../contexts/presentationContext";
+import Actions from "../PresentationActions";
 
-let stopFunction = false;
-let navBar = false;
+// let stopFunction = false;
+// let navBar = false;
 let wakeLock = null;
 let setTimerActive = null;
 
 export const Carousel = ({ nav }) => {
   const { presentation, makeLive, socket, livePending, syncButton, syncSlide } =
     useContext(PresentationContext);
-  const [active, setActive] = useState(true);
+  const [actionsActive, setActionsActive] = useState(true);
+  const [actionsHovered, setActionsHovered] = useState(false);
   const [enableFullscreen, setEnableFullScreen] = useState(false);
   const userRef = useRef();
   const { navbar, setNavbar, navItems } = nav;
@@ -136,6 +138,7 @@ export const Carousel = ({ nav }) => {
     }
   };
   const handleScreenOrientation = (e) => {
+    console.log(e, e.matches);
     if (e.matches) {
       setSpecialMedia((prev) => ({
         ...prev,
@@ -195,20 +198,21 @@ export const Carousel = ({ nav }) => {
   }, []);
 
   const handleMouseMove = () => {
-    setActive(true);
+    if (actionsHovered) return;
+    setActionsActive(true);
     if (setTimerActive) {
       clearTimeout(setTimerActive);
     }
 
     setTimerActive = setTimeout(() => {
-      setActive(false);
+      setActionsActive(false);
     }, 5000);
   };
 
   const handleMouseClick = (e) => {
     if (e.target.tagName !== "IMG") return;
-    if (active) {
-      setActive(false);
+    if (actionsActive) {
+      setActionsActive(false);
       if (setTimerActive) {
         clearTimeout(setTimerActive);
       }
@@ -227,7 +231,7 @@ export const Carousel = ({ nav }) => {
         onMouseMove={handleMouseMove}
         onClick={(e) => handleMouseClick(e)}
       >
-        {presentation.User === "HOST" && active && (
+        {presentation.User === "HOST" && actionsActive && (
           <p
             className="max-w-full bg-black/50 text-white absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between "
             onClick={() => {
@@ -242,12 +246,12 @@ export const Carousel = ({ nav }) => {
 
         <div className="carousel__track-container h-full relative">
           <ul className="h-full w-full flex relative ">
-            <SwiperMySlide active={active} />
+            <SwiperMySlide actionsActive={actionsActive} />
           </ul>
         </div>
         <div
           className={`absolute lg:hidden z-20 top-6 right-6  ${
-            active ? "block" : "hidden"
+            actionsActive ? "block" : "hidden"
           }`}
         >
           {presentation.User === "HOST" && (
@@ -272,113 +276,20 @@ export const Carousel = ({ nav }) => {
           )}
         </div>
 
-        <nav
-          className={`h-16 w-16 rounded-full bottom-12 right-12  z-30 fixed transition-all duration-500 ${
-            navbar ? "" : "active"
-          } ${active ? "block" : "hidden"}`}
-        >
-          <ul
-            className={`w-full h-full flex items-center justify-center select-none`}
-          >
-            <button
-              title="Toggle fullscreen"
-              aria-label="Toggle fullscreen"
-              type="button"
-              className={`absolute -left-14 z-50 rounded-full bg-black p-2 bottom-2 hover:bg-slate-400
-            ${active ? "block" : "hidden"}
-          `}
-            >
-              <FaExpand
-                size="30px"
-                onClick={() => toggleFullScreen()}
-                className="text-slate-200"
-              />
-            </button>
-
-            {/* sync button for viewers */}
-
-            {presentation.User !== "HOST" && !syncButton && (
-              <>
-                <button
-                  onClick={() => syncSlide()}
-                  title={syncButton ? "" : "Sync"}
-                  className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
-                    syncButton ? "bg-black" : "bg-slate-400 "
-                  } z-50`}
-                >
-                  <FaSync size="28px" className="text-slate-200" />
-                </button>
-                <div
-                  style={{
-                    animationDelay: "-1s",
-                  }}
-                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-                ></div>
-                <div
-                  style={{
-                    animationDelay: "-2s",
-                  }}
-                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-                ></div>
-                <div
-                  style={{
-                    animationDelay: "-3s",
-                  }}
-                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-                ></div>
-              </>
-            )}
-            <button
-              onClick={() => {
-                stopFunction = !stopFunction;
-                setNavbar((prev) => !prev);
-                navBar = !navBar;
-                console.log(stopFunction);
-              }}
-              className={`text-slate-200 text-2xl rounded-full border active:scale-75 duration-200 border-white bg-black flex items-center z-20 justify-center w-full h-full active:bg-slate-200 transition-all select-none ${
-                navBar ? "rotate-180" : "rotate-0"
-              }`}
-            >
-              <FaChevronUp />
-            </button>
-            {navItems.map(({ icon, link, name }, i) => (
-              <>
-                {name === "download" && !presentation.pptLink ? (
-                  <></>
-                ) : (
-                  <li
-                    key={i}
-                    className={`absolute w-[80%] rounded-full p-2 h-[80%] bg-black z-10 text-slate-200 border border-white transition-all  duration-500 ${
-                      navbar && "duration-300"
-                    }`}
-                    style={{
-                      transform: navbar
-                        ? `translatey(-${(i + 1.1) * 100 + (i + 1) * 8}%)`
-                        : "translateY(0)",
-                      transitionDelay: `${(i + 1) / 10}s`,
-                      zIndex: navItems.length - (i + 1),
-                    }}
-                  >
-                    <a
-                      href={name === "download" ? presentation.pptLink : link}
-                      className="w-full relative h-full flex items-center  justify-center flex-row-reverse"
-                      download={name === "download" && presentation.name}
-                    >
-                      <span className="">{icon}</span>
-                      <span
-                        className={`text-white absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all border-white border ${
-                          navBar ? "opacity-100" : "opacity-0"
-                        } duration-500 font-bold bg-black`}
-                      >
-                        {name}
-                      </span>
-                    </a>
-                  </li>
-                )}
-              </>
-            ))}
-          </ul>
-        </nav>
+        {
+          <Actions
+            navbar={navbar}
+            active={actionsActive}
+            hovered={actionsHovered}
+            setActionsHovered={setActionsHovered}
+            toggleFullScreen={toggleFullScreen}
+            presentation={presentation}
+            syncButton={syncButton}
+            syncSlide={syncSlide}
+            setNavbar={setNavbar}
+            navItems={navItems}
+          />
+        }
         <ToastContainer />
         {status.online === true ? (
           <div
