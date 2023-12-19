@@ -48,8 +48,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
-  const { user, setUser } = useContext(userContext);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const { setUser } = useContext(userContext);
 
   const [values, setValues] = useState({
     error: false,
@@ -99,7 +98,7 @@ const Dashboard = () => {
     },
     {
       title: "Link",
-      icon: <FaLink />,
+      icon: <FaLink className="!text-xl" />,
     },
   ];
 
@@ -124,21 +123,9 @@ const Dashboard = () => {
   }, [values]);
 
   const handleLogout = () => {
-    setLoggingOut(true);
-    const sendData = { email: user.email };
-    axios
-      .post("/api/v1/auth/logout", sendData, { signal: controller.signal })
-      .then(({ data }) => {
-        setUser(null);
-        localStorage.removeItem("accessToken");
-        navigate("/");
-
-        controller.abort();
-      })
-      .catch((err) => {
-        setLoggingOut(false);
-        console.log(err);
-      });
+    setUser(null);
+    localStorage.removeItem("accessToken");
+    navigate("/");
   };
 
   return (
@@ -223,9 +210,8 @@ const Dashboard = () => {
             type="button"
             className="px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]"
             onClick={handleLogout}
-            disabled={loggingOut}
           >
-            {loggingOut ? <LoadingAssetSmall /> : "Log out"}
+            Log out
           </button>
         </div>
         {values.pending && values.setPresentations.length < 1 ? (
@@ -251,10 +237,11 @@ const Dashboard = () => {
                       <LoadingAssetBig2 />
                     </div>
                   ) : (
-                    values.setPresentations.map((_, i) => (
+                    values.setPresentations.map((item, i) => (
                       <PresentationCard
                         key={i}
                         index={i}
+                        item={item}
                         infoDetails={infoDetails}
                       />
                     ))
@@ -286,7 +273,8 @@ const Dashboard = () => {
     </section>
   );
 };
-function PresentationCard({ index, _, infoDetails }) {
+
+function PresentationCard({ index, item, infoDetails }) {
   const [infoBtn, setInfoBtn] = useState(false);
 
   const handleDropdown = (e) => {
@@ -294,44 +282,30 @@ function PresentationCard({ index, _, infoDetails }) {
     setInfoBtn((prev) => !prev);
   };
   return (
-    <div className="m-auto md:w-[300px] cursor-pointer relative overflow-hidden_">
-      <Link to={`/${_.liveId}`}>
+    <div className="m-auto md:w-[300px] cursor-pointer relative ">
+      <Link to={`/${item.liveId}`}>
         <img
-          src={_.thumbnail}
+          src={item.thumbnail}
           alt="presentation image"
           className="rounded-xl w-full h-[190px]"
           draggable="false"
           loading="lazy"
         />
 
-        <p className="font-bold leading-10 treading-6">{_.name}</p>
+        <p className="font-bold leading-10 treading-6">{item.name}</p>
 
         <span className="w-[40%] flex justify-between flex-col">
-          <small>{new Date(_.createdAt).toDateString()}</small>
-          <small>{_.linkType}</small>
+          <small>{new Date(item.createdAt).toDateString()}</small>
+          <small>{item.linkType}</small>
         </span>
         <button
           type="button"
           className="absolute top-[71%] right-0 p-2 rounded-full hover:bg-lightGray transition-colors duration-300 z-20"
           onClick={handleDropdown}
         >
-          <FaEllipsisV className="!text-slate-200 hover:!text-black_" />
+          <FaEllipsisV className="!text-slate-200 !text-xl" />
         </button>
       </Link>
-
-      {/* <div
-          className={`absolute top-[78%] right-2 opacity-0 pointer-events-none transition-all duration-300 ${
-            infoBtn &&
-            "translate-y-6 !opacity-100 group !pointer-events-auto"
-          }`}
-        >
-          <button>
-            <FaTrash />
-          </button>
-          <p className="absolute -top-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all px-4 rounded-md bg-slate-300 duration-300">
-            Delete
-          </p>
-        </div> */}
       {infoDetails.map(({ title, icon }, i) => {
         return (
           <div
@@ -341,7 +315,7 @@ function PresentationCard({ index, _, infoDetails }) {
             }`}
             style={{
               transform: infoBtn
-                ? `translateY(${(i === 0 ? 0.5 + 0.5 : i + 1) * 100}%)`
+                ? `translateY(${(i === 0 ? 0.7 + 0.5 : i + 1.2) * 100}%)`
                 : " translateY(0px)",
               opacity: infoBtn ? 1 : 0,
               pointerEvents: infoBtn ? "auto" : "none",

@@ -5,13 +5,34 @@ import { useContext } from "react";
 import { toast } from "react-toastify";
 import { Button } from "@mui/material";
 import Copy from "@mui/icons-material/CopyAll";
+import ShareIcon from "@mui/icons-material/Share";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { LoadingAssetSmall2 } from "../../../assets/assets";
 import { PresentationContext } from "../../../contexts/presentationContext";
+import { useState, useEffect } from "react";
 
 function Header() {
   const { presentation, makeLive, livePending } =
     useContext(PresentationContext);
+
+  const [shareAvailable, setShareAvailable] = useState(false);
+
+  useEffect(() => {
+    if (navigator.share) {
+      setShareAvailable(true);
+    }
+  }, [presentation]);
+
+  function share() {
+    navigator
+      .share({
+        title: "PPTLinks",
+        text: "Join the presentation",
+        url: window.location.href
+      })
+      .then(() => console.log("Successful share"))
+      .catch((error) => console.log("Error sharing", error));
+  }
   return (
     <>
       {/* <div className="absolute w-full top-0 left-0 right-0 ">
@@ -26,15 +47,24 @@ function Header() {
       <header className="p-4 pl-6 flex justify-between items-center bg-black relative shadow-[white] z-50 w-full">
         {presentation?.User === "HOST" ? (
           <div className="flex-1 relative ">
-            <p
-              className="max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between "
-              onClick={() => {
-                navigator.clipboard &&
-                  navigator.clipboard.writeText(window.location.href);
-                toast.success("Link Copied successfully");
-              }}
-            >
-              <span>{window.location.href}</span> <Copy />
+            <p className="max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between ">
+              <span>{window.location.href}</span>
+              {shareAvailable ? (
+                <ShareIcon className="cursor-pointer"
+                  onClick={() => {
+                    share();
+                  }}
+                />
+              ) : (
+                <Copy
+                  className="cursor-pointer"
+                  onClick={() => {
+                    navigator.clipboard &&
+                      navigator.clipboard.writeText(window.location.href);
+                    toast.success("Link Copied successfully");
+                  }}
+                />
+              )}
             </p>
           </div>
         ) : (

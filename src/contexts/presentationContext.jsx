@@ -90,8 +90,7 @@ const PresentationContextProvider = (props) => {
     });
 
     socket.on("client-live", (live) => {
-      console.log(live);
-      setPresentation((prev) => ({ ...prev, live }));
+      setPresentation((prev) => ({ ...prev, live, view: live.view }));
     });
     if (fetching) return;
 
@@ -156,10 +155,10 @@ const PresentationContextProvider = (props) => {
           if (socket.connected) {
             socket.emit("client-live", {
               liveId: params.id,
-              live: !presentation.live,
+              view: true,
             });
           }
-          setPresentation((prev) => ({ ...prev, live: !prev.live }));
+          setPresentation((prev) => ({ ...prev, live: !prev.live, view: true }));
           setLivePending(false);
         })
         .catch((err) => {
