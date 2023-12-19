@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
 import {
@@ -24,6 +25,7 @@ import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { userContext } from "../../contexts/userContext";
 import { useInView } from "react-intersection-observer";
+import { FaEllipsisV, FaTrash, FaLink } from "react-icons/fa";
 
 const initialPageNo = 1;
 let shouldFetchMoreData = true;
@@ -88,6 +90,17 @@ const Dashboard = () => {
         }));
       });
   };
+
+  const infoDetails = [
+    {
+      title: "Delete",
+      icon: <FaTrash />,
+    },
+    {
+      title: "Link",
+      icon: <FaLink className="!text-xl" />,
+    },
+  ];
 
   useEffect(() => {
     if (isFetching) return;
@@ -224,32 +237,13 @@ const Dashboard = () => {
                       <LoadingAssetBig2 />
                     </div>
                   ) : (
-                    values.setPresentations.map((_, i) => (
-                      <div
+                    values.setPresentations.map((item, i) => (
+                      <PresentationCard
                         key={i}
-                        className="m-auto md:w-[300px] cursor-pointer"
-                      >
-                        <Link to={`/${_.liveId}`}>
-                          <img
-                            src={_.thumbnail}
-                            alt="presentation image"
-                            className="rounded-xl w-full h-[190px]"
-                            draggable="false"
-                            loading="lazy"
-                          />
-
-                          <p className="font-bold leading-10 treading-6">
-                            {_.name}
-                          </p>
-
-                          <span className="w-[40%] flex justify-between flex-col">
-                            <small>
-                              {new Date(_.createdAt).toDateString()}
-                            </small>
-                            <small>{_.linkType}</small>
-                          </span>
-                        </Link>
-                      </div>
+                        index={i}
+                        item={item}
+                        infoDetails={infoDetails}
+                      />
                     ))
                   )}
                 </div>
@@ -279,4 +273,64 @@ const Dashboard = () => {
     </section>
   );
 };
+
+function PresentationCard({ index, item, infoDetails }) {
+  const [infoBtn, setInfoBtn] = useState(false);
+
+  const handleDropdown = (e) => {
+    e.preventDefault();
+    setInfoBtn((prev) => !prev);
+  };
+  return (
+    <div className="m-auto md:w-[300px] cursor-pointer relative ">
+      <Link to={`/${item.liveId}`}>
+        <img
+          src={item.thumbnail}
+          alt="presentation image"
+          className="rounded-xl w-full h-[190px]"
+          draggable="false"
+          loading="lazy"
+        />
+
+        <p className="font-bold leading-10 treading-6">{item.name}</p>
+
+        <span className="w-[40%] flex justify-between flex-col">
+          <small>{new Date(item.createdAt).toDateString()}</small>
+          <small>{item.linkType}</small>
+        </span>
+        <button
+          type="button"
+          className="absolute top-[71%] right-0 p-2 rounded-full hover:bg-lightGray transition-colors duration-300 z-20"
+          onClick={handleDropdown}
+        >
+          <FaEllipsisV className="!text-slate-200 !text-xl" />
+        </button>
+      </Link>
+      {infoDetails.map(({ title, icon }, i) => {
+        return (
+          <div
+            key={i}
+            className={`absolute top-[73%] right-2 opacity-0 pointer-events-none transition-all duration-300 group ${
+              infoBtn && "opacity-100"
+            }`}
+            style={{
+              transform: infoBtn
+                ? `translateY(${(i === 0 ? 0.7 + 0.5 : i + 1.2) * 100}%)`
+                : " translateY(0px)",
+              opacity: infoBtn ? 1 : 0,
+              pointerEvents: infoBtn ? "auto" : "none",
+              transitionDelay: `${i * 100}ms`,
+            }}
+          >
+            <button>{icon}</button>
+            <p className="absolute -top-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-6 transition-all px-4 rounded-md border border-slate-300 duration-300">
+              {title}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default Dashboard;
