@@ -13,7 +13,11 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa";
-import { LoadingAssetBig2, LoadingAssetSmall2, LoadingAssetSmall } from "../../assets/assets";
+import {
+  LoadingAssetBig2,
+  LoadingAssetSmall2,
+  LoadingAssetSmall,
+} from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { UPLOAD } from "../../constants/routes";
 import { Helmet } from "react-helmet";
@@ -42,8 +46,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
-  const { user, setUser } = useContext(userContext);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const { setUser } = useContext(userContext);
 
   const [values, setValues] = useState({
     error: false,
@@ -107,21 +110,9 @@ const Dashboard = () => {
   }, [values]);
 
   const handleLogout = () => {
-    setLoggingOut(true);
-    const sendData = { email: user.email };
-    axios
-      .post("/api/v1/auth/logout", sendData, { signal: controller.signal })
-      .then(({ data }) => {
-        setUser(null);
-        localStorage.removeItem("accessToken");
-        navigate("/");
-
-        controller.abort();
-      })
-      .catch((err) => {
-        setLoggingOut(false);
-        console.log(err)
-      });
+    setUser(null);
+    localStorage.removeItem("accessToken");
+    navigate("/");
   };
 
   return (
@@ -206,9 +197,8 @@ const Dashboard = () => {
             type="button"
             className="px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]"
             onClick={handleLogout}
-            disabled={loggingOut}
           >
-            { loggingOut ? <LoadingAssetSmall /> : "Log out" }
+            Log out
           </button>
         </div>
         {values.pending && values.setPresentations.length < 1 ? (
@@ -235,7 +225,10 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     values.setPresentations.map((_, i) => (
-                      <div key={i} className="m-auto md:w-[300px] cursor-pointer">
+                      <div
+                        key={i}
+                        className="m-auto md:w-[300px] cursor-pointer"
+                      >
                         <Link to={`/${_.liveId}`}>
                           <img
                             src={_.thumbnail}
@@ -263,8 +256,9 @@ const Dashboard = () => {
 
                 <div
                   ref={arrowRef}
-                  className={`w-full h-[40px] flex items-center justify-center ${!shouldFetchMoreData && "hidden"
-                    }`}
+                  className={`w-full h-[40px] flex items-center justify-center ${
+                    !shouldFetchMoreData && "hidden"
+                  }`}
                 >
                   {values.setPresentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />
