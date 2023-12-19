@@ -399,6 +399,7 @@ export default function Root() {
                 <p className="basis-[300px] tracking-widest font-bold cursor-pointer">
                   <Link to="/">PPTLinks.</Link>
                 </p>
+              </div>
 
               <small className="block w-fit h-fit">
                 &copy; PPTLinks {new Date().getFullYear()}. All rights reserved
