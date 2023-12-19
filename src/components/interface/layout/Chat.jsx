@@ -19,7 +19,9 @@ import AnimateInOut from "../../AnimateInOut";
 const participants = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 // Chat component
-export default function Chat({ setKeepChatOpen }) {
+export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
+  console.log({ active, keepChatOpen });
+
   // State to manage chat modal's open, join, expand, and messaging states
   const [chatOpen, setChatOpen] = useState({
     open: false,
@@ -86,6 +88,7 @@ export default function Chat({ setKeepChatOpen }) {
       expand: false,
       expandMax: false,
       messaging: false,
+      participants: false,
     }));
     setChatHeight("2.5rem");
     setKeepChatOpen(false);
@@ -105,8 +108,15 @@ export default function Chat({ setKeepChatOpen }) {
     // Media query to handle responsiveness
     <Media queries={{ small: { maxWidth: 900 } }}>
       {(matches) => (
-        <div className="fixed w-full z-40 h-fit bottom-0">
-          <div className="relative flex bg-yellow-300 items-center justify-center w-full h-full">
+        <div
+          className={`transition-all duration-200 ${
+            active || keepChatOpen ? "" : "hidden"
+          } fixed w-full z-50 h-fit ${
+            matches.small && chatOpen.open ? "bottom-0" : "bottom-[4.5rem]"
+          } 
+          `}
+        >
+          <div className="relative flex items-center justify-center w-full h-full md:h-auto_">
             <motion.div
               animate={{
                 width: !matches.small
@@ -115,17 +125,30 @@ export default function Chat({ setKeepChatOpen }) {
                     : matches.small
                     ? "100%"
                     : "10rem"
+                  : matches.small
+                  ? !chatOpen.open
+                    ? "10rem"
+                    : "100%"
                   : "100%",
                 height: matches.small
                   ? chatOpen.open
-                    ? chatOpen.expand ||
-                      chatOpen.participants ||
-                      chatOpen.messaging
-                      ? "90vh"
+                    ? chatOpen.participants || chatOpen.messaging
+                      ? "95vh"
+                      : chatOpen.expand
+                      ? "80vh"
                       : "12rem"
                     : "3rem"
                   : chatHeight,
-                translateY: chatOpen.open ? -100 : 0,
+                translateY: !matches.small
+                  ? chatOpen.open && chatOpen.expand
+                    ? -150
+                    : chatOpen.open &&
+                      (chatOpen.messaging || chatOpen.participants)
+                    ? -250
+                    : chatOpen.open
+                    ? -50
+                    : 0
+                  : null,
 
                 // translateX: chatOpen.open
                 //   ? "15rem"
@@ -139,7 +162,9 @@ export default function Chat({ setKeepChatOpen }) {
               dragElastic={false}
               className={`absolute text-slate-200  rounded-2xl ${
                 !matches.small
-                  ? "m-auto cursor-grab active:cursor-grabbing"
+                  ? "m-auto w-full cursor-grab active:cursor-grabbing"
+                  : chatOpen.open
+                  ? "bottom-0" //COMEBACK
                   : ""
               }  overflow-clip_  bg-black border border-slate-200`}
             >
@@ -171,7 +196,7 @@ export default function Chat({ setKeepChatOpen }) {
                       {/* Icon for the toggle button */}
                       <FaChevronUp
                         className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${
-                          chatOpen.open && !chatOpen.join
+                          (chatOpen.open && !chatOpen.join) || chatOpen.expand
                             ? "rotate-180"
                             : chatOpen.messaging || chatOpen.participants
                             ? "-rotate-90"
@@ -260,7 +285,11 @@ export default function Chat({ setKeepChatOpen }) {
                             <MessageRounded className="w-6 h-6 " />
                           </button>
                           <button
-                            onClick={() => leaveChat()}
+                            onClick={() => {
+                              const leave = confirm("Leave conversation?");
+                              if (!leave) return;
+                              leaveChat();
+                            }}
                             className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
                           >
                             <CloseOutlined className="w-6 h-6 fill-rose-500 text-rose-500" />
@@ -340,7 +369,7 @@ function Host() {
 function Participant({ status = "muted", img, name, role = "guest", muted }) {
   return (
     <div className="flex flex-col shrink-0 gap-1 items-center justify-center">
-      <div className="rounded-full overflow-clip shrink-0 w-16 h-16">
+      <div className="rounded-full overflow-clip shrink-0 w-12 h-12 md:w-16 md:h-16">
         <img
           src="/team/ray.jpg"
           className="w-full h-full object-cover"
@@ -431,7 +460,7 @@ function Messaging() {
 function Participants() {
   const Participant = () => (
     <div className="w-fit -space-y-1 text-center">
-      <div className="rounded-full col-span-1 overflow-clip shrink-0 w-12 h-12">
+      <div className="rounded-full col-span-1 overflow-clip shrink-0 w-8 h-8 lg:w-12 lg:h-12">
         <img
           src="/team/ray.jpg"
           className="w-full h-full object-cover"
