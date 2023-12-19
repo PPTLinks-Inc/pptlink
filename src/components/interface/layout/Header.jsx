@@ -14,13 +14,14 @@ function Header() {
   const { presentation, makeLive, livePending } =
     useContext(PresentationContext);
 
+  const shareData = {
+    title: "PPTLinks",
+    text: "Join the presentation",
+    url: window.location.href,
+  };
   function share() {
     navigator
-      .share({
-        title: "PPTLinks",
-        text: "Join the presentation",
-        url: window.location.href
-      })
+      .share(shareData)
       .then(() => console.log("Successful share"))
       .catch((error) => console.log("Error sharing", error));
   }
@@ -40,8 +41,9 @@ function Header() {
           <div className="flex-1 relative ">
             <p className="max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between ">
               <span>{window.location.href}</span>
-              {navigator.share ? (
-                <ShareIcon className="cursor-pointer"
+              {navigator.canShare(shareData) ? (
+                <ShareIcon
+                  className="cursor-pointer"
                   onClick={() => {
                     share();
                   }}
