@@ -41,7 +41,7 @@ function Header() {
           <div className="flex-1 relative ">
             <p className="max-w-full bg-slate-500 hidden left-4 top-6 py-3 px-2 rounded-md md:max-w-sm lg:flex justify-between ">
               <span>{window.location.href}</span>
-              {navigator.canShare(shareData) ? (
+              {navigator?.share ? (
                 <ShareIcon
                   className="cursor-pointer"
                   onClick={() => {
