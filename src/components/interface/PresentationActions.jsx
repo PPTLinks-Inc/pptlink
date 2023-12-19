@@ -1,4 +1,4 @@
-import { FaChevronUp, FaExpand, FaSync } from 'react-icons/fa';
+import { FaChevronUp, FaExpand, FaSync, FaCompress } from 'react-icons/fa';
 import Chat from './layout/Chat';
 import AnimateInOut from '../AnimateInOut';
 import { FaHome, FaDownload } from 'react-icons/fa';
@@ -26,10 +26,11 @@ export default function Actions({
   presentation,
   syncButton,
   syncSlide,
+  fullscreen,
 }) {
   const [navbar, setNavbar] = useState(false);
-  const [keepChatOpen, setKeepChatOpen] = useState(active || hovered);
   const [hovered, setActionsHovered] = useState(false);
+  const [keepChatOpen, setKeepChatOpen] = useState(active || hovered);
 
   return (
     <>
@@ -49,7 +50,7 @@ export default function Actions({
         onMouseLeave={() => setActionsHovered(false)}
         className={`h-16 w-16 rounded-full bottom-12 right-12  z-40 fixed transition-all duration-500 ${
           navbar ? '' : 'active'
-        } ${active || hovered ? 'block' : 'hidden'}`}
+        } ${active || hovered || navbar ? 'block' : 'hidden'}`}
       >
         <ul
           className={`w-full h-full flex items-center justify-center select-none`}
@@ -59,14 +60,26 @@ export default function Actions({
             aria-label='Toggle fullscreen'
             type='button'
             className={`absolute -left-14 z-50 rounded-full bg-black p-2 bottom-2 hover:bg-slate-400
-                ${!keepChatOpen || active || hovered ? 'block' : 'hidden'}
+                ${
+                  !keepChatOpen || active || hovered || navbar
+                    ? 'block'
+                    : 'hidden'
+                }
               `}
           >
-            <FaExpand
-              size='30px'
-              onClick={() => toggleFullScreen()}
-              className='text-slate-200'
-            />
+            {fullscreen ? (
+              <FaCompress
+                size='30px'
+                onClick={() => toggleFullScreen()}
+                className='text-slate-200'
+              />
+            ) : (
+              <FaExpand
+                size='30px'
+                onClick={() => toggleFullScreen()}
+                className='text-slate-200'
+              />
+            )}
           </button>
 
           {/* sync button for viewers */}

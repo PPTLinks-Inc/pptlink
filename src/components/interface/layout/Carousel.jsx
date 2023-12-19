@@ -33,7 +33,7 @@ export const Carousel = ({ nav }) => {
     online: false,
     offline: false,
   });
-  const [noFullScreen, setNoFullScreen] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
@@ -55,6 +55,7 @@ export const Carousel = ({ nav }) => {
 
   function toggleFullScreen() {
     const element = userRef.current;
+    setFullscreen((prev) => !prev);
 
     if (!isIOS && document.fullscreenEnabled) {
       if (
@@ -89,7 +90,7 @@ export const Carousel = ({ nav }) => {
         }
       }
     } else {
-      setNoFullScreen(true);
+      setFullscreen(false);
     }
   }
 
@@ -195,8 +196,11 @@ export const Carousel = ({ nav }) => {
     };
   }, []);
 
+  useEffect(() => {
+    console.log({ fullscreen });
+  }, [fullscreen]);
+
   const handleMouseMove = () => {
-    if (actionsHovered) return;
     setActionsActive(true);
     if (setTimerActive) {
       clearTimeout(setTimerActive);
@@ -281,6 +285,7 @@ export const Carousel = ({ nav }) => {
             presentation={presentation}
             syncButton={syncButton}
             syncSlide={syncSlide}
+            fullscreen={fullscreen}
           />
         }
         <ToastContainer />
@@ -318,7 +323,7 @@ export const Carousel = ({ nav }) => {
 
           {!specialMedia.animation1 &&
             specialMedia.animation2 &&
-            !noFullScreen && (
+            !fullscreen && (
               <div className='w-full h-full grid place-content-center'>
                 <div className='w-fit h-fit flex flex-col justify-between'>
                   <FaExpand
