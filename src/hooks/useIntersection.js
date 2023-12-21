@@ -13,7 +13,6 @@ const useIntersection = ({ ref, func, initialValue }) => {
     const observer = new IntersectionObserver(
       (entries) => {
         setIsIntersecting(entries[0].isIntersecting);
-        console.log('INTERSCET REACHED');
       },
       {
         root: null,
@@ -26,15 +25,12 @@ const useIntersection = ({ ref, func, initialValue }) => {
   }, []);
 
   useEffect(() => {
-    console.log('IS_INTERSECTING', isIntersecting, isFetching);
     (() => {
       if (isFetching) return;
-      console.log('EFFECT REACHED');
       isFetching = true;
       setLoading(true);
       setTimeout(async () => {
         const data = await func();
-        console.log('DATA:', data);
         setResult((prev) => [...prev, ...data]);
         setLoading(false);
         isFetching = false;

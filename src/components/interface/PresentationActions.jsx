@@ -127,42 +127,38 @@ export default function Actions({
           >
             <FaChevronUp />
           </button>
-          {navItems.map(({ icon, link, name }, i) => (
-            <>
-              {name === 'download' && !presentation.pptLink ? (
-                <></>
-              ) : (
-                <li
-                  key={i}
-                  className={`absolute w-[80%] rounded-full p-2 h-[80%] bg-black z-10 text-slate-200 border border-white transition-all  duration-500 ${
-                    navbar && 'duration-300'
-                  }`}
-                  style={{
-                    transform: navbar
-                      ? `translateY(-${(i + 1.1) * 100 + (i + 1) * 8}%)`
-                      : 'translateY(0)',
-                    transitionDelay: `${(i + 1) / 10}s`,
-                    zIndex: navItems.length - (i + 1),
-                  }}
+          {navItems
+            .filter(({ name }) => name !== 'download' && presentation.pptLink)
+            .map(({ icon, link, name }, i) => (
+              <li
+                key={i}
+                className={`absolute w-[80%] rounded-full p-2 h-[80%] bg-black z-10 text-slate-200 border border-white transition-all  duration-500 ${
+                  navbar && 'duration-300'
+                }`}
+                style={{
+                  transform: navbar
+                    ? `translateY(-${(i + 1.1) * 100 + (i + 1) * 8}%)`
+                    : 'translateY(0)',
+                  transitionDelay: `${(i + 1) / 10}s`,
+                  zIndex: navItems.length - (i + 1),
+                }}
+              >
+                <a
+                  href={name === 'download' ? presentation.pptLink : link}
+                  className='w-full relative h-full flex items-center  justify-center flex-row-reverse'
+                  download={name === 'download' && presentation.name}
                 >
-                  <a
-                    href={name === 'download' ? presentation.pptLink : link}
-                    className='w-full relative h-full flex items-center  justify-center flex-row-reverse'
-                    download={name === 'download' && presentation.name}
+                  <span className=''>{icon}</span>
+                  <span
+                    className={`text-white absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all border-white border ${
+                      navBar ? 'opacity-100' : 'opacity-0'
+                    } duration-500 font-bold bg-black`}
                   >
-                    <span className=''>{icon}</span>
-                    <span
-                      className={`text-white absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all border-white border ${
-                        navBar ? 'opacity-100' : 'opacity-0'
-                      } duration-500 font-bold bg-black`}
-                    >
-                      {name}
-                    </span>
-                  </a>
-                </li>
-              )}
-            </>
-          ))}
+                    {name}
+                  </span>
+                </a>
+              </li>
+            ))}
         </ul>
       </nav>
     </>
