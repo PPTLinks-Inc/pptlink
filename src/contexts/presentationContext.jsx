@@ -1,10 +1,10 @@
 /* eslint-disable */
-
-import { createContext, useState, useRef, useEffect } from 'react';
-import io from 'socket.io-client';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { SERVER_URL } from '../constants/routes';
+import { createContext, useState, useRef, useEffect } from "react";
+import io from "socket.io-client";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { SERVER_URL } from "../constants/routes";
 
 export const PresentationContext = createContext();
 
@@ -98,8 +98,15 @@ const PresentationContextProvider = (props) => {
       setSocketConnected(false);
     });
 
-    socket.on('client-live', (live) => {
-      setPresentation((prev) => ({ ...prev, live, view: live.view }));
+    socket.on("client-live", (live) => {
+      setPresentation((prev) => ({ ...prev, live, view: true }));
+
+      if (live && presentation.view) {
+        toast.success("Presentation is now live");
+      }
+      else if (!live) {
+        toast.error("Presentation is not live");
+      }
     });
     if (fetching) return;
 
@@ -121,12 +128,13 @@ const PresentationContextProvider = (props) => {
   }, []);
 
   const slideChange = (slide) => {
-    if (presentation.User === 'HOST') {
-      socket.emit('change-slide', {
+    if (presentation.User === "HOST" && presentation.live) {
+      socket.emit("change-slide", {
         liveId: presentation.liveId,
         currentSlide: slide.activeIndex,
       });
     } else {
+      if (!presentation.live && presentation.view) return;
       if (slide.activeIndex > state.maxNext) {
         swiperRef.current.allowSlideNext = true;
         swiperRef.current.slideTo(state.maxNext, 0, false);
@@ -164,7 +172,7 @@ const PresentationContextProvider = (props) => {
           if (socket.connected) {
             socket.emit('client-live', {
               liveId: params.id,
-              view: true,
+              live: !presentation.live,
             });
           }
           setPresentation((prev) => ({
