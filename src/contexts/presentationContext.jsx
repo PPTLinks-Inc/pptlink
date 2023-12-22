@@ -53,7 +53,7 @@ const PresentationContextProvider = (props) => {
             };
             if (!swiperRef.current) return;
             if (
-              state.sync &&
+              presentation.live && state.sync &&
               swiperRef.current.activeIndex !== state.hostSlideIndex
             ) {
               syncSlide();
