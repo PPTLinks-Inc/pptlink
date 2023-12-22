@@ -79,8 +79,8 @@ const PresentationContextProvider = (props) => {
   useEffect(() => {
     joinRoom();
     if (presentation) {
-      if (presentation.User !== 'HOST') {
-        socket.on('change-slide', receiveSlideChange);
+      if (presentation.User !== "HOST" && !socket.hasListeners("change-slide")) {
+        socket.on("change-slide", receiveSlideChange);
       }
     }
 
@@ -90,24 +90,31 @@ const PresentationContextProvider = (props) => {
   }, [presentation, socketConnected]);
 
   useEffect(() => {
-    socket.on('connect', () => {
-      setSocketConnected(true);
-    });
+    if (!socket.hasListeners("connect")) {
+      socket.on("connect", () => {
+        setSocketConnected(true);
+      });
+    }
 
-    socket.on('disconnect', () => {
-      setSocketConnected(false);
-    });
+    if (!socket.hasListeners("disconnect")) {
+      socket.on("disconnect", () => {
+        setSocketConnected(false);
+      });
+    }
 
-    socket.on("client-live", (live) => {
-      setPresentation((prev) => ({ ...prev, live, view: true }));
+    if (!socket.hasListeners("client-live")) {
+      socket.on("client-live", (live) => {
+        setPresentation((prev) => ({ ...prev, live, view: true }));
 
-      if (live && presentation.view) {
-        toast.success("Presentation is now live");
-      }
-      else if (!live) {
-        toast.error("Presentation is not live");
-      }
-    });
+        if (live) {
+          toast.success("Presentation is now live");
+        }
+        else {
+          swiperRef.current.allowSlideNext = true;
+          toast.error("Presentation is not live");
+        }
+      });
+    }
     if (fetching) return;
 
     fetching = true;
@@ -134,27 +141,28 @@ const PresentationContextProvider = (props) => {
         currentSlide: slide.activeIndex,
       });
     } else {
-      if (!presentation.live && presentation.view) return;
-      if (slide.activeIndex > state.maxNext) {
-        swiperRef.current.allowSlideNext = true;
-        swiperRef.current.slideTo(state.maxNext, 0, false);
-        swiperRef.current.allowSlideNext = false;
-        return;
-      }
-      if (slide.activeIndex === state.hostSlideIndex) {
-        state.sync = true;
-        setSyncButton(true);
-      } else {
-        state.sync = false;
-        setSyncButton(false);
-      }
-      if (slide.activeIndex === state.maxNext) {
-        swiperRef.current.allowSlideNext = false;
-        return;
-      }
+      if (presentation.live) {
+        if (slide.activeIndex > state.maxNext) {
+          swiperRef.current.allowSlideNext = true;
+          swiperRef.current.slideTo(state.maxNext, 0, false);
+          swiperRef.current.allowSlideNext = false;
+          return;
+        }
+        if (slide.activeIndex === state.hostSlideIndex) {
+          state.sync = true;
+          setSyncButton(true);
+        } else {
+          state.sync = false;
+          setSyncButton(false);
+        }
+        if (slide.activeIndex === state.maxNext) {
+          swiperRef.current.allowSlideNext = false;
+          return;
+        }
 
-      if (!state.sync) {
-        swiperRef.current.allowSlideNext = true;
+        if (!state.sync) {
+          swiperRef.current.allowSlideNext = true;
+        }
       }
     }
   };
