@@ -11,18 +11,7 @@ import ShareAPI from './Share';
 function Header() {
   const { presentation, makeLive, livePending } =
     useContext(PresentationContext);
-
-  const shareData = {
-    title: 'PPTLinks',
-    text: 'Join the presentation',
-    url: window.location.href,
-  };
-  function share() {
-    navigator
-      .share(shareData)
-      .then(() => console.log('Successful share'))
-      .catch((error) => console.log('Error sharing', error));
-  }
+  
   return (
     <>
       <header className='p-4 pl-6 flex justify-between items-center bg-black relative shadow-[white] z-50 w-full'>
