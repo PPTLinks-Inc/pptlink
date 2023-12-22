@@ -7,31 +7,30 @@ import {
   useEffect,
   useCallback,
   useContext,
-} from "react";
-import { Link } from "react-router-dom";
-import profile from "../../images/profile.jfif";
-import { AiFillCaretDown } from "react-icons/ai";
-import { GrAdd } from "react-icons/gr";
-import axios from "axios";
-import { FaPlus } from "react-icons/fa";
+} from 'react';
+import { Link } from 'react-router-dom';
+import profile from '../../images/profile.jfif';
+import { AiFillCaretDown } from 'react-icons/ai';
+import { GrAdd } from 'react-icons/gr';
+import axios from 'axios';
+import { FaPlus } from 'react-icons/fa';
 import {
   LoadingAssetBig2,
   LoadingAssetSmall2,
   LoadingAssetSmall,
-} from "../../assets/assets";
-import { useNavigate } from "react-router-dom";
-import { UPLOAD } from "../../constants/routes";
-import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-Black.png";
-import { userContext } from "../../contexts/userContext";
-import { useInView } from "react-intersection-observer";
-import { FaEllipsisV, FaTrash, FaLink } from "react-icons/fa";
+} from '../../assets/assets';
+import { useNavigate } from 'react-router-dom';
+import { UPLOAD } from '../../constants/routes';
+import { Helmet } from 'react-helmet';
+import LogoBlack from '../../images/Logo-Black.png';
+import { userContext } from '../../contexts/userContext';
+import { useInView } from 'react-intersection-observer';
+import { FaEllipsisV, FaTrash, FaLink } from 'react-icons/fa';
 
 const initialPageNo = 1;
 let shouldFetchMoreData = true;
 
 const pageNoReducer = (state, action) => {
-  console.log({ state, action });
   if (shouldFetchMoreData) return (action += 1);
 
   return state;
@@ -43,7 +42,7 @@ const Dashboard = () => {
 
   const { ref: arrowRef, inView } = useInView({
     threshold: 0.8,
-    rootMargin: "15%",
+    rootMargin: '15%',
   });
 
   const navigate = useNavigate();
@@ -69,7 +68,6 @@ const Dashboard = () => {
         signal: controller.signal,
       })
       .then(({ data }) => {
-        console.log(data);
         setValues((prev) => ({
           ...prev,
           setPresentations: [...prev.setPresentations, ...data.presentations],
@@ -93,12 +91,12 @@ const Dashboard = () => {
 
   const infoDetails = [
     {
-      title: "Delete",
+      title: 'Delete',
       icon: <FaTrash />,
     },
     {
-      title: "Link",
-      icon: <FaLink className="!text-xl" />,
+      title: 'Link',
+      icon: <FaLink className='!text-xl' />,
     },
   ];
 
@@ -124,106 +122,106 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem("accessToken");
-    navigate("/");
+    localStorage.removeItem('accessToken');
+    navigate('/');
   };
 
   return (
-    <section className="min-h-full w-full py-[20px] relative flex flex-col justify-around_">
+    <section className='min-h-full w-full py-[20px] relative flex flex-col justify-around_'>
       {/* meta and SEO information */}
       <Helmet>
         <title>{`Dashboard - PPTLinks `}</title>
         <meta
-          name="description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
         <meta
-          name="tags"
+          name='tags'
           content={`PPT, Presentations, Powerpoint, PPTLinks, Dashboard`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://www.PPTLink.com/dashboard`} />
-        <meta property="og:title" content={`Dashboard - PPTLinks `} />
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/dashboard`} />
+        <meta property='og:title' content={`Dashboard - PPTLinks `} />
         <meta
-          property="og:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
-        <meta property="og:image" content={LogoBlack} />
+        <meta property='og:image' content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
-        <meta property="twitter:card" content="website" />
+        <meta property='twitter:card' content='website' />
         <meta
-          property="twitter:url"
+          property='twitter:url'
           content={`https://www.PPTLink.com/dashboard`}
         />
 
-        <meta property="twitter:title" content={`Dashboard - PPTLinks `} />
+        <meta property='twitter:title' content={`Dashboard - PPTLinks `} />
         <meta
-          property="twitter:description"
-          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
         />
-        <meta property="twitter:image" content={LogoBlack} />
+        <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
 
-      <div className="flex flex-col md:flex-row max-w-[80%] mx-auto gap-20 items-center mb-[40px]">
+      <div className='flex flex-col md:flex-row max-w-[80%] mx-auto gap-20 items-center mb-[40px]'>
         <label
-          htmlFor="uploadImg"
-          className="block min-w-[250px] h-fit relative rounded-full"
+          htmlFor='uploadImg'
+          className='block min-w-[250px] h-fit relative rounded-full'
         >
           <img
-            className="w-[250px] h-[250px] rounded-full mt-[40px] mb-4 md:mb-[40px]"
+            className='w-[250px] h-[250px] rounded-full mt-[40px] mb-4 md:mb-[40px]'
             src={profile}
-            alt="your profile"
-            draggable="false"
-            loading="lazy"
+            alt='your profile'
+            draggable='false'
+            loading='lazy'
           />
           <FaPlus
-            size="30px"
-            className="absolute z-10 top-[65%] right-0 border rounded border-slate-200 text-slate-200 "
+            size='30px'
+            className='absolute z-10 top-[65%] right-0 border rounded border-slate-200 text-slate-200 '
           />
-          <input type="file" id="uploadImg" className="absolute" hidden />
+          <input type='file' id='uploadImg' className='absolute' hidden />
         </label>
 
-        <div className="">
-          <h2 className="text-xl mb-6 font-bold">Welcome to PPTLinks,</h2>
-          <p className="mb-6">
+        <div className=''>
+          <h2 className='text-xl mb-6 font-bold'>Welcome to PPTLinks,</h2>
+          <p className='mb-6'>
             Your upload list and all other activities carried out on the
             platform will appear here. Feel free to upload more presentations,
             lets make this world paperless.
           </p>
 
-          <button className="" onClick={() => navigate(UPLOAD)}>
-            <span className="px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce">
-              <GrAdd /> <span className="ml-3">Upload</span>
+          <button className='' onClick={() => navigate(UPLOAD)}>
+            <span className='px-7 rounded-xl py-1 bg-slate-200 text-black flex items-center justify-around animate-bounce'>
+              <GrAdd /> <span className='ml-3'>Upload</span>
             </span>
           </button>
         </div>
       </div>
 
-      <div className="px-5 md:px-0">
-        <div className="w-full px-3 flex justify-between items-center">
-          <h2 className="text-xl mt-4 mb-6">Your presentations</h2>
+      <div className='px-5 md:px-0'>
+        <div className='w-full px-3 flex justify-between items-center'>
+          <h2 className='text-xl mt-4 mb-6'>Your presentations</h2>
 
           <button
-            type="button"
-            className="px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]"
+            type='button'
+            className='px-0.5 w-36 lg:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]'
             onClick={handleLogout}
           >
             Log out
           </button>
         </div>
         {values.pending && values.setPresentations.length < 1 ? (
-          <div className="w-full h-[25vh] flex justify-center items-center">
+          <div className='w-full h-[25vh] flex justify-center items-center'>
             <LoadingAssetBig2 />
           </div>
         ) : (
           <>
             {values.error ? (
-              <div className="w-full h-[25vh] flex justify-center items-center">
+              <div className='w-full h-[25vh] flex justify-center items-center'>
                 <button
-                  className="px-7 rounded-xl py-1 bg-slate-200 text-black"
+                  className='px-7 rounded-xl py-1 bg-slate-200 text-black'
                   onClick={handleRefresh}
                 >
                   Refresh
@@ -231,9 +229,9 @@ const Dashboard = () => {
               </div>
             ) : (
               <>
-                <div className="w-full h-fit flex md:grid md:grid-cols-3 justify-start flex-wrap gap-x-5 gap-y-[60px]">
+                <div className='w-full h-fit flex md:grid md:grid-cols-3 justify-start flex-wrap gap-x-5 gap-y-[60px]'>
                   {values.setPresentations.length < 1 ? (
-                    <div className="w-full h-[25vh] flex justify-center items-center">
+                    <div className='w-full h-[25vh] flex justify-center items-center'>
                       <LoadingAssetBig2 />
                     </div>
                   ) : (
@@ -251,7 +249,7 @@ const Dashboard = () => {
                 <div
                   ref={arrowRef}
                   className={`w-full h-[40px] flex items-center justify-center ${
-                    !shouldFetchMoreData && "hidden"
+                    !shouldFetchMoreData && 'hidden'
                   }`}
                 >
                   {values.setPresentations.length > 0 && values.pending ? (
@@ -259,7 +257,7 @@ const Dashboard = () => {
                   ) : (
                     values.setPresentations.length > 0 && (
                       <AiFillCaretDown
-                        className="text-2xl cursor-pointer"
+                        className='text-2xl cursor-pointer'
                         onClick={getPresentations}
                       />
                     )
@@ -281,29 +279,36 @@ function PresentationCard({ index, item, infoDetails }) {
     e.preventDefault();
     setInfoBtn((prev) => !prev);
   };
+
+  const handleCloseDropdown = (e) => {
+    e.preventDefault();
+    setInfoBtn(false);
+  };
+
   return (
-    <div className="m-auto md:w-[300px] cursor-pointer relative ">
+    <div className='m-auto md:w-[300px] cursor-pointer group relative '>
       <Link to={`/${item.liveId}`}>
         <img
           src={item.thumbnail}
-          alt="presentation image"
-          className="rounded-xl w-full h-[190px]"
-          draggable="false"
-          loading="lazy"
+          alt='presentation image'
+          className='rounded-xl w-full h-[190px]'
+          draggable='false'
+          loading='lazy'
         />
 
-        <p className="font-bold leading-10 treading-6">{item.name}</p>
+        <p className='font-bold leading-10 treading-6'>{item.name}</p>
 
-        <span className="w-[40%] flex justify-between flex-col">
+        <span className='w-[40%] flex justify-between flex-col'>
           <small>{new Date(item.createdAt).toDateString()}</small>
           <small>{item.linkType}</small>
         </span>
         <button
-          type="button"
-          className="absolute top-[71%] right-0 p-2 rounded-full hover:bg-lightGray transition-colors duration-300 z-20"
+          type='button'
+          className='absolute top-[71%] right-0 p-2 rounded-full md:group-hover:opacity-100 md:opacity-0 transition-all duration-200 z-20'
           onClick={handleDropdown}
+          onBlur={handleCloseDropdown}
         >
-          <FaEllipsisV className="!text-slate-200 !text-xl" />
+          <FaEllipsisV className='!text-slate-200 !text-xl' />
         </button>
       </Link>
       {infoDetails.map(({ title, icon }, i) => {
@@ -311,19 +316,19 @@ function PresentationCard({ index, item, infoDetails }) {
           <div
             key={i}
             className={`absolute top-[73%] right-2 opacity-0 pointer-events-none transition-all duration-300 group ${
-              infoBtn && "opacity-100"
+              infoBtn && 'opacity-100'
             }`}
             style={{
               transform: infoBtn
                 ? `translateY(${(i === 0 ? 0.7 + 0.5 : i + 1.2) * 100}%)`
-                : " translateY(0px)",
+                : ' translateY(0px)',
               opacity: infoBtn ? 1 : 0,
-              pointerEvents: infoBtn ? "auto" : "none",
+              pointerEvents: infoBtn ? 'auto' : 'none',
               transitionDelay: `${i * 100}ms`,
             }}
           >
             <button>{icon}</button>
-            <p className="absolute -top-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-6 transition-all px-4 rounded-md border border-slate-300 duration-300">
+            <p className='absolute -top-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-6 transition-all px-4 rounded-md border border-slate-300 duration-300'>
               {title}
             </p>
           </div>
