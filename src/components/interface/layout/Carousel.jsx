@@ -3,19 +3,19 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 
-import { useState, useRef, useEffect, useContext } from "react";
-import SwiperMySlide from "./assets/carousel/Swiper";
-import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
-import animation1 from "./assets/images/animation1.gif";
-import animation2 from "./assets/images/animation2.gif";
-import { ToastContainer } from "react-toastify";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import { Button } from "@mui/material";
-import { LoadingAssetSmall2 } from "../../../assets/assets";
-import { isIOS } from "react-device-detect";
-import { PresentationContext } from "../../../contexts/presentationContext";
-import Actions from "../PresentationActions";
-import ShareAPI from "./Share";
+import { useState, useRef, useEffect, useContext } from 'react';
+import SwiperMySlide from './assets/carousel/Swiper';
+import { FaExpand, FaChevronUp, FaSync } from 'react-icons/fa';
+import animation1 from './assets/images/animation1.gif';
+import animation2 from './assets/images/animation2.gif';
+import { ToastContainer } from 'react-toastify';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import { Button } from '@mui/material';
+import { LoadingAssetSmall2 } from '../../../assets/assets';
+import { isIOS } from 'react-device-detect';
+import { PresentationContext } from '../../../contexts/presentationContext';
+import Actions from '../PresentationActions';
+import ShareAPI from './Share';
 
 // let stopFunction = false;
 // let navBar = false;
@@ -131,12 +131,9 @@ export const Carousel = ({ nav }) => {
       if (wakeLock !== null && document.visibilityState === 'visible') {
         wakeLock = await navigator.wakeLock.request('screen');
       }
-    } catch (err) {
-      console.error(`Wake lock not available`);
-    }
+    } catch (err) {}
   };
   const handleScreenOrientation = (e) => {
-    console.log(e, e.matches);
     if (e.matches) {
       setSpecialMedia((prev) => ({
         ...prev,
@@ -170,11 +167,8 @@ export const Carousel = ({ nav }) => {
 
           document.addEventListener('visibilitychange', requireWakeLock);
         } else {
-          console.log('not available');
         }
-      } catch (err) {
-        console.error(`${err.name}, ${err.message}`);
-      }
+      } catch (err) {}
     })();
 
     window
@@ -195,9 +189,7 @@ export const Carousel = ({ nav }) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log({ fullscreen });
-  }, [fullscreen]);
+  useEffect(() => {}, [fullscreen]);
 
   const handleMouseMove = () => {
     setActionsActive(true);
@@ -232,7 +224,7 @@ export const Carousel = ({ nav }) => {
         onMouseMove={handleMouseMove}
         onClick={(e) => handleMouseClick(e)}
       >
-        {presentation.User === "HOST" && actionsActive && (
+        {presentation.User === 'HOST' && actionsActive && (
           <ShareAPI outline={true} />
         )}
 
