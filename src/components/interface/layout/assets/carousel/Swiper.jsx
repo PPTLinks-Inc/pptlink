@@ -35,11 +35,11 @@ const SwiperMySlide = ({active}) => {
       }}
       className={active ? "enabledBtn " : ""}
     >
-      {presentation.imageSlides.map((slide) => {
+      {presentation.imageSlides.map((slide, index) => {
         return (
-          <SwiperSlide key={slide.id}>
+          <SwiperSlide key={index}>
             <img
-              src={slide.imageLink}
+              src={slide}
               alt=""
               className="object-contain w-full h-full"
             />
