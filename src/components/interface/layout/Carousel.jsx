@@ -131,7 +131,9 @@ export const Carousel = ({ nav }) => {
       if (wakeLock !== null && document.visibilityState === 'visible') {
         wakeLock = await navigator.wakeLock.request('screen');
       }
-    } catch (err) {}
+    } catch (err) {
+      //
+    }
   };
   const handleScreenOrientation = (e) => {
     if (e.matches) {
@@ -166,9 +168,10 @@ export const Carousel = ({ nav }) => {
           wakeLock = await navigator.wakeLock.request('screen');
 
           document.addEventListener('visibilitychange', requireWakeLock);
-        } else {
         }
-      } catch (err) {}
+      } catch (err) {
+        //
+      }
     })();
 
     window
