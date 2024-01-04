@@ -118,6 +118,8 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
         >
           <div className="relative flex items-center justify-center w-full h-full md:h-auto_">
             <motion.div
+              onBlur={() => closeChat()}
+              tabIndex={0}
               animate={{
                 width: !matches.small
                   ? chatOpen.open
