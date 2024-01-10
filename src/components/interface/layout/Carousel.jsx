@@ -308,7 +308,7 @@ export const Carousel = ({ nav }) => {
                 <img src={animation1} alt="animation image" />
 
                 <p className="text-slate-200">
-                  Change Orientation to Landscape
+                  Bring down notifications panel and change orientation to Landscape
                 </p>
               </div>
             </div>
