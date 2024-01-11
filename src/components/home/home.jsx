@@ -14,7 +14,6 @@ const initialPageNo = 1;
 let shouldFetchMoreData = true;
 
 const pageNoReducer = (state, action) => {
-  console.log({ state, action });
   if (shouldFetchMoreData) return (action += 1);
 
   return state;
@@ -42,7 +41,6 @@ const Home = () => {
   const [pageNo, pageNoDIspatch] = useReducer(pageNoReducer, initialPageNo);
 
   useEffect(() => {
-    console.log({ pageNo });
   }, [pageNo]);
 
   const getInstitutions = () => {
@@ -53,7 +51,6 @@ const Home = () => {
         signal: controller.signal,
       })
       .then(({ data }) => {
-        console.log(data);
 
         setValues((prev) => ({
           ...prev,
@@ -70,7 +67,6 @@ const Home = () => {
         controller.abort();
       })
       .catch((err) => {
-        console.log(err);
         setValues((prev) => ({ ...prev, pending: false, error: true }));
       });
   };
@@ -82,7 +78,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log('intersecting', inView);
     if (isFetching) return;
     if (inView) {
       isFetching = true;

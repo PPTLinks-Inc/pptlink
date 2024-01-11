@@ -200,7 +200,6 @@ const Upload = () => {
               processingFile: true,
             }));
             setUploadProgress(0);
-            console.log('submitted and pending');
             controller.abort();
           })
           .catch((err) => {
