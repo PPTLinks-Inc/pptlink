@@ -302,13 +302,14 @@ export const Carousel = ({ nav }) => {
 
       {specialMedia.toggled && (
         <div className="w-full h-screen fixed top-0 left-0 bottom-0 bg-black z-50">
-          {specialMedia.animation1 && (
-            <div className="w-full h-full grid place-content-center">
-              <div className="w-fit h-fit flex flex-col justify-between">
-                <img src={animation1} alt="animation image" />
+            {specialMedia.animation1 && (
+            <div className='w-full h-full grid place-content-center'>
+              <div className='w-fit h-fit flex flex-col justify-between items-center'>
+                <img src={animation1} alt='animation image' />
 
-                <p className="text-slate-200">
-                  Bring down notifications panel and change orientation to Landscape
+                <p className='text-slate-200 w-[80%] text-center'>
+                  Bring down notifications panel and change orientation to
+                  Landscape
                 </p>
               </div>
             </div>
@@ -317,20 +318,20 @@ export const Carousel = ({ nav }) => {
           {!specialMedia.animation1 &&
             specialMedia.animation2 &&
             !fullscreen && (
-              <div className="w-full h-full grid place-content-center">
-                <div className="w-fit h-fit flex flex-col justify-between">
+              <div className='w-full h-full grid place-content-center'>
+                <div className='w-fit h-fit flex flex-col justify-between items-center'>
                   <FaExpand
                     onClick={removeSpecialMedia}
-                    className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+                    className='absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'
                   />
 
                   <img
                     src={animation2}
-                    alt="animation image"
-                    className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
+                    alt='animation image'
+                    className='mt-[3rem] ml-[1.5rem] z-10 pointer-events-none'
                   />
 
-                  <p className="text-slate-200">Click to make full screen</p>
+                  <p className='text-slate-200'>Click to make full screen</p>
                 </div>
               </div>
             )}
