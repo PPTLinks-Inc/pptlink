@@ -3,19 +3,19 @@
 /* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-unused-vars */
 
-import { useState, useRef, useEffect, useContext } from 'react';
-import SwiperMySlide from './assets/carousel/Swiper';
-import { FaExpand, FaChevronUp, FaSync } from 'react-icons/fa';
-import animation1 from './assets/images/animation1.gif';
-import animation2 from './assets/images/animation2.gif';
-import { ToastContainer } from 'react-toastify';
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
-import { Button } from '@mui/material';
-import { LoadingAssetSmall2 } from '../../../assets/assets';
-import { isIOS } from 'react-device-detect';
-import { PresentationContext } from '../../../contexts/presentationContext';
-import Actions from '../PresentationActions';
-import ShareAPI from './Share';
+import { useState, useRef, useEffect, useContext } from "react";
+import SwiperMySlide from "./assets/carousel/Swiper";
+import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
+import animation1 from "./assets/images/animation1.gif";
+import animation2 from "./assets/images/animation2.gif";
+import { ToastContainer } from "react-toastify";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import { Button } from "@mui/material";
+import { LoadingAssetSmall2 } from "../../../assets/assets";
+import { isIOS } from "react-device-detect";
+import { PresentationContext } from "../../../contexts/presentationContext";
+import Actions from "../PresentationActions";
+import ShareAPI from "./Share";
 
 // let stopFunction = false;
 // let navBar = false;
@@ -99,8 +99,8 @@ export const Carousel = ({ nav }) => {
     }
     setStatus((prevState) => ({
       ...prevState,
-      online: navigator.onLine ? true : 'null',
-      offline: !navigator.onLine ? true : 'null',
+      online: navigator.onLine ? true : "null",
+      offline: !navigator.onLine ? true : "null",
     }));
   };
 
@@ -115,21 +115,21 @@ export const Carousel = ({ nav }) => {
     }
   }, [status]);
   useEffect(() => {
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
 
     handleMouseMove();
 
     return () => {
-      window.removeEventListener('online', updateOnlineStatus);
-      window.removeEventListener('offline', updateOnlineStatus);
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
     };
   }, []);
 
   const requireWakeLock = async () => {
     try {
-      if (wakeLock !== null && document.visibilityState === 'visible') {
-        wakeLock = await navigator.wakeLock.request('screen');
+      if (wakeLock !== null && document.visibilityState === "visible") {
+        wakeLock = await navigator.wakeLock.request("screen");
       }
     } catch (err) {
       //
@@ -160,14 +160,14 @@ export const Carousel = ({ nav }) => {
       }));
     }
 
-    handleScreenOrientation(window.matchMedia('(orientation: landscape)'));
+    handleScreenOrientation(window.matchMedia("(orientation: landscape)"));
 
     (async function () {
       try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen");
 
-          document.addEventListener('visibilitychange', requireWakeLock);
+          document.addEventListener("visibilitychange", requireWakeLock);
         }
       } catch (err) {
         //
@@ -175,16 +175,16 @@ export const Carousel = ({ nav }) => {
     })();
 
     window
-      .matchMedia('(orientation: landscape)')
-      .addEventListener('change', handleScreenOrientation);
+      .matchMedia("(orientation: landscape)")
+      .addEventListener("change", handleScreenOrientation);
 
     return () => {
       window
-        .matchMedia('(orientation: landscape)')
-        .removeEventListener('change', handleScreenOrientation);
+        .matchMedia("(orientation: landscape)")
+        .removeEventListener("change", handleScreenOrientation);
 
       if (wakeLock) {
-        document.removeEventListener('visibilitychange', requireWakeLock);
+        document.removeEventListener("visibilitychange", requireWakeLock);
         wakeLock.release().then(() => {
           wakeLock = null;
         });
@@ -206,7 +206,7 @@ export const Carousel = ({ nav }) => {
   };
 
   const handleMouseClick = (e) => {
-    if (e.target.tagName !== 'IMG') return;
+    if (e.target.tagName !== "IMG") return;
     if (actionsActive) {
       setActionsActive(false);
       if (setTimerActive) {
@@ -221,39 +221,39 @@ export const Carousel = ({ nav }) => {
     <>
       <div
         className={`carousel relative lg:h-[650px] w-[100%] overflow-y-hidden  mx-auto select-none  ${
-          enableFullscreen && 'h-full w-full rotate-90'
+          enableFullscreen && "h-full w-full rotate-90"
         }`}
         ref={userRef}
         onMouseMove={handleMouseMove}
         onClick={(e) => handleMouseClick(e)}
       >
-        {presentation.User === 'HOST' && actionsActive && (
+        {presentation.User === "HOST" && actionsActive && (
           <ShareAPI outline={true} />
         )}
 
-        <div className='carousel__track-container h-full relative'>
-          <ul className='h-full w-full flex relative '>
+        <div className="carousel__track-container h-full relative">
+          <ul className="h-full w-full flex relative ">
             <SwiperMySlide actionsActive={actionsActive} />
           </ul>
         </div>
         <div
           className={`absolute lg:hidden z-20 top-6 right-6  ${
-            actionsActive ? 'block' : 'hidden'
+            actionsActive ? "block" : "hidden"
           }`}
         >
-          {presentation.User === 'HOST' && (
+          {presentation.User === "HOST" && (
             <Button
-              title={presentation.live ? 'End live' : 'Go live'}
+              title={presentation.live ? "End live" : "Go live"}
               onClick={makeLive}
               className={`w-[140px] h-[40px] !text-slate-200 !rounded-xl space-x-2 ${
-                presentation.live ? '!bg-rose-500/50' : ' !bg-green-500/50'
+                presentation.live ? "!bg-rose-500/50" : " !bg-green-500/50"
               }`}
             >
               {livePending ? (
                 <LoadingAssetSmall2 />
               ) : (
                 <>
-                  <p>{presentation.live ? 'End live' : 'Go live'}</p>
+                  <p>{presentation.live ? "End live" : "Go live"}</p>
                   <RadioButtonCheckedIcon
                     className={`!text-3xl !text-slate-200`}
                   />
@@ -263,23 +263,22 @@ export const Carousel = ({ nav }) => {
           )}
         </div>
 
-        {
+        {presentation && (
           <Actions
             active={actionsActive}
             toggleFullScreen={toggleFullScreen}
-            presentation={presentation}
             syncButton={syncButton}
             syncSlide={syncSlide}
             fullscreen={fullscreen}
           />
-        }
+        )}
         <ToastContainer />
         {status.online === true ? (
           <div
             className={`online text-center absolute bottom-0 transition-all duration-500 z-40  text-white w-full bg-green-500 font-bold px-2  translate-y-4 opacity-0`}
           >
-            {' '}
-            Back online{' '}
+            {" "}
+            Back online{" "}
           </div>
         ) : (
           status.offline === true && (
@@ -293,13 +292,13 @@ export const Carousel = ({ nav }) => {
       </div>
 
       {specialMedia.toggled && (
-        <div className='w-full h-screen fixed top-0 left-0 bottom-0 bg-black z-50'>
+        <div className="w-full h-screen fixed top-0 left-0 bottom-0 bg-black z-50">
           {specialMedia.animation1 && (
-            <div className='w-full h-full grid place-content-center'>
-              <div className='w-fit h-fit flex flex-col justify-between'>
-                <img src={animation1} alt='animation image' />
+            <div className="w-full h-full grid place-content-center">
+              <div className="w-fit h-fit flex flex-col justify-between">
+                <img src={animation1} alt="animation image" />
 
-                <p className='text-slate-200'>
+                <p className="text-slate-200">
                   Change Orientation to Landscape
                 </p>
               </div>
@@ -309,20 +308,20 @@ export const Carousel = ({ nav }) => {
           {!specialMedia.animation1 &&
             specialMedia.animation2 &&
             !fullscreen && (
-              <div className='w-full h-full grid place-content-center'>
-                <div className='w-fit h-fit flex flex-col justify-between'>
+              <div className="w-full h-full grid place-content-center">
+                <div className="w-fit h-fit flex flex-col justify-between">
                   <FaExpand
                     onClick={removeSpecialMedia}
-                    className='absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'
+                    className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
                   />
 
                   <img
                     src={animation2}
-                    alt='animation image'
-                    className='mt-[3rem] ml-[1.5rem] z-10 pointer-events-none'
+                    alt="animation image"
+                    className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
                   />
 
-                  <p className='text-slate-200'>Click to make full screen</p>
+                  <p className="text-slate-200">Click to make full screen</p>
                 </div>
               </div>
             )}

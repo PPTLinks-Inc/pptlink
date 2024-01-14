@@ -86,6 +86,7 @@ const Login = () => {
           })
           .then(({ data }) => {
             setUser(data.user);
+            localStorage.setItem("accessToken", data.token);
 
             navigate('/');
 
