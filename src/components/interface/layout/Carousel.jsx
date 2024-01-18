@@ -269,18 +269,17 @@ export const Carousel = ({ nav }) => {
           )}
         </div>
 
-        {
+        {presentation && (
           <Actions
             active={actionsActive}
             toggleFullScreen={toggleFullScreen}
-            presentation={presentation}
             syncButton={syncButton}
             syncSlide={syncSlide}
             fullscreen={fullscreen}
             closeChatModal={closeChatModal}
             setCloseChatModal={setCloseChatModal}
           />
-        }
+        )}
         <ToastContainer />
         {status.online === true ? (
           <div
@@ -322,16 +321,16 @@ export const Carousel = ({ nav }) => {
                 <div className='w-fit h-fit flex flex-col justify-between items-center'>
                   <FaExpand
                     onClick={removeSpecialMedia}
-                    className='absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'
+                    className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
                   />
 
                   <img
                     src={animation2}
-                    alt='animation image'
-                    className='mt-[3rem] ml-[1.5rem] z-10 pointer-events-none'
+                    alt="animation image"
+                    className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
                   />
 
-                  <p className='text-slate-200'>Click to make full screen</p>
+                  <p className="text-slate-200">Click to make full screen</p>
                 </div>
               </div>
             )}
