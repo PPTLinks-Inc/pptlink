@@ -33,6 +33,7 @@ export const Carousel = ({ nav }) => {
     offline: false,
   });
   const [fullscreen, setFullscreen] = useState(false);
+  const [closeChatModal, setCloseChatModal] = useState(false);
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
@@ -231,7 +232,12 @@ export const Carousel = ({ nav }) => {
           <ShareAPI outline={true} />
         )}
 
-        <div className="carousel__track-container h-full relative">
+        <div
+          onClick={() => {
+            setCloseChatModal(true);
+          }}
+          className="carousel__track-container h-full relative"
+        >
           <ul className="h-full w-full flex relative ">
             <SwiperMySlide actionsActive={actionsActive} />
           </ul>
@@ -270,6 +276,8 @@ export const Carousel = ({ nav }) => {
             syncButton={syncButton}
             syncSlide={syncSlide}
             fullscreen={fullscreen}
+            closeChatModal={closeChatModal}
+            setCloseChatModal={setCloseChatModal}
           />
         )}
         <ToastContainer />
@@ -293,13 +301,14 @@ export const Carousel = ({ nav }) => {
 
       {specialMedia.toggled && (
         <div className="w-full h-screen fixed top-0 left-0 bottom-0 bg-black z-50">
-          {specialMedia.animation1 && (
-            <div className="w-full h-full grid place-content-center">
-              <div className="w-fit h-fit flex flex-col justify-between">
-                <img src={animation1} alt="animation image" />
+            {specialMedia.animation1 && (
+            <div className='w-full h-full grid place-content-center'>
+              <div className='w-fit h-fit flex flex-col justify-between items-center'>
+                <img src={animation1} alt='animation image' />
 
-                <p className="text-slate-200">
-                  Change Orientation to Landscape
+                <p className='text-slate-200 w-[80%] text-center'>
+                  Bring down notifications panel and change orientation to
+                  Landscape
                 </p>
               </div>
             </div>
@@ -308,8 +317,8 @@ export const Carousel = ({ nav }) => {
           {!specialMedia.animation1 &&
             specialMedia.animation2 &&
             !fullscreen && (
-              <div className="w-full h-full grid place-content-center">
-                <div className="w-fit h-fit flex flex-col justify-between">
+              <div className='w-full h-full grid place-content-center'>
+                <div className='w-fit h-fit flex flex-col justify-between items-center'>
                   <FaExpand
                     onClick={removeSpecialMedia}
                     className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"

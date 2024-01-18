@@ -1,7 +1,7 @@
 // Importing components and libraries
 import { CloseOutlined, MessageRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   FaChevronUp,
   FaMicrophone,
@@ -13,7 +13,6 @@ import Waves from "./assets/images/waves.svg";
 import MicGradient from "./assets/images/mic-gradient.svg";
 import Media from "react-media";
 import AnimateInOut from "../../AnimateInOut";
-import { useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import { PresentationContext } from "../../../contexts/presentationContext";
 import { userContext } from "../../../contexts/userContext";
@@ -38,7 +37,14 @@ const CAN_SPK = "user is allowed to speak";
 const MIC_OFF = "mic is off";
 
 // Chat component
-export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
+const Chat = React.memo(
+  ({
+    closeChatModal,
+    setCloseChatModal,
+    setKeepChatOpen,
+    active: CHAT_ACTIVE,
+    keepChatOpen,
+  }) => {
   // const [guests, setGuests] = useState(DUMMY_GUESTS);
   const { presentation, setPresentation, socket } =
     useContext(PresentationContext);
@@ -70,6 +76,13 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
   useEffect(() => {
     console.log(micState);
   }, [micState]);
+
+  useEffect(() => {
+    console.log({ closeChatModal });
+    if (closeChatModal) {
+      closeChat();
+    }
+  }, [closeChatModal]);
 
   useEffect(() => {
     if (isHost && presentation.audio) {
@@ -150,6 +163,7 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
     setChatOpen((prev) => ({ ...prev, open: true, expand: false }));
     setChatHeight("12rem");
     setKeepChatOpen(true);
+    setCloseChatModal(false);
   };
 
   // Function to initialize chat
@@ -267,6 +281,7 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
     }));
     setChatHeight("2.5rem");
     setKeepChatOpen(false);
+    setCloseChatModal(true);
   };
 
   // Function to leave the chat
@@ -327,11 +342,15 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
     });
   };
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setConversationLive(true);
-  //   }, 3000);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      setConversationLive(true);
+    }, 3000);
+  }, []);
+
+  useEffect(() => {
+    console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
+  }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
 
   const LeaveConversationModal = () => {
     return (
@@ -347,356 +366,371 @@ export default function Chat({ setKeepChatOpen, active, keepChatOpen }) {
             {isHost ? "End Conversation" : "Leave chat"}
           </p>
           <div className="flex gap-8 justify-center items-center">
-            <button
-              onClick={() => {
-                setShowLeave(false);
-                if (isHost) return endChat();
-                leaveChat();
-              }}
-              className="rounded-xl p-2 text-black bg-slate-200 uppercase"
-            >
-              confirm
-            </button>
-            <button
-              onClick={() => setShowLeave(false)}
-              className="p-2 border border-slate-200/10 rounded-xl text-slate-200 uppercase"
-            >
-              cancel
-            </button>
+              <button
+                onClick={() => {
+                  setShowLeave(false);
+                  if (isHost) return endChat();
+                  leaveChat();
+                }}
+                className="rounded-xl p-2 text-black bg-slate-200 uppercase"
+              >
+                confirm
+              </button>
+              <button
+                onClick={() => setShowLeave(false)}
+                className="p-2 border border-slate-200/10 rounded-xl text-slate-200 uppercase"
+              >
+                cancel
+              </button>
+            </div>
           </div>
-        </div>
-      </>
-    );
-  };
+        </>
+      );
+    };
 
-  return (
-    (isHost || conversationLive) && (
-      <>
-        {/*  Media query to handle responsiveness */}
-        <Media queries={{ small: { maxWidth: 900 } }}>
-          {(matches) => (
-            <div
-              className={`transition-all duration-200 ${
-                active || keepChatOpen ? "" : "hidden"
-              } fixed w-full z-50 h-fit ${
-                matches.small && chatOpen.open ? "bottom-0" : "bottom-[4.5rem]"
-              } 
+    return (
+      (isHost || conversationLive) && (
+        <>
+          {/*  Media query to handle responsiveness */}
+          <Media queries={{ small: { maxWidth: 900 } }}>
+            {(matches) => (
+              <div
+                className={`transition-all duration-200 ${
+                  CHAT_ACTIVE || chatOpen.open || keepChatOpen ? "" : "hidden"
+                } fixed w-full z-50 h-fit ${
+                  matches.small && chatOpen.open
+                    ? "bottom-0"
+                    : "bottom-[4.5rem]"
+                } 
           `}
-            >
-              <div className="relative flex items-center justify-center w-full h-full md:h-auto_">
-                <motion.div
-                  animate={{
-                    width: !matches.small
-                      ? chatOpen.open
-                        ? "30rem"
+              >
+                <div className="relative flex items-center justify-center w-full h-full md:h-auto_">
+                  <motion.div
+                    animate={{
+                      width: !matches.small
+                        ? chatOpen.open
+                          ? "30rem"
+                          : matches.small
+                          ? "100%"
+                          : "10rem"
                         : matches.small
-                        ? "100%"
-                        : "10rem"
-                      : matches.small
-                      ? !chatOpen.open
-                        ? "10rem"
-                        : "100%"
-                      : "100%",
-                    height: matches.small
-                      ? chatOpen.open
-                        ? chatOpen.participants || chatOpen.messaging
-                          ? "95vh"
-                          : chatOpen.expand
-                          ? "80vh"
-                          : "12rem"
-                        : "3rem"
-                      : chatHeight,
-                    translateY: !matches.small
-                      ? chatOpen.open && chatOpen.expand
-                        ? -150
-                        : chatOpen.open &&
-                          (chatOpen.messaging || chatOpen.participants)
-                        ? -250
+                        ? !chatOpen.open
+                          ? "10rem"
+                          : "100%"
+                        : "100%",
+                      height: matches.small
+                        ? chatOpen.open
+                          ? chatOpen.participants || chatOpen.messaging
+                            ? "95vh"
+                            : chatOpen.expand
+                            ? "80vh"
+                            : "12rem"
+                          : "3rem"
+                        : chatHeight,
+                      translateY: !matches.small
+                        ? chatOpen.open && chatOpen.expand
+                          ? -150
+                          : chatOpen.open &&
+                            (chatOpen.messaging || chatOpen.participants)
+                          ? -250
+                          : chatOpen.open
+                          ? -50
+                          : 0
+                        : null,
+
+                      // translateX: chatOpen.open
+                      //   ? "15rem"
+                      //   : matches.small
+                      //   ? "100%"
+                      //   : "5rem",
+                    }}
+                    transition={{ type: "keyframes" }}
+                    drag={!matches.small && true}
+                    dragMomentum={false}
+                    dragElastic={false}
+                    className={`absolute text-slate-200  rounded-2xl ${
+                      !matches.small
+                        ? "m-auto w-full cursor-grab active:cursor-grabbing"
                         : chatOpen.open
-                        ? -50
-                        : 0
-                      : null,
-
-                    // translateX: chatOpen.open
-                    //   ? "15rem"
-                    //   : matches.small
-                    //   ? "100%"
-                    //   : "5rem",
-                  }}
-                  transition={{ type: "keyframes" }}
-                  drag={!matches.small && true}
-                  dragMomentum={false}
-                  dragElastic={false}
-                  className={`absolute text-slate-200  rounded-2xl ${
-                    !matches.small
-                      ? "m-auto w-full cursor-grab active:cursor-grabbing"
-                      : chatOpen.open
-                      ? "bottom-0" //COMEBACK
-                      : ""
-                  }  overflow-clip_  bg-black border border-slate-200`}
-                >
-                  <div className="flex flex-col h-full">
-                    <div
-                      className={`flex items-center gap-2 w-full mx-auto ${
-                        !chatOpen.open ? "w-full" : ""
-                      } ${matches.small && "!mx-auto w-full"} `}
-                    >
-                      {/* ARROW(chevron) TOGGLE */}
-                      {/* Button to toggle the chat modal */}
-                      <div className="flex-1">
-                        <button
-                          onClick={() => {
-                            !chatOpen.open
-                              ? openChat()
-                              : !chatOpen.expand &&
-                                chatOpen.open &&
-                                (chatOpen.join || chatOpen.active)
-                              ? expandChat()
-                              : chatOpen.messaging || chatOpen.participants
-                              ? expandChat()
-                              : chatOpen.expand && chatOpen.open
-                              ? openChat()
-                              : closeChat();
-                          }}
-                          className={`w-fit ${
-                            !chatOpen.open && "w-full"
-                          } flex items-center justify-center p-2 shrink-0 mx-auto`}
-                        >
-                          {/* Icon for the toggle button */}
-                          {chatOpen.open ? (
-                            <FaChevronUp
-                              className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${
-                                chatOpen.expand ||
-                                !(chatOpen.join || chatOpen.active)
-                                  ? "rotate-180"
-                                  : chatOpen.messaging || chatOpen.participants
-                                  ? "-rotate-90"
-                                  : ""
-                              }`}
-                            />
-                          ) : (
-                            <FaMicrophone className="`w-6 h-6 fill-slate-200 text-slate-200" />
-                          )}
-                        </button>
-                      </div>
-                      {/* MINIMIZE(close) BUTTON */}
-                      {/* To enable a user easily close the conversation modal, irrespective of current modal state (besides when a user is yet to join conversation) */}
-                      <AnimateInOut
-                        // Should be rendered only If the conversation Modal is open and the user has joined the conversation
-                        show={
-                          chatOpen.open &&
-                          (!!chatOpen.join || !!chatOpen.active)
-                        }
-                        initial={{ scale: 0 }}
-                        exit={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="w-fit absolute top-1 right-1 ml-auto"
+                        ? "bottom-0" //COMEBACK
+                        : ""
+                    }  overflow-clip_  bg-black border border-slate-200`}
+                  >
+                    <div className="flex flex-col h-full">
+                      <div
+                        className={`flex items-center gap-2 w-full mx-auto ${
+                          !chatOpen.open ? "w-full" : ""
+                        } ${matches.small && "!mx-auto w-full"} `}
                       >
-                        <button
-                          onClick={() => closeChat()}
-                          className="w-fit flex items-center justify-center p-2 shrink-0 hover:bg-slate-200/10 rounded-full"
-                        >
-                          {/* Icon for minimizing the chat modal */}
-                          <FaWindowMinimize className="w-5 fill-slate-200 text-slate-200 transition-all duration-150" />
-                        </button>
-                      </AnimateInOut>
-                    </div>
-                    {/* Rendering different components based on the chat modal state */}
-                    {chatOpen.messaging ? (
-                      // Animated messaging component
-                      <AnimateInOut
-                        initial={{ opacity: 0 }}
-                        exit={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        show={chatOpen.messaging}
-                        className="gap-2 p-3 flex flex-col flex-1 overflow-hidden"
-                      >
-                        <Messaging
-                          currentUser={currentUser}
-                          hostMuted={hostMuted}
-                          hostName={"Yohanna"}
-                        />
-                      </AnimateInOut>
-                    ) : chatOpen.participants ? (
-                      <AnimateInOut
-                        initial={{ opacity: 0 }}
-                        exit={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        show={chatOpen.participants}
-                        className="gap-2 p-3 flex-1 overflow-hidden"
-                      >
-                        <Participants participants={participants} />
-                      </AnimateInOut>
-                    ) : chatOpen.join || chatOpen.active ? (
-                      // Components for when user joins the chat
-                      <>
+                        {/* ARROW(chevron) TOGGLE */}
+                        {/* Button to toggle the chat modal */}
+                        <div className="flex-1">
+                          <button
+                            onClick={() => {
+                              !chatOpen.open
+                                ? openChat()
+                                : !chatOpen.expand &&
+                                  chatOpen.open &&
+                                  (chatOpen.join || chatOpen.active)
+                                ? expandChat()
+                                : chatOpen.messaging || chatOpen.participants
+                                ? expandChat()
+                                : chatOpen.expand && chatOpen.open
+                                ? openChat()
+                                : closeChat();
+                            }}
+                            className={`w-fit ${
+                              !chatOpen.open && "w-full"
+                            } flex items-center justify-center p-2 shrink-0 mx-auto`}
+                          >
+                            {/* Icon for the toggle button */}
+                            {chatOpen.open ? (
+                              <FaChevronUp
+                                className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${
+                                  chatOpen.expand ||
+                                  !(chatOpen.join || chatOpen.active)
+                                    ? "rotate-180"
+                                    : chatOpen.messaging ||
+                                      chatOpen.participants
+                                    ? "-rotate-90"
+                                    : ""
+                                }`}
+                              />
+                            ) : (
+                              <FaMicrophone className="`w-6 h-6 fill-slate-200 text-slate-200" />
+                            )}
+                          </button>
+                        </div>
+                        {/* MINIMIZE(close) BUTTON */}
+                        {/* To enable a user easily close the conversation modal, irrespective of current modal state (besides when a user is yet to join conversation) */}
                         <AnimateInOut
-                          initial={
-                            !matches.small
-                              ? { opacity: 0, scale: 0, translateY: -70 }
-                              : { opacity: 0 }
+                          // Should be rendered only If the conversation Modal is open and the user has joined the conversation
+                          show={
+                            chatOpen.open &&
+                            (!!chatOpen.join || !!chatOpen.active)
                           }
-                          exit={
-                            !matches.small
-                              ? { opacity: 0, scale: 0, translateY: -70 }
-                              : { opacity: 0 }
-                          }
-                          animate={
-                            !matches.small
-                              ? { opacity: 1, scale: 1, translateY: 0 }
-                              : { opacity: 1 }
-                          }
-                          show={chatOpen.open}
-                          className="w-full flex gap-3 items-center p-2"
+                          initial={{ scale: 0 }}
+                          exit={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="w-fit absolute top-1 right-1 ml-auto"
                         >
-                          <Host muted={hostMuted} name={hostName} />
-                          <div className="space-y-2 flex w-full flex-row-reverse gap-3">
-                            <div className="p-2 flex-1 rounded-lg">
-                              <p>Presentation name</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {/* Buttons for microphone, messaging, and leaving chat */}
-
-                              <button
-                                onClick={() => {
-                                  if (isHost) return;
-                                  if (
-                                    micState === CAN_SPK ||
-                                    micState === MIC_OFF
-                                  ) {
-                                    return setMicState(BASE_MIC);
-                                  }
-                                  if (micState === MIC_OFF) {
-                                    return setMicState(CAN_SPK);
-                                  }
-                                  if (micState === BASE_MIC && !isHost) {
-                                    return setMicState(REQ_MIC);
-                                  }
-                                  if (micState === REQ_MIC) {
-                                    return setMicState(BASE_MIC);
-                                  }
-                                }}
-                                className="p-2 relative bg-gray-700 flex items-center justify-center rounded-full"
-                              >
-                                <FaMicrophone className="w-6 h-6 " />
-                                <div className="absolute z-10 -bottom-0 right-0 ">
-                                  <span
-                                    className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
-                                      micState === CAN_SPK
-                                        ? "bg-green-400 " + activePingSTyles
-                                        : micState === REQ_MIC
-                                        ? "bg-yellow-400"
-                                        : micState === MIC_OFF
-                                        ? "bg-rose-500"
-                                        : ""
-                                    }`}
-                                  />
-                                </div>
-                              </button>
-                              {
-                                <AnimateInOut
-                                  show={
-                                    micState === CAN_SPK || micState === MIC_OFF
-                                  }
-                                  animate={{ scale: 1 }}
-                                  initial={{ scale: 0 }}
-                                  exit={{ scale: 0 }}
-                                >
-                                  <button
-                                    onClick={() => {
-                                      if (micState === CAN_SPK)
-                                        return setMicState(MIC_OFF);
-                                      setMicState(CAN_SPK);
-                                    }}
-                                    className={`p-2 relative flex items-center ${
-                                      micState === MIC_OFF ? "bg-gray-700" : ""
-                                    } justify-center rounded-full`}
-                                  >
-                                    <FaMicrophoneSlash className="w-6 h-6 " />
-                                  </button>
-                                </AnimateInOut>
-                              }
-                              <button
-                                onClick={() => showMessaging()}
-                                className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
-                              >
-                                <MessageRounded className="w-6 h-6 " />
-                              </button>
-                              <button
-                                onClick={() => setShowLeave(true)}
-                                className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
-                              >
-                                <CloseOutlined className="w-6 h-6 fill-rose-500 text-rose-500" />
-                              </button>
-                            </div>
-                          </div>
+                          <button
+                            onClick={() => closeChat()}
+                            className="w-fit flex items-center justify-center p-2 shrink-0 hover:bg-slate-200/10 rounded-full"
+                          >
+                            {/* Icon for minimizing the chat modal */}
+                            <FaWindowMinimize className="w-5 fill-slate-200 text-slate-200 transition-all duration-150" />
+                          </button>
                         </AnimateInOut>
-                        {/* Animated component to show expanded chat participants */}
+                      </div>
+                      {/* Rendering different components based on the chat modal state */}
+                      {chatOpen.messaging ? (
+                        // Animated messaging component
                         <AnimateInOut
                           initial={{ opacity: 0 }}
                           exit={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          show={chatOpen.expand}
-                          className={
-                            "flex mt-6 items-center_ gap-4 overflow-auto w-[98%] rounded-xl mx-auto"
-                          }
+                          show={chatOpen.messaging}
+                          className="gap-2 p-3 flex flex-col flex-1 overflow-hidden"
                         >
-                          {[...participants]
-                            .sort(compareGuests)
-                            .slice(0, 5)
-                            .map((participant, i) => (
-                              <Participant key={i} participant={participant} />
-                            ))}
-                          <div
-                            onClick={() => showParticipants()}
-                            className="rounded-full overflow-clip shrink-0 w-16 h-16 flex items-center justify-center text-2xl font-bold border border-slate-200/20 cursor-pointer active:scale-90 transition-all duration-150"
-                          >
-                            +{participants.slice(5, participants.length).length}
-                          </div>
+                          <Messaging
+                            currentUser={currentUser}
+                            hostMuted={hostMuted}
+                          />
                         </AnimateInOut>
-                      </>
-                    ) : chatOpen.open ? (
-                      // Component for joining the conversation
-                      <AnimateInOut
-                        show={chatOpen.open}
-                        initial={{ opacity: 0, scale: 0, translateY: -70 }}
-                        exit={{ opacity: 0, scale: 0, translateY: -70 }}
-                        animate={{ opacity: 1, scale: 1, translateY: 0 }}
-                        className="w-[80%] mx-auto border border-slate-200/20 rounded-xl p-4"
-                      >
-                        {isHost ? (
-                          <InitalizeConversation
-                            closeChat={closeChat}
-                            activateChat={activateChat}
-                          />
-                        ) : (
-                          <JoinConversation
-                            closeChat={closeChat}
-                            joinChat={joinChat}
-                            username={username}
-                            setUsername={setUsername}
-                          />
-                        )}
-                      </AnimateInOut>
-                    ) : null}
-                  </div>
-                </motion.div>
+                      ) : chatOpen.participants ? (
+                        <AnimateInOut
+                          initial={{ opacity: 0 }}
+                          exit={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          show={chatOpen.participants}
+                          className="gap-2 p-3 flex-1 overflow-hidden"
+                        >
+                          <Participants />
+                        </AnimateInOut>
+                      ) : chatOpen.join || chatOpen.active ? (
+                        // Components for when user joins the chat
+                        <>
+                          <AnimateInOut
+                            initial={
+                              !matches.small
+                                ? { opacity: 0, scale: 0, translateY: -70 }
+                                : { opacity: 0 }
+                            }
+                            exit={
+                              !matches.small
+                                ? { opacity: 0, scale: 0, translateY: -70 }
+                                : { opacity: 0 }
+                            }
+                            animate={
+                              !matches.small
+                                ? { opacity: 1, scale: 1, translateY: 0 }
+                                : { opacity: 1 }
+                            }
+                            show={chatOpen.open}
+                            className="w-full flex gap-3 items-center p-2"
+                          >
+                            <Host muted={hostMuted} name={hostName} />
+                            <div className="space-y-2 flex w-full flex-row-reverse gap-3">
+                              <div className="p-2 flex-1 rounded-lg">
+                                <p>Presentation name</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {/* Buttons for microphone, messaging, and leaving chat */}
+
+                                <button
+                                  onClick={() => {
+                                    if (isHost) return;
+                                    if (
+                                      micState === CAN_SPK ||
+                                      micState === MIC_OFF
+                                    ) {
+                                      return setMicState(BASE_MIC);
+                                    }
+                                    if (micState === MIC_OFF) {
+                                      return setMicState(CAN_SPK);
+                                    }
+                                    if (micState === BASE_MIC && !isHost) {
+                                      return setMicState(REQ_MIC);
+                                    }
+                                    if (micState === REQ_MIC) {
+                                      return setMicState(BASE_MIC);
+                                    }
+                                  }}
+                                  className="p-2 relative bg-gray-700 flex items-center justify-center rounded-full"
+                                >
+                                  <FaMicrophone className="w-6 h-6 " />
+                                  <div className="absolute z-10 -bottom-0 right-0 ">
+                                    <span
+                                      className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
+                                        micState === CAN_SPK
+                                          ? "bg-green-400 " + activePingSTyles
+                                          : micState === REQ_MIC
+                                          ? "bg-yellow-400"
+                                          : micState === MIC_OFF
+                                          ? "bg-rose-500"
+                                          : ""
+                                      }`}
+                                    />
+                                  </div>
+                                </button>
+                                {
+                                  <AnimateInOut
+                                    show={
+                                      micState === CAN_SPK ||
+                                      micState === MIC_OFF
+                                    }
+                                    animate={{ scale: 1 }}
+                                    initial={{ scale: 0 }}
+                                    exit={{ scale: 0 }}
+                                  >
+                                    <button
+                                      onClick={() => {
+                                        if (micState === CAN_SPK)
+                                          return setMicState(MIC_OFF);
+                                        setMicState(CAN_SPK);
+                                      }}
+                                      className={`p-2 relative flex items-center ${
+                                        micState === MIC_OFF
+                                          ? "bg-gray-700"
+                                          : ""
+                                      } justify-center rounded-full`}
+                                    >
+                                      <FaMicrophoneSlash className="w-6 h-6 " />
+                                    </button>
+                                  </AnimateInOut>
+                                }
+                                <button
+                                  onClick={() => showMessaging()}
+                                  className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
+                                >
+                                  <MessageRounded className="w-6 h-6 " />
+                                </button>
+                                <button
+                                  onClick={() => setShowLeave(true)}
+                                  className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
+                                >
+                                  <CloseOutlined className="w-6 h-6 fill-rose-500 text-rose-500" />
+                                </button>
+                              </div>
+                            </div>
+                          </AnimateInOut>
+                          {/* Animated component to show expanded chat participants */}
+                          <AnimateInOut
+                            initial={{ opacity: 0 }}
+                            exit={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            show={chatOpen.expand}
+                            className={
+                              "flex mt-6 items-center_ gap-4 overflow-auto w-[98%] rounded-xl mx-auto"
+                            }
+                          >
+                            {[...participants]
+                              .sort(compareGuests)
+                              .slice(0, 5)
+                              .map((participant, i) => (
+                                <Participant
+                                  key={i}
+                                  participant={participant}
+                                />
+                              ))}
+                            <div
+                              onClick={() => showParticipants()}
+                              className="rounded-full overflow-clip shrink-0 w-16 h-16 flex items-center justify-center text-2xl font-bold border border-slate-200/20 cursor-pointer active:scale-90 transition-all duration-150"
+                            >
+                              +
+                              {
+                                participants.slice(5, participants.length)
+                                  .length
+                              }
+                            </div>
+                          </AnimateInOut>
+                        </>
+                      ) : chatOpen.open ? (
+                        // Component for joining the conversation
+                        <AnimateInOut
+                          show={chatOpen.open}
+                          initial={{ opacity: 0, scale: 0, translateY: -70 }}
+                          exit={{ opacity: 0, scale: 0, translateY: -70 }}
+                          animate={{ opacity: 1, scale: 1, translateY: 0 }}
+                          className="w-[80%] mx-auto border border-slate-200/20 rounded-xl p-4"
+                        >
+                          {isHost ? (
+                            <InitalizeConversation
+                              closeChat={closeChat}
+                              activateChat={activateChat}
+                            />
+                          ) : (
+                            <JoinConversation
+                              closeChat={closeChat}
+                              joinChat={joinChat}
+                              username={username}
+                              setUsername={setUsername}
+                            />
+                          )}
+                        </AnimateInOut>
+                      ) : null}
+                    </div>
+                  </motion.div>
+                </div>
               </div>
-            </div>
-          )}
-        </Media>
-        <AnimateInOut
-          show={showLeave}
-          initial={{ scale: 0 }}
-          exit={{ scale: 0 }}
-          animate={{ scale: 1 }}
-        >
-          <LeaveConversationModal />
-        </AnimateInOut>
-      </>
-    )
-  );
-}
+            )}
+          </Media>
+          <AnimateInOut
+            show={showLeave}
+            initial={{ scale: 0 }}
+            exit={{ scale: 0 }}
+            animate={{ scale: 1 }}
+          >
+            <LeaveConversationModal />
+          </AnimateInOut>
+        </>
+      )
+    );
+  }
+);
+Chat.displayName = "Chat";
+export default Chat;
 
 // HOST COMPONENT (For reusability. writing the "double-ping" animation code more than once is a drag)
 function Host({ muted, name }) {
