@@ -307,7 +307,7 @@ export const Carousel = ({ nav }) => {
               <div className='w-fit h-fit flex flex-col justify-between items-center'>
                 <img src={animation1} alt='animation image' />
 
-                <p className='text-slate-200 w-[80%] border border-slate-200 text-center'>
+                <p className='text-slate-200 w-[80%] text-center'>
                   Bring down notifications panel and change orientation to
                   Landscape
                 </p>
