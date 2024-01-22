@@ -1,7 +1,7 @@
 // Importing components and libraries
 import { CloseOutlined, MessageRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import React, { useRef, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   FaChevronUp,
   FaMicrophone,
@@ -13,66 +13,22 @@ import Waves from "./assets/images/waves.svg";
 import MicGradient from "./assets/images/mic-gradient.svg";
 import Media from "react-media";
 import AnimateInOut from "../../AnimateInOut";
-import { useEffect } from "react";
+import { toast } from "react-toastify";
+import { PresentationContext } from "../../../contexts/presentationContext";
+import { userContext } from "../../../contexts/userContext";
+import AgoraRTC from "agora-rtc-sdk-ng";
+import AgoraRTM from "agora-rtm-sdk";
+import { AGORA_APP_ID } from "../../../constants/routes";
+
+let audioTracks = {
+  localAudioTrack: null,
+  remoteAudioTracks: {},
+};
+
+const rtcClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
 const activePingSTyles =
   "shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50  shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50 relative before:w-full before:h-full before:rounded-full  before:animate-ping before:absolute before:inset-0 before:m-auto before:-z-10 after:w-full after:h-full after:rounded-full  after:animate-ping-200 after:absolute after:inset-0 after:m-auto after:-z-20 after:delay-150 z-30";
-
-// Dummy data for the number of participants
-const participants = [
-  {
-    id: "1",
-    name: "Alice",
-    photo: "photo1.jpg",
-    status: "CAN_SPEAK",
-    muted: false,
-  },
-  {
-    id: "2",
-    name: "Bob",
-    photo: "photo2.jpg",
-    status: "REQUESTED",
-    muted: true,
-  },
-  { id: "jhgv", name: "Mr. Yo", photo: "", status: "CAN_SPEAK", muted: true },
-  {
-    id: "fgd",
-    name: "Imoh Flamayoman",
-    photo: "",
-    status: "REQUESTED",
-    muted: false,
-  },
-  {
-    id: "bhgvgh",
-    name: "Mr. Ray",
-    photo: "",
-    status: "CANNOT_SPEAK",
-    muted: true,
-  },
-  { id: "buug", name: "XAVI", photo: "", status: "REQUESTED", muted: true },
-  {
-    id: "jooj",
-    name: "Chwee",
-    photo: "",
-    status: "CANNOT_SPEAK",
-    muted: false,
-  },
-  {
-    id: "vghjh",
-    name: "Dora tha Xplorah",
-    photo: "",
-    status: "CANNOT_SPEAK",
-    muted: false,
-  },
-  {
-    id: "hggg",
-    name: "udheiuhwcuheuruurieu",
-    photo: "",
-    status: "REQUESTED",
-    muted: true,
-  },
-  // ... other guest objects
-];
 
 // MIC States
 const BASE_MIC = "base mic";
@@ -89,145 +45,327 @@ const Chat = React.memo(
     active: CHAT_ACTIVE,
     keepChatOpen,
   }) => {
-    // const [guests, setGuests] = useState(DUMMY_GUESTS);
-    const [isHost, setIsHost] = useState(false);
-    const [hostMuted, setHostMuted] = useState(true);
-    const [conversationLive, setConversationLive] = useState(false);
-    const [isSpeaking, setIsSpeaking] = useState(false);
-    const [showLeave, setShowLeave] = useState(false);
-    const [micState, setMicState] = useState(CAN_SPK);
+  // const [guests, setGuests] = useState(DUMMY_GUESTS);
+  const { presentation, setPresentation, socket } =
+    useContext(PresentationContext);
+  const { user } = useContext(userContext);
+  const [isHost, setIsHost] = useState(presentation.User === "HOST");
+  const [hostMuted, setHostMuted] = useState(true);
+  const [conversationLive, setConversationLive] = useState(presentation.audio);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [showLeave, setShowLeave] = useState(false);
+  const [micState, setMicState] = useState(CAN_SPK);
+  const [username, setUsername] = useState("");
+  const [hostName, setHostName] = useState("The Host 😎");
 
-    const currentUser = "me";
+  // status: CAN_SPEAK | REQUESTED | CANNOT_SPEAK
+  const [participants, setParticipants] = useState([]);
 
-    // State to manage chat modal's open, join, expand, and messaging states
-    const [chatOpen, setChatOpen] = useState({
-      open: false,
-      active: false,
-      join: false,
-      expand: false,
-      participants: false,
-      messaging: false,
-    });
+  const currentUser = "me";
 
-    useEffect(() => {
-      console.log({ closeChatModal });
-      if (closeChatModal) {
-        closeChat();
+  // State to manage chat modal's open, join, expand, and messaging states
+  const [chatOpen, setChatOpen] = useState({
+    open: false,
+    active: false,
+    join: false,
+    expand: false,
+    participants: false,
+    messaging: false,
+  });
+
+  useEffect(() => {
+    console.log(micState);
+  }, [micState]);
+
+  useEffect(() => {
+    console.log({ closeChatModal });
+    if (closeChatModal) {
+      closeChat();
+    }
+  }, [closeChatModal]);
+
+  useEffect(() => {
+    if (isHost && presentation.audio) {
+      openChat();
+      joinChat();
+    }
+    if (!isHost && presentation.audio) openChat();
+
+    if (!isHost && !presentation.audio) {
+      socket.on("client-audio-on", () => {
+        setConversationLive(true);
+        openChat();
+      });
+    }
+
+    if (!isHost) {
+      socket.on("client-audio-off", () => {
+        leaveChat({ emitEvent: false });
+        setConversationLive(false);
+        toast.success("Audio is no longer active");
+      });
+    }
+
+    if (chatOpen.join) {
+      (async () => {
+        await rtcClient.join(
+          AGORA_APP_ID,
+          presentation.liveId,
+          presentation.rtcToken,
+          presentation.rtcUid
+        );
+
+        audioTracks.localAudioTrack =
+          await AgoraRTC.createMicrophoneAudioTrack();
+        // audioTracks.localAudioTrack.setMuted(true);
+        await rtcClient.publish(audioTracks.localAudioTrack);
+
+        // console.log("publish success");
+      })();
+
+      rtcClient.on("user-published", async (user, mediaType) => {
+        await rtcClient.subscribe(user, mediaType);
+
+        if (mediaType == "audio") {
+          audioTracks.remoteAudioTracks[user.uid] = [user.audioTrack];
+          user.audioTrack.play();
+        }
+      });
+      rtcClient.on("user-left", (user) => {
+        delete audioTracks.remoteAudioTracks[user.uid];
+
+        setParticipants((prev) =>
+          prev.filter((participant) => participant.id !== user.uid)
+        );
+      });
+
+      socket.on("new-user-audio", (newUser) => {
+        setParticipants((prev) => [...prev, newUser]);
+      });
+    }
+
+    return () => {
+      if (chatOpen.join) {
+        audioTracks.localAudioTrack?.stop();
+        audioTracks.localAudioTrack?.close();
+
+        rtcClient?.unpublish();
+        rtcClient?.leave();
       }
-    }, [closeChatModal]);
-
-    useEffect(() => !isHost && openChat(), []);
-
-    // State to manage the height of the chat modal
-    const [chatHeight, setChatHeight] = useState("2.5rem");
-
-    // Function to open the chat modal
-    const openChat = () => {
-      setChatOpen((prev) => ({ ...prev, open: true, expand: false }));
-      setChatHeight("12rem");
-      setKeepChatOpen(true);
-      setCloseChatModal(false);
     };
+  }, [chatOpen.join]);
 
-    // Function to initialize chat
-    const activateChat = () => {
-      setChatOpen((prev) => ({ ...prev, active: true }));
-      expandChat();
-    };
+  // State to manage the height of the chat modal
+  const [chatHeight, setChatHeight] = useState("2.5rem");
 
-    // Function to join the chat
-    const joinChat = () => {
-      setChatOpen((prev) => ({ ...prev, join: true }));
-    };
+  // Function to open the chat modal
+  const openChat = () => {
+    setChatOpen((prev) => ({ ...prev, open: true, expand: false }));
+    setChatHeight("12rem");
+    setKeepChatOpen(true);
+    setCloseChatModal(false);
+  };
 
-    // Function to expand the chat modal
-    const expandChat = () => {
-      if (!chatOpen.join && !chatOpen.active) return;
-      setChatOpen((prev) => ({
-        ...prev,
-        expand: true,
-        messaging: false,
-        participants: false,
-      }));
-      setChatHeight("22rem");
-    };
+  // Function to initialize chat
+  const activateChat = () => {
+    if (!isHost) return;
+    if (!presentation.live) {
+      toast.error("Presentation not live");
+      return;
+    }
+    socket.emit(
+      "client-audio-on",
+      {
+        liveId: presentation.liveId,
+        presentationId: presentation.id,
+      },
+      (response) => {
+        if (response) {
+          joinChat();
+          setChatOpen((prev) => ({ ...prev, active: true }));
+          expandChat();
+          toast.success("Audio activated");
+        } else {
+          toast.error("Audio activation failed");
+        }
+      }
+    );
+  };
 
-    // Function to show messaging in the chat modal
-    const showMessaging = () => {
-      setChatOpen((prev) => ({
-        ...prev,
-        messaging: true,
-        participants: false,
-        expand: false,
-      }));
-      setChatHeight("31rem");
-    };
+  // Function to join the chat
+  const joinChat = async () => {
+    if (isHost) {
+      socket.emit(
+        "host-audio-connect",
+        {
+          hostName: "HOST",
+          liveId: presentation.liveId,
+          presentationId: presentation.id,
+          hostId: presentation.rtcUid,
+        },
+        (response) => {
+          if (!response) {
+            toast.error("Failed to join conversation");
+            return;
+          }
+          // setHostName(user.username);
+          setChatOpen((prev) => ({ ...prev, join: true }));
+          toast.success("Joined conversation");
+        }
+      );
+    } else {
+      socket.emit(
+        "join-audio-session",
+        {
+          username,
+          userId: presentation.rtcUid,
+          liveId: presentation.liveId,
+        },
+        (response) => {
+          if (!response) {
+            toast.error("Failed to join conversation");
+            return;
+          }
+          setHostName(response.host.name);
+          setParticipants(response.users);
+          setChatOpen((prev) => ({ ...prev, join: true }));
+          toast.success("Joined conversation");
+        }
+      );
+    }
+  };
 
-    // Function to show participants list in the chat modal
-    const showParticipants = () => {
-      setChatOpen((prev) => ({
-        ...prev,
-        participants: true,
-        messaging: false,
-        expand: false,
-      }));
-      setChatHeight("31rem");
-    };
+  // Function to expand the chat modal
+  const expandChat = () => {
+    if (!chatOpen.join && !chatOpen.active) return;
+    setChatOpen((prev) => ({
+      ...prev,
+      expand: true,
+      messaging: false,
+      participants: false,
+    }));
+    setChatHeight("22rem");
+  };
 
-    // Function to close the chat modal
-    const closeChat = () => {
-      setChatOpen((prev) => ({
-        ...prev,
-        open: false,
-        expand: false,
-        expandMax: false,
-        messaging: false,
-        participants: false,
-      }));
-      setChatHeight("2.5rem");
-      setKeepChatOpen(false);
-      setCloseChatModal(true);
-    };
+  // Function to show messaging in the chat modal
+  const showMessaging = () => {
+    setChatOpen((prev) => ({
+      ...prev,
+      messaging: true,
+      participants: false,
+      expand: false,
+    }));
+    setChatHeight("31rem");
+  };
 
-    // Function to leave the chat
-    const leaveChat = () => {
+  // Function to show participants list in the chat modal
+  const showParticipants = () => {
+    setChatOpen((prev) => ({
+      ...prev,
+      participants: true,
+      messaging: false,
+      expand: false,
+    }));
+    setChatHeight("31rem");
+  };
+
+  // Function to close the chat modal
+  const closeChat = () => {
+    setChatOpen((prev) => ({
+      ...prev,
+      open: false,
+      expand: false,
+      expandMax: false,
+      messaging: false,
+      participants: false,
+    }));
+    setChatHeight("2.5rem");
+    setKeepChatOpen(false);
+    setCloseChatModal(true);
+  };
+
+  // Function to leave the chat
+  const leaveChat = ({ emitEvent = true }) => {
+    if (!isHost && emitEvent) {
+      socket.emit(
+        "leave-audio-session",
+        {
+          userId: presentation.rtcUid,
+          liveId: presentation.liveId,
+        },
+        (response) => {
+          if (!response) {
+            toast.error("Failed to leave conversation");
+            return;
+          }
+          toast.success("Left conversation");
+          setParticipants([]);
+          closeChat();
+          setChatOpen((prev) => ({
+            ...prev,
+            join: false,
+          }));
+          setChatHeight("2.5rem");
+          audioTracks.localAudioTrack?.stop();
+          audioTracks.localAudioTrack?.close();
+
+          rtcClient?.unpublish();
+          rtcClient?.leave();
+        }
+      );
+    } else {
+      setParticipants([]);
       closeChat();
       setChatOpen((prev) => ({
         ...prev,
         join: false,
       }));
       setChatHeight("2.5rem");
-    };
+      audioTracks.localAudioTrack?.stop();
+      audioTracks.localAudioTrack?.close();
 
-    const endChat = () => {
-      setChatOpen((prev) => ({ ...prev, active: false }));
-      leaveChat();
-    };
+      rtcClient?.unpublish();
+      rtcClient?.leave();
+    }
+  };
 
-    useEffect(() => {
-      setTimeout(() => {
-        setConversationLive(true);
-      }, 3000);
-    }, []);
+  const endChat = () => {
+    setPresentation((prev) => ({ ...prev, audio: false }));
+    setChatOpen((prev) => ({ ...prev, active: false }));
+    socket.emit("client-audio-off", presentation.liveId, (response) => {
+      if (response) {
+        toast.success("Audio deactivated");
+        leaveChat();
+      } else {
+        toast.error("Audio deactivation failed");
+      }
+    });
+  };
 
-    useEffect(() => {
-      console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
-    }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
+  useEffect(() => {
+    setTimeout(() => {
+      setConversationLive(true);
+    }, 3000);
+  }, []);
 
-    const LeaveConversationModal = () => {
-      return (
-        <>
-          <div
-            title="close modal"
-            onClick={() => setShowLeave(false)}
-            className="w-full h-full fixed top-0 left-0 backdrop-blur-sm bg-slate-200/20 z-40"
-          />
+  useEffect(() => {
+    console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
+  }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
 
-          <div className="w-96 h-60 flex flex-col items-center justify-center  p-3 rounded-2xl fixed inset-0 m-auto bg-black  py-8 border-slate-200 border mx-auto space-y-4 z-50">
-            <p className="text-slate-200 text-xl text-center font-semibold capitalize">
-              {isHost ? "End Conversation" : "Leave chat"}
-            </p>
-            <div className="flex gap-8 justify-center items-center">
+  const LeaveConversationModal = () => {
+    return (
+      <>
+        <div
+          title="close modal"
+          onClick={() => setShowLeave(false)}
+          className="w-full h-full fixed top-0 left-0 backdrop-blur-sm bg-slate-200/20 z-40"
+        />
+
+        <div className="w-96 h-60 flex flex-col items-center justify-center  p-3 rounded-2xl fixed inset-0 m-auto bg-black  py-8 border-slate-200 border mx-auto space-y-4 z-50">
+          <p className="text-slate-200 text-xl text-center font-semibold capitalize">
+            {isHost ? "End Conversation" : "Leave chat"}
+          </p>
+          <div className="flex gap-8 justify-center items-center">
               <button
                 onClick={() => {
                   setShowLeave(false);
@@ -432,7 +570,7 @@ const Chat = React.memo(
                             show={chatOpen.open}
                             className="w-full flex gap-3 items-center p-2"
                           >
-                            <Host muted={hostMuted} />
+                            <Host muted={hostMuted} name={hostName} />
                             <div className="space-y-2 flex w-full flex-row-reverse gap-3">
                               <div className="p-2 flex-1 rounded-lg">
                                 <p>Presentation name</p>
@@ -566,6 +704,8 @@ const Chat = React.memo(
                             <JoinConversation
                               closeChat={closeChat}
                               joinChat={joinChat}
+                              username={username}
+                              setUsername={setUsername}
                             />
                           )}
                         </AnimateInOut>
@@ -593,7 +733,7 @@ Chat.displayName = "Chat";
 export default Chat;
 
 // HOST COMPONENT (For reusability. writing the "double-ping" animation code more than once is a drag)
-function Host({ muted }) {
+function Host({ muted, name }) {
   return (
     <div className="space-y-1  w-fit text-center">
       <div>
@@ -613,7 +753,7 @@ function Host({ muted }) {
         />
       </div>
       <div className="w-fit text-center text-sm mx-auto">
-        <p className="font-semibold">Jamilu</p>
+        <p className="font-semibold">{name}</p>
       </div>
     </div>
   );
@@ -670,7 +810,7 @@ const messages = [
 ];
 
 // Messaging Component
-function Messaging({ hostMuted, currentUser }) {
+function Messaging({ hostMuted, currentUser, hostName }) {
   const [messageInput, setMessageInput] = useState("");
 
   const Message = ({ message }) => (
@@ -694,7 +834,7 @@ function Messaging({ hostMuted, currentUser }) {
     <>
       {/* Header for the messaging component */}
       <div className="flex items-center gap-3 shrink-0">
-        <Host muted={hostMuted} />
+        <Host muted={hostMuted} name={hostName} />
         <div className="w-16 md:w-32">
           <img src={Waves} className="w-full h-full object-cover" />
         </div>
@@ -731,7 +871,7 @@ function Messaging({ hostMuted, currentUser }) {
 }
 
 // Participants Component
-function Participants() {
+function Participants({ participants }) {
   // const Participant = () => (
   //   <div className='w-fit -space-y-1 text-center'>
   //     <div className='rounded-full col-span-1 overflow-clip shrink-0 w-8 h-8 lg:w-12 lg:h-12'>
@@ -775,7 +915,7 @@ function Participants() {
 }
 
 // Component for joining the conversation
-function JoinConversation({ closeChat, joinChat }) {
+function JoinConversation({ closeChat, joinChat, username, setUsername }) {
   const [join, setJoin] = useState({
     accepted: false,
     error: "",
@@ -805,9 +945,7 @@ function JoinConversation({ closeChat, joinChat }) {
   );
 
   // Component to enter username to join the conversation
-  const JoinAs = () => {
-    const [username, setUsername] = useState("");
-
+  const JoinAs = ({ username, setUsername }) => {
     return (
       <div className="w-fit mx-auto space-y-4">
         <p className="text-slate-200 text-center text-xl font-semibold capitalize">
@@ -858,7 +996,11 @@ function JoinConversation({ closeChat, joinChat }) {
 
   return (
     /* Conditionally render */
-    join.accepted ? <JoinAs /> : <RequestToJoin />
+    join.accepted ? (
+      <JoinAs username={username} setUsername={setUsername} />
+    ) : (
+      <RequestToJoin />
+    )
   );
 }
 

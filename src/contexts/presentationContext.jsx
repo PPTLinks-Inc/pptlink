@@ -39,6 +39,7 @@ const PresentationContextProvider = (props) => {
         'join-presentation',
         {
           liveId: params.id,
+          presentationId: presentation.id,
           user: presentation.User,
           hostCurrentSlide: swiperRef.current
             ? swiperRef.current.activeIndex
@@ -200,6 +201,7 @@ const PresentationContextProvider = (props) => {
     <PresentationContext.Provider
       value={{
         presentation,
+        setPresentation,
         makeLive,
         livePending,
         notFound,

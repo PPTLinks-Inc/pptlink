@@ -269,18 +269,17 @@ export const Carousel = ({ nav }) => {
           )}
         </div>
 
-        {
+        {presentation && (
           <Actions
             active={actionsActive}
             toggleFullScreen={toggleFullScreen}
-            presentation={presentation}
             syncButton={syncButton}
             syncSlide={syncSlide}
             fullscreen={fullscreen}
             closeChatModal={closeChatModal}
             setCloseChatModal={setCloseChatModal}
           />
-        }
+        )}
         <ToastContainer />
         {status.online === true ? (
           <div
