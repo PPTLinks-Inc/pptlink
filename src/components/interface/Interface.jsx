@@ -37,7 +37,7 @@ function Interface() {
       >
         {presentation ? (
           <div className=' h-fit min-h-[100%]'>
-            {presentation.view || presentation.User === 'HOST' ? (
+            {presentation.live || presentation.User === 'HOST' ? (
               <Carousel />
             ) : !isIOS ? (
               <Spinner />

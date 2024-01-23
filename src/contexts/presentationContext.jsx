@@ -105,15 +105,7 @@ const PresentationContextProvider = (props) => {
 
     if (!socket.hasListeners("client-live")) {
       socket.on("client-live", (live) => {
-        setPresentation((prev) => ({ ...prev, live, view: true }));
-
-        if (live) {
-          toast.success("Presentation is now live");
-        }
-        else {
-          swiperRef.current.allowSlideNext = true;
-          toast.error("Presentation is not live");
-        }
+        setPresentation((prev) => ({ ...prev, live }));
       });
     }
     if (fetching) return;
