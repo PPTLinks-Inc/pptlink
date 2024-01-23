@@ -48,13 +48,13 @@ const Chat = React.memo(
   // const [guests, setGuests] = useState(DUMMY_GUESTS);
   const { presentation, setPresentation, socket } =
     useContext(PresentationContext);
-  const { user } = useContext(userContext);
+  // const user = useContext(userContext);
   const [isHost, setIsHost] = useState(presentation.User === "HOST");
   const [hostMuted, setHostMuted] = useState(true);
   const [conversationLive, setConversationLive] = useState(presentation.audio);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [showLeave, setShowLeave] = useState(false);
-  const [micState, setMicState] = useState(CAN_SPK);
+  const [micState, setMicState] = useState(MIC_OFF);
   const [username, setUsername] = useState("");
   const [hostName, setHostName] = useState("The Host 😎");
 
@@ -74,7 +74,16 @@ const Chat = React.memo(
   });
 
   useEffect(() => {
-    console.log(micState);
+    if (isHost) {
+      if (micState === CAN_SPK) {
+        // socket.emit("host-audio-on", presentation.liveId);
+        audioTracks.localAudioTrack?.setMuted(false);
+      }
+      if (micState === MIC_OFF) {
+        // socket.emit("host-audio-off", presentation.liveId);
+        audioTracks.localAudioTrack?.setMuted(true);
+      }
+    }
   }, [micState]);
 
   useEffect(() => {
@@ -117,7 +126,7 @@ const Chat = React.memo(
 
         audioTracks.localAudioTrack =
           await AgoraRTC.createMicrophoneAudioTrack();
-        // audioTracks.localAudioTrack.setMuted(true);
+        audioTracks.localAudioTrack.setMuted(true);
         await rtcClient.publish(audioTracks.localAudioTrack);
 
         // console.log("publish success");
@@ -285,7 +294,7 @@ const Chat = React.memo(
   };
 
   // Function to leave the chat
-  const leaveChat = ({ emitEvent = true }) => {
+  const leaveChat = ({ emitEvent }) => {
     if (!isHost && emitEvent) {
       socket.emit(
         "leave-audio-session",
@@ -335,7 +344,7 @@ const Chat = React.memo(
     socket.emit("client-audio-off", presentation.liveId, (response) => {
       if (response) {
         toast.success("Audio deactivated");
-        leaveChat();
+        leaveChat({emitEvent: true});
       } else {
         toast.error("Audio deactivation failed");
       }
@@ -370,7 +379,7 @@ const Chat = React.memo(
                 onClick={() => {
                   setShowLeave(false);
                   if (isHost) return endChat();
-                  leaveChat();
+                  leaveChat({ emitEvent: true});
                 }}
                 className="rounded-xl p-2 text-black bg-slate-200 uppercase"
               >
