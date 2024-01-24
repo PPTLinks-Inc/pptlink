@@ -14,6 +14,7 @@ import MicGradient from "./assets/images/mic-gradient.svg";
 import Media from "react-media";
 import AnimateInOut from "../../AnimateInOut";
 import { useEffect } from "react";
+import { LoadingAssetSmall } from "../../../assets/assets";
 
 const activePingSTyles =
   "shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50  shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50 relative before:w-full before:h-full before:rounded-full  before:animate-ping before:absolute before:inset-0 before:m-auto before:-z-10 after:w-full after:h-full after:rounded-full  after:animate-ping-200 after:absolute after:inset-0 after:m-auto after:-z-20 after:delay-150 z-30";
@@ -122,26 +123,27 @@ const Chat = React.memo(
     const [chatHeight, setChatHeight] = useState("2.5rem");
 
     // Function to open the chat modal
-    const openChat = () => {
+    function openChat() {
       setChatOpen((prev) => ({ ...prev, open: true, expand: false }));
       setChatHeight("12rem");
       setKeepChatOpen(true);
       setCloseChatModal(false);
-    };
+    }
 
     // Function to initialize chat
-    const activateChat = () => {
+    function activateChat() {
       setChatOpen((prev) => ({ ...prev, active: true }));
       expandChat();
-    };
+    }
 
     // Function to join the chat
-    const joinChat = () => {
+    function joinChat() {
       setChatOpen((prev) => ({ ...prev, join: true }));
-    };
+      closeChat();
+    }
 
     // Function to expand the chat modal
-    const expandChat = () => {
+    function expandChat() {
       if (!chatOpen.join && !chatOpen.active) return;
       setChatOpen((prev) => ({
         ...prev,
@@ -150,10 +152,10 @@ const Chat = React.memo(
         participants: false,
       }));
       setChatHeight("22rem");
-    };
+    }
 
     // Function to show messaging in the chat modal
-    const showMessaging = () => {
+    function showMessaging() {
       setChatOpen((prev) => ({
         ...prev,
         messaging: true,
@@ -161,10 +163,10 @@ const Chat = React.memo(
         expand: false,
       }));
       setChatHeight("31rem");
-    };
+    }
 
     // Function to show participants list in the chat modal
-    const showParticipants = () => {
+    function showParticipants() {
       setChatOpen((prev) => ({
         ...prev,
         participants: true,
@@ -172,10 +174,10 @@ const Chat = React.memo(
         expand: false,
       }));
       setChatHeight("31rem");
-    };
+    }
 
     // Function to close the chat modal
-    const closeChat = () => {
+    function closeChat() {
       setChatOpen((prev) => ({
         ...prev,
         open: false,
@@ -187,7 +189,7 @@ const Chat = React.memo(
       setChatHeight("2.5rem");
       setKeepChatOpen(false);
       setCloseChatModal(true);
-    };
+    }
 
     // Function to leave the chat
     const leaveChat = () => {
@@ -807,6 +809,7 @@ function JoinConversation({ closeChat, joinChat }) {
   // Component to enter username to join the conversation
   const JoinAs = () => {
     const [username, setUsername] = useState("");
+    const [loading, setLoading] = useState(false);
 
     return (
       <div className="w-fit mx-auto space-y-4">
@@ -816,18 +819,22 @@ function JoinConversation({ closeChat, joinChat }) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            setLoading(true);
             // Check if username is empty
-            if (!username)
+            if (!username) {
+              setLoading(false);
               return setJoin((prev) => ({
                 ...prev,
                 error: "Please enter a valid username",
               }));
+            }
 
             setJoin((prev) => ({
               ...prev,
               error: "",
             }));
             joinChat();
+            setLoading(false);
           }}
           className="text-center_"
         >
@@ -843,10 +850,11 @@ function JoinConversation({ closeChat, joinChat }) {
               />
             </div>
             <button
+              disabled={loading}
               type="submit"
               className="py-3 px-6 font-bold text-slate-200 border-[1px] border-slate-200/30 uppercase rounded-xl"
             >
-              join
+              {loading ? <LoadingAssetSmall /> : "join"}
             </button>
           </div>
           {/* Error message upon invalid input submission */}
