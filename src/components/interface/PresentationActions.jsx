@@ -1,8 +1,9 @@
-import { FaChevronUp, FaExpand, FaSync, FaCompress } from "react-icons/fa";
-import Chat from "./layout/Chat";
-import AnimateInOut from "../AnimateInOut";
-import { FaHome, FaDownload } from "react-icons/fa";
-import { useState } from "react";
+import { FaChevronUp, FaExpand, FaSync, FaCompress } from 'react-icons/fa';
+import Chat from './layout/Chat';
+import AnimateInOut from '../AnimateInOut';
+import { FaHome, FaDownload } from 'react-icons/fa';
+import { useState, useContext } from 'react';
+import { PresentationContext } from '../../contexts/presentationContext';
 
 let stopFunction = false;
 let navBar = false;
@@ -23,13 +24,13 @@ const navItems = [
 export default function Actions({
   active,
   toggleFullScreen,
-  presentation,
   syncButton,
   syncSlide,
   fullscreen,
   closeChatModal,
   setCloseChatModal,
 }) {
+  const { presentation } = useContext(PresentationContext);
   const [navbar, setNavbar] = useState(false);
   const [hovered, setActionsHovered] = useState(false);
   const [keepChatOpen, setKeepChatOpen] = useState(active || hovered);

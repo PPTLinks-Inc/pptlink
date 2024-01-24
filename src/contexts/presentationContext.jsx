@@ -39,6 +39,7 @@ const PresentationContextProvider = (props) => {
         'join-presentation',
         {
           liveId: params.id,
+          presentationId: presentation.id,
           user: presentation.User,
           hostCurrentSlide: swiperRef.current
             ? swiperRef.current.activeIndex
@@ -104,15 +105,7 @@ const PresentationContextProvider = (props) => {
 
     if (!socket.hasListeners("client-live")) {
       socket.on("client-live", (live) => {
-        setPresentation((prev) => ({ ...prev, live, view: true }));
-
-        if (live) {
-          toast.success("Presentation is now live");
-        }
-        else {
-          swiperRef.current.allowSlideNext = true;
-          toast.error("Presentation is not live");
-        }
+        setPresentation((prev) => ({ ...prev, live }));
       });
     }
     if (fetching) return;
@@ -200,6 +193,7 @@ const PresentationContextProvider = (props) => {
     <PresentationContext.Provider
       value={{
         presentation,
+        setPresentation,
         makeLive,
         livePending,
         notFound,
