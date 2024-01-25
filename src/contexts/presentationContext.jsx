@@ -3,6 +3,7 @@ import { createContext, useState, useRef, useEffect } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { SERVER_URL } from "../constants/routes";
 
@@ -13,7 +14,7 @@ let fetching = false;
 let state = {
   maxNext: 0,
   hostSlideIndex: 0,
-  sync: true,
+  sync: true
 };
 
 const PresentationContextProvider = (props) => {
@@ -36,25 +37,26 @@ const PresentationContextProvider = (props) => {
   const joinRoom = () => {
     if (socket.connected && presentation) {
       socket.emit(
-        'join-presentation',
+        "join-presentation",
         {
           liveId: params.id,
           presentationId: presentation.id,
           user: presentation.User,
           hostCurrentSlide: swiperRef.current
             ? swiperRef.current.activeIndex
-            : 0,
+            : 0
         },
         (response) => {
-          if (presentation.User != 'HOST') {
+          if (presentation.User != "HOST") {
             state = {
               ...state,
               maxNext: response.maxSlide,
-              hostSlideIndex: response.currentSlide,
+              hostSlideIndex: response.currentSlide
             };
             if (!swiperRef.current) return;
             if (
-              presentation.live && state.sync &&
+              presentation.live &&
+              state.sync &&
               swiperRef.current.activeIndex !== state.hostSlideIndex
             ) {
               syncSlide();
@@ -80,13 +82,16 @@ const PresentationContextProvider = (props) => {
   useEffect(() => {
     joinRoom();
     if (presentation) {
-      if (presentation.User !== "HOST" && !socket.hasListeners("change-slide")) {
+      if (
+        presentation.User !== "HOST" &&
+        !socket.hasListeners("change-slide")
+      ) {
         socket.on("change-slide", receiveSlideChange);
       }
     }
 
     return () => {
-      socket.removeListener('change-slide', receiveSlideChange);
+      socket.removeListener("change-slide", receiveSlideChange);
     };
   }, [presentation, socketConnected]);
 
@@ -113,7 +118,7 @@ const PresentationContextProvider = (props) => {
     fetching = true;
     axios
       .get(`/api/v1/ppt/presentations/present/${params.id}`, {
-        signal: controller.signal,
+        signal: controller.signal
       })
       .then(({ data }) => {
         fetching = false;
@@ -131,7 +136,7 @@ const PresentationContextProvider = (props) => {
     if (presentation.User === "HOST" && presentation.live) {
       socket.emit("change-slide", {
         liveId: presentation.liveId,
-        currentSlide: slide.activeIndex,
+        currentSlide: slide.activeIndex
       });
     } else {
       if (presentation.live) {
@@ -167,19 +172,19 @@ const PresentationContextProvider = (props) => {
       setLivePending(true);
       axios
         .put(`/api/v1/ppt/presentations/make-live/${presentation.id}`, {
-          data: !presentation.live,
+          data: !presentation.live
         })
         .then(({ data }) => {
           if (socket.connected) {
-            socket.emit('client-live', {
+            socket.emit("client-live", {
               liveId: params.id,
-              live: !presentation.live,
+              live: !presentation.live
             });
           }
           setPresentation((prev) => ({
             ...prev,
             live: !prev.live,
-            view: true,
+            view: true
           }));
           setLivePending(false);
         })
@@ -203,7 +208,7 @@ const PresentationContextProvider = (props) => {
         swiperRef,
         syncSlide,
         state,
-        slideChange,
+        slideChange
       }}
     >
       {props.children}
