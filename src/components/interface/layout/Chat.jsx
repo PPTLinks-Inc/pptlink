@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // Importing components and libraries
 import { CloseOutlined, MessageRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
@@ -47,7 +48,7 @@ const Chat = React.memo(
     keepChatOpen,
   }) => {
     // const [guests, setGuests] = useState(DUMMY_GUESTS);
-    const { presentation, setPresentation, socket } =
+    const { presentation, socket } =
       useContext(PresentationContext);
     // const user = useContext(userContext);
     const [isHost, setIsHost] = useState(presentation.User === "HOST");
@@ -342,7 +343,7 @@ const Chat = React.memo(
     }
 
     function endChat() {
-      setPresentation((prev) => ({ ...prev, audio: false }));
+      setConversationLive(false);
       setChatOpen((prev) => ({ ...prev, active: false }));
       socket.emit("client-audio-off", presentation.liveId, (response) => {
         if (response) {
@@ -558,7 +559,7 @@ const Chat = React.memo(
                           show={chatOpen.participants}
                           className="gap-2 p-3 flex-1 overflow-hidden"
                         >
-                          <Participants />
+                          <Participants participants={participants} />
                         </AnimateInOut>
                       ) : chatOpen.join || chatOpen.active ? (
                         // Components for when user joins the chat
