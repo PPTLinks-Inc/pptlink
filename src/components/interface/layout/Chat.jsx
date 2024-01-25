@@ -19,6 +19,7 @@ import { userContext } from "../../../contexts/userContext";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import AgoraRTM from "agora-rtm-sdk";
 import { AGORA_APP_ID } from "../../../constants/routes";
+import { LoadingAssetSmall } from "../../../assets/assets";
 
 let audioTracks = {
   localAudioTrack: null,
@@ -45,341 +46,343 @@ const Chat = React.memo(
     active: CHAT_ACTIVE,
     keepChatOpen,
   }) => {
-  // const [guests, setGuests] = useState(DUMMY_GUESTS);
-  const { presentation, setPresentation, socket } =
-    useContext(PresentationContext);
-  // const user = useContext(userContext);
-  const [isHost, setIsHost] = useState(presentation.User === "HOST");
-  const [hostMuted, setHostMuted] = useState(true);
-  const [conversationLive, setConversationLive] = useState(presentation.audio);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [showLeave, setShowLeave] = useState(false);
-  const [micState, setMicState] = useState(MIC_OFF);
-  const [username, setUsername] = useState("");
-  const [hostName, setHostName] = useState("The Host 😎");
-
-  // status: CAN_SPEAK | REQUESTED | CANNOT_SPEAK
-  const [participants, setParticipants] = useState([]);
-
-  const currentUser = "me";
-
-  // State to manage chat modal's open, join, expand, and messaging states
-  const [chatOpen, setChatOpen] = useState({
-    open: false,
-    active: false,
-    join: false,
-    expand: false,
-    participants: false,
-    messaging: false,
-  });
-
-  useEffect(() => {
-    if (isHost) {
-      if (micState === CAN_SPK) {
-        // socket.emit("host-audio-on", presentation.liveId);
-        audioTracks.localAudioTrack?.setMuted(false);
-      }
-      if (micState === MIC_OFF) {
-        // socket.emit("host-audio-off", presentation.liveId);
-        audioTracks.localAudioTrack?.setMuted(true);
-      }
-    }
-  }, [micState]);
-
-  useEffect(() => {
-    console.log({ closeChatModal });
-    if (closeChatModal) {
-      closeChat();
-    }
-  }, [closeChatModal]);
-
-  useEffect(() => {
-    if (isHost && presentation.audio) {
-      openChat();
-      joinChat();
-    }
-    if (!isHost && presentation.audio) openChat();
-
-    if (!isHost && !presentation.audio) {
-      socket.on("client-audio-on", () => {
-        setConversationLive(true);
-        openChat();
-      });
-    }
-
-    if (!isHost) {
-      socket.on("client-audio-off", () => {
-        leaveChat({ emitEvent: false });
-        setConversationLive(false);
-        toast.success("Audio is no longer active");
-      });
-    }
-
-    if (chatOpen.join) {
-      (async () => {
-        await rtcClient.join(
-          AGORA_APP_ID,
-          presentation.liveId,
-          presentation.rtcToken,
-          presentation.rtcUid
-        );
-
-        audioTracks.localAudioTrack =
-          await AgoraRTC.createMicrophoneAudioTrack();
-        // audioTracks.localAudioTrack.setMuted(true);
-        await rtcClient.publish(audioTracks.localAudioTrack);
-
-        // console.log("publish success");
-      })();
-
-      rtcClient.on("user-published", async (user, mediaType) => {
-        await rtcClient.subscribe(user, mediaType);
-
-        if (mediaType == "audio") {
-          audioTracks.remoteAudioTracks[user.uid] = [user.audioTrack];
-          user.audioTrack.play();
-        }
-      });
-      rtcClient.on("user-left", (user) => {
-        delete audioTracks.remoteAudioTracks[user.uid];
-
-        setParticipants((prev) =>
-          prev.filter((participant) => participant.id !== user.uid)
-        );
-      });
-
-      socket.on("new-user-audio", (newUser) => {
-        setParticipants((prev) => [...prev, newUser]);
-      });
-    }
-
-    return () => {
-      if (chatOpen.join) {
-        audioTracks.localAudioTrack?.stop();
-        audioTracks.localAudioTrack?.close();
-
-        rtcClient?.unpublish();
-        rtcClient?.leave();
-      }
-    };
-  }, [chatOpen.join]);
-
-  // State to manage the height of the chat modal
-  const [chatHeight, setChatHeight] = useState("2.5rem");
-
-  // Function to open the chat modal
-  const openChat = () => {
-    setChatOpen((prev) => ({ ...prev, open: true, expand: false }));
-    setChatHeight("12rem");
-    setKeepChatOpen(true);
-    setCloseChatModal(false);
-  };
-
-  // Function to initialize chat
-  const activateChat = () => {
-    if (!isHost) return;
-    if (!presentation.live) {
-      toast.error("Presentation not live");
-      return;
-    }
-    socket.emit(
-      "client-audio-on",
-      {
-        liveId: presentation.liveId,
-        presentationId: presentation.id,
-      },
-      (response) => {
-        if (response) {
-          joinChat();
-          setChatOpen((prev) => ({ ...prev, active: true }));
-          expandChat();
-          toast.success("Audio activated");
-        } else {
-          toast.error("Audio activation failed");
-        }
-      }
+    // const [guests, setGuests] = useState(DUMMY_GUESTS);
+    const { presentation, setPresentation, socket } =
+      useContext(PresentationContext);
+    // const user = useContext(userContext);
+    const [isHost, setIsHost] = useState(presentation.User === "HOST");
+    const [hostMuted, setHostMuted] = useState(true);
+    const [conversationLive, setConversationLive] = useState(
+      presentation.audio
     );
-  };
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [showLeave, setShowLeave] = useState(false);
+    const [micState, setMicState] = useState(MIC_OFF);
+    const [username, setUsername] = useState("");
+    const [hostName, setHostName] = useState("The Host 😎");
 
-  // Function to join the chat
-  const joinChat = async () => {
-    if (isHost) {
-      socket.emit(
-        "host-audio-connect",
-        {
-          hostName: "HOST",
-          liveId: presentation.liveId,
-          presentationId: presentation.id,
-          hostId: presentation.rtcUid,
-        },
-        (response) => {
-          if (!response) {
-            toast.error("Failed to join conversation");
-            return;
-          }
-          // setHostName(user.username);
-          setChatOpen((prev) => ({ ...prev, join: true }));
-          toast.success("Joined conversation");
-        }
-      );
-    } else {
-      socket.emit(
-        "join-audio-session",
-        {
-          username,
-          userId: presentation.rtcUid,
-          liveId: presentation.liveId,
-        },
-        (response) => {
-          if (!response) {
-            toast.error("Failed to join conversation");
-            return;
-          }
-          setHostName(response.host.name);
-          setParticipants(response.users);
-          setChatOpen((prev) => ({ ...prev, join: true }));
-          toast.success("Joined conversation");
-        }
-      );
-    }
-  };
+    // status: CAN_SPEAK | REQUESTED | CANNOT_SPEAK
+    const [participants, setParticipants] = useState([]);
 
-  // Function to expand the chat modal
-  const expandChat = () => {
-    if (!chatOpen.join && !chatOpen.active) return;
-    setChatOpen((prev) => ({
-      ...prev,
-      expand: true,
-      messaging: false,
-      participants: false,
-    }));
-    setChatHeight("22rem");
-  };
+    const currentUser = "me";
 
-  // Function to show messaging in the chat modal
-  const showMessaging = () => {
-    setChatOpen((prev) => ({
-      ...prev,
-      messaging: true,
-      participants: false,
-      expand: false,
-    }));
-    setChatHeight("31rem");
-  };
-
-  // Function to show participants list in the chat modal
-  const showParticipants = () => {
-    setChatOpen((prev) => ({
-      ...prev,
-      participants: true,
-      messaging: false,
-      expand: false,
-    }));
-    setChatHeight("31rem");
-  };
-
-  // Function to close the chat modal
-  const closeChat = () => {
-    setChatOpen((prev) => ({
-      ...prev,
+    // State to manage chat modal's open, join, expand, and messaging states
+    const [chatOpen, setChatOpen] = useState({
       open: false,
+      active: false,
+      join: false,
       expand: false,
-      expandMax: false,
-      messaging: false,
       participants: false,
-    }));
-    setChatHeight("2.5rem");
-    setKeepChatOpen(false);
-    setCloseChatModal(true);
-  };
+      messaging: false,
+    });
 
-  // Function to leave the chat
-  const leaveChat = ({ emitEvent }) => {
-    if (!isHost && emitEvent) {
-      socket.emit(
-        "leave-audio-session",
-        {
-          userId: presentation.rtcUid,
-          liveId: presentation.liveId,
-        },
-        (response) => {
-          if (!response) {
-            toast.error("Failed to leave conversation");
-            return;
+    useEffect(() => {
+      if (isHost) {
+        if (micState === CAN_SPK) {
+          // socket.emit("host-audio-on", presentation.liveId);
+          audioTracks.localAudioTrack?.setMuted(false);
+        }
+        if (micState === MIC_OFF) {
+          // socket.emit("host-audio-off", presentation.liveId);
+          audioTracks.localAudioTrack?.setMuted(true);
+        }
+      }
+    }, [micState]);
+
+    useEffect(() => {
+      console.log({ closeChatModal });
+      if (closeChatModal) {
+        closeChat();
+      }
+    }, [closeChatModal]);
+
+    useEffect(() => {
+      if (isHost && presentation.audio) {
+        openChat();
+        joinChat();
+      }
+      // if (!isHost && presentation.audio) openChat();
+
+      if (!isHost && !presentation.audio) {
+        socket.on("client-audio-on", () => {
+          setConversationLive(true);
+          openChat();
+        });
+      }
+
+      if (!isHost) {
+        socket.on("client-audio-off", () => {
+          leaveChat({ emitEvent: false });
+          setConversationLive(false);
+          toast.success("Audio is no longer active");
+        });
+      }
+
+      if (chatOpen.join) {
+        (async () => {
+          await rtcClient.join(
+            AGORA_APP_ID,
+            presentation.liveId,
+            presentation.rtcToken,
+            presentation.rtcUid
+          );
+
+          audioTracks.localAudioTrack =
+            await AgoraRTC.createMicrophoneAudioTrack();
+          audioTracks.localAudioTrack.setMuted(true);
+          await rtcClient.publish(audioTracks.localAudioTrack);
+
+          // console.log("publish success");
+        })();
+
+        rtcClient.on("user-published", async (user, mediaType) => {
+          await rtcClient.subscribe(user, mediaType);
+
+          if (mediaType == "audio") {
+            audioTracks.remoteAudioTracks[user.uid] = [user.audioTrack];
+            user.audioTrack.play();
           }
-          toast.success("Left conversation");
-          setParticipants([]);
-          closeChat();
-          setChatOpen((prev) => ({
-            ...prev,
-            join: false,
-          }));
-          setChatHeight("2.5rem");
+        });
+        rtcClient.on("user-left", (user) => {
+          delete audioTracks.remoteAudioTracks[user.uid];
+
+          setParticipants((prev) =>
+            prev.filter((participant) => participant.id !== user.uid)
+          );
+        });
+
+        socket.on("new-user-audio", (newUser) => {
+          setParticipants((prev) => [...prev, newUser]);
+        });
+      }
+
+      return () => {
+        if (chatOpen.join) {
           audioTracks.localAudioTrack?.stop();
           audioTracks.localAudioTrack?.close();
 
           rtcClient?.unpublish();
           rtcClient?.leave();
         }
+      };
+    }, [chatOpen.join]);
+
+    // State to manage the height of the chat modal
+    const [chatHeight, setChatHeight] = useState("2.5rem");
+
+    // Function to open the chat modal
+    function openChat() {
+      setChatOpen((prev) => ({ ...prev, open: true, expand: false }));
+      setChatHeight("12rem");
+      setKeepChatOpen(true);
+      setCloseChatModal(false);
+    }
+
+    // Function to initialize chat
+    function activateChat() {
+      if (!isHost) return;
+      if (!presentation.live) {
+        toast.error("Presentation not live");
+        return;
+      }
+      socket.emit(
+        "client-audio-on",
+        {
+          liveId: presentation.liveId,
+          presentationId: presentation.id,
+        },
+        (response) => {
+          if (response) {
+            joinChat();
+            setChatOpen((prev) => ({ ...prev, active: true }));
+            expandChat();
+            toast.success("Audio activated");
+          } else {
+            toast.error("Audio activation failed");
+          }
+        }
       );
-    } else {
-      setParticipants([]);
-      closeChat();
+    }
+
+    // Function to join the chat
+    async function joinChat() {
+      if (isHost) {
+        socket.emit(
+          "host-audio-connect",
+          {
+            hostName: "HOST",
+            liveId: presentation.liveId,
+            presentationId: presentation.id,
+            hostId: presentation.rtcUid,
+          },
+          (response) => {
+            if (!response) {
+              toast.error("Failed to join conversation");
+              return;
+            }
+            // setHostName(user.username);
+            setChatOpen((prev) => ({ ...prev, join: true }));
+            toast.success("Joined conversation");
+          }
+        );
+      } else {
+        socket.emit(
+          "join-audio-session",
+          {
+            username,
+            userId: presentation.rtcUid,
+            liveId: presentation.liveId,
+          },
+          (response) => {
+            if (!response) {
+              toast.error("Failed to join conversation");
+              return;
+            }
+            setHostName(response.host.name);
+            setParticipants(response.users);
+            setChatOpen((prev) => ({ ...prev, join: true }));
+            toast.success("Joined conversation");
+          }
+        );
+      }
+    }
+
+    // Function to expand the chat modal
+    function expandChat() {
+      if (!chatOpen.join && !chatOpen.active) return;
       setChatOpen((prev) => ({
         ...prev,
-        join: false,
+        expand: true,
+        messaging: false,
+        participants: false,
+      }));
+      setChatHeight("22rem");
+    }
+
+    // Function to show messaging in the chat modal
+    function showMessaging() {
+      setChatOpen((prev) => ({
+        ...prev,
+        messaging: true,
+        participants: false,
+        expand: false,
+      }));
+      setChatHeight("31rem");
+    }
+
+    // Function to show participants list in the chat modal
+    function showParticipants() {
+      setChatOpen((prev) => ({
+        ...prev,
+        participants: true,
+        messaging: false,
+        expand: false,
+      }));
+      setChatHeight("31rem");
+    }
+
+    // Function to close the chat modal
+    function closeChat() {
+      setChatOpen((prev) => ({
+        ...prev,
+        open: false,
+        expand: false,
+        expandMax: false,
+        messaging: false,
+        participants: false,
       }));
       setChatHeight("2.5rem");
-      audioTracks.localAudioTrack?.stop();
-      audioTracks.localAudioTrack?.close();
-
-      rtcClient?.unpublish();
-      rtcClient?.leave();
+      setKeepChatOpen(false);
+      setCloseChatModal(true);
     }
-  };
 
-  const endChat = () => {
-    setPresentation((prev) => ({ ...prev, audio: false }));
-    setChatOpen((prev) => ({ ...prev, active: false }));
-    socket.emit("client-audio-off", presentation.liveId, (response) => {
-      if (response) {
-        toast.success("Audio deactivated");
-        leaveChat({emitEvent: true});
+    // Function to leave the chat
+    function leaveChat({ emitEvent }) {
+      if (!isHost && emitEvent) {
+        socket.emit(
+          "leave-audio-session",
+          {
+            userId: presentation.rtcUid,
+            liveId: presentation.liveId,
+          },
+          (response) => {
+            if (!response) {
+              toast.error("Failed to leave conversation");
+              return;
+            }
+            toast.success("Left conversation");
+            setParticipants([]);
+            closeChat();
+            setChatOpen((prev) => ({
+              ...prev,
+              join: false,
+            }));
+            setChatHeight("2.5rem");
+            audioTracks.localAudioTrack?.stop();
+            audioTracks.localAudioTrack?.close();
+
+            rtcClient?.unpublish();
+            rtcClient?.leave();
+          }
+        );
       } else {
-        toast.error("Audio deactivation failed");
+        setParticipants([]);
+        closeChat();
+        setChatOpen((prev) => ({
+          ...prev,
+          join: false,
+        }));
+        setChatHeight("2.5rem");
+        audioTracks.localAudioTrack?.stop();
+        audioTracks.localAudioTrack?.close();
+
+        rtcClient?.unpublish();
+        rtcClient?.leave();
       }
-    });
-  };
+    }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setConversationLive(true);
-    }, 3000);
-  }, []);
+    function endChat() {
+      setPresentation((prev) => ({ ...prev, audio: false }));
+      setChatOpen((prev) => ({ ...prev, active: false }));
+      socket.emit("client-audio-off", presentation.liveId, (response) => {
+        if (response) {
+          toast.success("Audio deactivated");
+          leaveChat({ emitEvent: true });
+        } else {
+          toast.error("Audio deactivation failed");
+        }
+      });
+    }
 
-  useEffect(() => {
-    console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
-  }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
+    useEffect(() => {
+      setTimeout(() => {
+        setConversationLive(true);
+      }, 3000);
+    }, []);
 
-  const LeaveConversationModal = () => {
-    return (
-      <>
-        <div
-          title="close modal"
-          onClick={() => setShowLeave(false)}
-          className="w-full h-full fixed top-0 left-0 backdrop-blur-sm bg-slate-200/20 z-40"
-        />
+    useEffect(() => {
+      console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
+    }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
 
-        <div className="w-96 h-60 flex flex-col items-center justify-center  p-3 rounded-2xl fixed inset-0 m-auto bg-black  py-8 border-slate-200 border mx-auto space-y-4 z-50">
-          <p className="text-slate-200 text-xl text-center font-semibold capitalize">
-            {isHost ? "End Conversation" : "Leave chat"}
-          </p>
-          <div className="flex gap-8 justify-center items-center">
+    const LeaveConversationModal = () => {
+      return (
+        <>
+          <div
+            title="close modal"
+            onClick={() => setShowLeave(false)}
+            className="w-full h-full fixed top-0 left-0 backdrop-blur-sm bg-slate-200/20 z-40"
+          />
+
+          <div className="w-96 h-60 flex flex-col items-center justify-center  p-3 rounded-2xl fixed inset-0 m-auto bg-black  py-8 border-slate-200 border mx-auto space-y-4 z-50">
+            <p className="text-slate-200 text-xl text-center font-semibold capitalize">
+              {isHost ? "End Conversation" : "Leave chat"}
+            </p>
+            <div className="flex gap-8 justify-center items-center">
               <button
                 onClick={() => {
                   setShowLeave(false);
                   if (isHost) return endChat();
-                  leaveChat({ emitEvent: true});
+                  leaveChat({ emitEvent: true });
                 }}
                 className="rounded-xl p-2 text-black bg-slate-200 uppercase"
               >
@@ -955,6 +958,8 @@ function JoinConversation({ closeChat, joinChat, username, setUsername }) {
 
   // Component to enter username to join the conversation
   const JoinAs = ({ username, setUsername }) => {
+    const [loading, setLoading] = useState(false);
+
     return (
       <div className="w-fit mx-auto space-y-4">
         <p className="text-slate-200 text-center text-xl font-semibold capitalize">
@@ -963,18 +968,22 @@ function JoinConversation({ closeChat, joinChat, username, setUsername }) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            setLoading(true);
             // Check if username is empty
-            if (!username)
+            if (!username) {
+              setLoading(false);
               return setJoin((prev) => ({
                 ...prev,
                 error: "Please enter a valid username",
               }));
+            }
 
             setJoin((prev) => ({
               ...prev,
               error: "",
             }));
             joinChat();
+            setLoading(false);
           }}
           className="text-center_"
         >
@@ -990,10 +999,11 @@ function JoinConversation({ closeChat, joinChat, username, setUsername }) {
               />
             </div>
             <button
+              disabled={loading}
               type="submit"
               className="py-3 px-6 font-bold text-slate-200 border-[1px] border-slate-200/30 uppercase rounded-xl"
             >
-              join
+              {loading ? <LoadingAssetSmall /> : "join"}
             </button>
           </div>
           {/* Error message upon invalid input submission */}
