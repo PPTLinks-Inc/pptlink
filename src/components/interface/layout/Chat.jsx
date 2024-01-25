@@ -129,7 +129,7 @@ const Chat = React.memo(
 
           audioTracks.localAudioTrack =
             await AgoraRTC.createMicrophoneAudioTrack();
-          audioTracks.localAudioTrack.setMuted(true);
+          // audioTracks.localAudioTrack.setMuted(true);
           await rtcClient.publish(audioTracks.localAudioTrack);
 
           // console.log("publish success");
