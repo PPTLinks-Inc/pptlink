@@ -549,6 +549,7 @@ const Chat = React.memo(
                           <Messaging
                             currentUser={currentUser}
                             hostMuted={hostMuted}
+                            presentationName={presentation.name}
                           />
                         </AnimateInOut>
                       ) : chatOpen.participants ? (
@@ -559,7 +560,7 @@ const Chat = React.memo(
                           show={chatOpen.participants}
                           className="gap-2 p-3 flex-1 overflow-hidden"
                         >
-                          <Participants participants={participants} />
+                          <Participants participants={participants} presentationName={presentation.name} />
                         </AnimateInOut>
                       ) : chatOpen.join || chatOpen.active ? (
                         // Components for when user joins the chat
@@ -586,7 +587,7 @@ const Chat = React.memo(
                             <Host muted={hostMuted} name={hostName} />
                             <div className="space-y-2 flex w-full flex-row-reverse gap-3">
                               <div className="p-2 flex-1 rounded-lg">
-                                <p>Presentation name</p>
+                                <p>{presentation.name}</p>
                               </div>
                               <div className="flex items-center gap-2">
                                 {/* Buttons for microphone, messaging, and leaving chat */}
@@ -823,7 +824,7 @@ const messages = [
 ];
 
 // Messaging Component
-function Messaging({ hostMuted, currentUser, hostName }) {
+function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
   const [messageInput, setMessageInput] = useState("");
 
   const Message = ({ message }) => (
@@ -884,7 +885,7 @@ function Messaging({ hostMuted, currentUser, hostName }) {
 }
 
 // Participants Component
-function Participants({ participants }) {
+function Participants({ participants, presentationName }) {
   // const Participant = () => (
   //   <div className='w-fit -space-y-1 text-center'>
   //     <div className='rounded-full col-span-1 overflow-clip shrink-0 w-8 h-8 lg:w-12 lg:h-12'>
@@ -909,7 +910,7 @@ function Participants({ participants }) {
           </div>
         }
         <div className="p-2 rounded-lg">
-          <p>Presentation name</p>
+          <p>{presentationName}</p>
         </div>
       </div>
       {/* Container for displaying messages */}
