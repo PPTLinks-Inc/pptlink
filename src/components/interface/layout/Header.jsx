@@ -24,12 +24,13 @@ function Header() {
             PPTLinks
           </h1>
         )}
-        {presentation && presentation?.User === 'HOST' && (
+        {presentation?.User === 'HOST' && (
           <div className='absolute hidden lg:inline-block z-20 top-6 right-6 ml-auto'>
             <Button
               variant='contained'
               title={presentation.live ? 'End live' : 'Go live'}
               onClick={makeLive}
+              disabled={livePending}
               className={`w-[140px] h-[40px] !text-slate-200 !rounded-xl space-x-2  ${
                 presentation.live ? '!bg-rose-500' : ' !bg-green-500'
               }`}

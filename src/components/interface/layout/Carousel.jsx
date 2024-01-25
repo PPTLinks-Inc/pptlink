@@ -1,11 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-irregular-whitespace */
-/* eslint-disable no-unused-vars */
 
 import { useState, useRef, useEffect, useContext } from "react";
 import SwiperMySlide from "./assets/carousel/Swiper";
-import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
+import { FaExpand } from "react-icons/fa";
 import animation1 from "./assets/images/animation1.gif";
 import animation2 from "./assets/images/animation2.gif";
 import { ToastContainer } from "react-toastify";
@@ -22,11 +19,11 @@ import ShareAPI from "./Share";
 let wakeLock = null;
 let setTimerActive = null;
 
-export const Carousel = ({ nav }) => {
+export const Carousel = () => {
   const { presentation, makeLive, socket, livePending, syncButton, syncSlide } =
     useContext(PresentationContext);
   const [actionsActive, setActionsActive] = useState(true);
-  const [enableFullscreen, setEnableFullScreen] = useState(false);
+  const [enableFullscreen] = useState(false);
   const userRef = useRef();
   const [status, setStatus] = useState({
     online: false,
@@ -193,7 +190,7 @@ export const Carousel = ({ nav }) => {
     };
   }, []);
 
-  useEffect(() => {}, [fullscreen]);
+  // useEffect(() => {}, [fullscreen]);
 
   const handleMouseMove = () => {
     setActionsActive(true);
@@ -251,6 +248,7 @@ export const Carousel = ({ nav }) => {
             <Button
               title={presentation.live ? "End live" : "Go live"}
               onClick={makeLive}
+              disabled={livePending}
               className={`w-[140px] h-[40px] !text-slate-200 !rounded-xl space-x-2 ${
                 presentation.live ? "!bg-rose-500/50" : " !bg-green-500/50"
               }`}
@@ -269,17 +267,15 @@ export const Carousel = ({ nav }) => {
           )}
         </div>
 
-        {presentation && (
-          <Actions
-            active={actionsActive}
-            toggleFullScreen={toggleFullScreen}
-            syncButton={syncButton}
-            syncSlide={syncSlide}
-            fullscreen={fullscreen}
-            closeChatModal={closeChatModal}
-            setCloseChatModal={setCloseChatModal}
-          />
-        )}
+        <Actions
+          active={actionsActive}
+          toggleFullScreen={toggleFullScreen}
+          syncButton={syncButton}
+          syncSlide={syncSlide}
+          fullscreen={fullscreen}
+          closeChatModal={closeChatModal}
+          setCloseChatModal={setCloseChatModal}
+        />
         <ToastContainer />
         {status.online === true ? (
           <div
