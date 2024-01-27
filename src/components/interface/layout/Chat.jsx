@@ -19,6 +19,7 @@ import { PresentationContext } from "../../../contexts/presentationContext";
 import { userContext } from "../../../contexts/userContext";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import AgoraRTM from "agora-rtm-sdk";
+import { useMutation } from "@tanstack/react-query";
 import { AGORA_APP_ID } from "../../../constants/routes";
 import { LoadingAssetSmall } from "../../../assets/assets";
 
@@ -82,10 +83,11 @@ const Chat = React.memo(
         if (micState === CAN_SPK) {
           // socket.emit("host-audio-on", presentation.liveId);
           audioTracks.localAudioTrack?.setMuted(false);
-        }
-        if (micState === MIC_OFF) {
+          setHostMuted(false);
+        } else if (micState === MIC_OFF) {
           // socket.emit("host-audio-off", presentation.liveId);
           audioTracks.localAudioTrack?.setMuted(true);
+          setHostMuted(true);
         }
       }
     }, [micState]);
@@ -153,6 +155,8 @@ const Chat = React.memo(
         });
 
         socket.on("new-user-audio", (newUser) => {
+          const userExist = participants.find((participant) => participant.id === newUser.id);
+          if (userExist) return;
           setParticipants((prev) => [...prev, newUser]);
         });
       }
@@ -179,6 +183,37 @@ const Chat = React.memo(
       setCloseChatModal(false);
     }
 
+    const clientAudioOn = useMutation({
+      mutationKey: "clientAudioOn",
+      mutationFn: () => {
+        return new Promise((resolve, reject) => {
+          socket.emit(
+            "client-audio-on",
+            {
+              liveId: presentation.liveId,
+              presentationId: presentation.id,
+            },
+            (response) => {
+              if (response) {
+                resolve();
+              } else {
+                reject();
+              }
+            }
+          );
+        });
+      },
+      onSuccess: () => {
+        joinChat();
+        setChatOpen((prev) => ({ ...prev, active: true }));
+        expandChat();
+        toast.success("Audio activated");
+      },
+      onError: () => {
+        toast.error("Audio activation failed");
+      }
+    });
+
     // Function to initialize chat
     function activateChat() {
       if (!isHost) return;
@@ -186,65 +221,75 @@ const Chat = React.memo(
         toast.error("Presentation not live");
         return;
       }
-      socket.emit(
-        "client-audio-on",
-        {
-          liveId: presentation.liveId,
-          presentationId: presentation.id,
-        },
-        (response) => {
-          if (response) {
-            joinChat();
-            setChatOpen((prev) => ({ ...prev, active: true }));
-            expandChat();
-            toast.success("Audio activated");
-          } else {
-            toast.error("Audio activation failed");
-          }
-        }
-      );
+      clientAudioOn.mutate();
     }
 
+    const hostAudioConnect = useMutation({
+      mutationFn: () => {
+        return new Promise((resolve, reject) => {
+          socket.emit(
+            "host-audio-connect",
+            {
+              hostName: "HOST",
+              liveId: presentation.liveId,
+              presentationId: presentation.id,
+              hostId: presentation.rtcUid,
+            },
+            (response) => {
+              if (response) {
+                resolve();
+              } else {
+                reject();
+              }
+            }
+          );
+        });
+      },
+      onSuccess: () => {
+        // setHostName(user.username);
+        setChatOpen((prev) => ({ ...prev, join: true }));
+        toast.success("Joined conversation");
+      },
+      onError: () => {
+        toast.error("Failed to join conversation");
+      }
+    });
+    const joinAudioSession = useMutation({
+      mutationFn: () => {
+        return new Promise((resolve, reject) => {
+          socket.emit(
+            "join-audio-session",
+            {
+              username,
+              userId: presentation.rtcUid,
+              liveId: presentation.liveId,
+            },
+            (response) => {
+              if (!response) {
+                reject();
+                return;
+              }
+              resolve(response);
+            }
+          );
+        });
+      },
+      onSuccess: (response) => {
+        setHostName(response.host.name);
+        setParticipants(response.users);
+        setChatOpen((prev) => ({ ...prev, join: true }));
+        toast.success("Joined conversation");
+      },
+      onError: () => {
+        toast.error("Failed to join conversation");
+      }
+    });
     // Function to join the chat
     async function joinChat() {
       if (isHost) {
-        socket.emit(
-          "host-audio-connect",
-          {
-            hostName: "HOST",
-            liveId: presentation.liveId,
-            presentationId: presentation.id,
-            hostId: presentation.rtcUid,
-          },
-          (response) => {
-            if (!response) {
-              toast.error("Failed to join conversation");
-              return;
-            }
-            // setHostName(user.username);
-            setChatOpen((prev) => ({ ...prev, join: true }));
-            toast.success("Joined conversation");
-          }
-        );
+        hostAudioConnect.mutate();
       } else {
-        socket.emit(
-          "join-audio-session",
-          {
-            username,
-            userId: presentation.rtcUid,
-            liveId: presentation.liveId,
-          },
-          (response) => {
-            if (!response) {
-              toast.error("Failed to join conversation");
-              return;
-            }
-            setHostName(response.host.name);
-            setParticipants(response.users);
-            setChatOpen((prev) => ({ ...prev, join: true }));
-            toast.success("Joined conversation");
-          }
-        );
+        joinAudioSession.mutate();
       }
     }
 
@@ -297,35 +342,49 @@ const Chat = React.memo(
       setCloseChatModal(true);
     }
 
+    const leaveAudioSession = useMutation({
+      mutationFn: () => {
+        return new Promise((resolve, reject) => {
+          socket.emit(
+            "leave-audio-session",
+            {
+              userId: presentation.rtcUid,
+              liveId: presentation.liveId,
+            },
+            (response) => {
+              if (!response) {
+                reject();
+                return;
+              }
+              resolve(response);
+            }
+          );
+        });
+      },
+      onSuccess: () => {
+        toast.success("Left conversation");
+        setParticipants([]);
+        closeChat();
+        setChatOpen((prev) => ({
+          ...prev,
+          join: false,
+        }));
+        setChatHeight("2.5rem");
+        audioTracks.localAudioTrack?.stop();
+        audioTracks.localAudioTrack?.close();
+
+        rtcClient?.unpublish();
+        rtcClient?.leave();
+        localStorage.removeItem("userUid");
+      },
+      onError: () => {
+        toast.error("Failed to leave conversation");
+      }
+    });
     // Function to leave the chat
     function leaveChat({ emitEvent }) {
       if (!isHost && emitEvent) {
-        socket.emit(
-          "leave-audio-session",
-          {
-            userId: presentation.rtcUid,
-            liveId: presentation.liveId,
-          },
-          (response) => {
-            if (!response) {
-              toast.error("Failed to leave conversation");
-              return;
-            }
-            toast.success("Left conversation");
-            setParticipants([]);
-            closeChat();
-            setChatOpen((prev) => ({
-              ...prev,
-              join: false,
-            }));
-            setChatHeight("2.5rem");
-            audioTracks.localAudioTrack?.stop();
-            audioTracks.localAudioTrack?.close();
-
-            rtcClient?.unpublish();
-            rtcClient?.leave();
-          }
-        );
+        leaveAudioSession.mutate();
       } else {
         setParticipants([]);
         closeChat();
@@ -339,20 +398,38 @@ const Chat = React.memo(
 
         rtcClient?.unpublish();
         rtcClient?.leave();
+        localStorage.removeItem("userUid");
       }
     }
 
+    const clientAudioOff = useMutation({
+      mutationFn: () => {
+        return new Promise((resolve, reject) => {
+          socket.emit(
+            "client-audio-off",
+            presentation.liveId,
+            (response) => {
+              if (response) {
+                resolve();
+              } else {
+                reject();
+              }
+            }
+          );
+        });
+      },
+      onSuccess: () => {
+        toast.success("Audio deactivated");
+        leaveChat({ emitEvent: false });
+      },
+      onError: () => {
+        toast.error("Audio deactivation failed");
+      }
+    });
     function endChat() {
       setConversationLive(false);
       setChatOpen((prev) => ({ ...prev, active: false }));
-      socket.emit("client-audio-off", presentation.liveId, (response) => {
-        if (response) {
-          toast.success("Audio deactivated");
-          leaveChat({ emitEvent: true });
-        } else {
-          toast.error("Audio deactivation failed");
-        }
-      });
+      clientAudioOff.mutate();
     }
 
     useEffect(() => {

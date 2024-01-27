@@ -28,8 +28,13 @@ const PresentationContextProvider = (props) => {
   const presentationQuery = useQuery({
     queryKey: ["presentation", params.id],
     queryFn: async () => {
-      const res = await axios.get(`/api/v1/ppt/presentations/present/${params.id}`);
+      const userUid = localStorage.getItem("userUid");
+      const res = await axios.get(`/api/v1/ppt/presentations/present/${params.id}?userUid=${userUid}`);
       setIsLive(res.data.presentation.live);
+
+      if (!userUid) {
+        localStorage.setItem("userUid", res.data.presentation.rtcUid);
+      }
       return res.data.presentation;
     },
     staleTime: 1000 * 60 * 60 * 24, // 1 day
@@ -92,10 +97,6 @@ const PresentationContextProvider = (props) => {
     if (socketConnected && presentationQuery.isSuccess && isLive) {
       joinRoom();
     }
-
-    return () => {
-      socket.removeListener("change-slide", receiveSlideChange);
-    };
   }, [socketConnected, isLive]);
 
   useEffect(() => {
@@ -118,6 +119,11 @@ const PresentationContextProvider = (props) => {
         // setPresentation((prev) => ({ ...prev, live }));
       });
     }
+
+
+    return () => {
+      socket.removeListener("change-slide", receiveSlideChange);
+    };
   }, []);
 
   const slideChange = (slide) => {
