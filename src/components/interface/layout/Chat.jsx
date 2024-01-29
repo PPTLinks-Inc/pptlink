@@ -22,7 +22,11 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import AgoraRTM from "agora-rtm-sdk";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AGORA_APP_ID } from "../../../constants/routes";
-import { LoadingAssetSmall2 } from "../../../assets/assets";
+import {
+  LoadingAssetSmall,
+  LoadingAssetSmall2,
+  LoadingAssetBig2
+} from "../../../assets/assets";
 
 let audioTracks = {
   localAudioTrack: null,
@@ -81,7 +85,7 @@ const Chat = React.memo(
     });
 
     const micToggle = useMutation({
-      mutationFn: ({newState, isHost}) => {
+      mutationFn: ({ newState, isHost }) => {
         return new Promise((resolve, reject) => {
           socket.emit(
             "toggle-mic",
@@ -105,17 +109,17 @@ const Chat = React.memo(
     useEffect(() => {
       switch (micState) {
         case CAN_SPK:
-          micToggle.mutate({newState: "CAN_SPEAK", isHost});
+          micToggle.mutate({ newState: "CAN_SPEAK", isHost });
           audioTracks.localAudioTrack?.setMuted(false);
           if (isHost) setHostMuted(false);
           break;
         case MIC_OFF:
-          micToggle.mutate({newState: "CANNOT_SPEAK", isHost});
+          micToggle.mutate({ newState: "CANNOT_SPEAK", isHost });
           audioTracks.localAudioTrack?.setMuted(true);
           if (isHost) setHostMuted(true);
           break;
         case REQ_MIC:
-          micToggle.mutate({newState: "REQUESTED", isHost});
+          micToggle.mutate({ newState: "REQUESTED", isHost });
           break;
       }
     }, [micState]);
@@ -525,13 +529,11 @@ const Chat = React.memo(
           <Media queries={{ small: { maxWidth: 900 } }}>
             {(matches) => (
               <div
-                className={`transition-all duration-200 ${
-                  CHAT_ACTIVE || chatOpen.open || keepChatOpen ? "" : "hidden"
-                } fixed w-full z-50 h-fit ${
-                  matches.small && chatOpen.open
+                className={`transition-all duration-200 ${CHAT_ACTIVE || chatOpen.open || keepChatOpen ? "" : "hidden"
+                  } fixed w-full z-50 h-fit ${matches.small && chatOpen.open
                     ? "bottom-0"
                     : "bottom-[4.5rem]"
-                } 
+                  } 
           `}
               >
                 <div className="relative flex items-center justify-center w-full h-full md:h-auto_">
@@ -561,7 +563,7 @@ const Chat = React.memo(
                         ? chatOpen.open && chatOpen.expand
                           ? -150
                           : chatOpen.open &&
-                              (chatOpen.messaging || chatOpen.participants)
+                            (chatOpen.messaging || chatOpen.participants)
                             ? -250
                             : chatOpen.open
                               ? -50
@@ -578,19 +580,17 @@ const Chat = React.memo(
                     drag={!matches.small && true}
                     dragMomentum={false}
                     dragElastic={false}
-                    className={`absolute text-slate-200  rounded-2xl ${
-                      !matches.small
+                    className={`absolute text-slate-200  rounded-2xl ${!matches.small
                         ? "m-auto w-full cursor-grab active:cursor-grabbing"
                         : chatOpen.open
                           ? "bottom-0" //COMEBACK
                           : ""
-                    }  overflow-clip_  bg-black border border-slate-200`}
+                      }  overflow-clip_  bg-black border border-slate-200`}
                   >
                     <div className="flex flex-col h-full">
                       <div
-                        className={`flex items-center gap-2 w-full mx-auto ${
-                          !chatOpen.open ? "w-full" : ""
-                        } ${matches.small && "!mx-auto w-full"} `}
+                        className={`flex items-center gap-2 w-full mx-auto ${!chatOpen.open ? "w-full" : ""
+                          } ${matches.small && "!mx-auto w-full"} `}
                       >
                         {/* ARROW(chevron) TOGGLE */}
                         {/* Button to toggle the chat modal */}
@@ -600,8 +600,8 @@ const Chat = React.memo(
                               !chatOpen.open
                                 ? openChat()
                                 : !chatOpen.expand &&
-                                    chatOpen.open &&
-                                    (chatOpen.join || chatOpen.active)
+                                  chatOpen.open &&
+                                  (chatOpen.join || chatOpen.active)
                                   ? expandChat()
                                   : chatOpen.messaging || chatOpen.participants
                                     ? expandChat()
@@ -609,22 +609,20 @@ const Chat = React.memo(
                                       ? openChat()
                                       : closeChat();
                             }}
-                            className={`w-fit ${
-                              !chatOpen.open && "w-full"
-                            } flex items-center justify-center p-2 shrink-0 mx-auto`}
+                            className={`w-fit ${!chatOpen.open && "w-full"
+                              } flex items-center justify-center p-2 shrink-0 mx-auto`}
                           >
                             {/* Icon for the toggle button */}
                             {chatOpen.open ? (
                               <FaChevronUp
-                                className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${
-                                  chatOpen.expand ||
-                                  !(chatOpen.join || chatOpen.active)
+                                className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${chatOpen.expand ||
+                                    !(chatOpen.join || chatOpen.active)
                                     ? "rotate-180"
                                     : chatOpen.messaging ||
-                                        chatOpen.participants
+                                      chatOpen.participants
                                       ? "-rotate-90"
                                       : ""
-                                }`}
+                                  }`}
                               />
                             ) : (
                               <FaMicrophone className="`w-6 h-6 fill-slate-200 text-slate-200" />
@@ -736,15 +734,14 @@ const Chat = React.memo(
                                   <FaMicrophone className="w-6 h-6 " />
                                   <div className="absolute z-10 -bottom-0 right-0 ">
                                     <span
-                                      className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
-                                        micState === CAN_SPK
+                                      className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full ${micState === CAN_SPK
                                           ? "bg-green-400 " + activePingSTyles
                                           : micState === REQ_MIC
                                             ? "bg-yellow-400"
                                             : micState === MIC_OFF
                                               ? "bg-rose-500"
                                               : ""
-                                      }`}
+                                        }`}
                                     />
                                   </div>
                                 </button>
@@ -764,11 +761,10 @@ const Chat = React.memo(
                                           return setMicState(MIC_OFF);
                                         setMicState(CAN_SPK);
                                       }}
-                                      className={`p-2 relative flex items-center ${
-                                        micState === MIC_OFF
+                                      className={`p-2 relative flex items-center ${micState === MIC_OFF
                                           ? "bg-gray-700"
                                           : ""
-                                      } justify-center rounded-full`}
+                                        } justify-center rounded-full`}
                                     >
                                       <FaMicrophoneSlash className="w-6 h-6 " />
                                     </button>
@@ -875,9 +871,8 @@ function Host({ muted, name }) {
       <div>
         {/* Status indicator for host */}
         <span
-          className={`inline-block w-2 h-2 rounded-full ${
-            muted ? "bg-rose-700" : "bg-green-600"
-          } shadow-sm ${!muted && activePingSTyles} `}
+          className={`inline-block w-2 h-2 rounded-full ${muted ? "bg-rose-700" : "bg-green-600"
+            } shadow-sm ${!muted && activePingSTyles} `}
         />
         <small className="ml-1">host</small>
       </div>
@@ -920,13 +915,12 @@ function Participant({ participant, className }) {
           )}
           {/* <FaMicrophone className="w-5 h-5" /> */}
           <span
-            className={`absolute z-10 -bottom-0 right-0 inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
-              participant.status === "CAN_SPEAK"
+            className={`absolute z-10 -bottom-0 right-0 inline-block w-[0.65rem] h-[0.65rem] rounded-full ${participant.status === "CAN_SPEAK"
                 ? "bg-green-400"
                 : participant.status === "REQUESTED"
                   ? "bg-orange-400"
                   : ""
-            }`}
+              }`}
           />
         </div>
       </div>
@@ -951,9 +945,8 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
 
   const Message = ({ message }) => (
     <div
-      className={`flex gap-2 py-2 items-center w-full ${
-        message.sender === currentUser && "flex-row-reverse justify-start"
-      }`}
+      className={`flex gap-2 py-2 items-center w-full ${message.sender === currentUser && "flex-row-reverse justify-start"
+        }`}
     >
       <div className="rounded-full overflow-clip w-8 h-8">
         <img src="/team/bright.jpg" />
@@ -1066,13 +1059,13 @@ function JoinConversation({ closeChat, joinChat, username, setUsername, isLoadin
       <div className="flex justify-between items-center w-44">
         <button
           onClick={() => setJoin((prev) => ({ ...prev, accepted: true }))}
-          className="rounded-xl py-3 px-4 text-black bg-slate-200 uppercase"
+          className="rounded-xl h-[50px] w-[60px] text-black bg-slate-200 uppercase"
         >
           yes
         </button>
         <button
           onClick={() => closeChat()}
-          className="py-3 px-4 border border-slate-200/10 rounded-xl text-slate-200 uppercase"
+          className="h-[50px] w-[60px] border border-slate-200/10 rounded-xl text-slate-200 uppercase"
         >
           no
         </button>
@@ -1120,7 +1113,7 @@ function JoinConversation({ closeChat, joinChat, username, setUsername, isLoadin
             <button
               disabled={isLoading}
               type="submit"
-              className="py-3 px-6 font-bold text-slate-200 border-[1px] border-slate-200/30 uppercase rounded-xl"
+              className="h-[50px] w-[70px] font-bold text-slate-200 border-[1px] border-slate-200/30 uppercase rounded-xl flex items-center justify-center"
             >
               {isLoading ? <LoadingAssetSmall2 /> : "join"}
             </button>
@@ -1147,23 +1140,23 @@ function InitalizeConversation({ closeChat, activateChat, isLoading }) {
   return (
     <div className="w-fit mx-auto space-y-4">
       <p className="text-slate-200 text-xl font-semibold capitalize text-center">
-        Start conversation
+        Start Conversation
       </p>
       <div className="flex justify-between items-center w-44">
-        <button
+      <button
           disabled={isLoading}
           onClick={() => activateChat()}
-          className="rounded-xl py-3 px-4 text-black bg-slate-200 uppercase"
+          className="rounded-xl h-[50px] w-[60px] text-black bg-slate-200 uppercase flex items-center justify-center"
         >
-          {isLoading ? "Starting..." : "yes"}
+          {isLoading ? <LoadingAssetSmall /> : "yes"}
         </button>
-        {isLoading ? null : (
         <button
+          disabled={isLoading}
           onClick={() => closeChat()}
-          className="py-3 px-4 border border-slate-200/10 rounded-xl text-slate-200 uppercase"
+          className="h-[50px] w-[60px] border border-slate-200/10 rounded-xl text-slate-200 uppercase"
         >
           no
-        </button>)}
+        </button>
       </div>
     </div>
   );
