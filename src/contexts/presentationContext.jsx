@@ -37,7 +37,7 @@ const PresentationContextProvider = (props) => {
       }
       return res.data.presentation;
     },
-    staleTime: 1000 * 60 * 60 * 24, // 1 day
+    staleTime: Infinity
   });
 
   const syncSlide = () => {
@@ -65,6 +65,7 @@ const PresentationContextProvider = (props) => {
           liveId: params.id,
           presentationId: presentationQuery.data.id,
           user: presentationQuery.data.User,
+          userUid: presentationQuery.data.rtcUid,
           hostCurrentSlide: swiperRef.current
             ? swiperRef.current.activeIndex
             : 0
