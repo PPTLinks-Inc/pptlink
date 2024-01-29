@@ -21,13 +21,13 @@ if (window.innerWidth < 900) {
 }
 
 function Interface() {
-  const { presentation, notFound } = useContext(PresentationContext);
+  const { presentation, isLive, presentationQuery } = useContext(PresentationContext);
 
-  return !notFound ? (
+  return !presentationQuery.isError ? (
     <main
       className={`overflow-hidden min-h-screen  relative duration-300 transition-all bg-black md:overflow-auto `}
     >
-      {mobileHeader && <Header />}
+      {mobileHeader && presentationQuery.isSuccess && <Header />}
       {/* navigation */}
       {/* body */}
       <section
@@ -35,9 +35,9 @@ function Interface() {
           mobileHeader && 'px-0'
         }  rounded-2xl relative  transition-all duration-500 bg-white`}
       >
-        {presentation ? (
+        {presentationQuery.isSuccess ? (
           <div className=' h-fit min-h-[100%]'>
-            {presentation.view || presentation.User === 'HOST' ? (
+            {(isLive || presentation.User === 'HOST') ? (
               <Carousel />
             ) : !isIOS ? (
               <Spinner />

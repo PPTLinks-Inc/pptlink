@@ -1,70 +1,50 @@
-/* eslint-disable */
+/* eslint-disable react/prop-types */
+
 import { createContext, useState, useRef, useEffect } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { SERVER_URL } from "../constants/routes";
 
 export const PresentationContext = createContext();
 
 const socket = io(SERVER_URL);
-let fetching = false;
 let state = {
   maxNext: 0,
   hostSlideIndex: 0,
-  sync: true,
+  sync: true
 };
 
 const PresentationContextProvider = (props) => {
-  const controller = new AbortController();
   const swiperRef = useRef();
 
-  const [presentation, setPresentation] = useState(null);
-
-  const [notFound, setNotFound] = useState(false);
-
-  const [socketConnected, setSocketConnected] = useState(0);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [isLive, setIsLive] = useState(false);
   const params = useParams();
   const [syncButton, setSyncButton] = useState(true);
+
+  const presentationQuery = useQuery({
+    queryKey: ["presentation", params.id],
+    queryFn: async () => {
+      const userUid = localStorage.getItem("userUid");
+      const res = await axios.get(`/api/v1/ppt/presentations/present/${params.id}?userUid=${userUid}`);
+      setIsLive(res.data.presentation.live);
+
+      if (!userUid) {
+        localStorage.setItem("userUid", res.data.presentation.rtcUid);
+      }
+      return res.data.presentation;
+    },
+    staleTime: Infinity
+  });
 
   const syncSlide = () => {
     swiperRef.current.allowSlideNext = true;
     swiperRef.current.slideTo(state.hostSlideIndex, 1000, true);
   };
-
-  const joinRoom = () => {
-    if (socket.connected && presentation) {
-      socket.emit(
-        'join-presentation',
-        {
-          liveId: params.id,
-          presentationId: presentation.id,
-          user: presentation.User,
-          hostCurrentSlide: swiperRef.current
-            ? swiperRef.current.activeIndex
-            : 0,
-        },
-        (response) => {
-          if (presentation.User != 'HOST') {
-            state = {
-              ...state,
-              maxNext: response.maxSlide,
-              hostSlideIndex: response.currentSlide,
-            };
-            if (!swiperRef.current) return;
-            if (
-              presentation.live && state.sync &&
-              swiperRef.current.activeIndex !== state.hostSlideIndex
-            ) {
-              syncSlide();
-            }
-          }
-        }
-      );
-    }
-  };
-
+  
   const receiveSlideChange = (currentSlide) => {
     state.hostSlideIndex = currentSlide;
     if (currentSlide > state.maxNext) {
@@ -77,18 +57,48 @@ const PresentationContextProvider = (props) => {
     }
   };
 
-  useEffect(() => {
-    joinRoom();
-    if (presentation) {
-      if (presentation.User !== "HOST" && !socket.hasListeners("change-slide")) {
-        socket.on("change-slide", receiveSlideChange);
-      }
+  const joinRoom = () => {
+    if (socket.connected && presentationQuery.isSuccess) {
+      socket.emit(
+        "join-presentation",
+        {
+          liveId: params.id,
+          presentationId: presentationQuery.data.id,
+          user: presentationQuery.data.User,
+          userUid: presentationQuery.data.rtcUid,
+          hostCurrentSlide: swiperRef.current
+            ? swiperRef.current.activeIndex
+            : 0
+        },
+        (response) => {
+          if (presentationQuery.data.User != "HOST") {
+            if (!socket.hasListeners("change-slide")) {
+              socket.on("change-slide", receiveSlideChange);
+            }
+            state = {
+              ...state,
+              maxNext: response.maxSlide,
+              hostSlideIndex: response.currentSlide
+            };
+            if (!swiperRef.current) return;
+            if (
+              presentationQuery.data.live &&
+              state.sync &&
+              swiperRef.current.activeIndex !== state.hostSlideIndex
+            ) {
+              syncSlide();
+            }
+          }
+        }
+      );
     }
+  };
 
-    return () => {
-      socket.removeListener('change-slide', receiveSlideChange);
-    };
-  }, [presentation, socketConnected]);
+  useEffect(() => {
+    if (socketConnected && presentationQuery.isSuccess && isLive) {
+      joinRoom();
+    }
+  }, [socketConnected, isLive]);
 
   useEffect(() => {
     if (!socket.hasListeners("connect")) {
@@ -105,44 +115,26 @@ const PresentationContextProvider = (props) => {
 
     if (!socket.hasListeners("client-live")) {
       socket.on("client-live", (live) => {
-        setPresentation((prev) => ({ ...prev, live, view: true }));
-
-        if (live) {
-          toast.success("Presentation is now live");
-        }
-        else {
-          swiperRef.current.allowSlideNext = true;
-          toast.error("Presentation is not live");
-        }
+        setIsLive(live);
+        presentationQuery.refetch({throwOnError: false})
+        // setPresentation((prev) => ({ ...prev, live }));
       });
     }
-    if (fetching) return;
 
-    fetching = true;
-    axios
-      .get(`/api/v1/ppt/presentations/present/${params.id}`, {
-        signal: controller.signal,
-      })
-      .then(({ data }) => {
-        fetching = false;
-        controller.abort();
-        setPresentation(data.presentation);
-        setNotFound(false);
-      })
-      .catch((err) => {
-        fetching = false;
-        setNotFound(true);
-      });
+
+    return () => {
+      socket.removeListener("change-slide", receiveSlideChange);
+    };
   }, []);
 
   const slideChange = (slide) => {
-    if (presentation.User === "HOST" && presentation.live) {
+    if (presentationQuery.data.User === "HOST" && presentationQuery.data.live) {
       socket.emit("change-slide", {
-        liveId: presentation.liveId,
-        currentSlide: slide.activeIndex,
+        liveId: presentationQuery.data.liveId,
+        currentSlide: slide.activeIndex
       });
     } else {
-      if (presentation.live) {
+      if (presentationQuery.data.live) {
         if (slide.activeIndex > state.maxNext) {
           swiperRef.current.allowSlideNext = true;
           swiperRef.current.slideTo(state.maxNext, 0, false);
@@ -171,47 +163,42 @@ const PresentationContextProvider = (props) => {
   const [livePending, setLivePending] = useState(false);
 
   const makeLive = () => {
-    if (presentation) {
       setLivePending(true);
       axios
-        .put(`/api/v1/ppt/presentations/make-live/${presentation.id}`, {
-          data: !presentation.live,
+        .put(`/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`, {
+          data: !presentationQuery.data.live
         })
-        .then(({ data }) => {
+        .then(() => {
           if (socket.connected) {
-            socket.emit('client-live', {
+            socket.emit("client-live", {
               liveId: params.id,
-              live: !presentation.live,
+              live: !presentationQuery.data.live
             });
           }
-          setPresentation((prev) => ({
-            ...prev,
-            live: !prev.live,
-            view: true,
-          }));
+          presentationQuery.refetch({throwOnError: false});
           setLivePending(false);
         })
         .catch((err) => {
-          // TODO
+          setLivePending(false);
+          toast.error(err.response.data.message);
         });
-    }
   };
 
   return (
     <PresentationContext.Provider
       value={{
-        presentation,
-        setPresentation,
+        presentationQuery,
+        presentation: presentationQuery.data,
+        isLive,
         makeLive,
         livePending,
-        notFound,
         socket,
         syncButton,
         setSyncButton,
         swiperRef,
         syncSlide,
         state,
-        slideChange,
+        slideChange
       }}
     >
       {props.children}
