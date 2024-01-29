@@ -30,6 +30,8 @@ let audioTracks = {
 };
 
 const rtcClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+let rtmClient;
+let channel;
 
 const activePingSTyles =
   "shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50  shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50 relative before:w-full before:h-full before:rounded-full  before:animate-ping before:absolute before:inset-0 before:m-auto before:-z-10 after:w-full after:h-full after:rounded-full  after:animate-ping-200 after:absolute after:inset-0 after:m-auto after:-z-20 after:delay-150 z-30";
@@ -176,6 +178,12 @@ const Chat = React.memo(
           await AgoraRTC.createMicrophoneAudioTrack();
         // audioTracks.localAudioTrack.setMuted(true);
         await rtcClient.publish(audioTracks.localAudioTrack);
+        rtmClient = AgoraRTM.createInstance(AGORA_APP_ID)
+        await rtmClient.login({'uid':String(presentation.rtcUid), 'token':presentation.rtcToken});
+
+        //3
+        channel = rtmClient.createChannel(presentation.liveId);
+        await channel.join()
         setChatOpen((prev) => ({ ...prev, active: true }));
 
         rtcClient.on("user-published", async (user, mediaType) => {
@@ -192,6 +200,10 @@ const Chat = React.memo(
           setParticipants((prev) =>
             prev.filter((participant) => participant.id !== user.uid)
           );
+        });
+
+        channel.on('MemberJoined', () => {
+          console.log("I have joined");
         });
 
         socket.on("new-user-audio", (newUser) => {
