@@ -4,7 +4,7 @@ import { createContext, useState, useRef, useEffect } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { SERVER_URL } from "../constants/routes";
 
@@ -19,9 +19,9 @@ let state = {
 
 const PresentationContextProvider = (props) => {
   const swiperRef = useRef();
+  const queryClient = useQueryClient();
 
   const [socketConnected, setSocketConnected] = useState(false);
-  const [isLive, setIsLive] = useState(false);
   const params = useParams();
   const [syncButton, setSyncButton] = useState(true);
 
@@ -30,8 +30,7 @@ const PresentationContextProvider = (props) => {
     queryFn: async () => {
       const userUid = localStorage.getItem("userUid");
       const res = await axios.get(`/api/v1/ppt/presentations/present/${params.id}?userUid=${userUid}`);
-      setIsLive(res.data.presentation.live);
-
+      
       if (!userUid) {
         localStorage.setItem("userUid", res.data.presentation.rtcUid);
       }
@@ -95,10 +94,10 @@ const PresentationContextProvider = (props) => {
   };
 
   useEffect(() => {
-    if (socketConnected && presentationQuery.isSuccess && isLive) {
+    if (socketConnected && presentationQuery.isSuccess && presentationQuery.data?.live) {
       joinRoom();
     }
-  }, [socketConnected, isLive]);
+  }, [socketConnected, presentationQuery.isSuccess, presentationQuery.data?.live]);
 
   useEffect(() => {
     if (!socket.hasListeners("connect")) {
@@ -115,9 +114,10 @@ const PresentationContextProvider = (props) => {
 
     if (!socket.hasListeners("client-live")) {
       socket.on("client-live", (live) => {
-        setIsLive(live);
-        presentationQuery.refetch({throwOnError: false})
-        // setPresentation((prev) => ({ ...prev, live }));
+        queryClient.setQueryData(["presentation", params.id], (prev) => ({
+          ...prev,
+          live
+        }));
       });
     }
 
@@ -175,7 +175,10 @@ const PresentationContextProvider = (props) => {
               live: !presentationQuery.data.live
             });
           }
-          presentationQuery.refetch({throwOnError: false});
+          queryClient.setQueryData(["presentation", params.id], (prev) => ({
+            ...prev,
+            live: !prev.live
+          }));
           setLivePending(false);
         })
         .catch((err) => {
@@ -189,7 +192,6 @@ const PresentationContextProvider = (props) => {
       value={{
         presentationQuery,
         presentation: presentationQuery.data,
-        isLive,
         makeLive,
         livePending,
         socket,

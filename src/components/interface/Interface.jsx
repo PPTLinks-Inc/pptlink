@@ -21,7 +21,7 @@ if (window.innerWidth < 900) {
 }
 
 function Interface() {
-  const { presentation, isLive, presentationQuery } = useContext(PresentationContext);
+  const { presentation, presentationQuery } = useContext(PresentationContext);
 
   return !presentationQuery.isError ? (
     <main
@@ -37,7 +37,7 @@ function Interface() {
       >
         {presentationQuery.isSuccess ? (
           <div className=' h-fit min-h-[100%]'>
-            {(isLive || presentation.User === 'HOST') ? (
+            {(presentation.live || presentation.User === 'HOST') ? (
               <Carousel />
             ) : !isIOS ? (
               <Spinner />
