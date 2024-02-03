@@ -25,7 +25,6 @@ import { AGORA_APP_ID } from "../../../constants/routes";
 import {
   LoadingAssetSmall,
   LoadingAssetSmall2,
-  LoadingAssetBig2
 } from "../../../assets/assets";
 
 let audioTracks = {
@@ -34,6 +33,8 @@ let audioTracks = {
 };
 
 const rtcClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+let rtmClient;
+let channel;
 
 const activePingSTyles =
   "shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50  shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50 relative before:w-full before:h-full before:rounded-full  before:animate-ping before:absolute before:inset-0 before:m-auto before:-z-10 after:w-full after:h-full after:rounded-full  after:animate-ping-200 after:absolute after:inset-0 after:m-auto after:-z-20 after:delay-150 z-30";
@@ -66,6 +67,7 @@ const Chat = React.memo(
     const [micState, setMicState] = useState(MIC_OFF);
     const [username, setUsername] = useState("");
     const [hostName, setHostName] = useState("The Host 😎");
+    const [hostData, setHostData] = useState(null);
 
     // status: CAN_SPEAK | REQUESTED | CANNOT_SPEAK
     const [participants, setParticipants] = useState([]);
@@ -129,6 +131,12 @@ const Chat = React.memo(
       }
     }, [closeChatModal]);
 
+    const leaveRtmChannel = async () => {
+      if (!chatOpen.join) return;
+      await channel?.leave();
+      await rtmClient?.logout();
+    }
+
     useEffect(() => {
       if (isHost && presentation.audio) {
         openChat();
@@ -145,12 +153,11 @@ const Chat = React.memo(
 
       if (!isHost) {
         socket.on("client-audio-off", () => {
-          leaveChat({ emitEvent: false });
+          leaveChat();
           setConversationLive(false);
           toast.success("Audio is no longer active");
         });
       }
-
       return () => {
         if (chatOpen.join) {
           audioTracks.localAudioTrack?.stop();
@@ -158,6 +165,10 @@ const Chat = React.memo(
 
           rtcClient?.unpublish();
           rtcClient?.leave();
+          (async () => {
+            await leaveRtmChannel();
+          })();
+          // window.removeEventListener('beforeunload', leaveRtmChannel);
         }
       };
     }, []);
@@ -172,7 +183,7 @@ const Chat = React.memo(
         await rtcClient.join(
           AGORA_APP_ID,
           presentation.liveId,
-          presentation.rtcToken,
+          presentation.token.rtcToken,
           presentation.rtcUid
         );
 
@@ -180,6 +191,58 @@ const Chat = React.memo(
           await AgoraRTC.createMicrophoneAudioTrack();
         // audioTracks.localAudioTrack.setMuted(true);
         await rtcClient.publish(audioTracks.localAudioTrack);
+        
+        rtmClient = AgoraRTM.createInstance(AGORA_APP_ID);
+        await rtmClient.login({'uid':presentation.rtcUid, 'token':presentation.token.rtmToken});
+
+        //3
+        channel = rtmClient.createChannel(presentation.liveId);
+        await channel.join();
+        const userState = {
+          "id": presentation.rtcUid,
+          "role": isHost ? "HOST" : "GUEST",
+          "status": "CANNOT_SPEAK",
+          "name": isHost ? hostName : username,
+          "muted": "true"
+        };
+        await rtmClient.addOrUpdateLocalUserAttributes(userState);
+        const members = await channel.getMembers();
+        for (let i = 0; i < members.length; i++) {
+          const member = members[i];
+          const userData = await rtmClient.getUserAttributesByKeys(member, [
+            "role",
+            "status",
+            "name",
+            "muted"
+          ]);
+          if (userData.role === "HOST") {
+            setHostData({id: member, ...userData});
+          }
+          else {
+            setParticipants((prev) => [...prev, {id: member, ...userData, muted: userData.muted !== "true"}]);
+          }
+        }
+
+        channel.on('MemberJoined', async (memberId) => {
+          const userData = await rtmClient.getUserAttributesByKeys(memberId, [
+            "role",
+            "status",
+            "name",
+            "muted"
+          ]);
+          if (userData.role === "HOST") {
+            setHostData({id: memberId, ...userData});
+            return;
+          }
+          setParticipants((prev) => [...prev, {id: memberId, ...userData, muted: userData.muted !== "true"}]);
+          console.log("MemberJoined", memberId);
+        });
+        channel.on('MemberLeft', async (memberId) => {
+          console.log("MemberLeft", memberId);
+
+          setParticipants((prev) => prev.filter((participant) => participant.id !== memberId));
+        });
+
         setChatOpen((prev) => ({ ...prev, active: true }));
 
         rtcClient.on("user-published", async (user, mediaType) => {
@@ -192,19 +255,9 @@ const Chat = React.memo(
         });
         rtcClient.on("user-left", (user) => {
           delete audioTracks.remoteAudioTracks[user.uid];
-
-          setParticipants((prev) =>
-            prev.filter((participant) => participant.id !== user.uid)
-          );
         });
-
-        socket.on("new-user-audio", (newUser) => {
-          const userExist = participants.find(
-            (participant) => participant.id === newUser.id
-          );
-          if (userExist) return;
-          setParticipants((prev) => [...prev, newUser]);
-        });
+        window.addEventListener('beforeunload', leaveRtmChannel);
+        return true;
       }
     });
 
@@ -257,76 +310,12 @@ const Chat = React.memo(
       clientAudioOn.mutate();
     }
 
-    // function to emit host-audio-connect event
-    const hostAudioConnect = useMutation({
-      mutationFn: () => {
-        return new Promise((resolve, reject) => {
-          socket.emit(
-            "host-audio-connect",
-            {
-              hostName: "HOST",
-              liveId: presentation.liveId,
-              presentationId: presentation.id,
-              hostId: presentation.rtcUid
-            },
-            (response) => {
-              if (response) {
-                resolve(response);
-              } else {
-                reject();
-              }
-            }
-          );
-        });
-      },
-      onSuccess: (users) => {
-        // setHostName(user.username);
-        setParticipants(users);
-        setChatOpen((prev) => ({ ...prev, join: true }));
-        toast.success("Joined conversation");
-      },
-      onError: () => {
-        toast.error("Failed to join conversation");
-      }
-    });
-    const joinAudioSession = useMutation({
-      mutationFn: () => {
-        return new Promise((resolve, reject) => {
-          socket.emit(
-            "join-audio-session",
-            {
-              username,
-              userId: presentation.rtcUid,
-              liveId: presentation.liveId
-            },
-            (response) => {
-              if (!response) {
-                reject();
-                return;
-              }
-              resolve(response);
-            }
-          );
-        });
-      },
-      onSuccess: (response) => {
-        setHostName(response.host.name);
-        setHostMuted(response.host.status === "CAN_SPEAK" ? false : true);
-        setParticipants(response.users);
-        setChatOpen((prev) => ({ ...prev, join: true }));
-        toast.success("Joined conversation");
-      },
-      onError: () => {
-        toast.error("Failed to join conversation");
-      }
-    });
     // Function to join the chat
     async function joinChat() {
-      if (isHost) {
-        hostAudioConnect.mutate();
-      } else {
-        joinAudioSession.mutate();
-      }
+      // setHostName(response.host.name);
+      // setHostMuted(response.host.status === "CAN_SPEAK" ? false : true);
+      // setParticipants(response.users);
+      setChatOpen((prev) => ({ ...prev, join: true }));
     }
 
     // Function to expand the chat modal
@@ -378,64 +367,25 @@ const Chat = React.memo(
       setCloseChatModal(true);
     }
 
-    const leaveAudioSession = useMutation({
-      mutationFn: () => {
-        return new Promise((resolve, reject) => {
-          socket.emit(
-            "leave-audio-session",
-            {
-              userId: presentation.rtcUid,
-              liveId: presentation.liveId
-            },
-            (response) => {
-              if (!response) {
-                reject();
-                return;
-              }
-              resolve(response);
-            }
-          );
-        });
-      },
-      onSuccess: () => {
-        toast.success("Left conversation");
-        setParticipants([]);
-        closeChat();
-        setChatOpen((prev) => ({
-          ...prev,
-          join: false
-        }));
-        setChatHeight("2.5rem");
-        audioTracks.localAudioTrack?.stop();
-        audioTracks.localAudioTrack?.close();
-
-        rtcClient?.unpublish();
-        rtcClient?.leave();
-        localStorage.removeItem("userUid");
-      },
-      onError: () => {
-        toast.error("Failed to leave conversation");
-      }
-    });
     // Function to leave the chat
-    function leaveChat({ emitEvent }) {
-      if (!isHost && emitEvent) {
-        leaveAudioSession.mutate();
-      } else {
-        setParticipants([]);
-        closeChat();
-        setChatOpen((prev) => ({
-          ...prev,
-          join: false
-        }));
-        setChatHeight("2.5rem");
-        audioTracks.localAudioTrack?.stop();
-        audioTracks.localAudioTrack?.close();
-
-        rtcClient?.unpublish();
-        rtcClient?.leave();
-        localStorage.removeItem("userUid");
+    function leaveChat() {
+      if (!isHost) {
+        toast.success("Left conversation");
       }
+      setParticipants([]);
+      closeChat();
+      setChatOpen((prev) => ({
+        ...prev,
+        join: false
+      }));
+      setChatHeight("2.5rem");
+      audioTracks.localAudioTrack?.stop();
+      audioTracks.localAudioTrack?.close();
+
+      rtcClient?.unpublish();
+      rtcClient?.leave();
+      leaveRtmChannel();
+      localStorage.removeItem("userUid");
     }
 
     const clientAudioOff = useMutation({
@@ -452,7 +402,7 @@ const Chat = React.memo(
       },
       onSuccess: () => {
         toast.success("Audio deactivated");
-        leaveChat({ emitEvent: false });
+        leaveChat();
       },
       onError: () => {
         toast.error("Audio deactivation failed");
@@ -492,7 +442,7 @@ const Chat = React.memo(
                 onClick={() => {
                   setShowLeave(false);
                   if (isHost) return endChat();
-                  leaveChat({ emitEvent: true });
+                  leaveChat();
                 }}
                 className="rounded-xl p-2 text-black bg-slate-200 uppercase"
               >
@@ -817,7 +767,7 @@ const Chat = React.memo(
                             <InitalizeConversation
                               closeChat={closeChat}
                               activateChat={activateChat}
-                              isLoading={agoraQuery.isLoading || hostAudioConnect.isPending || clientAudioOn.isPending}
+                              isLoading={agoraQuery.isLoading || clientAudioOn.isPending}
                             />
                           ) : (
                             <JoinConversation
@@ -825,7 +775,7 @@ const Chat = React.memo(
                               joinChat={joinChat}
                               username={username}
                               setUsername={setUsername}
-                              isLoading={agoraQuery.isLoading || joinAudioSession.isPending}
+                              isLoading={agoraQuery.isLoading}
                             />
                           )}
                         </AnimateInOut>
