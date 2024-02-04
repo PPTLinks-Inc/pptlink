@@ -94,10 +94,8 @@ const PresentationContextProvider = (props) => {
   };
 
   useEffect(() => {
-    if (socketConnected && presentationQuery.isSuccess && presentationQuery.data?.live) {
-      joinRoom();
-    }
-  }, [socketConnected, presentationQuery.isSuccess, presentationQuery.data?.live]);
+    joinRoom();
+  }, [socketConnected, presentationQuery.isSuccess]);
 
   useEffect(() => {
     if (!socket.hasListeners("connect")) {
