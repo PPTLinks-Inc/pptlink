@@ -56,9 +56,8 @@ const Chat = React.memo(
   }) => {
     // const [guests, setGuests] = useState(DUMMY_GUESTS);
     const { presentation, socket } = useContext(PresentationContext);
-    // const user = useContext(userContext);
+    const {user} = useContext(userContext);
     const [isHost] = useState(presentation.User === "HOST");
-    const [hostMuted, setHostMuted] = useState(true);
     const [conversationLive, setConversationLive] = useState(
       presentation.audio
     );
@@ -66,8 +65,13 @@ const Chat = React.memo(
     const [showLeave, setShowLeave] = useState(false);
     const [micState, setMicState] = useState(MIC_OFF);
     const [username, setUsername] = useState("");
-    const [hostName, setHostName] = useState("The Host 😎");
-    const [hostData, setHostData] = useState(null);
+    const [hostData, setHostData] = useState({
+      id: "",
+      role: "HOST",
+      status: "CANNOT_SPEAK",
+      name: "",
+      muted: true
+    });
 
     // status: CAN_SPEAK | REQUESTED | CANNOT_SPEAK
     const [participants, setParticipants] = useState([]);
@@ -85,43 +89,28 @@ const Chat = React.memo(
     });
 
     const micToggle = useMutation({
-      mutationFn: ({ newState, isHost }) => {
-        return new Promise((resolve, reject) => {
-          socket.emit(
-            "toggle-mic",
-            {
-              liveId: presentation.liveId,
-              userId: presentation.rtcUid,
-              newState,
-              isHost
-            },
-            (response) => {
-              if (response) {
-                resolve();
-              } else {
-                reject();
-              }
-            }
-          );
-        });
+      mutationFn: async ({ newState }) => {
+        await rtmClient.addOrUpdateLocalUserAttributes({ status: newState });
+        await channel.sendMessage({ event: "toggle-mic" });
+        return true
       }
     });
     useEffect(() => {
-      switch (micState) {
-        case CAN_SPK:
-          micToggle.mutate({ newState: "CAN_SPEAK", isHost });
-          audioTracks.localAudioTrack?.setMuted(false);
-          if (isHost) setHostMuted(false);
-          break;
-        case MIC_OFF:
-          micToggle.mutate({ newState: "CANNOT_SPEAK", isHost });
-          audioTracks.localAudioTrack?.setMuted(true);
-          if (isHost) setHostMuted(true);
-          break;
-        case REQ_MIC:
-          micToggle.mutate({ newState: "REQUESTED", isHost });
-          break;
-      }
+      // switch (micState) {
+      //   case CAN_SPK:
+      //     micToggle.mutate({ newState: "CAN_SPEAK" });
+      //     audioTracks.localAudioTrack?.setMuted(false);
+      //     if (isHost) setHostData(prev => ({...prev, muted: false}));
+      //     break;
+      //   case MIC_OFF:
+      //     micToggle.mutate({ newState: "CANNOT_SPEAK" });
+      //     audioTracks.localAudioTrack?.setMuted(true);
+      //     if (isHost) setHostData(prev => ({...prev, muted: true}));
+      //     break;
+      //   case REQ_MIC:
+      //     micToggle.mutate({ newState: "REQUESTED" });
+      //     break;
+      // }
     }, [micState]);
 
     useEffect(() => {
@@ -168,7 +157,6 @@ const Chat = React.memo(
           (async () => {
             await leaveRtmChannel();
           })();
-          // window.removeEventListener('beforeunload', leaveRtmChannel);
         }
       };
     }, []);
@@ -202,7 +190,7 @@ const Chat = React.memo(
           "id": presentation.rtcUid,
           "role": isHost ? "HOST" : "GUEST",
           "status": "CANNOT_SPEAK",
-          "name": isHost ? hostName : username,
+          "name": isHost ? user.username : username,
           "muted": "true"
         };
         await rtmClient.addOrUpdateLocalUserAttributes(userState);
@@ -216,10 +204,10 @@ const Chat = React.memo(
             "muted"
           ]);
           if (userData.role === "HOST") {
-            setHostData({id: member, ...userData});
+            setHostData({id: member, ...userData, muted: userData.muted === "true"});
           }
           else {
-            setParticipants((prev) => [...prev, {id: member, ...userData, muted: userData.muted !== "true"}]);
+            setParticipants((prev) => [...prev, {id: member, ...userData, muted: userData.muted === "true"}]);
           }
         }
 
@@ -234,13 +222,19 @@ const Chat = React.memo(
             setHostData({id: memberId, ...userData});
             return;
           }
-          setParticipants((prev) => [...prev, {id: memberId, ...userData, muted: userData.muted !== "true"}]);
+          setParticipants((prev) => [...prev, {id: memberId, ...userData, muted: userData.muted === "true"}]);
           console.log("MemberJoined", memberId);
         });
         channel.on('MemberLeft', async (memberId) => {
           console.log("MemberLeft", memberId);
 
           setParticipants((prev) => prev.filter((participant) => participant.id !== memberId));
+        });
+
+        channel.on('ChannelMessage', function (message, memberId) {
+          if (message.event === "toggle-mic") {
+            const userData = rtmClient.getUserAttributesByKeys(memberId, ["status"]);
+          }
         });
 
         setChatOpen((prev) => ({ ...prev, active: true }));
@@ -312,9 +306,6 @@ const Chat = React.memo(
 
     // Function to join the chat
     async function joinChat() {
-      // setHostName(response.host.name);
-      // setHostMuted(response.host.status === "CAN_SPEAK" ? false : true);
-      // setParticipants(response.users);
       setChatOpen((prev) => ({ ...prev, join: true }));
     }
 
@@ -601,7 +592,7 @@ const Chat = React.memo(
                         >
                           <Messaging
                             currentUser={currentUser}
-                            hostMuted={hostMuted}
+                            hostMuted={hostData.muted}
                             presentationName={presentation.name}
                           />
                         </AnimateInOut>
@@ -640,7 +631,7 @@ const Chat = React.memo(
                             show={chatOpen.open}
                             className="w-full flex gap-3 items-center p-2"
                           >
-                            <Host muted={hostMuted} name={hostName} />
+                            <Host muted={hostData.muted} name={hostData.name} />
                             <div className="space-y-2 flex w-full flex-row-reverse gap-3">
                               <div className="p-2 flex-1 rounded-lg">
                                 <p>{presentation.name}</p>
