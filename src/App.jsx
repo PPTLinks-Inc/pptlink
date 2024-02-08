@@ -52,10 +52,8 @@ function App() {
             <Route path="about" element={<About />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
-<<<<<<< HEAD
           <Route path="/:id" element={<Interface />} />
           <Route exact path="/newroot" element={<NewRoot />} />
-=======
           <Route
             path="/:id"
             element={
@@ -64,7 +62,6 @@ function App() {
               </PresentationContextProvider>
             }
           />
->>>>>>> e499be6aed00fa2813ff246ff9072429220a200c
         </Routes>
       </BrowserRouter>
       <ToastContainer />
