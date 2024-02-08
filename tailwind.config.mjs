@@ -22,6 +22,11 @@ module.exports = {
         borderDark: "#383737",
         lightBorder: "#ebebeb",
       },
+      utilities: {
+        baseSpace: "mt-5",
+        baseFont: "sm",
+        lineHeight: "leading-6",
+      },
       screens: {
         tall: { raw: "(min-width: 2000px)" },
         maxScreen: { raw: "(max-width: 1050px)" },

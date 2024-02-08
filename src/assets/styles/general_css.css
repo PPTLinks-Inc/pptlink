@@ -1,0 +1,58 @@
+.parent_page_wrapper {
+  height: 100vh;
+}
+.parent_page_wrapper::before {
+  height: 100svh;
+}
+.parent_page_wrapper .container {
+  width: 90%;
+  margin: auto;
+}
+.parent_page_wrapper .banner {
+  overflow: hidden;
+}
+.parent_page_wrapper .banner::before, .parent_page_wrapper .banner::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: black;
+  z-index: -1;
+}
+.parent_page_wrapper .banner::after {
+  top: unset;
+  top: 30vh;
+  height: 100vh;
+  transform: rotateZ(-15deg) scaleX(2);
+}
+.parent_page_wrapper .recent {
+  overflow: hidden;
+}
+.parent_page_wrapper .recent::before, .parent_page_wrapper .recent::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 30vh;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: black;
+  transform: rotateZ(15deg) scaleX(2);
+  z-index: -1;
+}
+.parent_page_wrapper .recent::after {
+  transform: unset;
+  top: 60vh;
+  height: 100%;
+}
+.parent_page_wrapper .cards_wrapper {
+  display: grid;
+  -moz-column-gap: 9rem;
+       column-gap: 9rem;
+  row-gap: 3rem;
+  grid-auto-flow: row;
+  grid-template: auto/repeat(auto-fill, minmax(150px, 1fr));
+}/*# sourceMappingURL=general_css.css.map */
