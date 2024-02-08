@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import About from "./components/about-us/about";
+import PresentationContextProvider from "./contexts/presentationContext";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -26,6 +27,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 // Add a response interceptor
+// never remove this interceptor, breaks login if removed
 axios.interceptors.response.use(function (response) {
   if (response.data.token) {
     localStorage.setItem("accessToken", response.data.token);
@@ -50,8 +52,19 @@ function App() {
             <Route path="about" element={<About />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
+<<<<<<< HEAD
           <Route path="/:id" element={<Interface />} />
           <Route exact path="/newroot" element={<NewRoot />} />
+=======
+          <Route
+            path="/:id"
+            element={
+              <PresentationContextProvider>
+                <Interface />
+              </PresentationContextProvider>
+            }
+          />
+>>>>>>> e499be6aed00fa2813ff246ff9072429220a200c
         </Routes>
       </BrowserRouter>
       <ToastContainer />

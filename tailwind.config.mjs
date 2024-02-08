@@ -22,10 +22,24 @@ module.exports = {
         borderDark: "#383737",
         lightBorder: "#ebebeb",
       },
+<<<<<<< HEAD
       utilities: {
         baseSpace: "mt-5",
         baseFont: "sm",
         lineHeight: "leading-6",
+=======
+      keyframes: {
+        ping: {
+          "75%, 100%": {
+            content: "",
+            transform: "scale(2)",
+            opacity: 0,
+          },
+        },
+      },
+      animation: {
+        "ping-200": " ping 1s 200ms cubic-bezier(0, 0, 0.2, 1) infinite",
+>>>>>>> e499be6aed00fa2813ff246ff9072429220a200c
       },
       screens: {
         tall: { raw: "(min-width: 2000px)" },
