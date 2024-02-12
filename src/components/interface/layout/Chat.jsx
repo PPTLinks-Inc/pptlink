@@ -22,10 +22,7 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import AgoraRTM from "agora-rtm-sdk";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AGORA_APP_ID } from "../../../constants/routes";
-import {
-  LoadingAssetSmall,
-  LoadingAssetSmall2,
-} from "../../../assets/assets";
+import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../../assets/assets";
 
 let audioTracks = {
   localAudioTrack: null,
@@ -44,6 +41,8 @@ const BASE_MIC = "base mic";
 const REQ_MIC = "request to speak";
 const CAN_SPK = "user is allowed to speak";
 const MIC_OFF = "mic is off";
+const MUTED = "mic is muted";
+const UNMUTED = "mic is on";
 
 // Chat component
 const Chat = React.memo(
@@ -55,15 +54,18 @@ const Chat = React.memo(
     keepChatOpen
   }) => {
     // const [guests, setGuests] = useState(DUMMY_GUESTS);
-    const { presentation, socket } = useContext(PresentationContext);
-    const {user} = useContext(userContext);
+    const { presentation, socket, interfaceRef } =
+      useContext(PresentationContext);
+    const { user } = useContext(userContext);
     const [isHost] = useState(presentation.User === "HOST");
     const [conversationLive, setConversationLive] = useState(
       presentation.audio
     );
+
+    console.log({ conversationLive });
     // const [isSpeaking, setIsSpeaking] = useState(false);
     const [showLeave, setShowLeave] = useState(false);
-    const [micState, setMicState] = useState(MIC_OFF);
+    const [audioStatus, setAudioState] = useState(MIC_OFF);
     const [username, setUsername] = useState("");
     const [hostData, setHostData] = useState({
       id: "",
@@ -75,8 +77,17 @@ const Chat = React.memo(
 
     // status: CAN_SPEAK | REQUESTED | CANNOT_SPEAK
     const [participants, setParticipants] = useState([]);
+    const [participantsObj, setParticipantsObj] = useState({});
+    const participantsArray = Object.values(participantsObj);
+
+    // NOTE: Testing
+    const [muted, setMuted] = useState(false);
 
     const currentUser = "me";
+
+    useEffect(() => {
+      console.log("PARTICIPANTS: ", { participants });
+    }, [participants.length]);
 
     // State to manage chat modal's open, join, expand, and messaging states
     const [chatOpen, setChatOpen] = useState({
@@ -89,29 +100,39 @@ const Chat = React.memo(
     });
 
     const micToggle = useMutation({
-      mutationFn: async ({ newState }) => {
-        await rtmClient.addOrUpdateLocalUserAttributes({ status: newState });
+      mutationFn: async () => {
+        if (micState) {
+          await rtmClient.addOrUpdateLocalUserAttributes({ muted: "false" });
+          audioTracks.localAudioTrack?.setMuted(false);
+          setMuted(true);
+        } else {
+          await rtmClient.addOrUpdateLocalUserAttributes({ muted: "true" });
+          audioTracks.localAudioTrack?.setMuted(true);
+          setMuted(false);
+        }
+
         await channel.sendMessage({ event: "toggle-mic" });
-        return true
+        return true;
       }
     });
+
     useEffect(() => {
-      // switch (micState) {
-      //   case CAN_SPK:
-      //     micToggle.mutate({ newState: "CAN_SPEAK" });
-      //     audioTracks.localAudioTrack?.setMuted(false);
-      //     if (isHost) setHostData(prev => ({...prev, muted: false}));
-      //     break;
-      //   case MIC_OFF:
-      //     micToggle.mutate({ newState: "CANNOT_SPEAK" });
-      //     audioTracks.localAudioTrack?.setMuted(true);
-      //     if (isHost) setHostData(prev => ({...prev, muted: true}));
-      //     break;
-      //   case REQ_MIC:
-      //     micToggle.mutate({ newState: "REQUESTED" });
-      //     break;
-      // }
-    }, [micState]);
+      switch (audioStatus) {
+        case CAN_SPK:
+          // micToggle.mutate({ newState: "CAN_SPEAK" });
+          audioTracks.localAudioTrack?.setMuted(false);
+          if (isHost) setHostData((prev) => ({ ...prev, muted: false }));
+          break;
+        case MIC_OFF:
+          // micToggle.mutate({ newState: "CANNOT_SPEAK" });
+          audioTracks.localAudioTrack?.setMuted(true);
+          if (isHost) setHostData((prev) => ({ ...prev, muted: true }));
+          break;
+        case REQ_MIC:
+          // micToggle.mutate({ newState: "REQUESTED" });
+          break;
+      }
+    }, [audioStatus]);
 
     useEffect(() => {
       console.log({ closeChatModal });
@@ -124,7 +145,7 @@ const Chat = React.memo(
       if (!chatOpen.join) return;
       await channel?.leave();
       await rtmClient?.logout();
-    }
+    };
 
     useEffect(() => {
       if (isHost && presentation.audio) {
@@ -179,39 +200,68 @@ const Chat = React.memo(
           await AgoraRTC.createMicrophoneAudioTrack();
         // audioTracks.localAudioTrack.setMuted(true);
         await rtcClient.publish(audioTracks.localAudioTrack);
-        
+
         rtmClient = AgoraRTM.createInstance(AGORA_APP_ID);
-        await rtmClient.login({'uid':presentation.rtcUid, 'token':presentation.token.rtmToken});
+        await rtmClient.login({
+          uid: presentation.rtcUid,
+          token: presentation.token.rtmToken
+        });
 
         //3
         channel = rtmClient.createChannel(presentation.liveId);
         await channel.join();
         const userState = {
-          "id": presentation.rtcUid,
-          "role": isHost ? "HOST" : "GUEST",
-          "status": "CANNOT_SPEAK",
-          "name": isHost ? user.username : username,
-          "muted": "true"
+          id: presentation.rtcUid,
+          role: isHost ? "HOST" : "GUEST",
+          status: "CANNOT_SPEAK",
+          name: isHost ? "user.username" : username,
+          muted: "true"
         };
         await rtmClient.addOrUpdateLocalUserAttributes(userState);
         const members = await channel.getMembers();
-        for (let i = 0; i < members.length; i++) {
-          const member = members[i];
+        console.log({ members });
+        let tempUsers = [];
+
+        for (const member of members) {
           const userData = await rtmClient.getUserAttributesByKeys(member, [
             "role",
             "status",
             "name",
             "muted"
           ]);
+          console.log({ userData });
           if (userData.role === "HOST") {
-            setHostData({id: member, ...userData, muted: userData.muted === "true"});
-          }
-          else {
-            setParticipants((prev) => [...prev, {id: member, ...userData, muted: userData.muted === "true"}]);
+            setHostData({
+              id: member,
+              ...userData,
+              muted: userData.muted === "true"
+            });
+          } else {
+            tempUsers.push({
+              id: member,
+              ...userData,
+              muted: userData.muted === "true"
+            });
+            setParticipantsObj((prev) => ({
+              ...prev,
+              [member]: {
+                id: member,
+                ...userData,
+                muted: userData.muted === "true"
+              }
+            }));
           }
         }
 
-        channel.on('MemberJoined', async (memberId) => {
+        // for (let i = 0; i < members.length; i++) {
+        //   const member = members[i];
+
+        // }
+
+        setParticipants(tempUsers);
+
+        channel.on("MemberJoined", async (memberId) => {
+          console.log("MEMBER_JOINED", { memberId });
           const userData = await rtmClient.getUserAttributesByKeys(memberId, [
             "role",
             "status",
@@ -219,21 +269,28 @@ const Chat = React.memo(
             "muted"
           ]);
           if (userData.role === "HOST") {
-            setHostData({id: memberId, ...userData});
+            setHostData({ id: memberId, ...userData });
             return;
           }
-          setParticipants((prev) => [...prev, {id: memberId, ...userData, muted: userData.muted === "true"}]);
+          setParticipants((prev) => [
+            ...prev,
+            { id: memberId, ...userData, muted: userData.muted === "true" }
+          ]);
           console.log("MemberJoined", memberId);
         });
-        channel.on('MemberLeft', async (memberId) => {
+        channel.on("MemberLeft", async (memberId) => {
           console.log("MemberLeft", memberId);
 
-          setParticipants((prev) => prev.filter((participant) => participant.id !== memberId));
+          setParticipants((prev) =>
+            prev.filter((participant) => participant.id !== memberId)
+          );
         });
 
-        channel.on('ChannelMessage', function (message, memberId) {
+        channel.on("ChannelMessage", function (message, memberId) {
           if (message.event === "toggle-mic") {
-            const userData = rtmClient.getUserAttributesByKeys(memberId, ["status"]);
+            const userData = rtmClient.getUserAttributesByKeys(memberId, [
+              "status"
+            ]);
           }
         });
 
@@ -250,7 +307,7 @@ const Chat = React.memo(
         rtcClient.on("user-left", (user) => {
           delete audioTracks.remoteAudioTracks[user.uid];
         });
-        window.addEventListener('beforeunload', leaveRtmChannel);
+        window.addEventListener("beforeunload", leaveRtmChannel);
         return true;
       }
     });
@@ -406,12 +463,6 @@ const Chat = React.memo(
     }
 
     useEffect(() => {
-      setTimeout(() => {
-        setConversationLive(true);
-      }, 3000);
-    }, []);
-
-    useEffect(() => {
       console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
     }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
 
@@ -458,11 +509,18 @@ const Chat = React.memo(
           <Media queries={{ small: { maxWidth: 900 } }}>
             {(matches) => (
               <div
-                className={`transition-all duration-200 ${CHAT_ACTIVE || chatOpen.open || keepChatOpen ? "" : "hidden"
-                  } fixed w-full z-50 h-fit ${matches.small && chatOpen.open
+                className={`transition-all duration-200 ${
+                  CHAT_ACTIVE ||
+                  chatOpen.open ||
+                  keepChatOpen ||
+                  presentation.live
+                    ? ""
+                    : "hidden"
+                } fixed w-full z-50 h-fit ${
+                  matches.small && chatOpen.open
                     ? "bottom-0"
                     : "bottom-[4.5rem]"
-                  } 
+                } 
           `}
               >
                 <div className="relative flex items-center justify-center w-full h-full md:h-auto_">
@@ -492,7 +550,7 @@ const Chat = React.memo(
                         ? chatOpen.open && chatOpen.expand
                           ? -150
                           : chatOpen.open &&
-                            (chatOpen.messaging || chatOpen.participants)
+                              (chatOpen.messaging || chatOpen.participants)
                             ? -250
                             : chatOpen.open
                               ? -50
@@ -505,21 +563,24 @@ const Chat = React.memo(
                       //   ? "100%"
                       //   : "5rem",
                     }}
+                    dragConstraints={interfaceRef}
                     transition={{ type: "keyframes" }}
                     drag={!matches.small && true}
                     dragMomentum={false}
                     dragElastic={false}
-                    className={`absolute text-slate-200  rounded-2xl ${!matches.small
+                    className={`absolute text-slate-200  rounded-2xl ${
+                      !matches.small
                         ? "m-auto w-full cursor-grab active:cursor-grabbing"
                         : chatOpen.open
                           ? "bottom-0" //COMEBACK
                           : ""
-                      }  overflow-clip_  bg-black border border-slate-200`}
+                    }  overflow-clip_  bg-black border border-slate-200`}
                   >
                     <div className="flex flex-col h-full">
                       <div
-                        className={`flex items-center gap-2 w-full mx-auto ${!chatOpen.open ? "w-full" : ""
-                          } ${matches.small && "!mx-auto w-full"} `}
+                        className={`flex items-center gap-2 w-full mx-auto ${
+                          !chatOpen.open ? "w-full" : ""
+                        } ${matches.small && "!mx-auto w-full"} `}
                       >
                         {/* ARROW(chevron) TOGGLE */}
                         {/* Button to toggle the chat modal */}
@@ -529,8 +590,8 @@ const Chat = React.memo(
                               !chatOpen.open
                                 ? openChat()
                                 : !chatOpen.expand &&
-                                  chatOpen.open &&
-                                  (chatOpen.join || chatOpen.active)
+                                    chatOpen.open &&
+                                    (chatOpen.join || chatOpen.active)
                                   ? expandChat()
                                   : chatOpen.messaging || chatOpen.participants
                                     ? expandChat()
@@ -538,20 +599,22 @@ const Chat = React.memo(
                                       ? openChat()
                                       : closeChat();
                             }}
-                            className={`w-fit ${!chatOpen.open && "w-full"
-                              } flex items-center justify-center p-2 shrink-0 mx-auto`}
+                            className={`w-fit ${
+                              !chatOpen.open && "w-full"
+                            } flex items-center justify-center p-2 shrink-0 mx-auto`}
                           >
                             {/* Icon for the toggle button */}
                             {chatOpen.open ? (
                               <FaChevronUp
-                                className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${chatOpen.expand ||
-                                    !(chatOpen.join || chatOpen.active)
+                                className={`w-6 h-6 fill-slate-200 text-slate-200 transition-all duration-150 ${
+                                  chatOpen.expand ||
+                                  !(chatOpen.join || chatOpen.active)
                                     ? "rotate-180"
                                     : chatOpen.messaging ||
-                                      chatOpen.participants
+                                        chatOpen.participants
                                       ? "-rotate-90"
                                       : ""
-                                  }`}
+                                }`}
                               />
                             ) : (
                               <FaMicrophone className="`w-6 h-6 fill-slate-200 text-slate-200" />
@@ -641,21 +704,40 @@ const Chat = React.memo(
 
                                 <button
                                   onClick={() => {
-                                    if (isHost) return;
+                                    // if (isHost) return;
+                                    // if (
+                                    //   audioStatus === CAN_SPK ||
+                                    //   audioStatus === MIC_OFF
+                                    // ) {
+                                    //   return setAudioState(BASE_MIC);
+                                    // }
+                                    // if (audioStatus === MIC_OFF) {
+                                    //   return setAudioState(CAN_SPK);
+                                    // }
+                                    // if (audioStatus === BASE_MIC && !isHost) {
+                                    //   return setAudioState(REQ_MIC);
+                                    // }
+                                    // if (audioStatus === REQ_MIC) {
+                                    //   return setAudioState(BASE_MIC);
+                                    // }
+                                    // if (audioStatus === MIC_OFF) {
+
+                                    // if (!isHost) {
+                                    //   if (audioStatus === MUTED)
+                                    //     setAudioState(UNMUTED);
+                                    //   if (audioStatus === UNMUTED)
+                                    //     setAudioState(MUTED);
+
                                     if (
-                                      micState === CAN_SPK ||
-                                      micState === MIC_OFF
+                                      isHost ||
+                                      participantsObj[presentation.rtcUid]
+                                        .status === CAN_SPK
                                     ) {
-                                      return setMicState(BASE_MIC);
-                                    }
-                                    if (micState === MIC_OFF) {
-                                      return setMicState(CAN_SPK);
-                                    }
-                                    if (micState === BASE_MIC && !isHost) {
-                                      return setMicState(REQ_MIC);
-                                    }
-                                    if (micState === REQ_MIC) {
-                                      return setMicState(BASE_MIC);
+                                      micToggle();
+                                    } else {
+                                      if (audioStatus !== REQ_MIC)
+                                        return setAudioState(REQ_MIC);
+                                      setAudioState(BASE_MIC);
                                     }
                                   }}
                                   className="p-2 relative bg-gray-700 flex items-center justify-center rounded-full"
@@ -663,41 +745,56 @@ const Chat = React.memo(
                                   <FaMicrophone className="w-6 h-6 " />
                                   <div className="absolute z-10 -bottom-0 right-0 ">
                                     <span
-                                      className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full ${micState === CAN_SPK
-                                          ? "bg-green-400 " + activePingSTyles
-                                          : micState === REQ_MIC
-                                            ? "bg-yellow-400"
-                                            : micState === MIC_OFF
-                                              ? "bg-rose-500"
-                                              : ""
-                                        }`}
+                                      className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
+                                        audioStatus === REQ_MIC &&
+                                        "bg-yellow-400"
+                                      } 
+                                      ${
+                                        !muted ||
+                                        (audioStatus === CAN_SPK &&
+                                          participantsObj[presentation.rtcUid]
+                                            .muted === "false" &&
+                                          "bg-green-400 ")
+                                      }
+                                      ${
+                                        audioStatus === CAN_SPK
+                                          ? "bg-green-400_ " + activePingSTyles
+                                          : audioStatus === REQ_MIC
+                                            ? "bg-yellow-400_"
+                                            : audioStatus === MIC_OFF
+                                              ? "bg-rose-500_"
+                                              : "bg-transparent"
+                                      }
+                                      
+                                      `}
                                     />
                                   </div>
                                 </button>
                                 {
-                                  <AnimateInOut
-                                    show={
-                                      micState === CAN_SPK ||
-                                      micState === MIC_OFF
-                                    }
-                                    animate={{ scale: 1 }}
-                                    initial={{ scale: 0 }}
-                                    exit={{ scale: 0 }}
-                                  >
-                                    <button
-                                      onClick={() => {
-                                        if (micState === CAN_SPK)
-                                          return setMicState(MIC_OFF);
-                                        setMicState(CAN_SPK);
-                                      }}
-                                      className={`p-2 relative flex items-center ${micState === MIC_OFF
-                                          ? "bg-gray-700"
-                                          : ""
-                                        } justify-center rounded-full`}
-                                    >
-                                      <FaMicrophoneSlash className="w-6 h-6 " />
-                                    </button>
-                                  </AnimateInOut>
+                                  // <AnimateInOut
+                                  //   show={
+                                  //     audioStatus === CAN_SPK ||
+                                  //     audioStatus === MIC_OFF
+                                  //   }
+                                  //   animate={{ scale: 1 }}
+                                  //   initial={{ scale: 0 }}
+                                  //   exit={{ scale: 0 }}
+                                  // >
+                                  //   <button
+                                  //     onClick={() => {
+                                  //       if (audioStatus === CAN_SPK)
+                                  //         return setAudioState(MIC_OFF);
+                                  //       setAudioState(CAN_SPK);
+                                  //     }}
+                                  //     className={`p-2 relative flex items-center ${
+                                  //       audioStatus === MIC_OFF
+                                  //         ? "bg-gray-700"
+                                  //         : ""
+                                  //     } justify-center rounded-full`}
+                                  //   >
+                                  //     <FaMicrophoneSlash className="w-6 h-6 " />
+                                  //   </button>
+                                  // </AnimateInOut>
                                 }
                                 <button
                                   onClick={() => showMessaging()}
@@ -724,25 +821,46 @@ const Chat = React.memo(
                               "flex mt-6 items-center_ gap-4 overflow-auto w-[98%] rounded-xl mx-auto"
                             }
                           >
-                            {[...participants]
-                              .sort(compareGuests)
-                              .slice(0, 5)
-                              .map((participant, i) => (
-                                <Participant
-                                  key={i}
-                                  participant={participant}
-                                />
-                              ))}
-                            <div
-                              onClick={() => showParticipants()}
-                              className="rounded-full overflow-clip shrink-0 w-16 h-16 flex items-center justify-center text-2xl font-bold border border-slate-200/20 cursor-pointer active:scale-90 transition-all duration-150"
-                            >
-                              +
-                              {
-                                participants.slice(5, participants.length)
-                                  .length
-                              }
-                            </div>
+                            {participantsArray.length > 0 ? (
+                              [...participantsArray]
+                                .sort(compareGuests)
+                                .slice(0, 5)
+                                .map((participant, i) => (
+                                  <Participant
+                                    key={i}
+                                    participant={participant}
+                                  />
+                                ))
+                            ) : (
+                              <div className="text-center w-full flex items-center justify-center">
+                                {agoraQuery?.isLoading ? (
+                                  <div className="w-fit mx-auto">
+                                    <LoadingAssetSmall2 />
+                                  </div>
+                                ) : (
+                                  <p className="text-xl mt-6">
+                                    No participants available
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                            {participantsArray.slice(
+                              5,
+                              participantsArray.length
+                            ).length > 0 && (
+                              <div
+                                onClick={() => showParticipants()}
+                                className="rounded-full overflow-clip shrink-0 w-16 h-16 flex items-center justify-center text-2xl font-bold border border-slate-200/20 cursor-pointer active:scale-90 transition-all duration-150"
+                              >
+                                +
+                                {
+                                  participantsArray.slice(
+                                    5,
+                                    participantsArray.length
+                                  ).length
+                                }
+                              </div>
+                            )}
                           </AnimateInOut>
                         </>
                       ) : chatOpen.open ? (
@@ -755,10 +873,12 @@ const Chat = React.memo(
                           className="w-[80%] mx-auto border border-slate-200/20 rounded-xl p-4"
                         >
                           {isHost ? (
-                            <InitalizeConversation
+                            <InitializeConversation
                               closeChat={closeChat}
                               activateChat={activateChat}
-                              isLoading={agoraQuery.isLoading || clientAudioOn.isPending}
+                              isLoading={
+                                agoraQuery.isLoading || clientAudioOn.isPending
+                              }
                             />
                           ) : (
                             <JoinConversation
@@ -800,8 +920,9 @@ function Host({ muted, name }) {
       <div>
         {/* Status indicator for host */}
         <span
-          className={`inline-block w-2 h-2 rounded-full ${muted ? "bg-rose-700" : "bg-green-600"
-            } shadow-sm ${!muted && activePingSTyles} `}
+          className={`inline-block w-2 h-2 rounded-full ${
+            muted ? "bg-rose-700" : "bg-green-600"
+          } shadow-sm ${!muted && activePingSTyles} `}
         />
         <small className="ml-1">host</small>
       </div>
@@ -844,12 +965,13 @@ function Participant({ participant, className }) {
           )}
           {/* <FaMicrophone className="w-5 h-5" /> */}
           <span
-            className={`absolute z-10 -bottom-0 right-0 inline-block w-[0.65rem] h-[0.65rem] rounded-full ${participant.status === "CAN_SPEAK"
+            className={`absolute z-10 -bottom-0 right-0 inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
+              participant.status === "CAN_SPEAK"
                 ? "bg-green-400"
                 : participant.status === "REQUESTED"
                   ? "bg-orange-400"
                   : ""
-              }`}
+            }`}
           />
         </div>
       </div>
@@ -874,8 +996,9 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
 
   const Message = ({ message }) => (
     <div
-      className={`flex gap-2 py-2 items-center w-full ${message.sender === currentUser && "flex-row-reverse justify-start"
-        }`}
+      className={`flex gap-2 py-2 items-center w-full ${
+        message.sender === currentUser && "flex-row-reverse justify-start"
+      }`}
     >
       <div className="rounded-full overflow-clip w-8 h-8">
         <img src="/team/bright.jpg" />
@@ -973,7 +1096,13 @@ function Participants({ participants, presentationName }) {
 }
 
 // Component for joining the conversation
-function JoinConversation({ closeChat, joinChat, username, setUsername, isLoading }) {
+function JoinConversation({
+  closeChat,
+  joinChat,
+  username,
+  setUsername,
+  isLoading
+}) {
   const [join, setJoin] = useState({
     accepted: false,
     error: ""
@@ -1065,14 +1194,14 @@ function JoinConversation({ closeChat, joinChat, username, setUsername, isLoadin
 }
 
 // Component for joining the conversation
-function InitalizeConversation({ closeChat, activateChat, isLoading }) {
+function InitializeConversation({ closeChat, activateChat, isLoading }) {
   return (
     <div className="w-fit mx-auto space-y-4">
       <p className="text-slate-200 text-xl font-semibold capitalize text-center">
         Start Conversation
       </p>
       <div className="flex justify-between items-center w-44">
-      <button
+        <button
           disabled={isLoading}
           onClick={() => activateChat()}
           className="rounded-xl h-[50px] w-[60px] text-black bg-slate-200 uppercase flex items-center justify-center"

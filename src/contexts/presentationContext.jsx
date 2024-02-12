@@ -8,7 +8,25 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { SERVER_URL } from "../constants/routes";
 
-export const PresentationContext = createContext();
+export const PresentationContext = createContext({
+  presentationQuery: {},
+  presentation: {},
+  makeLive() {},
+  livePending: false,
+  socket: {},
+  syncButton: true,
+  setSyncButton() {},
+  swiperRef: null,
+  syncSlide() {},
+  state: {
+    maxNext: 0,
+    hostSlideIndex: 0,
+    sync: true
+  },
+  slideChange() {},
+  interfaceRef: null,
+  setInterfaceRef() {}
+});
 
 const socket = io(SERVER_URL);
 let state = {
@@ -23,14 +41,17 @@ const PresentationContextProvider = (props) => {
 
   const [socketConnected, setSocketConnected] = useState(false);
   const params = useParams();
+  const [interfaceRef, setInterfaceRef] = useState(null);
   const [syncButton, setSyncButton] = useState(true);
 
   const presentationQuery = useQuery({
     queryKey: ["presentation", params.id],
     queryFn: async () => {
       const userUid = localStorage.getItem("userUid");
-      const res = await axios.get(`/api/v1/ppt/presentations/present/${params.id}?userUid=${userUid}`);
-      
+      const res = await axios.get(
+        `/api/v1/ppt/presentations/present/${params.id}?userUid=${userUid}`
+      );
+
       if (!userUid) {
         localStorage.setItem("userUid", res.data.presentation.rtcUid);
       }
@@ -43,7 +64,7 @@ const PresentationContextProvider = (props) => {
     swiperRef.current.allowSlideNext = true;
     swiperRef.current.slideTo(state.hostSlideIndex, 1000, true);
   };
-  
+
   const receiveSlideChange = (currentSlide) => {
     state.hostSlideIndex = currentSlide;
     if (currentSlide > state.maxNext) {
@@ -119,7 +140,6 @@ const PresentationContextProvider = (props) => {
       });
     }
 
-
     return () => {
       socket.removeListener("change-slide", receiveSlideChange);
     };
@@ -161,28 +181,28 @@ const PresentationContextProvider = (props) => {
   const [livePending, setLivePending] = useState(false);
 
   const makeLive = () => {
-      setLivePending(true);
-      axios
-        .put(`/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`, {
-          data: !presentationQuery.data.live
-        })
-        .then(() => {
-          if (socket.connected) {
-            socket.emit("client-live", {
-              liveId: params.id,
-              live: !presentationQuery.data.live
-            });
-          }
-          queryClient.setQueryData(["presentation", params.id], (prev) => ({
-            ...prev,
-            live: !prev.live
-          }));
-          setLivePending(false);
-        })
-        .catch((err) => {
-          setLivePending(false);
-          toast.error(err.response.data.message);
-        });
+    setLivePending(true);
+    axios
+      .put(`/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`, {
+        data: !presentationQuery.data.live
+      })
+      .then(() => {
+        if (socket.connected) {
+          socket.emit("client-live", {
+            liveId: params.id,
+            live: !presentationQuery.data.live
+          });
+        }
+        queryClient.setQueryData(["presentation", params.id], (prev) => ({
+          ...prev,
+          live: !prev.live
+        }));
+        setLivePending(false);
+      })
+      .catch((err) => {
+        setLivePending(false);
+        toast.error(err.response.data.message);
+      });
   };
 
   return (
@@ -198,7 +218,9 @@ const PresentationContextProvider = (props) => {
         swiperRef,
         syncSlide,
         state,
-        slideChange
+        slideChange,
+        interfaceRef,
+        setInterfaceRef
       }}
     >
       {props.children}

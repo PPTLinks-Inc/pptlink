@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 
-import './interface.css';
-import { useState, useContext } from 'react';
-import Header from './layout/Header';
-import { Carousel } from './layout/Carousel';
-import { LoadingAssetBig2 } from '../../assets/assets';
-import { isIOS } from 'react-device-detect';
+import "./interface.css";
+import { useState, useContext, useRef, useEffect } from "react";
+import Header from "./layout/Header";
+import { Carousel } from "./layout/Carousel";
+import { LoadingAssetBig2 } from "../../assets/assets";
+import { isIOS } from "react-device-detect";
 
-import { Spinner, SpinnerIos } from './layout/assets/spinner/Spinner';
-import PresentationNotFound from './404';
-import { PresentationContext } from '../../contexts/presentationContext';
+import { Spinner, SpinnerIos } from "./layout/assets/spinner/Spinner";
+import PresentationNotFound from "./404";
+import { PresentationContext } from "../../contexts/presentationContext";
 
 let mobileHeader;
 
@@ -21,7 +21,14 @@ if (window.innerWidth < 900) {
 }
 
 function Interface() {
-  const { presentation, presentationQuery } = useContext(PresentationContext);
+  const { presentation, presentationQuery, setInterfaceRef } =
+    useContext(PresentationContext);
+
+  const interfaceRef = useRef();
+
+  useEffect(() => {
+    setInterfaceRef(interfaceRef);
+  }, []);
 
   return !presentationQuery.isError ? (
     <main
@@ -32,12 +39,12 @@ function Interface() {
       {/* body */}
       <section
         className={`main-body w-full ${
-          mobileHeader && 'px-0'
+          mobileHeader && "px-0"
         }  rounded-2xl relative  transition-all duration-500 bg-white`}
       >
         {presentationQuery.isSuccess ? (
-          <div className=' h-fit min-h-[100%]'>
-            {(presentation.live || presentation.User === 'HOST') ? (
+          <div ref={interfaceRef} className=" h-fit min-h-[100%]">
+            {presentation.live || presentation.User === "HOST" ? (
               <Carousel />
             ) : !isIOS ? (
               <Spinner />
@@ -46,7 +53,7 @@ function Interface() {
             )}
           </div>
         ) : (
-          <div className='w-full h-[85vh] flex justify-center bg-black items-center'>
+          <div className="w-full h-[85vh] flex justify-center bg-black items-center">
             <LoadingAssetBig2 />
           </div>
         )}
