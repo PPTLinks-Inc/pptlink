@@ -27,7 +27,7 @@ export const Carousel = () => {
   const userRef = useRef();
   const [status, setStatus] = useState({
     online: false,
-    offline: false,
+    offline: false
   });
   const [fullscreen, setFullscreen] = useState(false);
   const [closeChatModal, setCloseChatModal] = useState(false);
@@ -35,7 +35,7 @@ export const Carousel = () => {
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
     animation1: false,
-    animation2: false,
+    animation2: false
   });
 
   const removeSpecialMedia = async () => {
@@ -43,7 +43,7 @@ export const Carousel = () => {
       setSpecialMedia((prev) => ({
         ...prev,
         toggled: false,
-        animation2: false,
+        animation2: false
       }));
 
       toggleFullScreen();
@@ -98,7 +98,7 @@ export const Carousel = () => {
     setStatus((prevState) => ({
       ...prevState,
       online: navigator.onLine ? true : "null",
-      offline: !navigator.onLine ? true : "null",
+      offline: !navigator.onLine ? true : "null"
     }));
   };
 
@@ -107,7 +107,7 @@ export const Carousel = () => {
       setTimeout(() => {
         setStatus((prevState) => ({
           ...prevState,
-          online: false,
+          online: false
         }));
       }, 3000);
     }
@@ -138,13 +138,13 @@ export const Carousel = () => {
       setSpecialMedia((prev) => ({
         ...prev,
         animation1: false,
-        animation2: true,
+        animation2: true
       }));
     } else if (!e.matches && window.innerWidth < 900) {
       setSpecialMedia((prev) => ({
         ...prev,
         toggled: true,
-        animation1: true,
+        animation1: true
       }));
     }
   };
@@ -154,7 +154,7 @@ export const Carousel = () => {
       setSpecialMedia((prev) => ({
         ...prev,
         toggled: true,
-        animation1: true,
+        animation1: true
       }));
     }
 
@@ -296,13 +296,14 @@ export const Carousel = () => {
       </div>
 
       {specialMedia.toggled && (
-        <div className="w-full h-screen fixed top-0 left-0 bottom-0 bg-black z-50">
-            {specialMedia.animation1 && (
-            <div className='w-full h-full grid place-content-center'>
-              <div className='w-fit h-fit flex flex-col justify-between items-center'>
-                <img src={animation1} alt='animation image' />
+        // <div className="w-full h-screen fixed top-0 left-0 bottom-0 z-50">
+        <>
+          {specialMedia.animation1 && (
+            <div className="w-screen fixed h-screen top-0 left-0 grid place-content-center bg-black z-[1000]">
+              <div className="w-fit h-fit flex flex-col justify-between items-center">
+                <img src={animation1} alt="animation image" />
 
-                <p className='text-slate-200 w-[80%] text-center'>
+                <p className="text-slate-200 w-[80%] text-center">
                   Bring down notifications panel and change orientation to
                   Landscape
                 </p>
@@ -313,8 +314,8 @@ export const Carousel = () => {
           {!specialMedia.animation1 &&
             specialMedia.animation2 &&
             !fullscreen && (
-              <div className='w-full h-full grid place-content-center'>
-                <div className='w-fit h-fit flex flex-col justify-between items-center'>
+              <div className="w-screen h-screen fixed top-0 left-0 z-[1000] grid place-content-center">
+                <div className="w-fit h-fit flex flex-col justify-between items-center">
                   <FaExpand
                     onClick={removeSpecialMedia}
                     className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
@@ -330,7 +331,8 @@ export const Carousel = () => {
                 </div>
               </div>
             )}
-        </div>
+          {/* </div> */}
+        </>
       )}
     </>
   );
