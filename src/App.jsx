@@ -8,13 +8,13 @@ import List from "./components/list/list";
 import Upload from "./components/upload/upload";
 import Interface from "./components/interface/Interface";
 import Root from "./components/root/root";
-import NewRoot from "./components/root/new_root";
 import Institutions from "./components/institutions/institutions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import About from "./components/about-us/about";
 import PresentationContextProvider from "./contexts/presentationContext";
+import "./assets/styles/general_css.css";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -53,7 +53,6 @@ function App() {
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
           <Route path="/:id" element={<Interface />} />
-          <Route exact path="/newroot" element={<NewRoot />} />
           <Route
             path="/:id"
             element={

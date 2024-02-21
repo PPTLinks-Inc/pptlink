@@ -21,32 +21,41 @@ module.exports = {
         lightGray: "#c5c5c5",
         borderDark: "#383737",
         lightBorder: "#ebebeb",
+        body: "#FFFFF0",
       },
-<<<<<<< HEAD
       utilities: {
         baseSpace: "mt-5",
         baseFont: "sm",
         lineHeight: "leading-6",
-=======
-      keyframes: {
-        ping: {
-          "75%, 100%": {
-            content: "",
-            transform: "scale(2)",
-            opacity: 0,
+        keyframes: {
+          ping: {
+            "75%, 100%": {
+              content: "",
+              transform: "scale(2)",
+              opacity: 0,
+            },
           },
         },
-      },
-      animation: {
-        "ping-200": " ping 1s 200ms cubic-bezier(0, 0, 0.2, 1) infinite",
->>>>>>> e499be6aed00fa2813ff246ff9072429220a200c
-      },
-      screens: {
-        tall: { raw: "(min-width: 2000px)" },
-        maxScreen: { raw: "(max-width: 1050px)" },
-        maxScreenMobile: { raw: "(max-width: 768px)" },
+        animation: {
+          "ping-200": " ping 1s 200ms cubic-bezier(0, 0, 0.2, 1) infinite",
+        },
       },
     },
-  },
-  plugins: [],
+    screens: {//please do not delete or temper with abeg 🤦‍♂️
+      'sm': '640px',
+      // => @media (min-width: 640px) { ... }
+      'md': '768px',
+      // => @media (min-width: 768px) { ... }
+      'lg': '1024px',
+      // => @media (min-width: 1024px) { ... }
+      'xl': '1280px',
+      // => @media (min-width: 1280px) { ... }
+      '2xl': '1536px',
+      // => @media (min-width: 1536px) { ... }
+      'tall': { 'min': '2000px' },
+      'maxScreen': { 'max': '1050px' },
+      'maxScreenMobile': { 'max': '768px' },
+    },
+    plugins: [],
+  }
 };

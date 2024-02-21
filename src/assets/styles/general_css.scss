@@ -1,16 +1,22 @@
 // variables
-$maxHeight: 100vh;
+$maxHeight: 100svh;
+
+.container {
+    width: 90%;
+    margin: auto;
+}
+
+a,
+* a,
+*[href],
+button,
+* button {
+    cursor: pointer !important;
+}
 
 .parent_page_wrapper {
-    height: $maxHeight;
-
     &::before {
         height: 100svh;
-    }
-
-    .container {
-        width: 90%;
-        margin: auto;
     }
 
     .banner {
@@ -39,7 +45,6 @@ $maxHeight: 100vh;
 
     .recent {
         overflow: hidden;
-
         $setTop: 30vh;
 
         &::before,
@@ -68,6 +73,15 @@ $maxHeight: 100vh;
         column-gap: 9rem;
         row-gap: 3rem;
         grid-auto-flow: row;
-        grid-template: auto/repeat(auto-fill, minmax(150px, 1fr));
+        grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
+
+        & .card {
+            background: rgba(white, .1);
+
+            &:hover {
+                background: rgba(black, .4);
+                border: 1px solid rgba(white, .1);
+            }
+        }
     }
 }
