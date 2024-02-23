@@ -147,7 +147,7 @@ export default function Root() {
       <Backmenu handleDropdown={handleDropdown} />
       <div
         ref={mainRef}
-        className={`min-h-fit bg-[#FFFFF0] w-[100%] pt-24 absolute overflow-x-hidden  text-slate-200 ${page.dropdown
+        className={`min-h-fit bg-[#FFFFF0] w-[100%] pt-24 maxScreenMobile:pt-14 absolute overflow-x-hidden  text-slate-200 ${page.dropdown
           ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
           : "transition-transform translate-y-0 ease-in-out top-0"
           }`}

@@ -18,7 +18,7 @@ export default function Footer() {
                         <h3 className="flex justify-start items-end h-[4rem] text-[2rem] text-[#FFA500] 
                 relative before:block before:w-7 before:h-full before:content-[''] 
                 before:bg-[#FFA500] before:absolute before:top-0 before:left-0 before:bottom-0 !baseline mb-5">
-                            <Link to={HOME} className="pl-8">PPT LINKS
+                            <Link to={HOME} className="pl-8 flogo">PPT LINKS
                             </Link>
                         </h3>
                         <p className="mb-5">Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
