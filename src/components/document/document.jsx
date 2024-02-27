@@ -19,7 +19,7 @@ export default function Document() {
                         <img src={documentImg} alt={documentImg} className='block w-full h-full' />
                     </div>
                     <p className='text-center w-[80%] text-[0.8rem] mb-10'>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Aut omnis consequuntur quam quod voluptatum veritatis neque doloremque eligendi,
+                        Aut omnis dola consequuntur quam quod voluptatum veritatis neque doloremque eligendi,
                         qui exercitationem, quo saepe porro et deserunt id nobis quos corporis modi?</p>
                     <div className='w-[300px] h-fit rounded-[.5rem] border border-white relative mb-5'>
                         <input type="text" name="searcher" placeholder='Search for Articles & Contents' className='block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-black text-white' />
@@ -40,7 +40,7 @@ export default function Document() {
 
                                 <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
                             </div>
-                        </div>
+                        </div> 
                     )}
                 </div>
             </section>
