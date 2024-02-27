@@ -1,0 +1,81 @@
+import { Link, NavLink } from "react-router-dom";
+import Socials from "../social/socials";
+import {
+    ABOUT,
+    HOME,
+    LEGAL,
+    LOGIN,
+    SIGNUP,
+    UPLOAD,
+} from "../../constants/routes";
+export default function Footer() {
+
+    return (
+        <footer className="footer pt-10 text-[0.8rem] text-black relative">
+            <div className="container">
+                <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
+                    <div className="footerlft w-2/5 maxScreenMobile:w-full">
+                        <h3 className="flex justify-start items-end h-[4rem] text-[2rem] text-[#FFA500] 
+                relative before:block before:w-7 before:h-full before:content-[''] 
+                before:bg-[#FFA500] before:absolute before:top-0 before:left-0 before:bottom-0 !baseline mb-5">
+                            <Link to={HOME} className="pl-8 flogo">PPT LINKS
+                            </Link>
+                        </h3>
+                        <p className="mb-5">Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+                            sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+                            sed diam voluptua. At vero eos et accusam et
+                            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+                            sanctus</p>
+                            <Socials />
+                    </div>
+                    <div className="footerrft w-3/5 flex justify-between align-top maxScreenMobile:flex-col maxScreenMobile:w-full">
+                        <div>
+                            <h3 className="font-black mb-5">Quick Links</h3>
+                            <nav className="flex flex-col justify-between align-top">
+                                <Link to={HOME} className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">Home</Link>
+                                <NavLink to={UPLOAD} className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">Upload</NavLink>
+                                <NavLink to={LOGIN} className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">Sign In</NavLink>
+                                <NavLink to={SIGNUP} className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">Sign Up</NavLink>
+                            </nav>
+                        </div>
+                        <div>
+                            <h3 className="font-black mb-5">Dcoumentation</h3>
+                            <nav className="flex flex-col justify-between align-top">
+                                <NavLink to={ABOUT} className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">About Us</NavLink>
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">How to Use</NavLink>
+                                <NavLink to={LEGAL} className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">Legal</NavLink>
+                            </nav>
+                        </div>
+                        <div>
+                            <h3 className="font-black mb-5">Location</h3>
+                            <nav className="flex flex-col justify-between align-top">
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">
+                                    You can find us at
+                                </NavLink>
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">
+                                    Nascomsoft in
+                                </NavLink>
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">
+                                    Anguwan Cashew,
+                                </NavLink>
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">
+                                    Off dass road,
+                                </NavLink>
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">
+                                    opposite Elim church,
+                                </NavLink>
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">
+                                    740102, Yelwa,
+                                </NavLink>
+                                <NavLink to="/" className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] hover:font-black">
+                                    Bauchi Nigeria
+                                </NavLink>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <p className="py-5 text-center border-t-[1px] border-black border-solid">&copy; PPTLinks {new Date().getFullYear()}. All rights reserved</p>
+            </div>
+        </footer>
+    )
+}

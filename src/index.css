@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  transition: all 400ms ease-in-out !important;
+}
+
 *::-webkit-scrollbar {
   /* width: 0;
   height: 0; */

@@ -296,9 +296,10 @@ export const Carousel = () => {
       </div>
 
       {specialMedia.toggled && (
-        <div className="w-full h-screen fixed top-0 left-0 bottom-0 bg-black z-50">
+        // <div className="w-full h-screen fixed top-0 left-0 bottom-0 z-50">
+        <>
           {specialMedia.animation1 && (
-            <div className="w-full h-full grid place-content-center">
+            <div className="w-screen fixed h-screen top-0 left-0 grid place-content-center bg-black z-[1000]">
               <div className="w-fit h-fit flex flex-col justify-between items-center">
                 <img src={animation1} alt="animation image" />
 
@@ -313,7 +314,7 @@ export const Carousel = () => {
           {!specialMedia.animation1 &&
             specialMedia.animation2 &&
             !fullscreen && (
-              <div className="w-full h-full grid place-content-center">
+              <div className="w-screen h-screen fixed top-0 left-0 z-[1000] grid place-content-center">
                 <div className="w-fit h-fit flex flex-col justify-between items-center">
                   <FaExpand
                     onClick={removeSpecialMedia}
@@ -330,7 +331,8 @@ export const Carousel = () => {
                 </div>
               </div>
             )}
-        </div>
+          {/* </div> */}
+        </>
       )}
     </>
   );
