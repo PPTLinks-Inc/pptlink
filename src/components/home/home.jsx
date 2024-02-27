@@ -48,14 +48,14 @@ export default function NewHome() {
                     <NavLink to="/" className="block text-center text-[#FFA500] underline">See more</NavLink>
                 </div>
             </div>
-            <div className="why_pptlinks container w-full py-20">
+            <div className="why_pptlinks container w-full py-20 maxScreenMobile:py-5">
                 <h3 className="text-6xl text-center text-[#FFA500] mb-10">WHY USE PPTLINKS?</h3>
-                <div className="wrap_circle w-full h-fit mt-40 !text-black">
+                <div className="wrap_circle w-full h-fit mt-40 !text-black maxScreenMobile:mt-10">
                     <div className="wrapAnim relative w-[40rem] h-[40rem] m-auto 
                 mt-20 bg-transparent rounded-[20rem] border-[2px]
-                border-solid border-black">
+                border-solid border-black maxScreenMobile:flex maxScreenMobile:flex-col maxScreenMobile:justify-between maxScreenMobile:items-center maxScreenMobile:gap-[1rem] maxScreenMobile:w-full maxScreenMobile:h-fit maxScreenMobile:!rounded-none maxScreenMobile:!border-none maxScreenMobile:!m-0 maxScreenMobile:!p-0">
                         {/* ///////////////////////////////////////////////////// */}
-                        <div className="rounded_animation absolute top-[-80px] left-[50%] translate-x-[-50%] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500]">
+                        <div className="rounded_animation absolute top-[-80px] left-[50%] translate-x-[-50%] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2 maxScreenMobile:translate-x-0">
                             <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
                                 <img src={anim_img1} alt={anim_img1} className="w-full h-full" />
                             </div>
@@ -66,7 +66,7 @@ export default function NewHome() {
                             </div>
                         </div>
 
-                        <div className="rounded_animation absolute top-[100px] left-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500]">
+                        <div className="rounded_animation absolute top-[100px] left-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
                             <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
                                 <img src={anim_img2} alt={anim_img2} className="w-full h-full" />
                             </div>
@@ -77,7 +77,7 @@ export default function NewHome() {
                             </div>
                         </div>
 
-                        <div className="rounded_animation absolute bottom-0 left-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500]">
+                        <div className="rounded_animation absolute bottom-0 left-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
                             <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
                                 <img src={anim_img3} alt={anim_img3} className="w-full h-full" />
                             </div>
@@ -88,7 +88,7 @@ export default function NewHome() {
                             </div>
                         </div>
 
-                        <div className="rounded_animation absolute bottom-0 right-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500]">
+                        <div className="rounded_animation absolute bottom-0 right-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
                             <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
                                 <img src={anim_img4} alt={anim_img4} className="w-full h-full" />
                             </div>
@@ -99,7 +99,7 @@ export default function NewHome() {
                             </div>
                         </div>
 
-                        <div className="rounded_animation absolute top-[100px] right-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500]">
+                        <div className="rounded_animation absolute top-[100px] right-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
                             <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
                                 <img src={anim_img5} alt={anim_img5} className="w-full h-full" />
                             </div>
@@ -123,21 +123,21 @@ export default function NewHome() {
                                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                                     <div className="w-[50%] maxScreenMobile:w-full">
                                         <label htmlFor="name" className="block w-full">Name</label>
-                                        <input type="text" id="name" name="name" className="block w-full bg-transparent border-t-[1px] border-solid border-white" required />
+                                        <input type="text" id="name" name="name" className="block w-full bg-transparent border-b-[1px] border-solid border-white" required />
                                     </div>
                                     <div className="w-[50%] maxScreenMobile:w-full">
                                         <label htmlFor="email" className="block w-full">Email Address</label>
-                                        <input type="email" id="email" name="email" className="block w-full bg-transparent border-t-[1px] border-solid border-white" required />
+                                        <input type="email" id="email" name="email" className="block w-full bg-transparent border-b-[1px] border-solid border-white" required />
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                                     <div className="w-[50%] maxScreenMobile:w-full">
                                         <label htmlFor="phone" className="block w-full">Phone Number</label>
-                                        <input type="text" id="phone" name="phone" inputMode="numeric" className="block w-full bg-transparent border-t-[1px] border-solid border-white" required />
+                                        <input type="text" id="phone" name="phone" inputMode="numeric" className="block w-full bg-transparent border-b-[1px] border-solid border-white" required />
                                     </div>
-                                    <div className="w-[50%] maxScreenMobile:w-full">
+                                    <div className="w-[50%] maxScreenMobile:w-full relative before:block before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:bg-black before:pointer-events-none before:w-full border-b-[1px] border-solid border-white">
                                         <label htmlFor="interested" className="block w-full">Interested in</label>
-                                        <select name="pets" id="interested" className="block w-full text-black border-t-[1px] border-solid border-white">
+                                        <select name="pets" id="interested" className="block w-full text-black">
                                             <option value="">--Please choose an option--</option>
                                             <option value="dog">Dog</option>
                                             <option value="cat">Cat</option>

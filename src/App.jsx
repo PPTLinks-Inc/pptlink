@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import About from "./components/about-us/about";
+import Document from "./components/document/document";
 import PresentationContextProvider from "./contexts/presentationContext";
 import "./assets/styles/general_css.css";
 
@@ -50,6 +51,7 @@ function App() {
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="upload" element={<Upload />} />
             <Route path="about" element={<About />} />
+            <Route path="document" element={<Document />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
           <Route path="/:id" element={<Interface />} />

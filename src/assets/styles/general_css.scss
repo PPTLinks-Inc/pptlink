@@ -12,6 +12,10 @@ a,
 button,
 * button {
     cursor: pointer !important;
+
+    &:hover:not(.hlogo, .flogo) {
+        font-weight: 900;
+    }
 }
 
 .parent_page_wrapper {
@@ -40,6 +44,12 @@ button,
             top: 30vh;
             height: 100vh;
             transform: rotateZ(-15deg) scaleX(2);
+        }
+        
+        @media screen and (max-width: 768px) {
+            &::after {
+                top: 20vh;
+            }
         }
     }
 
@@ -79,8 +89,8 @@ button,
             background: rgba(white, .1);
 
             &:hover {
+                border: 1px solid rgba(white, .5) !important;
                 background: rgba(black, .4);
-                border: 1px solid rgba(white, .1);
             }
         }
     }

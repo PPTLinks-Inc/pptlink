@@ -5,6 +5,7 @@
     pointer-events: none;
     opacity: 0;
     animation: moveAround 50s infinite linear;
+    z-index: 50;
 }
 
 .ellipse-container>img {

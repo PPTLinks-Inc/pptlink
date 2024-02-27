@@ -147,14 +147,14 @@ export default function Root() {
       <Backmenu handleDropdown={handleDropdown} />
       <div
         ref={mainRef}
-        className={`min-h-fit bg-[#FFFFF0] w-[100%] pt-24 absolute overflow-x-hidden  text-slate-200 ${page.dropdown
+        className={`min-h-screen bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
           ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
           : "transition-transform translate-y-0 ease-in-out top-0"
           }`}
       >
         <Header bgcolor={false} handleDropdown={handleDropdown} />
         {page.pending ? (
-          <div className="w-full h-[85vh] flex justify-center items-center">
+          <div className="w-full h-[85vh] flex justify-center items-center bg-black">
             <LoadingAssetBig2 />
           </div>
         ) : (
