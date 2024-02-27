@@ -10,32 +10,32 @@ import {
 export default function Backmenu({ handleDropdown }) {
 
     return (
-        <div className="w-full h-full maxScreenMobile:overflow-auto">
+        <div className="w-full h-full maxScreenMobile:overflow-auto pt-[5.5rem]">
             <Header bgcolor={true} handleDropdown={handleDropdown} />
 
             <div className="w-full h-[90vh]">
                 <div className="flex-col w-[100%] h-[50%] flex-1 !border-0 justify-center flex lg:flex-wrap lg:flex-row maxScreenMobile:my-10">
                     <Link
                         to={LOGIN}
-                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[4rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
+                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[5rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
                     >
                         Sign In
                     </Link>
                     <Link
                         to={UPLOAD}
-                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[4rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
+                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[5rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
                     >
                         Upload
                     </Link>
                     <Link
                         to={LEGAL}
-                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[4rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
+                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[5rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
                     >
                         Legal
                     </Link>
                     <Link
                         to={ABOUT}
-                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[4rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
+                        className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[5rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
                     >
                         About
                     </Link>
