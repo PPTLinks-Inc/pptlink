@@ -8,8 +8,9 @@ import { Navigation, A11y, Keyboard, Zoom } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 import { PresentationContext } from "../../../../../contexts/presentationContext";
 
-const SwiperMySlide = ({active}) => {
-  const { presentation, swiperRef, slideChange } = useContext(PresentationContext);
+const SwiperMySlide = ({ active }) => {
+  const { presentation, swiperRef, slideChange } =
+    useContext(PresentationContext);
   let onEnter;
   if (window.innerWidth < 900) {
     onEnter = false;
@@ -42,6 +43,7 @@ const SwiperMySlide = ({active}) => {
               src={slide}
               alt=""
               className="object-contain w-full h-full"
+              loading="lazy"
             />
           </SwiperSlide>
         );

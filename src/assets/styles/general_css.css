@@ -10,12 +10,10 @@ button,
 * button {
   cursor: pointer !important;
 }
-a:hover:not(.hlogo, .flogo),
-* a:hover:not(.hlogo, .flogo),
-*[href]:hover:not(.hlogo, .flogo),
+
 button:hover:not(.hlogo, .flogo),
 * button:hover:not(.hlogo, .flogo) {
-  font-weight: 900;
+  background-color: #ffffff91;
 }
 
 .parent_page_wrapper::before {
@@ -24,7 +22,8 @@ button:hover:not(.hlogo, .flogo),
 .parent_page_wrapper .banner {
   overflow: hidden;
 }
-.parent_page_wrapper .banner::before, .parent_page_wrapper .banner::after {
+.parent_page_wrapper .banner::before,
+.parent_page_wrapper .banner::after {
   content: "";
   display: block;
   position: absolute;
@@ -49,7 +48,8 @@ button:hover:not(.hlogo, .flogo),
 .parent_page_wrapper .recent {
   overflow: hidden;
 }
-.parent_page_wrapper .recent::before, .parent_page_wrapper .recent::after {
+.parent_page_wrapper .recent::before,
+.parent_page_wrapper .recent::after {
   content: "";
   display: block;
   position: absolute;
@@ -69,7 +69,7 @@ button:hover:not(.hlogo, .flogo),
 .parent_page_wrapper .cards_wrapper {
   display: grid;
   -moz-column-gap: 9rem;
-       column-gap: 9rem;
+  column-gap: 9rem;
   row-gap: 3rem;
   grid-auto-flow: row;
   grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
@@ -78,6 +78,6 @@ button:hover:not(.hlogo, .flogo),
   background: rgba(255, 255, 255, 0.1);
 }
 .parent_page_wrapper .cards_wrapper .card:hover {
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  outline: 1px solid rgba(255, 255, 255, 0.5) !important;
   background: rgba(0, 0, 0, 0.4);
-}/*# sourceMappingURL=general_css.css.map */
+} /*# sourceMappingURL=general_css.css.map */

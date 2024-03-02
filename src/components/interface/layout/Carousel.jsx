@@ -301,7 +301,7 @@ export const Carousel = () => {
           {specialMedia.animation1 && (
             <div className="w-screen fixed h-screen top-0 left-0 grid place-content-center bg-black z-[1000]">
               <div className="w-fit h-fit flex flex-col justify-between items-center">
-                <img src={animation1} alt="animation image" />
+                <img src={animation1} alt="animation image" loading="lazy" />
 
                 <p className="text-slate-200 w-[80%] text-center">
                   Bring down notifications panel and change orientation to
@@ -325,6 +325,7 @@ export const Carousel = () => {
                     src={animation2}
                     alt="animation image"
                     className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
+                    loading="lazy"
                   />
 
                   <p className="text-slate-200">Click to make full screen</p>
