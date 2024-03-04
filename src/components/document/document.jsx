@@ -68,7 +68,7 @@ export default function Document() {
                     to="#"
                     className="block mb-3 text-justify text-[.7rem]"
                   >
-                    Project Proposal:{" "}
+                    Project Proposal:
                     <span className="text-[#FFA500] underline decoration-[#FFA500]">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       At dolorum adipisci eligendi pariatur neque quas!
