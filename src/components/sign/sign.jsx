@@ -29,7 +29,7 @@ export default function SignPage() {
                                 <input type="email" id="email" name="email" placeholder="eg: example@gmail.com" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" />
                             </div>
                         </div>
-                        <div className={`flex justify-between items-center gap-4 mb-8 ${!getlocation && "!flex-col"}  maxScreenMobile:!flex-col`} >
+                        <div className={`flex justify-between items-center gap-4 mb-8 ${!getlocation && "!flex-col !gap-2"}  maxScreenMobile:!flex-col`} >
                             <div className={`w-[50%] maxScreenMobile:!w-full ${!getlocation && "!w-4/5"}`}>
                                 <label htmlFor="password" className="block w-full mb-2 pl-1" >*Password</label>
                                 <input type="password" id="password" name="password" placeholder="**********" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" />
@@ -49,7 +49,7 @@ export default function SignPage() {
                             <span className="block w-fit text-center mx-1 font-bold">Or</span>
                             <hr className="block w-[35%] h-[.1px] bg-black" />
                         </span>
-                        <button className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] py-2 px-4 rounded-3xl maxScreenMobile:w-full">
+                        <button disabled className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] py-2 px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed">
                             <svg xmlns="http://www.w3.org/2000/svg" className="mr-5 block w-[1.3rem] aspect-square" width="26.186" height="16.366" viewBox="0 0 26.186 16.366">
                                 <path id="Icon_awesome-google-plus-g" data-name="Icon awesome-google-plus-g" d="M16.809,11.511a6.941,6.941,0,0,1,.134,1.362c0,4.678-3.137,7.993-7.859,7.993a8.183,8.183,0,0,1,0-16.366,7.817,7.817,0,0,1,5.481,2.143L12.343,8.776a4.6,4.6,0,0,0-3.26-1.262,5.17,5.17,0,0,0,0,10.338,4.432,4.432,0,0,0,4.644-3.528H9.083V11.511h7.725Zm7.9.274V9.41H22.324v2.375H19.949v2.387h2.375v2.375h2.387V14.172h2.375V11.785H24.711Z" transform="translate(-0.9 -4.5)" />
                             </svg>
@@ -57,7 +57,7 @@ export default function SignPage() {
                                 Sign in with Google
                             </span>
                         </button>
-                        <button className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] py-2 px-4 rounded-3xl maxScreenMobile:w-full">
+                        <button disabled className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] py-2 px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed">
                             <svg xmlns="http://www.w3.org/2000/svg" className="mr-5 block w-[1.3rem] aspect-square" width="9.176" height="17.132" viewBox="0 0 9.176 17.132">
                                 <path id="Icon_awesome-facebook-f" data-name="Icon awesome-facebook-f" d="M10.184,9.637l.476-3.1H7.685V4.524A1.55,1.55,0,0,1,9.433,2.849h1.352V.209A16.493,16.493,0,0,0,8.384,0C5.934,0,4.333,1.485,4.333,4.173V6.536H1.609v3.1H4.333v7.5H7.685v-7.5Z" transform="translate(-1.609)" />
                             </svg>
