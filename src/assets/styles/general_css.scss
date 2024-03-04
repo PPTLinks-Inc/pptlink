@@ -41,7 +41,7 @@ button,
             height: 100vh;
             transform: rotateZ(-15deg) scaleX(2);
         }
-        
+
         @media screen and (max-width: 768px) {
             &::after {
                 top: 20vh;
@@ -91,4 +91,24 @@ button,
             }
         }
     }
+}
+
+@keyframes signanim {
+    from {
+        background-blend-mode: hard-light;
+    }
+
+    to {
+        background-blend-mode: difference;
+    }
+}
+
+.signpage {
+    background-image: url("/team/pptlink_resources/Rectangle 49.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 1);
+    background-blend-mode: hard-light;
+    // animation: signanim 5s ease-in-out 10ms infinite;
 }
