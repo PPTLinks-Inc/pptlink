@@ -1,17 +1,49 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-export default function Header({ bgcolor, handleDropdown }) {
-    const [getlocation] = useState(useLocation().pathname === '/document' ? true : false);
+import { userContext } from "../../contexts/userContext";
+import {
+  ABOUT,
+  DASHBOARD,
+  HOME,
+  LEGAL,
+  LOGIN,
+  SIGNUP,
+  UPLOAD
+} from "../../constants/routes";
 
-    return (
-        <header className={`absolute top-0 left-0 right-0 pt-10 pb-5 flex items-center justify-center 
-        ${bgcolor ? "bg-[#FFFFF0]" : "bg-black"}`}>
-            <div className="container flex justify-between items-center">
-                <div className="logo_wrapper">
-                    <Link to="/" className="hlogo uppercase block w-10 h-10">
-                        PPTLINKS
-                        {/* <svg width="800" height="600" id="logo_svg" className="block !w-full !h-full bg-[white]" xmlns="http://www.w3.org/2000/svg">
+export default function Header({ bgcolor, handleDropdown }) {
+  const [getlocation] = useState(
+    useLocation().pathname === "/document" ? true : false
+  );
+
+  // context
+  const { user, setUser } = useContext(userContext);
+
+  const navigate = useNavigate();
+
+  const handlePresentationBtn = () => {
+    if (!user) return navigate(LOGIN);
+    if (user && user.presentations < 1) return navigate(UPLOAD);
+    if (user.presentations > 0) return navigate(DASHBOARD);
+  };
+
+  const buttontext = () => {
+    if (!user) return "Log in";
+    if (user && user.presentations < 1) return "Upload";
+    if (user.presentations > 0) return "Dashboard";
+  };
+
+  return (
+    <header
+      className={`absolute top-0 left-0 right-0 pt-10 pb-5 flex items-center justify-center 
+        ${bgcolor ? "bg-[#FFFFF0]" : "bg-black"}`}
+    >
+      <div className="container flex justify-between items-center">
+        <div className="logo_wrapper">
+          <Link to="/" className="hlogo uppercase block w-10 h-10">
+            PPTLINKS
+            {/* <svg width="800" height="600" id="logo_svg" className="block !w-full !h-full bg-[white]" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <title>Layer 1</title>
                                 <g>
@@ -25,18 +57,38 @@ export default function Header({ bgcolor, handleDropdown }) {
                                 </g>
                             </g>
                         </svg> */}
-                    </Link>
-                </div>
+          </Link>
+        </div>
 
-                <div className="btnGroup1 flex justify-between items-center">
-                    <Link to="/" className="mr-5 uppercase">Dashboard</Link>
-                    <button className="w-[25px] h-[25px]" onClick={() => handleDropdown()}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="!w-full !h-full" viewBox="0 0 36 31.365">
-                            <path id="Icon_open-menu" data-name="Icon open-menu" d="M0,0V4.5H36V0ZM0,13.365v4.5H36v-4.5Zm0,13.5v4.5H36v-4.5Z" strokeLinecap="round" fill={bgcolor ? "black" : "white"} />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </header>
-    )
+        <div className="btnGroup1 flex flex-row justify-between items-center w-[225px]">
+          <button
+            onClick={() => handlePresentationBtn()}
+            type="submit"
+            className={`block w-[140px] text-[.8rem] font-medium h-[35px] rounded-[2rem] ${!bgcolor ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+          >
+            {buttontext()}
+          </button>
+
+          <button
+            className="w-[25px] h-[25px]"
+            onClick={() => handleDropdown()}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="!w-full !h-full"
+              viewBox="0 0 36 31.365"
+            >
+              <path
+                id="Icon_open-menu"
+                data-name="Icon open-menu"
+                d="M0,0V4.5H36V0ZM0,13.365v4.5H36v-4.5Zm0,13.5v4.5H36v-4.5Z"
+                strokeLinecap="round"
+                fill={bgcolor ? "black" : "white"}
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
 }
