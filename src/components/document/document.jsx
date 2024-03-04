@@ -29,19 +29,74 @@ export default function Document() {
             </section>
             <section className="midJ container py-5 min-h-screen bg-[#FFFFF0]">
                 <div className="flex flex-wrap justify-between items-center gap-y-16 gap-x-8 w-full mt-20 mb-10">
-                    {Array(6).fill(0).map((_, i) => ({ id: i })).map(({ id }) =>
-                        <div key={id} className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
-                            <div className='w-20 aspect-square mb-3'>
-                                <img src={initiative} alt={initiative} className='block w-full h-full' />
-                            </div>
-                            <h3 className='text-xl mb-2'>INITIAITON</h3>
-                            <div className=''>
-                                <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Proposal: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+                    {/* {Array(6).fill(0).map((_, i) => ({ id: i })).map(({ id }) => */}
+                    <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+                        <div className='w-20 aspect-square mb-3'>
+                            <img src={initiative} alt={initiative} className='block w-full h-full' />
+                        </div>
+                        <h3 className='text-xl mb-2'>INITIAITON</h3>
+                        <div className=''>
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Proposal: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
 
-                                <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
-                            </div>
-                        </div> 
-                    )}
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+                        </div>
+                    </div>
+                    <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+                        <div className='w-20 aspect-square mb-3'>
+                            <img src={planning} alt={planning} className='block w-full h-full' />
+                        </div>
+                        <h3 className='text-xl mb-2'>PLANNING</h3>
+                        <div className=''>
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Proposal: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+                        </div>
+                    </div>
+                    <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+                        <div className='w-20 aspect-square mb-3'>
+                            <img src={execution} alt={execution} className='block w-full h-full' />
+                        </div>
+                        <h3 className='text-xl mb-2'>EXECUTION</h3>
+                        <div className=''>
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Proposal: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+                        </div>
+                    </div>
+                    <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+                        <div className='w-20 aspect-square mb-3'>
+                            <img src={controlSystem} alt={controlSystem} className='block w-full h-full' />
+                        </div>
+                        <h3 className='text-xl mb-2'>CONTROL</h3>
+                        <div className=''>
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Proposal: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+                        </div>
+                    </div>
+                    <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+                        <div className='w-20 aspect-square mb-3'>
+                            <img src={conclusion} alt={conclusion} className='block w-full h-full' />
+                        </div>
+                        <h3 className='text-xl mb-2'>CONCLUSION</h3>
+                        <div className=''>
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Proposal: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+                        </div>
+                    </div>
+                    <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+                        <div className='w-20 aspect-square mb-3'>
+                            <img src={others} alt={others} className='block w-full h-full' />
+                        </div>
+                        <h3 className='text-xl mb-2'>OTHERS</h3>
+                        <div className=''>
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Proposal: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+
+                            <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">Project Charter: <span className='text-[#FFA500] underline decoration-[#FFA500]'>Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolorum adipisci eligendi pariatur neque quas!</span></NavLink>
+                        </div>
+                    </div>
+                    {/* )} */}
                 </div>
             </section>
         </>

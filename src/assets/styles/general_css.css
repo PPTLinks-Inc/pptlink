@@ -80,4 +80,21 @@ button:hover:not(.hlogo, .flogo),
 .parent_page_wrapper .cards_wrapper .card:hover {
   border: 1px solid rgba(255, 255, 255, 0.5) !important;
   background: rgba(0, 0, 0, 0.4);
+}
+
+@keyframes signanim {
+  from {
+    background-blend-mode: hard-light;
+  }
+  to {
+    background-blend-mode: difference;
+  }
+}
+.signpage {
+  background-image: url("/team/pptlink_resources/Rectangle 49.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-color: rgb(0, 0, 0);
+  background-blend-mode: hard-light;
 }/*# sourceMappingURL=general_css.css.map */
