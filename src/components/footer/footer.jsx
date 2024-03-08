@@ -1,16 +1,23 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import Socials from "../social/socials";
 import {
   ABOUT,
+  DOCUMENT,
   HOME,
   LEGAL,
-  LOGIN,
   SIGNUP,
   UPLOAD
 } from "../../constants/routes";
+
 export default function Footer() {
+  const { pathname } = useLocation();
+
+  console.log(pathname);
+
   return (
-    <footer className="footer pt-10 text-[0.8rem] text-black relative">
+    <footer
+      className={`footer pt-10 text-[0.8rem] ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
+    >
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
           <div className="footerlft w-2/5 maxScreenMobile:w-full">
@@ -43,13 +50,13 @@ export default function Footer() {
                   Home
                 </Link>
                 <NavLink
-                  to={UPLOAD}
+                  to={"/upload"}
                   className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Upload
                 </NavLink>
                 <NavLink
-                  to={LOGIN}
+                  to={"/signin"}
                   className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Sign In
@@ -65,6 +72,12 @@ export default function Footer() {
             <div>
               <h3 className="font-black mb-5">Dcoumentation</h3>
               <nav className="flex flex-col justify-between align-top">
+                <NavLink
+                  to={DOCUMENT}
+                  className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                >
+                  All Documents
+                </NavLink>
                 <NavLink
                   to={ABOUT}
                   className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"

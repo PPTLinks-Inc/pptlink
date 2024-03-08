@@ -25,3 +25,5 @@ export const UPLOAD = "/upload";
 export const SIGNUP = "/signup";
 
 export const LOGIN = "/login";
+
+export const DOCUMENT = "/documentation";
