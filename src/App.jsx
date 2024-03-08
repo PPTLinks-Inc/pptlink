@@ -52,7 +52,7 @@ function App() {
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="upload" element={<Upload />} />
             <Route path="about" element={<About />} />
-            <Route path="document" element={<Document />} />
+            <Route path="documentation" element={<Document />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
           <Route path="/:id" element={<Interface />} />

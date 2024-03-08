@@ -10,8 +10,35 @@ import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import Accordion from "../accordion/accordion";
 import Card from "../list/card";
+import { userContext } from "../../contexts/userContext";
+import { useCallback, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../assets/assets";
 
 export default function NewHome() {
+  // context
+  const { user, setUser } = useContext(userContext);
+
+  const navigate = useNavigate();
+
+  const [values, setValues] = useState({
+    msgName: "",
+    msgEmail: "",
+    msgPhone: "",
+    msgReason: "",
+    msg: "",
+
+    msgPending: false,
+    msgError: [],
+    msgSuccess: ""
+  });
+
+  const handleMsgSubmit = useCallback((e) => {
+    e.preventDefault();
+
+    setValues({...values, msgPending: true})
+ }, []);
+
   return (
     <section className="parent_page_wrapper min-h-screen w-full">
       <div className="banner relative w-full min-h-screen text-white">
@@ -28,7 +55,12 @@ export default function NewHome() {
               perspiciatis quis incidunt?
             </p>
             <div className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col">
-              <button className="block w-2/5 bg-[white] text-black text-2xl p-2 rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
+              <button
+                className="block w-2/5 bg-[white] text-black text-2xl p-2 rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
+                onClick={() =>
+                  user ? navigate("/upload") : navigate("/signin")
+                }
+              >
                 Present
               </button>
               <button className="block w-2/5 bg-[white] text-black text-2xl p-2 rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
@@ -187,7 +219,7 @@ export default function NewHome() {
                 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
                 diam nonumy eirmod tempor invidunt ut
               </p>
-              <form>
+              <form onSubmit={handleMsgSubmit}>
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <label htmlFor="name" className="block w-full">
@@ -197,6 +229,10 @@ export default function NewHome() {
                       type="text"
                       id="name"
                       name="name"
+                      value={values.msgName}
+                      onChange={(e) => {
+                        setValues({ ...values, msgName: e.target.value });
+                      }}
                       className="block w-full bg-transparent border-b-[1px] border-solid border-white"
                       required
                     />
@@ -209,6 +245,10 @@ export default function NewHome() {
                       type="email"
                       id="email"
                       name="email"
+                      value={values.msgEmail}
+                      onChange={(e) => {
+                        setValues({ ...values, msgEmail: e.target.value });
+                      }}
                       className="block w-full bg-transparent border-b-[1px] border-solid border-white"
                       required
                     />
@@ -224,6 +264,10 @@ export default function NewHome() {
                       id="phone"
                       name="phone"
                       inputMode="numeric"
+                      value={values.msgPhone}
+                      onChange={(e) => {
+                        setValues({ ...values, msgPhone: e.target.value });
+                      }}
                       className="block w-full bg-transparent border-b-[1px] border-solid border-white"
                       required
                     />
@@ -231,6 +275,10 @@ export default function NewHome() {
 
                   <select
                     id="countries"
+                    value={values.msgReason}
+                    onChange={(e) => {
+                      setValues({ ...values, msgReason: e.target.value });
+                    }}
                     class="bg-black border-b border-white text-white block w-[50%] maxScreenMobile:w-full py-2.5"
                   >
                     <option selected>Reason for writing?</option>
@@ -252,14 +300,18 @@ export default function NewHome() {
                     id="message"
                     cols="auto"
                     rows="auto"
+                    value={values.msg}
+                    onChange={(e) => {
+                      setValues({ ...values, msg: e.target.value });
+                    }}
                     className="block w-full min-h-[5rem] bg-transparent border-b-[1px] border-solid border-white"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
-                  className="block w-[10rem] bg-[white] ml-auto text-black text-[.8rem] font-medium p-[.5rem] rounded-[2rem] maxScreenMobile:w-full"
+                  className="block h-[40px] w-[10rem] flex items-center justify-center bg-[white] ml-auto text-black text-[.8rem] font-medium rounded-[2rem] maxScreenMobile:w-full"
                 >
-                  Submit
+                  {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                 </button>
               </form>
             </div>
@@ -327,7 +379,7 @@ export default function NewHome() {
           <div className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full">
             <p className="mb-1">FAQs</p>
             <h3 className="text-[3rem] font-black break-all leading-[4rem] maxScreenMobile:text-[2rem]">
-              Frequently <br /> ask <br /> questions.
+              Frequently <br /> Asked <br /> Questions.
             </h3>
           </div>
 
