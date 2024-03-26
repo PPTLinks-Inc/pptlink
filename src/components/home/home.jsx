@@ -82,7 +82,6 @@ export default function NewHome() {
         <div className="container">
           <div className="flex flex-col items-center text-black">
             <h2 className="text-[3rem]">RECENT</h2>
-            <p className="p1 text-[1.8rem]">presentations</p>
           </div>
           <div className="cards_wrapper w-full mt-20 mb-10">
             {Array(5)
@@ -120,6 +119,7 @@ export default function NewHome() {
                   loading="lazy"
                 />
               </div>
+              
               <div className="anim_body">
                 <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
                   Make Amazing Presentation

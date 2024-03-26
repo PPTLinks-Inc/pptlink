@@ -232,7 +232,7 @@ export default function SignPage() {
         </div>
         <div className="w-[45%] text-white maxScreenMobile:hidden">
           <div className="min-h-[95vh] flex flex-col justify-evenly items-center text-[#FFFFF0]">
-            <h1 className="block w-full text-right text-4xl">PPT LINKS</h1>
+            <h1 className="block w-full text-right text-4xl">PPTLINKS</h1>
             <p className="block w-full text-[.8rem] -mb-24 leading-6 text-justify">
               Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
               nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
