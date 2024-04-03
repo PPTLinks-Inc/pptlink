@@ -7,7 +7,6 @@ import {
   DASHBOARD,
   HOME,
   LEGAL,
-  LOGIN,
   SIGNUP,
   UPLOAD
 } from "../../constants/routes";
@@ -23,13 +22,13 @@ export default function Header({ bgcolor, handleDropdown }) {
   const navigate = useNavigate();
 
   const handlePresentationBtn = () => {
-    if (!user) return navigate(LOGIN);
+    if (!user) return navigate("/signin");
     if (user && user.presentations < 1) return navigate(UPLOAD);
     if (user.presentations > 0) return navigate(DASHBOARD);
   };
 
   const buttontext = () => {
-    if (!user) return "Log in";
+    if (!user) return "Sign in";
     if (user && user.presentations < 1) return "Upload";
     if (user.presentations > 0) return "Dashboard";
   };
@@ -64,7 +63,7 @@ export default function Header({ bgcolor, handleDropdown }) {
           <button
             onClick={() => handlePresentationBtn()}
             type="submit"
-            className={`block w-[140px] text-[.8rem] font-medium h-[35px] rounded-[2rem] ${!bgcolor ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+            className={`block h-[40px] w-[10rem] flex items-center justify-center text-[.8rem] font-medium h-[35px] rounded-[2rem] ${!bgcolor ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
           >
             {buttontext()}
           </button>

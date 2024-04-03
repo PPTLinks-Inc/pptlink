@@ -20,7 +20,7 @@ export default function Card({ img }) {
           <em>Rvau Alayna</em>
         </p>
         <p className="w-full text-[.8rem] text-ellipsis pt-2 font-light">
-          <strong>Topc: </strong>
+          <strong>Topic: </strong>
           <em>edge computing</em>
         </p>
         <span className="block mt-2">
