@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import play from '/team/pptlink_resources/presentation-play-svgrepo-com.png';
 import chat from '/team/pptlink_resources/presentation-svgrepo-com (1).png';
@@ -10,33 +10,95 @@ import "../../assets/styles/general_css.css";
 
 export default function SignPage() {
     const [getlocation] = useState(useLocation().pathname === '/signup' ? true : false);
+    const [inputs, setInputs] = useState({
+        fullname: "",
+        email: "",
+        password: "",
+        confirmpassword: "",
+        validateError: [],
+    });
+
+    function handleFormInputs(event) {
+        const { name, value } = event.target;
+        setInputs(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        const err = formValidation(getlocation);
+        if (err.length > 0) {
+            alert(`Error found ${JSON.stringify(err)}`)
+        } else {
+            alert(`No error found ${JSON.stringify(inputs)}`)
+        }
+    }
+
+    const formValidation = () => {
+        let tempArr = [];
+        const { fullname, email, password, confirmpassword } = inputs;
+
+        if (fullname.length < 3) {
+            tempArr.push("Your user name is too short");
+        }
+
+        if (email.length < 5) {
+            tempArr.push("Your Email is too short");
+        }
+
+        if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+            tempArr.push("Your Email is not Valid");
+        }
+
+        if (password.length < 5) {
+            tempArr.push("Your Password should be more than 5 characters");
+        }
+
+        if (password !== confirmpassword) {
+            tempArr.push("Password and confirm password don't match!");
+        }
+
+        setInputs(prev => ({
+            ...prev,
+            validateError: tempArr
+        }));
+
+        return tempArr;
+    };
+
+    useEffect(() => {
+        formValidation();
+    }, [getlocation]); // Added getlocation as dependency
 
     return (
         <section className='signpage h-screen relative'>
             <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
                 <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] h-[95svh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
-                    <Link to="#" className="block text-md mb-3 font-[600]">PPTLINKS</Link>
+
+                    <Link to="/" className="block text-md mb-3 font-[600]">PPTLINKS</Link>
                     <p className="mb-5 text-[.7rem]">{getlocation ? "Create Account" : "Welcome Back"}</p>
                     <h1 className="text-center text-3xl font-[400] mb-10">{getlocation ? "Sign Up" : "Sign In"}</h1>
-                    <form action={getlocation ? "/signup" : "/signin"} method="post">
+                    <form action={getlocation ? "/signup" : "/signin"} method="post" onSubmit={handleSubmit}>
                         <div className={`flex justify-between items-center gap-4 mb-8 ${!getlocation && "!flex-col"} maxScreenMobile:flex-col`}>
                             <div className={`w-[50%] ${!getlocation && "!hidden"} maxScreenMobile:!w-full`}>
-                                <label htmlFor="fullname" className="block w-full mb-2 pl-1" >*Username</label>
-                                <input type="text" id="fullname" name="fullname" placeholder="Full Name" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" />
+                                <label htmlFor="fullname" className="block w-full mb-2 pl-1" >*fullname</label>
+                                <input type="text" id="fullname" name="fullname" value={inputs.fullname} onChange={handleFormInputs} placeholder="Full Name" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" required />
                             </div>
                             <div className={`w-[50%] ${!getlocation && "!w-4/5"} maxScreenMobile:!w-full`}>
                                 <label htmlFor="email" className="block w-full mb-2 pl-1" >*Email</label>
-                                <input type="email" id="email" name="email" placeholder="eg: example@gmail.com" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" />
+                                <input type="email" id="email" name="email" value={inputs.email} onChange={handleFormInputs} placeholder="eg: example@gmail.com" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" required />
                             </div>
                         </div>
                         <div className={`flex justify-between items-center gap-4 mb-8 ${!getlocation && "!flex-col !gap-2"}  maxScreenMobile:!flex-col`} >
                             <div className={`w-[50%] maxScreenMobile:!w-full ${!getlocation && "!w-4/5"}`}>
                                 <label htmlFor="password" className="block w-full mb-2 pl-1" >*Password</label>
-                                <input type="password" id="password" name="password" placeholder="**********" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" />
+                                <input type="password" id="password" name="password" value={inputs.password} onChange={handleFormInputs} placeholder="**********" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" required />
                             </div>
                             <div className={`w-[50%] maxScreenMobile:!w-full ${!getlocation && "!hidden"}`}>
                                 <label htmlFor="confirmpassword" className="block w-full mb-2 pl-1" >*confirmpassword</label>
-                                <input type="password" id="confirmpassword" name="confirmpassword" placeholder="**********" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" />
+                                <input type="password" id="confirmpassword" name="confirmpassword" value={inputs.confirmpassword} onChange={handleFormInputs} placeholder="**********" className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md" required />
                             </div>
                         </div>
                         <button className="block w-3/5 m-auto mb-2 bg-black rounded-3xl text-white py-2 px-5 shadow-xl border-none maxScreenMobile:w-full">{getlocation ? "Sign Up" : "Sign In"}</button>

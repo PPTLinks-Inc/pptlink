@@ -1,4 +1,6 @@
-import { Link, NavLink } from "react-router-dom";
+import { useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+
 import Socials from "../social/socials";
 import {
   ABOUT,
@@ -9,6 +11,8 @@ import {
   UPLOAD
 } from "../../constants/routes";
 export default function Footer() {
+  const [getlocation] = useState(useLocation().pathname === '/signup' ? true : false);
+
   return (
     <footer className="footer pt-10 text-[0.8rem] text-black relative">
       <div className="container">
