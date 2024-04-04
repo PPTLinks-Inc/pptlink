@@ -118,7 +118,6 @@ const SpinnerIos = () => {
       direction = devices.length - 1;
     }
     setActive(direction);
-    console.log(active);
     setActiveDevice(devices[active]);
   };
 

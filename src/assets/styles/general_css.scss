@@ -1,0 +1,124 @@
+// variables
+$maxHeight: 100svh;
+
+.container {
+    width: 90%;
+    margin: auto;
+}
+
+a,
+* a,
+*[href],
+button,
+* button {
+    cursor: pointer !important;
+}
+
+.parent_page_wrapper {
+    &::before {
+        height: 100svh;
+    }
+
+    .banner {
+        overflow: hidden;
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: black;
+            z-index: -1;
+        }
+
+        &::after {
+            top: unset;
+            top: 30vh;
+            height: 100vh;
+            transform: rotateZ(-15deg) scaleX(2);
+        }
+
+        @media screen and (max-width: 768px) {
+            &::after {
+                top: 20vh;
+            }
+        }
+    }
+
+    .recent {
+        overflow: hidden;
+        $setTop: 30vh;
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: $setTop;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: black;
+            transform: rotateZ(15deg) scaleX(2);
+            z-index: -1;
+        }
+
+        &::after {
+            transform: unset;
+            top: calc($setTop * 2);
+            height: 100%;
+        }
+    }
+
+    .cards_wrapper {
+        display: grid;
+        -moz-column-gap: 9rem;
+             column-gap: 9rem;
+        row-gap: 3rem;
+        grid-auto-flow: row;
+        grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
+
+        & .card {
+            background: rgba(white, .1);
+
+            &:hover {
+                outline: rgba(white, .5) !important;
+                background: rgba(black, .4);
+            }
+        }
+    }
+}
+
+@-webkit-keyframes signanim {
+    from {
+        background-blend-mode: hard-light;
+    }
+
+    to {
+        background-blend-mode: difference;
+    }
+}
+
+@keyframes signanim {
+    from {
+        background-blend-mode: hard-light;
+    }
+
+    to {
+        background-blend-mode: difference;
+    }
+}
+
+.signpage {
+    background-image: url("/team/pptlink_resources/Rectangle 49.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 1);
+    background-blend-mode: hard-light;
+    // animation: signanim 5s ease-in-out 10ms infinite;
+}
