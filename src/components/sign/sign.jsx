@@ -1,5 +1,12 @@
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useCallback, useContext, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { LoadingAssetSmall } from "../../assets/assets";
+import { userContext } from "../../contexts/userContext";
+import { useEffect } from "react";
+import { Helmet } from "react-helmet";
+import { useMutation } from "@tanstack/react-query";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import play from "/team/pptlink_resources/presentation-play-svgrepo-com.png";
 import chat from "/team/pptlink_resources/presentation-svgrepo-com (1).png";
 import meetingsvg from "/team/pptlink_resources/presentation-svgrepo-com (3).png";
@@ -7,15 +14,20 @@ import groupchats from "/team/pptlink_resources/presentation-svgrepo-com (4).png
 import flowchat from "/team/pptlink_resources/presentation-svgrepo-com (5).png";
 import switchboard from "/team/pptlink_resources/presentation-whiteboard-svgrepo-com.png";
 import "../../assets/styles/general_css.css";
+import logo_orange from "/imgs/onemorecolor.png";
 
 export default function SignPage() {
-  const controller = new AbortController();
-
   const navigate = useNavigate();
+  const { user, setUser } = useContext(userContext);
 
-  const [getlocation] = useState(
-    useLocation().pathname === "/signup" ? true : false
+  const [isSignupPage] = useState(
+    useLocation().pathname === "/signup"
   );
+
+  const [passwordErr, setPasswordErr] = useState(null);
+  const [emailErr, setEmailErr] = useState(null);
+  const [fullNameErr, setFullNameErr] = useState(null);
+  const [confirmPasswordErr, setConfirmPasswordErr] = useState(null);
 
   const [values, setValues] = useState({
     fullName: "",
@@ -23,34 +35,138 @@ export default function SignPage() {
     password: "",
     confirmPassword: "",
 
-    fullNameErr: "",
-    emailErr: "",
-    passwordErr: "",
-    confirmPasswordErr: "",
-
-    loading: false
+    showPassword: false,
   });
+
+  const showPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const signin = useMutation({
+    mutationFn: () => {
+      return axios
+        .post("/api/v1/auth/login", {
+          email: values.email,
+          password: values.password
+        });
+    },
+    onSuccess: ({ data }, variables, context) => {
+      setUser(data.user);
+      localStorage.setItem("accessToken", data.token);
+      navigate('/');
+    }
+  });
+
+  const signup = useMutation({
+    mutationFn: () => {
+      return axios
+        .post("/api/v1/auth/register", {
+          email: values.email,
+          password: values.password,
+          username: values.fullName,
+        });
+    },
+    onSuccess: ({ data }, variables, context) => {
+      setUser(data.user);
+      localStorage.setItem("accessToken", data.token);
+      navigate('/');
+    }
+  });
+
+  function handleSubmition(e) {
+    e.preventDefault();
+
+    if (!isSignupPage) {
+      // handle validations for SIGNIN NOTE: shine your eye 👀✨
+      if (values.email.length === 0) {
+        setEmailErr("Email value is empty!");
+      } else if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(values.email)) {
+        setEmailErr("Invalid Email address!");
+      } else {
+        setEmailErr(null);
+      }
+
+      if (values.password.length < 8) {
+        setPasswordErr("Password can'nt be empty!");
+      } else {
+        setPasswordErr(null);
+      }
+
+      if (emailErr || passwordErr) return;
+      // handle axios FOR SIGNIN 😂
+      if (emailErr === null &&
+        passwordErr === null &&
+        values.email.length !== 0 &&
+        values.password.length !== 0) {
+        signin.mutate();
+      }
+
+    } else {
+      // handle validations for SIGNUP NOTE: shine your eye 👀✨
+      if (values.fullName.length === 0) {
+        setFullNameErr("Username value is empty!");
+      } else {
+        setFullNameErr(null);
+      }
+
+      if (values.email.length === 0) {
+        setEmailErr("Email value is empty!");
+      } else if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(values.email)) {
+        setEmailErr("Invalid Email address!");
+      } else {
+        setEmailErr(null);
+      }
+
+      if (values.password.length < 8) {
+        setPasswordErr("Your Password should be more than 8 characters!");
+      } else {
+        setPasswordErr(null);
+      }
+
+      if (values.password !== values.confirmPassword) {
+        setConfirmPasswordErr("Password and confirm Password does'nt match!");
+      } else {
+        setConfirmPasswordErr(null);
+      }
+
+      if (fullNameErr || emailErr || passwordErr || confirmPasswordErr) return;
+      // handle axios FOR SIGNUP 😂
+      if (fullNameErr === null &&
+        emailErr === null &&
+        passwordErr === null &&
+        confirmPasswordErr === null &&
+        values.fullName.length !== 0 &&
+        values.email.length !== 0 &&
+        values.password.length !== 0 &&
+        values.confirmPassword.length !== 0) {
+        signup.mutate();
+      }
+    }
+  }
 
   return (
     <section className="signpage h-screen relative">
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
         <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
-          <Link to="#" className="block text-md mb-3 font-[600]">
-            PPTLINKS
+          <Link to="/" className="block text-md mb-3 font-[600]">
+            <img src={logo_orange} alt={logo_orange} className="w-5 aspect-square" />
+            {/* PPTLINKS */}
           </Link>
           <p className="mb-5 text-[.7rem]">
-            {getlocation ? "Create Account" : "Welcome Back"}
+            {isSignupPage ? "Create Account" : "Welcome Back"}
           </p>
           <h1 className="text-center text-3xl font-[400] mb-10">
-            {getlocation ? "Sign Up" : "Sign In"}
+            {isSignupPage ? "Sign Up" : "Sign In"}
           </h1>
-          <form action={getlocation ? "/signup" : "/signin"} method="post">
+          <form onSubmit={handleSubmition} autoComplete="false"> {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
             {/* sign up */}
+            {signin.isError && <p className="text-[red] text-center font-bold text-xl">{signin.error.response.data.message}</p>}
+            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response.data}</p>}
             <div
-              className={`flex justify-between items-center gap-4 mb-8 ${!getlocation && "!flex-col"} maxScreenMobile:flex-col`}
+              className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col"} maxScreenMobile:flex-col`}
             >
               <div
-                className={`w-[50%] ${!getlocation && "!hidden"} maxScreenMobile:!w-full`}
+                className={`w-[50%] ${!isSignupPage && "!hidden"} maxScreenMobile:!w-full`}
               >
                 <label htmlFor="fullname" className="block w-full mb-2 pl-1">
                   *Username
@@ -64,11 +180,12 @@ export default function SignPage() {
                   id="fullname"
                   name="fullname"
                   placeholder="Full Name"
-                  className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md"
+                  className={`block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${fullNameErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
+                {fullNameErr && (<p className="text-[red] pl-2">{fullNameErr}</p>)}
               </div>
               <div
-                className={`w-[50%] ${!getlocation && "!w-4/5"} maxScreenMobile:!w-full`}
+                className={`w-[50%] ${!isSignupPage && "!w-4/5"} maxScreenMobile:!w-full`}
               >
                 <label htmlFor="email" className="block w-full mb-2 pl-1">
                   *Email
@@ -82,17 +199,18 @@ export default function SignPage() {
                   id="email"
                   name="email"
                   placeholder="eg: example@gmail.com"
-                  className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md"
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${emailErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
+                {emailErr && (<p className="text-[red] pl-2">{emailErr}</p>)}
               </div>
             </div>
 
             {/* sign in */}
             <div
-              className={`flex justify-between items-center gap-4 mb-8 ${!getlocation && "!flex-col !gap-2"}  maxScreenMobile:!flex-col`}
+              className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col !gap-2"}  maxScreenMobile:!flex-col`}
             >
               <div
-                className={`w-[50%] maxScreenMobile:!w-full ${!getlocation && "!w-4/5"}`}
+                className={`w-[50%] maxScreenMobile:!w-full ${!isSignupPage && "!w-4/5"}`}
               >
                 <label htmlFor="password" className="block w-full mb-2 pl-1">
                   *Password
@@ -106,11 +224,12 @@ export default function SignPage() {
                   id="password"
                   name="password"
                   placeholder="**********"
-                  className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md"
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${passwordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
+                {passwordErr && (<p className="text-[red] pl-2">{passwordErr}</p>)}
               </div>
               <div
-                className={`w-[50%] maxScreenMobile:!w-full ${!getlocation && "!hidden"}`}
+                className={`w-[50%] maxScreenMobile:!w-full ${!isSignupPage && "!hidden"}`}
               >
                 <label
                   htmlFor="confirmpassword"
@@ -127,27 +246,28 @@ export default function SignPage() {
                   id="confirmpassword"
                   name="confirmpassword"
                   placeholder="**********"
-                  className="block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md"
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${confirmPasswordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
+                {confirmPasswordErr && (<p className="text-[red] pl-2">{confirmPasswordErr}</p>)}
               </div>
             </div>
-            <button className="block w-3/5 m-auto mb-2 bg-black rounded-3xl text-white h-[40px] px-5 shadow-xl border-none maxScreenMobile:w-full">
-              {getlocation ? "Sign Up" : "Sign In"}
+            <button disabled={signin.isPending || signup.isPending} className="block w-3/5 m-auto mb-2 bg-black rounded-3xl text-white h-[40px] px-5 shadow-xl border-none maxScreenMobile:w-full">
+              {(signin.isPending || signup.isPending) ? "Loading" : isSignupPage ? "Sign Up" : "Sign In"}
             </button>
             <p className="w-3/5 m-auto mt-4 text-center">
-              {getlocation
+              {isSignupPage
                 ? "Already have an account?"
                 : "Don't have an account?"}{" "}
               <a
-                href={getlocation ? "/signin" : "/signup"}
+                href={isSignupPage ? "/signin" : "/signup"}
                 className="text-[#FFA500]"
               >
-                {getlocation ? "Sign In" : "SIgn Up"}
+                {isSignupPage ? "Sign In" : "SIgn Up"}
               </a>
             </p>
             <a
               href="#"
-              className={`block w-fit m-auto mt-4 text-center text-[#FFA500] ${getlocation && "hidden"}`}
+              className={`block w-fit m-auto mt-4 text-center text-[#FFA500] ${isSignupPage && "hidden"}`}
             >
               Forgot password
             </a>
@@ -207,26 +327,26 @@ export default function SignPage() {
           />
 
           <img
-            src={getlocation ? play : chat}
-            alt={getlocation ? play : chat}
+            src={isSignupPage ? play : chat}
+            alt={isSignupPage ? play : chat}
             className="block w-[4rem] aspect-square pointer-events-none  absolute bottom-[16%] left-[5%]"
           />
 
           <img
             src={chat}
             alt={chat}
-            className={`block w-[4rem] aspect-square pointer-events-none  absolute bottom-[25%] right-[2%] ${!getlocation && "hidden"}`}
+            className={`block w-[4rem] aspect-square pointer-events-none  absolute bottom-[25%] right-[2%] ${!isSignupPage && "hidden"}`}
           />
 
           <img
-            src={getlocation ? groupchats : switchboard}
-            alt={getlocation ? groupchats : switchboard}
+            src={isSignupPage ? groupchats : switchboard}
+            alt={isSignupPage ? groupchats : switchboard}
             className="block w-[4rem] aspect-square pointer-events-none  absolute bottom-[1%] right-[20%]"
           />
 
           <img
-            src={getlocation ? flowchat : play}
-            alt={getlocation ? flowchat : play}
+            src={isSignupPage ? flowchat : play}
+            alt={isSignupPage ? flowchat : play}
             className="block w-[4rem] aspect-square pointer-events-none  absolute top-[10%] right-[5%]"
           />
         </div>

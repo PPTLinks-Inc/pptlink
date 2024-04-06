@@ -10,6 +10,9 @@ import {
   SIGNUP,
   UPLOAD
 } from "../../constants/routes";
+import logo_white from "/imgs/WHITE.png";
+import logo_black from "/imgs/BLACK.png";
+import logo_orange from "/imgs/onemorecolor.png";
 
 export default function Header({ bgcolor, handleDropdown }) {
   const [getlocation] = useState(
@@ -41,7 +44,8 @@ export default function Header({ bgcolor, handleDropdown }) {
       <div className="container flex justify-between items-center">
         <div className="logo_wrapper">
           <Link to="/" className="hlogo uppercase block w-10 h-10">
-            PPTLINKS
+            <img src={bgcolor? logo_black : logo_white} alt={bgcolor? logo_black : logo_white} />
+            {/* PPTLINKS */}
             {/* <svg width="800" height="600" id="logo_svg" className="block !w-full !h-full bg-[white]" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <title>Layer 1</title>
