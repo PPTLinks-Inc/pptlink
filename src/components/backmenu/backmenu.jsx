@@ -1,20 +1,41 @@
+import { useState, useContext } from "react";
 import Socials from "../social/socials";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../header/header";
 import { ABOUT, LEGAL, LOGIN, UPLOAD } from "../../constants/routes";
+import { userContext } from "../../contexts/userContext";
+
 export default function Backmenu({ handleDropdown }) {
+  const { user, setUser } = useContext(userContext);
+  const navigate = useNavigate();
+
+  const handlePresentationBtn = (e) => {
+    if (!user) return navigate('/signin');
+
+    if (user) {
+      localStorage.removeItem("accessToken");
+      setUser(null);
+      return navigate('/signin');
+    }
+  };
+
+  const buttontext = () => {
+    if (!user) return "Sign in";
+    if (user) return "Sign Out";
+  };
+
   return (
     <div className="w-full h-full maxScreenMobile:overflow-auto pt-[5.5rem]">
       <Header bgcolor={true} handleDropdown={handleDropdown} />
 
       <div className="w-full h-[90vh]">
         <div className="flex-col w-[100%] h-[50%] flex-1 !border-0 justify-center flex lg:flex-wrap lg:flex-row maxScreenMobile:my-10">
-          <Link
-            to={LOGIN}
+          <button
+            onClick={() => handlePresentationBtn()}
             className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[5rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
           >
-            Sign In
-          </Link>
+            {buttontext()}
+          </button>
           <Link
             to={UPLOAD}
             className="maxScreen:!flex maxScreen:w-full maxScreen:justify-center maxScreen:items-center text-center pl-[5rem] w-[100%] md:h-[calc(100%/2)] h-[calc(100%)] flex items-center justify-start font-medium text-[30px] md:text-[40px] hover:bg-black hover:text-white lg:w-1/2 lg:flex lg:items-center  lg:text-[40px] maxScreenMobile:text-left maxScreenMobile:pl-0 maxScreenMobile:my-5"
