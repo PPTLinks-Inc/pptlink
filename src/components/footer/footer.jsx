@@ -10,6 +10,7 @@ import {
   SIGNUP,
   UPLOAD
 } from "../../constants/routes";
+import logo_orange from "/imgs/onemorecolor.png";
 
 export default function Footer() {
   const [getlocation] = useState(useLocation().pathname === '/signup' ? true : false);
@@ -24,15 +25,13 @@ export default function Footer() {
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
           <div className="footerlft w-2/5 maxScreenMobile:w-full">
-            <h3
-              className="flex justify-start items-end h-[4rem] text-[2rem] text-[#FFA500] 
-                relative before:block before:w-7 before:h-full before:content-[''] 
-                before:bg-[#FFA500] before:absolute before:top-0 before:left-0 before:bottom-0 !baseline mb-5"
-            >
-              <Link to={HOME} className="pl-8 flogo">
+            <Link to={HOME} className="flogo flex flex-row justify-start items-end h-[4rem] text-[2rem] text-[#FFA500] 
+                relative !baseline mb-5">
+              <img src={logo_orange} alt={logo_orange} className="block w-10 aspect-square mr-3" />
+              <span className="block w-fit">
                 PPTLINKS
-              </Link>
-            </h3>
+              </span>
+            </Link>
             <p className="mb-5">
               Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
               nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam

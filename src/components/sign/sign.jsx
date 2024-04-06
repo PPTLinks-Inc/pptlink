@@ -14,6 +14,7 @@ import groupchats from "/team/pptlink_resources/presentation-svgrepo-com (4).png
 import flowchat from "/team/pptlink_resources/presentation-svgrepo-com (5).png";
 import switchboard from "/team/pptlink_resources/presentation-whiteboard-svgrepo-com.png";
 import "../../assets/styles/general_css.css";
+import logo_orange from "/imgs/onemorecolor.png";
 
 export default function SignPage() {
   const navigate = useNavigate();
@@ -148,7 +149,8 @@ export default function SignPage() {
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
         <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
           <Link to="/" className="block text-md mb-3 font-[600]">
-            PPTLINKS
+            <img src={logo_orange} alt={logo_orange} className="w-5 aspect-square" />
+            {/* PPTLINKS */}
           </Link>
           <p className="mb-5 text-[.7rem]">
             {isSignupPage ? "Create Account" : "Welcome Back"}
