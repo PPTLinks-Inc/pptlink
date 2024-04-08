@@ -20,7 +20,7 @@ export default function SignPage() {
   const navigate = useNavigate();
   const { user, setUser } = useContext(userContext);
 
-  const [isSignupPage] = useState(
+  const [isSignupPage, setIsSignupPage] = useState(
     useLocation().pathname === "/signup"
   );
 
@@ -34,13 +34,22 @@ export default function SignPage() {
     email: "",
     password: "",
     confirmPassword: "",
-
     showPassword: false,
   });
 
   const showPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
+
+  const switchPage = (e) => {
+    e.preventDefault();
+    setIsSignupPage(!isSignupPage);
+    setValues({ ...values, fullName: "", email: "", password: "", showPassword: false });
+    setPasswordErr(null);
+    setEmailErr(null);
+    setFullNameErr(null);
+    setConfirmPasswordErr(null);
+  }
 
   const signin = useMutation({
     mutationFn: () => {
@@ -91,7 +100,7 @@ export default function SignPage() {
       } else {
         setPasswordErr(null);
       }
-
+      console.log(values);
       if (emailErr || passwordErr) return;
       // handle axios FOR SIGNIN 😂
       if (emailErr === null &&
@@ -128,7 +137,7 @@ export default function SignPage() {
       } else {
         setConfirmPasswordErr(null);
       }
-
+      console.log(values);
       if (fullNameErr || emailErr || passwordErr || confirmPasswordErr) return;
       // handle axios FOR SIGNUP 😂
       if (fullNameErr === null &&
@@ -180,7 +189,7 @@ export default function SignPage() {
                   id="fullname"
                   name="fullname"
                   placeholder="Full Name"
-                  className={`block w-full border-none indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${fullNameErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${fullNameErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
                 {fullNameErr && (<p className="text-[red] pl-2">{fullNameErr}</p>)}
               </div>
@@ -258,8 +267,9 @@ export default function SignPage() {
               {isSignupPage
                 ? "Already have an account?"
                 : "Don't have an account?"}{" "}
+              {/* href={isSignupPage ? "/signin" : "/signup"} */}
               <a
-                href={isSignupPage ? "/signin" : "/signup"}
+                onClick={switchPage}
                 className="text-[#FFA500]"
               >
                 {isSignupPage ? "Sign In" : "SIgn Up"}
