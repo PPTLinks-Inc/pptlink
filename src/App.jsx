@@ -13,7 +13,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import About from "./components/about-us/about";
+import Document from "./components/document/document";
 import PresentationContextProvider from "./contexts/presentationContext";
+import SignPage from "./components/sign/sign";
+import "./assets/styles/general_css.css";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -42,15 +45,17 @@ function App() {
           <Route path="/" element={<Root />}>
             <Route exact path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Login />} />
+            {/* <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Login />} /> */}
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="institutions" element={<List />} />
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="upload" element={<Upload />} />
             <Route path="about" element={<About />} />
+            <Route path="documentation" element={<Document />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
+          <Route path="/:id" element={<Interface />} />
           <Route
             path="/:id"
             element={
@@ -59,6 +64,8 @@ function App() {
               </PresentationContextProvider>
             }
           />
+          <Route path="signin" element={<SignPage />} />
+          <Route path="signup" element={<SignPage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer />

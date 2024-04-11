@@ -1042,6 +1042,7 @@ function Host({ muted, name }) {
         <img
           src="/team/sam.jpg"
           className="w-full rounded-full h-full z-30 object-cover"
+          loading="lazy"
         />
       </div>
       <div className="w-fit text-center text-sm mx-auto">
@@ -1066,6 +1067,7 @@ function Participant({ participant, className, hostParticipantAction }) {
           src="/team/ray.jpg"
           className="w-full h-full object-cover"
           alt=""
+          loading="lazy"
         />
       </div>
       <small className="capitalize text-slate-200 text-ellipsis w-full overflow-hidden">
@@ -1120,7 +1122,7 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
       }`}
     >
       <div className="rounded-full overflow-clip w-8 h-8">
-        <img src="/team/bright.jpg" />
+        <img src="/team/bright.jpg" loading="lazy" />
       </div>
       <p className="p-1 rounded-lg border_ border-gray-500 w-fit max-w-[70%]">
         has the lecture started? Lorem ipsum dolor, sit amet consectetur
@@ -1136,7 +1138,11 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
       <div className="flex items-center gap-3 shrink-0">
         <Host muted={hostMuted} name={hostName} />
         <div className="w-16 md:w-32">
-          <img src={Waves} className="w-full h-full object-cover" />
+          <img
+            src={Waves}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
         </div>
         <div className="p-2 rounded-lg">
           <p className="font-bold">Presentation name</p>
@@ -1179,6 +1185,7 @@ function Participants({ participants, presentationName }) {
   //         src='/team/ray.jpg'
   //         className='w-full h-full object-cover'
   //         alt=''
+  // loading="lazy"
   //       />
   //     </div>
   //     <small className='mx-auto'>guest</small>
@@ -1192,7 +1199,7 @@ function Participants({ participants, presentationName }) {
         <Host />
         {
           <div className="">
-            <img src={Waves} />
+            <img src={Waves} loading="lazy" />
           </div>
         }
         <div className="p-2 rounded-lg">

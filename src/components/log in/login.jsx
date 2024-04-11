@@ -99,7 +99,6 @@ const Login = () => {
             controller.abort();
           })
           .catch((err) => {
-            console.log(err);
 
             setValues({
               ...values,

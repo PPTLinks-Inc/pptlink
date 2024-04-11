@@ -248,9 +248,8 @@ const Dashboard = () => {
 
                 <div
                   ref={arrowRef}
-                  className={`w-full h-[40px] flex items-center justify-center ${
-                    !shouldFetchMoreData && 'hidden'
-                  }`}
+                  className={`w-full h-[40px] flex items-center justify-center ${!shouldFetchMoreData && 'hidden'
+                    }`}
                 >
                   {values.setPresentations.length > 0 && values.pending ? (
                     <LoadingAssetSmall2 />
@@ -315,9 +314,8 @@ function PresentationCard({ index, item, infoDetails }) {
         return (
           <div
             key={i}
-            className={`absolute top-[73%] right-2 opacity-0 pointer-events-none transition-all duration-300 group ${
-              infoBtn && 'opacity-100'
-            }`}
+            className={`absolute top-[73%] right-2 opacity-0 pointer-events-none transition-all duration-300 group ${infoBtn && 'opacity-100'
+              }`}
             style={{
               transform: infoBtn
                 ? `translateY(${(i === 0 ? 0.7 + 0.5 : i + 1.2) * 100}%)`
