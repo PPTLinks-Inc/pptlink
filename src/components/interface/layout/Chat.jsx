@@ -743,7 +743,7 @@ const Chat = React.memo(
                         >
                           <Messaging
                             currentUser={currentUser}
-                            hostMuted={hostData.muted}
+                            hostData={hostData}
                             presentationName={presentation.name}
                           />
                         </AnimateInOut>
@@ -756,6 +756,7 @@ const Chat = React.memo(
                           className="gap-2 p-3 flex-1 overflow-hidden"
                         >
                           <Participants
+                            hostData={hostData}
                             participants={participantsArray}
                             presentationName={presentation.name}
                           />
@@ -782,7 +783,7 @@ const Chat = React.memo(
                             show={chatOpen.open}
                             className="w-full flex gap-3 items-center p-2"
                           >
-                            <Host muted={hostData.muted} name={hostData.name} />
+                            <Host hostData={hostData} />
                             <div className="space-y-2 flex w-full flex-row-reverse gap-3">
                               <div className="p-2 flex-1 rounded-lg">
                                 <p>{presentation.name}</p>
@@ -1025,28 +1026,28 @@ Chat.displayName = "Chat";
 export default Chat;
 
 // HOST COMPONENT (For reusability. writing the "double-ping" animation code more than once is a drag)
-function Host({ muted, name }) {
+function Host({ hostData }) {
   return (
     <div className="space-y-1  w-fit text-center">
       <div>
         {/* Status indicator for host */}
         <span
           className={`inline-block w-2 h-2 rounded-full ${
-            muted ? "bg-rose-700" : "bg-green-600"
-          } shadow-sm ${!muted && activePingSTyles} `}
+            hostData.muted ? "bg-rose-700" : "bg-green-600"
+          } shadow-sm ${!hostData.muted && activePingSTyles} `}
         />
         <small className="ml-1">host</small>
       </div>
       {/* Circular avatar with ping animation */}
       <div className="rounded-full_  overflow-clip_ w-14 h-14  md:w-20 md:h-20">
         <img
-          src="/team/sam.jpg"
+          src={`https://robohash.org/${hostData.id}.png`}
           className="w-full rounded-full h-full z-30 object-cover"
           loading="lazy"
         />
       </div>
       <div className="w-fit text-center text-sm mx-auto">
-        <p className="font-semibold">{name}</p>
+        <p className="font-semibold">{hostData.name}</p>
       </div>
     </div>
   );
@@ -1064,7 +1065,7 @@ function Participant({ participant, className, hostParticipantAction }) {
         className={`rounded-full overflow-clip shrink-0 w-12 h-12 md:w-16 md:h-16 ${className}`}
       >
         <img
-          src="/team/ray.jpg"
+          src={`https://robohash.org/${participant.id}.png`}
           className="w-full h-full object-cover"
           alt=""
           loading="lazy"
@@ -1112,7 +1113,7 @@ const messages = [
 ];
 
 // Messaging Component
-function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
+function Messaging({ currentUser, hostData, presentationName }) {
   const [messageInput, setMessageInput] = useState("");
 
   const Message = ({ message }) => (
@@ -1136,7 +1137,7 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
     <>
       {/* Header for the messaging component */}
       <div className="flex items-center gap-3 shrink-0">
-        <Host muted={hostMuted} name={hostName} />
+        <Host hostData={hostData} />
         <div className="w-16 md:w-32">
           <img
             src={Waves}
@@ -1177,7 +1178,7 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
 }
 
 // Participants Component
-function Participants({ participants, presentationName }) {
+function Participants({ participants, presentationName, hostData }) {
   // const Participant = () => (
   //   <div className='w-fit -space-y-1 text-center'>
   //     <div className='rounded-full col-span-1 overflow-clip shrink-0 w-8 h-8 lg:w-12 lg:h-12'>
@@ -1196,7 +1197,7 @@ function Participants({ participants, presentationName }) {
     <>
       {/* Header for the messaging component */}
       <div className="flex items-center gap-3 shrink-0">
-        <Host />
+        <Host hostData={hostData} />
         {
           <div className="">
             <img src={Waves} loading="lazy" />
