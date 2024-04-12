@@ -3,25 +3,21 @@
 import { Outlet } from "react-router";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import {
-  DASHBOARD,
-  LOGIN,
-  UPLOAD,
-} from "../../constants/routes";
+import { DASHBOARD, LOGIN, UPLOAD } from "../../constants/routes";
 import { useRef } from "react";
 import { useContext, useEffect } from "react";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { LoadingAssetBig2 } from "../../assets/assets";
-import MovingEllipses from "../animation/MovingEllipes"
+import MovingEllipses from "../animation/MovingEllipes";
 import Header from "../header/header";
 import Footer from "../footer/footer";
 import Backmenu from "../backmenu/backmenu";
 // import { socket } from '../../socket';
-export default function Root() {
+export default function Root({ isLoading }) {
   const controller = new AbortController();
   // context
-  const { user, setUser } = useContext(userContext);
+  const { user } = useContext(userContext);
   // hooks
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,36 +28,14 @@ export default function Root() {
     window.scrollTo({ top: 0 });
   }, [location.pathname]);
 
-  useEffect(() => {
-    axios
-      .get("/api/v1/auth/user")
-      .then(({ data }) => {
-        setUser(data.user);
-        setPage({ ...page, pending: false });
-      })
-      .catch((err) => {
-        setUser(null);
-        setPage({ ...page, pending: false });
-      });
-
-    // socket.connect();
-
-    return () => {
-      // if user leaves the page disconnect the socket.io connection
-      // socket.disconnect();
-    };
-  }, []);
-
   const [page, setPage] = useState({
     dropdown: false,
 
     email: "",
     message: "",
 
-    pending: true,
-
     submitPending: false,
-    submitErrors: [],
+    submitErrors: []
   });
 
   const handleDropdown = () => {
@@ -83,7 +57,7 @@ export default function Root() {
     if (page.message.length < 7) {
       tempArr = [
         ...tempArr,
-        "Your message is too short, we want to hear more from you",
+        "Your message is too short, we want to hear more from you"
       ];
 
       setPage({ ...page, submitErrors: tempArr });
@@ -101,13 +75,13 @@ export default function Root() {
 
       axios
         .post("the route", {
-          signal: controller.signal,
+          signal: controller.signal
         })
         .then(({ data }) => {
           setPage({
             ...page,
             submitPending: false,
-            submitSuccess: data.successMessage,
+            submitSuccess: data.successMessage
           });
 
           controller.abort();
@@ -116,7 +90,7 @@ export default function Root() {
           setPage({
             ...page,
             submitPending: false,
-            submitErrors: [err.response.message],
+            submitErrors: [err.response.message]
           });
         });
     }
@@ -131,10 +105,11 @@ export default function Root() {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${color === "black"
-          ? " bg-black text-slate-200"
-          : "bg-slate-200 text-black"
-          }`}
+        className={`px-7 rounded-xl py-1 ${
+          color === "black"
+            ? " bg-black text-slate-200"
+            : "bg-slate-200 text-black"
+        }`}
         onClick={() => handleClick()}
       >
         Present
@@ -143,17 +118,20 @@ export default function Root() {
   };
 
   return (
-    <div className={`w-full h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "overflow-y-hidden" : "overflow-y-auto"}`}>
+    <div
+      className={`w-full h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "overflow-y-hidden" : "overflow-y-auto"}`}
+    >
       <Backmenu handleDropdown={handleDropdown} />
       <div
         ref={mainRef}
-        className={`min-h-screen bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
-          ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
-          : "transition-transform translate-y-0 ease-in-out top-0"
-          }`}
+        className={`min-h-screen bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
+          page.dropdown
+            ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
+            : "transition-transform translate-y-0 ease-in-out top-0"
+        }`}
       >
         <Header bgcolor={false} handleDropdown={handleDropdown} />
-        {page.pending ? (
+        {isLoading ? (
           <div className="w-full h-[85vh] flex justify-center items-center bg-black">
             <LoadingAssetBig2 />
           </div>
