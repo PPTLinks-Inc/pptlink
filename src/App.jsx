@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import Home from "./components/home/home";
 import NotFound from "./components/404/404";
-import Login from "./components/log in/login";
 import Dashboard from "./components/profile/dashboard";
 import List from "./components/list/list";
 import Upload from "./components/upload/upload";
@@ -55,7 +54,6 @@ function App() {
             <Route path="documentation" element={<Document />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
-          <Route path="/:id" element={<Interface />} />
           <Route
             path="/:id"
             element={
