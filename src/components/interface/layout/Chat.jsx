@@ -12,6 +12,7 @@ import {
   FaWindowMinimize
 } from "react-icons/fa";
 import Waves from "./assets/images/waves.svg";
+// import Mic from "./assets/images/mic-gradient.svg";
 import Media from "react-media";
 import AnimateInOut from "../../AnimateInOut";
 import { toast } from "react-toastify";
@@ -61,7 +62,7 @@ const Chat = React.memo(
     console.log({ conversationLive });
     // const [isSpeaking, setIsSpeaking] = useState(false);
     const [showLeave, setShowLeave] = useState(false);
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState(user ? user.username : "");
     const [hostData, setHostData] = useState({
       id: "",
       role: "HOST",
@@ -75,7 +76,6 @@ const Chat = React.memo(
       () => Object.values(participantsObj),
       [participantsObj]
     );
-
 
     const currentUser = "me";
 
@@ -256,7 +256,7 @@ const Chat = React.memo(
           id: presentation.rtcUid,
           role: isHost ? "HOST" : "GUEST",
           status: isHost ? CAN_SPK : MIC_OFF,
-          name: isHost ? "user.username" : username,
+          name: isHost ? user.username : username,
           muted: "true"
         };
         await rtmClient.addOrUpdateLocalUserAttributes(userState);
@@ -507,7 +507,7 @@ const Chat = React.memo(
       if (!isHost) {
         toast.success("Left conversation");
       }
-      
+
       setParticipantsObj({});
       closeChat();
       setChatOpen((prev) => ({
@@ -790,95 +790,89 @@ const Chat = React.memo(
                               </div>
                               <div className="flex items-center gap-2">
                                 {/* Buttons for microphone, messaging, and leaving chat */}
-
-                                <button
-                                  disabled={
-                                    micToggle.isPending ||
-                                    micRequestToggle.isPending
-                                  }
-                                  onClick={() => {
-                                    // if (isHost) return;
-                                    // if (
-                                    //   audioStatus === CAN_SPK ||
-                                    //   audioStatus === MIC_OFF
-                                    // ) {
-                                    //   return setAudioStatus(BASE_MIC);
-                                    // }
-                                    // if (audioStatus === MIC_OFF) {
-                                    //   return setAudioStatus(CAN_SPK);
-                                    // }
-                                    // if (audioStatus === BASE_MIC && !isHost) {
-                                    //   return setAudioStatus(REQ_MIC);
-                                    // }
-                                    // if (audioStatus === REQ_MIC) {
-                                    //   return setAudioStatus(BASE_MIC);
-                                    // }
-                                    // if (audioStatus === MIC_OFF) {
-
-                                    // if (!isHost) {
-                                    //   if (audioStatus === MUTED)
-                                    //     setAudioStatus(UNMUTED);
-                                    //   if (audioStatus === UNMUTED)
-                                    //     setAudioStatus(MUTED);
-
-                                    if (
-                                      isHost ||
-                                      participantsObj[presentation.rtcUid]
-                                        .status === CAN_SPK
-                                    ) {
-                                      micToggle.mutate();
-                                    } else {
-                                      if (
-                                        participantsObj[presentation.rtcUid]
-                                          .status == MIC_OFF
-                                      )
-                                        return micRequestToggle.mutate(REQ_MIC);
-                                      micRequestToggle.mutate(MIC_OFF);
+                                <div className="flex flex-col items-center">
+                                  <button
+                                    disabled={
+                                      micToggle.isPending ||
+                                      micRequestToggle.isPending
                                     }
-                                  }}
-                                  className="p-2 relative bg-gray-700 flex items-center justify-center rounded-full"
-                                >
-                                  {isHost && !hostData.muted && (
-                                    <FaMicrophone className="w-6 h-6 " />
-                                  )}
-                                  {isHost && hostData.muted && (
-                                    <FaMicrophoneSlash className="w-6 h-6 " />
-                                  )}
-                                  {!isHost &&
-                                    !participantsObj[presentation.rtcUid]
-                                      ?.muted && (
+                                    onClick={() => {
+                                      if (
+                                        isHost ||
+                                        participantsObj[presentation.rtcUid]
+                                          .status === CAN_SPK
+                                      ) {
+                                        micToggle.mutate();
+                                      } else {
+                                        if (
+                                          participantsObj[presentation.rtcUid]
+                                            .status == MIC_OFF
+                                        )
+                                          return micRequestToggle.mutate(
+                                            REQ_MIC
+                                          );
+                                        micRequestToggle.mutate(MIC_OFF);
+                                      }
+                                    }}
+                                    className="p-2 relative bg-gray-700 flex items-center justify-center rounded-full"
+                                  >
+                                    {((isHost && !hostData.muted) ||
+                                      (!isHost &&
+                                        !participantsObj[presentation.rtcUid]
+                                          ?.muted)) && (
                                       <FaMicrophone className="w-6 h-6 " />
                                     )}
-                                  {!isHost &&
-                                    participantsObj[presentation.rtcUid]
-                                      ?.muted && (
+                                    {((isHost && hostData.muted) ||
+                                      (!isHost &&
+                                        participantsObj[presentation.rtcUid]
+                                          ?.muted)) && (
                                       <FaMicrophoneSlash className="w-6 h-6 " />
                                     )}
-                                  <div className="absolute z-10 -bottom-0 right-0 ">
-                                    <span
-                                      className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full 
-                                      ${
-                                        !isHost &&
-                                        participantsObj[presentation.rtcUid]
-                                          ?.status === MIC_OFF &&
-                                        "bg-rose-500"
-                                      }
-                                      ${
-                                        !isHost &&
-                                        participantsObj[presentation.rtcUid]
-                                          ?.status === REQ_MIC &&
-                                        "bg-orange-400"
-                                      }
-                                      ${
-                                        !isHost &&
-                                        participantsObj[presentation.rtcUid]
-                                          ?.status === CAN_SPK &&
-                                        "bg-green-500"
-                                      }
-                                      `}
-                                    />
-                                  </div>
-                                </button>
+                                    <div className="absolute z-10 -bottom-0 right-0 ">
+                                      <span
+                                        className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full 
+                                        ${
+                                          !isHost &&
+                                          participantsObj[presentation.rtcUid]
+                                            ?.status === MIC_OFF &&
+                                          "bg-rose-500"
+                                        }
+                                        ${
+                                          !isHost &&
+                                          participantsObj[presentation.rtcUid]
+                                            ?.status === REQ_MIC &&
+                                          "bg-orange-400"
+                                        }
+                                        ${
+                                          !isHost &&
+                                          participantsObj[presentation.rtcUid]
+                                            ?.status === CAN_SPK &&
+                                          "bg-green-500"
+                                        }
+                                        `}
+                                      />
+                                    </div>
+                                  </button>
+                                  <p>
+                                    {(isHost ||
+                                      participantsObj[presentation.rtcUid]
+                                        ?.status === CAN_SPK) ? (
+                                      <>
+                                        {((isHost && !hostData.muted) ||
+                                          (!isHost &&
+                                            !participantsObj[
+                                              presentation.rtcUid
+                                            ]?.muted)) &&
+                                          "Mute"}
+                                        {((isHost && hostData.muted) ||
+                                          (!isHost &&
+                                            participantsObj[presentation.rtcUid]
+                                              ?.muted)) &&
+                                          "Unmute"}
+                                      </>
+                                    ) : (!isHost && participantsObj[presentation.rtcUid]?.status === REQ_MIC) ? "Requesting" : "Mic off"}
+                                  </p>
+                                </div>
                                 {
                                   // <AnimateInOut
                                   //   show={
@@ -905,18 +899,24 @@ const Chat = React.memo(
                                   //   </button>
                                   // </AnimateInOut>
                                 }
-                                <button
-                                  onClick={() => showMessaging()}
-                                  className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
-                                >
-                                  <MessageRounded className="w-6 h-6 " />
-                                </button>
-                                <button
-                                  onClick={() => setShowLeave(true)}
-                                  className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
-                                >
-                                  <CloseOutlined className="w-6 h-6 fill-rose-500 text-rose-500" />
-                                </button>
+                                <div className="flex flex-col items-center">
+                                  <button
+                                    onClick={() => showMessaging()}
+                                    className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
+                                  >
+                                    <MessageRounded className="w-6 h-6 " />
+                                  </button>
+                                  <p>Chat</p>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                  <button
+                                    onClick={() => setShowLeave(true)}
+                                    className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
+                                  >
+                                    <CloseOutlined className="w-6 h-6 fill-rose-500 text-rose-500" />
+                                  </button>
+                                  <p>End</p>
+                                </div>
                               </div>
                             </div>
                           </AnimateInOut>
