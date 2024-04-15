@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { userContext } from "./contexts/userContext";
 import Home from "./components/home/home";
 import NotFound from "./components/404/404";
-import Login from "./components/log in/login";
 import Dashboard from "./components/profile/dashboard";
 import List from "./components/list/list";
 import Upload from "./components/upload/upload";
@@ -38,11 +40,21 @@ axios.interceptors.response.use(function (response) {
 });
 
 function App() {
+  const { setUser } = useContext(userContext);
+
+  const userQuery = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/v1/auth/user");
+      setUser(data.user);
+    }
+  });
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Root />}>
+          <Route path="/" element={<Root isLoading={userQuery.isLoading} />}>
             <Route exact path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
             {/* <Route path="login" element={<Login />} />
@@ -55,7 +67,6 @@ function App() {
             <Route path="documentation" element={<Document />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
-          <Route path="/:id" element={<Interface />} />
           <Route
             path="/:id"
             element={

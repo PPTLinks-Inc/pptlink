@@ -3,7 +3,7 @@
 // Importing components and libraries
 import { CloseOutlined, MessageRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import {
   FaChevronUp,
   FaMicrophone,
@@ -12,7 +12,7 @@ import {
   FaWindowMinimize
 } from "react-icons/fa";
 import Waves from "./assets/images/waves.svg";
-import MicGradient from "./assets/images/mic-gradient.svg";
+// import Mic from "./assets/images/mic-gradient.svg";
 import Media from "react-media";
 import AnimateInOut from "../../AnimateInOut";
 import { toast } from "react-toastify";
@@ -37,12 +37,9 @@ const activePingSTyles =
   "shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50  shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50 relative before:w-full before:h-full before:rounded-full  before:animate-ping before:absolute before:inset-0 before:m-auto before:-z-10 after:w-full after:h-full after:rounded-full  after:animate-ping-200 after:absolute after:inset-0 after:m-auto after:-z-20 after:delay-150 z-30";
 
 // MIC States
-const BASE_MIC = "base mic";
 const REQ_MIC = "request to speak";
 const CAN_SPK = "user is allowed to speak";
 const MIC_OFF = "mic is off";
-const MUTED = "mic is muted";
-const UNMUTED = "mic is on";
 
 // Chat component
 const Chat = React.memo(
@@ -65,29 +62,22 @@ const Chat = React.memo(
     console.log({ conversationLive });
     // const [isSpeaking, setIsSpeaking] = useState(false);
     const [showLeave, setShowLeave] = useState(false);
-    const [audioStatus, setAudioState] = useState(MIC_OFF);
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState(user ? user.username : "");
     const [hostData, setHostData] = useState({
       id: "",
       role: "HOST",
-      status: "CANNOT_SPEAK",
+      status: CAN_SPK,
       name: "",
       muted: true
     });
 
-    // status: CAN_SPEAK | REQUESTED | CANNOT_SPEAK
-    const [participants, setParticipants] = useState([]);
     const [participantsObj, setParticipantsObj] = useState({});
-    const participantsArray = Object.values(participantsObj);
-
-    // NOTE: Testing
-    const [muted, setMuted] = useState(false);
+    const participantsArray = useMemo(
+      () => Object.values(participantsObj),
+      [participantsObj]
+    );
 
     const currentUser = "me";
-
-    useEffect(() => {
-      console.log("PARTICIPANTS: ", { participants });
-    }, [participants.length]);
 
     // State to manage chat modal's open, join, expand, and messaging states
     const [chatOpen, setChatOpen] = useState({
@@ -101,38 +91,90 @@ const Chat = React.memo(
 
     const micToggle = useMutation({
       mutationFn: async () => {
-        if (micState) {
-          await rtmClient.addOrUpdateLocalUserAttributes({ muted: "false" });
-          audioTracks.localAudioTrack?.setMuted(false);
-          setMuted(true);
+        if (isHost) {
+          if (hostData.muted) {
+            await rtmClient.addOrUpdateLocalUserAttributes({ muted: "false" });
+            await channel.sendMessage({ text: "host-toggle-mic" });
+            audioTracks.localAudioTrack?.setMuted(false);
+            setHostData((prev) => ({ ...prev, muted: false }));
+          } else {
+            await rtmClient.addOrUpdateLocalUserAttributes({ muted: "true" });
+            await channel.sendMessage({ text: "host-toggle-mic" });
+            audioTracks.localAudioTrack?.setMuted(true);
+            setHostData((prev) => ({ ...prev, muted: true }));
+          }
         } else {
-          await rtmClient.addOrUpdateLocalUserAttributes({ muted: "true" });
-          audioTracks.localAudioTrack?.setMuted(true);
-          setMuted(false);
+          if (participantsObj[presentation.rtcUid].muted) {
+            await rtmClient.addOrUpdateLocalUserAttributes({ muted: "false" });
+            await channel.sendMessage({ text: "toggle-mic" });
+            audioTracks.localAudioTrack?.setMuted(false);
+            participantsObj[presentation.rtcUid].muted = false;
+          } else {
+            await rtmClient.addOrUpdateLocalUserAttributes({ muted: "true" });
+            await channel.sendMessage({ text: "toggle-mic" });
+            audioTracks.localAudioTrack?.setMuted(true);
+            participantsObj[presentation.rtcUid].muted = true;
+          }
         }
-
-        await channel.sendMessage({ event: "toggle-mic" });
-        return true;
       }
     });
 
-    useEffect(() => {
-      switch (audioStatus) {
-        case CAN_SPK:
-          // micToggle.mutate({ newState: "CAN_SPEAK" });
-          audioTracks.localAudioTrack?.setMuted(false);
-          if (isHost) setHostData((prev) => ({ ...prev, muted: false }));
-          break;
-        case MIC_OFF:
-          // micToggle.mutate({ newState: "CANNOT_SPEAK" });
-          audioTracks.localAudioTrack?.setMuted(true);
-          if (isHost) setHostData((prev) => ({ ...prev, muted: true }));
-          break;
-        case REQ_MIC:
-          // micToggle.mutate({ newState: "REQUESTED" });
-          break;
+    const micRequestToggle = useMutation({
+      mutationFn: async (newState) => {
+        console.log(newState);
+        if (newState === REQ_MIC) {
+          await rtmClient.addOrUpdateLocalUserAttributes({ status: REQ_MIC });
+          await channel.sendMessage({ text: "req-toggle-mic" });
+          setParticipantsObj((prev) => ({
+            ...prev,
+            [presentation.rtcUid]: {
+              ...prev[presentation.rtcUid],
+              status: REQ_MIC
+            }
+          }));
+        }
+        if (newState === MIC_OFF) {
+          await rtmClient.addOrUpdateLocalUserAttributes({ status: MIC_OFF });
+          await channel.sendMessage({ text: "req-toggle-mic" });
+          setParticipantsObj((prev) => ({
+            ...prev,
+            [presentation.rtcUid]: {
+              ...prev[presentation.rtcUid],
+              status: MIC_OFF
+            }
+          }));
+        }
       }
-    }, [audioStatus]);
+    });
+
+    const hostParticipantAction = useMutation({
+      mutationFn: async (participantId) => {
+        if (!isHost) return;
+        if (participantsObj[participantId].status === REQ_MIC) {
+          await channel.sendMessage({
+            text: `accept-req-toggle-mic_${participantId}`
+          });
+          setParticipantsObj((prev) => ({
+            ...prev,
+            [participantId]: {
+              ...prev[participantId],
+              status: CAN_SPK
+            }
+          }));
+        } else if (participantsObj[participantId].status === CAN_SPK) {
+          await channel.sendMessage({
+            text: `reject-req-toggle-mic_${participantId}`
+          });
+          setParticipantsObj((prev) => ({
+            ...prev,
+            [participantId]: {
+              ...prev[participantId],
+              status: MIC_OFF
+            }
+          }));
+        }
+      }
+    });
 
     useEffect(() => {
       console.log({ closeChatModal });
@@ -198,7 +240,7 @@ const Chat = React.memo(
 
         audioTracks.localAudioTrack =
           await AgoraRTC.createMicrophoneAudioTrack();
-        // audioTracks.localAudioTrack.setMuted(true);
+        audioTracks.localAudioTrack.setMuted(true);
         await rtcClient.publish(audioTracks.localAudioTrack);
 
         rtmClient = AgoraRTM.createInstance(AGORA_APP_ID);
@@ -213,14 +255,13 @@ const Chat = React.memo(
         const userState = {
           id: presentation.rtcUid,
           role: isHost ? "HOST" : "GUEST",
-          status: "CANNOT_SPEAK",
-          name: isHost ? "user.username" : username,
+          status: isHost ? CAN_SPK : MIC_OFF,
+          name: isHost ? user.username : username,
           muted: "true"
         };
         await rtmClient.addOrUpdateLocalUserAttributes(userState);
         const members = await channel.getMembers();
         console.log({ members });
-        let tempUsers = [];
 
         for (const member of members) {
           const userData = await rtmClient.getUserAttributesByKeys(member, [
@@ -237,11 +278,6 @@ const Chat = React.memo(
               muted: userData.muted === "true"
             });
           } else {
-            tempUsers.push({
-              id: member,
-              ...userData,
-              muted: userData.muted === "true"
-            });
             setParticipantsObj((prev) => ({
               ...prev,
               [member]: {
@@ -253,15 +289,7 @@ const Chat = React.memo(
           }
         }
 
-        // for (let i = 0; i < members.length; i++) {
-        //   const member = members[i];
-
-        // }
-
-        setParticipants(tempUsers);
-
         channel.on("MemberJoined", async (memberId) => {
-          console.log("MEMBER_JOINED", { memberId });
           const userData = await rtmClient.getUserAttributesByKeys(memberId, [
             "role",
             "status",
@@ -272,25 +300,84 @@ const Chat = React.memo(
             setHostData({ id: memberId, ...userData });
             return;
           }
-          setParticipants((prev) => [
+          setParticipantsObj((prev) => ({
             ...prev,
-            { id: memberId, ...userData, muted: userData.muted === "true" }
-          ]);
-          console.log("MemberJoined", memberId);
+            [memberId]: {
+              id: memberId,
+              ...userData,
+              muted: userData.muted === "true"
+            }
+          }));
         });
         channel.on("MemberLeft", async (memberId) => {
-          console.log("MemberLeft", memberId);
-
-          setParticipants((prev) =>
-            prev.filter((participant) => participant.id !== memberId)
-          );
+          setParticipantsObj((prev) => {
+            const temp = { ...prev };
+            delete temp[memberId];
+            return temp;
+          });
         });
 
-        channel.on("ChannelMessage", function (message, memberId) {
-          if (message.event === "toggle-mic") {
-            const userData = rtmClient.getUserAttributesByKeys(memberId, [
+        channel.on("ChannelMessage", async function (message, memberId) {
+          console.log("ChannelMessage", message, memberId);
+          if (message.text === "req-toggle-mic") {
+            const userData = await rtmClient.getUserAttributesByKeys(memberId, [
               "status"
             ]);
+            setParticipantsObj((prev) => ({
+              ...prev,
+              [memberId]: {
+                ...prev[memberId],
+                status: userData.status
+              }
+            }));
+          } else if (message.text.includes("accept-req-toggle-mic")) {
+            const id = message.text.split("_")[1];
+            if (id === presentation.rtcUid) {
+              await rtmClient.addOrUpdateLocalUserAttributes({
+                status: CAN_SPK
+              });
+            }
+            setParticipantsObj((prev) => ({
+              ...prev,
+              [id]: {
+                ...prev[id],
+                status: CAN_SPK
+              }
+            }));
+          } else if (message.text.includes("reject-req-toggle-mic")) {
+            const id = message.text.split("_")[1];
+            if (id === presentation.rtcUid) {
+              audioTracks.localAudioTrack?.setMuted(true);
+              await rtmClient.addOrUpdateLocalUserAttributes({
+                status: MIC_OFF
+              });
+            }
+            setParticipantsObj((prev) => ({
+              ...prev,
+              [id]: {
+                ...prev[id],
+                status: MIC_OFF
+              }
+            }));
+          } else if (message.text === "host-toggle-mic") {
+            const userData = await rtmClient.getUserAttributesByKeys(memberId, [
+              "muted"
+            ]);
+            setHostData((prev) => ({
+              ...prev,
+              muted: userData.muted === "true"
+            }));
+          } else if (message.text === "toggle-mic") {
+            const userData = await rtmClient.getUserAttributesByKeys(memberId, [
+              "muted"
+            ]);
+            setParticipantsObj((prev) => ({
+              ...prev,
+              [memberId]: {
+                ...prev[memberId],
+                muted: userData.muted === "true"
+              }
+            }));
           }
         });
 
@@ -420,7 +507,8 @@ const Chat = React.memo(
       if (!isHost) {
         toast.success("Left conversation");
       }
-      setParticipants([]);
+
+      setParticipantsObj({});
       closeChat();
       setChatOpen((prev) => ({
         ...prev,
@@ -655,7 +743,7 @@ const Chat = React.memo(
                         >
                           <Messaging
                             currentUser={currentUser}
-                            hostMuted={hostData.muted}
+                            hostData={hostData}
                             presentationName={presentation.name}
                           />
                         </AnimateInOut>
@@ -668,7 +756,8 @@ const Chat = React.memo(
                           className="gap-2 p-3 flex-1 overflow-hidden"
                         >
                           <Participants
-                            participants={participants}
+                            hostData={hostData}
+                            participants={participantsArray}
                             presentationName={presentation.name}
                           />
                         </AnimateInOut>
@@ -694,82 +783,96 @@ const Chat = React.memo(
                             show={chatOpen.open}
                             className="w-full flex gap-3 items-center p-2"
                           >
-                            <Host muted={hostData.muted} name={hostData.name} />
+                            <Host hostData={hostData} />
                             <div className="space-y-2 flex w-full flex-row-reverse gap-3">
                               <div className="p-2 flex-1 rounded-lg">
                                 <p>{presentation.name}</p>
                               </div>
                               <div className="flex items-center gap-2">
                                 {/* Buttons for microphone, messaging, and leaving chat */}
-
-                                <button
-                                  onClick={() => {
-                                    // if (isHost) return;
-                                    // if (
-                                    //   audioStatus === CAN_SPK ||
-                                    //   audioStatus === MIC_OFF
-                                    // ) {
-                                    //   return setAudioState(BASE_MIC);
-                                    // }
-                                    // if (audioStatus === MIC_OFF) {
-                                    //   return setAudioState(CAN_SPK);
-                                    // }
-                                    // if (audioStatus === BASE_MIC && !isHost) {
-                                    //   return setAudioState(REQ_MIC);
-                                    // }
-                                    // if (audioStatus === REQ_MIC) {
-                                    //   return setAudioState(BASE_MIC);
-                                    // }
-                                    // if (audioStatus === MIC_OFF) {
-
-                                    // if (!isHost) {
-                                    //   if (audioStatus === MUTED)
-                                    //     setAudioState(UNMUTED);
-                                    //   if (audioStatus === UNMUTED)
-                                    //     setAudioState(MUTED);
-
-                                    if (
-                                      isHost ||
-                                      participantsObj[presentation.rtcUid]
-                                        .status === CAN_SPK
-                                    ) {
-                                      micToggle();
-                                    } else {
-                                      if (audioStatus !== REQ_MIC)
-                                        return setAudioState(REQ_MIC);
-                                      setAudioState(BASE_MIC);
+                                <div className="flex flex-col items-center">
+                                  <button
+                                    disabled={
+                                      micToggle.isPending ||
+                                      micRequestToggle.isPending
                                     }
-                                  }}
-                                  className="p-2 relative bg-gray-700 flex items-center justify-center rounded-full"
-                                >
-                                  <FaMicrophone className="w-6 h-6 " />
-                                  <div className="absolute z-10 -bottom-0 right-0 ">
-                                    <span
-                                      className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
-                                        audioStatus === REQ_MIC &&
-                                        "bg-yellow-400"
-                                      } 
-                                      ${
-                                        !muted ||
-                                        (audioStatus === CAN_SPK &&
+                                    onClick={() => {
+                                      if (
+                                        isHost ||
+                                        participantsObj[presentation.rtcUid]
+                                          .status === CAN_SPK
+                                      ) {
+                                        micToggle.mutate();
+                                      } else {
+                                        if (
                                           participantsObj[presentation.rtcUid]
-                                            .muted === "false" &&
-                                          "bg-green-400 ")
+                                            .status == MIC_OFF
+                                        )
+                                          return micRequestToggle.mutate(
+                                            REQ_MIC
+                                          );
+                                        micRequestToggle.mutate(MIC_OFF);
                                       }
-                                      ${
-                                        audioStatus === CAN_SPK
-                                          ? "bg-green-400_ " + activePingSTyles
-                                          : audioStatus === REQ_MIC
-                                            ? "bg-yellow-400_"
-                                            : audioStatus === MIC_OFF
-                                              ? "bg-rose-500_"
-                                              : "bg-transparent"
-                                      }
-                                      
-                                      `}
-                                    />
-                                  </div>
-                                </button>
+                                    }}
+                                    className="p-2 relative bg-gray-700 flex items-center justify-center rounded-full"
+                                  >
+                                    {((isHost && !hostData.muted) ||
+                                      (!isHost &&
+                                        !participantsObj[presentation.rtcUid]
+                                          ?.muted)) && (
+                                      <FaMicrophone className="w-6 h-6 " />
+                                    )}
+                                    {((isHost && hostData.muted) ||
+                                      (!isHost &&
+                                        participantsObj[presentation.rtcUid]
+                                          ?.muted)) && (
+                                      <FaMicrophoneSlash className="w-6 h-6 " />
+                                    )}
+                                    <div className="absolute z-10 -bottom-0 right-0 ">
+                                      <span
+                                        className={`inline-block w-[0.65rem] h-[0.65rem] rounded-full 
+                                        ${
+                                          !isHost &&
+                                          participantsObj[presentation.rtcUid]
+                                            ?.status === MIC_OFF &&
+                                          "bg-rose-500"
+                                        }
+                                        ${
+                                          !isHost &&
+                                          participantsObj[presentation.rtcUid]
+                                            ?.status === REQ_MIC &&
+                                          "bg-orange-400"
+                                        }
+                                        ${
+                                          !isHost &&
+                                          participantsObj[presentation.rtcUid]
+                                            ?.status === CAN_SPK &&
+                                          "bg-green-500"
+                                        }
+                                        `}
+                                      />
+                                    </div>
+                                  </button>
+                                  <p>
+                                    {(isHost ||
+                                      participantsObj[presentation.rtcUid]
+                                        ?.status === CAN_SPK) ? (
+                                      <>
+                                        {((isHost && !hostData.muted) ||
+                                          (!isHost &&
+                                            !participantsObj[
+                                              presentation.rtcUid
+                                            ]?.muted)) &&
+                                          "Mute"}
+                                        {((isHost && hostData.muted) ||
+                                          (!isHost &&
+                                            participantsObj[presentation.rtcUid]
+                                              ?.muted)) &&
+                                          "Unmute"}
+                                      </>
+                                    ) : (!isHost && participantsObj[presentation.rtcUid]?.status === REQ_MIC) ? "Requesting" : "Mic off"}
+                                  </p>
+                                </div>
                                 {
                                   // <AnimateInOut
                                   //   show={
@@ -783,8 +886,8 @@ const Chat = React.memo(
                                   //   <button
                                   //     onClick={() => {
                                   //       if (audioStatus === CAN_SPK)
-                                  //         return setAudioState(MIC_OFF);
-                                  //       setAudioState(CAN_SPK);
+                                  //         return setAudioStatus(MIC_OFF);
+                                  //       setAudioStatus(CAN_SPK);
                                   //     }}
                                   //     className={`p-2 relative flex items-center ${
                                   //       audioStatus === MIC_OFF
@@ -796,18 +899,24 @@ const Chat = React.memo(
                                   //   </button>
                                   // </AnimateInOut>
                                 }
-                                <button
-                                  onClick={() => showMessaging()}
-                                  className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
-                                >
-                                  <MessageRounded className="w-6 h-6 " />
-                                </button>
-                                <button
-                                  onClick={() => setShowLeave(true)}
-                                  className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
-                                >
-                                  <CloseOutlined className="w-6 h-6 fill-rose-500 text-rose-500" />
-                                </button>
+                                <div className="flex flex-col items-center">
+                                  <button
+                                    onClick={() => showMessaging()}
+                                    className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
+                                  >
+                                    <MessageRounded className="w-6 h-6 " />
+                                  </button>
+                                  <p>Chat</p>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                  <button
+                                    onClick={() => setShowLeave(true)}
+                                    className="p-2 bg-gray-700 flex items-center justify-center rounded-full"
+                                  >
+                                    <CloseOutlined className="w-6 h-6 fill-rose-500 text-rose-500" />
+                                  </button>
+                                  <p>End</p>
+                                </div>
                               </div>
                             </div>
                           </AnimateInOut>
@@ -829,6 +938,9 @@ const Chat = React.memo(
                                   <Participant
                                     key={i}
                                     participant={participant}
+                                    hostParticipantAction={
+                                      hostParticipantAction
+                                    }
                                   />
                                 ))
                             ) : (
@@ -914,42 +1026,46 @@ Chat.displayName = "Chat";
 export default Chat;
 
 // HOST COMPONENT (For reusability. writing the "double-ping" animation code more than once is a drag)
-function Host({ muted, name }) {
+function Host({ hostData }) {
   return (
     <div className="space-y-1  w-fit text-center">
       <div>
         {/* Status indicator for host */}
         <span
           className={`inline-block w-2 h-2 rounded-full ${
-            muted ? "bg-rose-700" : "bg-green-600"
-          } shadow-sm ${!muted && activePingSTyles} `}
+            hostData.muted ? "bg-rose-700" : "bg-green-600"
+          } shadow-sm ${!hostData.muted && activePingSTyles} `}
         />
         <small className="ml-1">host</small>
       </div>
       {/* Circular avatar with ping animation */}
       <div className="rounded-full_  overflow-clip_ w-14 h-14  md:w-20 md:h-20">
         <img
-          src="/team/sam.jpg"
+          src={`https://robohash.org/${hostData.id}.png`}
           className="w-full rounded-full h-full z-30 object-cover"
           loading="lazy"
         />
       </div>
       <div className="w-fit text-center text-sm mx-auto">
-        <p className="font-semibold">{name}</p>
+        <p className="font-semibold">{hostData.name}</p>
       </div>
     </div>
   );
 }
 
 // NOTE: Expected PropTypes => {status:"muted" | "speaking" | "listening", role:"speaker"|"listener",}
-function Participant({ participant, className }) {
+function Participant({ participant, className, hostParticipantAction }) {
   return (
-    <div className="flex flex-col text-center shrink-0 gap-1 items-center justify-center whitespace-nowrap ">
+    <button
+      className="flex flex-col text-center shrink-0 gap-1 items-center justify-center whitespace-nowrap "
+      disabled={hostParticipantAction.isPending}
+      onClick={() => hostParticipantAction.mutate(participant.id)}
+    >
       <div
         className={`rounded-full overflow-clip shrink-0 w-12 h-12 md:w-16 md:h-16 ${className}`}
       >
         <img
-          src="/team/ray.jpg"
+          src={`https://robohash.org/${participant.id}.png`}
           className="w-full h-full object-cover"
           alt=""
           loading="lazy"
@@ -962,27 +1078,26 @@ function Participant({ participant, className }) {
         {/* Status indicator for speaking */}
         <span className="text-green-400"></span>
         <div className="relative w-5 h-5">
-          {participant.status !== "CANNOT_SPEAK" && (
-            <img
-              src={MicGradient}
-              alt=""
-              className="w-full h-full"
-              loading="lazy"
-            />
-          )}
+          {/* MARK: Mic request */}
+          {participant.status === CAN_SPK &&
+            (participant.muted ? (
+              <FaMicrophoneSlash className="w-6 h-6 " />
+            ) : (
+              <FaMicrophone className="w-6 h-6 " />
+            ))}
           {/* <FaMicrophone className="w-5 h-5" /> */}
           <span
             className={`absolute z-10 -bottom-0 right-0 inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
-              participant.status === "CAN_SPEAK"
-                ? "bg-green-400"
-                : participant.status === "REQUESTED"
+              participant.status === MIC_OFF
+                ? "bg-rose-400"
+                : participant.status === REQ_MIC
                   ? "bg-orange-400"
                   : ""
             }`}
           />
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -998,7 +1113,7 @@ const messages = [
 ];
 
 // Messaging Component
-function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
+function Messaging({ currentUser, hostData, presentationName }) {
   const [messageInput, setMessageInput] = useState("");
 
   const Message = ({ message }) => (
@@ -1022,7 +1137,7 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
     <>
       {/* Header for the messaging component */}
       <div className="flex items-center gap-3 shrink-0">
-        <Host muted={hostMuted} name={hostName} />
+        <Host hostData={hostData} />
         <div className="w-16 md:w-32">
           <img
             src={Waves}
@@ -1063,7 +1178,7 @@ function Messaging({ hostMuted, currentUser, hostName, presentationName }) {
 }
 
 // Participants Component
-function Participants({ participants, presentationName }) {
+function Participants({ participants, presentationName, hostData }) {
   // const Participant = () => (
   //   <div className='w-fit -space-y-1 text-center'>
   //     <div className='rounded-full col-span-1 overflow-clip shrink-0 w-8 h-8 lg:w-12 lg:h-12'>
@@ -1082,7 +1197,7 @@ function Participants({ participants, presentationName }) {
     <>
       {/* Header for the messaging component */}
       <div className="flex items-center gap-3 shrink-0">
-        <Host />
+        <Host hostData={hostData} />
         {
           <div className="">
             <img src={Waves} loading="lazy" />
