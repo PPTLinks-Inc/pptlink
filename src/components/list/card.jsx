@@ -2,12 +2,12 @@ import { FaEllipsisV } from "react-icons/fa";
 
 export default function Card({ img }) {
   return (
-    <div className="card rounded-2xl p-5 cursor-pointer">
+    <div className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2]">
       <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
         <img
           src={img}
           alt={img}
-          className="w-full h-[150px] rounded-2xl object-cover"
+          className="w-full h-[180px] rounded-2xl object-cover"
           loading="lazy"
         />
       </div>
