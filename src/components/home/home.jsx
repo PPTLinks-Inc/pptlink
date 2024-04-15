@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { NavLink } from "react-router-dom";
 import banner_img from "/team/pptlink_resources/slide.png";
 import card_img from "/team/pptlink_resources/pexels-pixabay-270637 (1).jpg";
@@ -14,9 +15,11 @@ import { userContext } from "../../contexts/userContext";
 import { useCallback, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../assets/assets";
+import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 
 export default function NewHome() {
   // context
+  const scrollRef = useRef();
   const { user, setUser } = useContext(userContext);
 
   const navigate = useNavigate();
@@ -36,8 +39,21 @@ export default function NewHome() {
   const handleMsgSubmit = useCallback((e) => {
     e.preventDefault();
 
-    setValues({...values, msgPending: true})
- }, []);
+    setValues({ ...values, msgPending: true })
+  }, []);
+
+  const scrollCards = (isLeft) => {
+    const scrollAmount = 250;
+    const scrollContainer = scrollRef.current;
+
+    return isLeft ? scrollContainer.scrollTo({
+      left: scrollContainer.scrollLeft - scrollAmount,
+      behavior: 'smooth',
+    }) : scrollContainer.scrollTo({
+      left: scrollContainer.scrollLeft + scrollAmount,
+      behavior: 'smooth',
+    });
+  }
 
   return (
     <section className="parent_page_wrapper min-h-screen w-full">
@@ -79,11 +95,19 @@ export default function NewHome() {
         </div>
       </div>
       <div className="recent relative w-full min-h-screen text-white text-justify pb-10">
-        <div className="container">
-          <div className="flex flex-col items-center text-black">
+        <div className="container relative">
+          <div className="flex flex-col items-center text-black maxScreenMobile:mb-5">
             <h2 className="text-[3rem]">RECENT</h2>
           </div>
-          <div className="cards_wrapper w-full mt-20 mb-10">
+          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5">
+            <button className="flex items-center justify-center w-[70px] translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:scale-y-[1.3] hover:scale-x-[1.3] hover:bg-[rgba(0,0,0,0.5)] active:bg-[#FFA500]">
+              <FaCaretLeft onClick={() => scrollCards(true)} className="text-[3rem] text-[#FFA500] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
+            </button>
+            <button className="flex items-center justify-center w-[70px] translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:scale-y-[1.3] hover:scale-x-[1.3] hover:bg-[rgba(0,0,0,0.5)] active:bg-[#FFA500]">
+              <FaCaretRight onClick={() => scrollCards(false)} className="text-[3rem] text-[#FFA500] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
+            </button>
+          </div>
+          <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-32 mb-10 scroll-smooth" ref={scrollRef}>
             {Array(5)
               .fill(0)
               .map((_, i) => ({ id: i }))
@@ -119,7 +143,7 @@ export default function NewHome() {
                   loading="lazy"
                 />
               </div>
-              
+
               <div className="anim_body">
                 <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
                   Make Amazing Presentation
@@ -309,7 +333,7 @@ export default function NewHome() {
                 </div>
                 <button
                   type="submit"
-                  className="block h-[40px] w-[10rem] flex items-center justify-center bg-[white] ml-auto text-black text-[.8rem] font-medium rounded-[2rem] maxScreenMobile:w-full"
+                  className="h-[40px] w-[10rem] flex items-center justify-center bg-[white] ml-auto text-black text-[.8rem] font-medium rounded-[2rem] maxScreenMobile:w-full"
                 >
                   {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                 </button>

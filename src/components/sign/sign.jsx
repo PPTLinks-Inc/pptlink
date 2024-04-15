@@ -41,16 +41,6 @@ export default function SignPage() {
     setValues({ ...values, showPassword: !values.showPassword });
   };
 
-  const switchPage = (e) => {
-    e.preventDefault();
-    setIsSignupPage(!isSignupPage);
-    setValues({ ...values, fullName: "", email: "", password: "", showPassword: false });
-    setPasswordErr(null);
-    setEmailErr(null);
-    setFullNameErr(null);
-    setConfirmPasswordErr(null);
-  }
-
   const signin = useMutation({
     mutationFn: () => {
       return axios
@@ -153,6 +143,18 @@ export default function SignPage() {
     }
   }
 
+  const switchPage = (e) => {
+    e.preventDefault();
+    setIsSignupPage(!isSignupPage);
+    setValues({ ...values, fullName: "", email: "", password: "", showPassword: false });
+    setPasswordErr(null);
+    setEmailErr(null);
+    setFullNameErr(null);
+    setConfirmPasswordErr(null);
+    signin.reset();
+    signup.reset();
+  }
+
   return (
     <section className="signpage h-screen relative">
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
@@ -170,7 +172,7 @@ export default function SignPage() {
           <form onSubmit={handleSubmition} autoComplete="false"> {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
             {/* sign up */}
             {signin.isError && <p className="text-[red] text-center font-bold text-xl">{signin.error.response.data.message}</p>}
-            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response.data}</p>}
+            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response.data.message}</p>}
             <div
               className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col"} maxScreenMobile:flex-col`}
             >
