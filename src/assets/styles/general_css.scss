@@ -24,7 +24,7 @@ button,
 
         &::before,
         &::after {
-            content: '';
+            content: "";
             display: block;
             position: absolute;
             top: 0;
@@ -55,7 +55,7 @@ button,
 
         &::before,
         &::after {
-            content: '';
+            content: "";
             display: block;
             position: absolute;
             top: $setTop;
@@ -75,19 +75,42 @@ button,
     }
 
     .cards_wrapper {
+        $cardWidth: 280px;
         display: grid;
         -moz-column-gap: 9rem;
-             column-gap: 9rem;
+        column-gap: 9rem;
         row-gap: 3rem;
         grid-auto-flow: row;
-        grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
+        grid-template: auto/repeat(auto-fill, minmax($cardWidth, 1fr));
 
         & .card {
-            background: rgba(white, .1);
+            background: rgba(white, 0.1);
 
             &:hover {
-                outline: rgba(white, .5) !important;
-                background: rgba(black, .4);
+                outline: rgba(white, 0.5) !important;
+                background: rgba(black, 0.4);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            display: flex;
+            flex-direction: row;
+            overflow-y: hidden;
+            overflow-x: auto;
+            gap: calc((100% - $cardWidth) / 2);
+            justify-content: space-around;
+            scroll-snap-type: x mandatory;
+
+            & .card {
+                display: block;
+                min-width: $cardWidth;
+                flex-grow: 1;
+                flex-shrink: 1;
+                scroll-snap-align: start;
+            }
+
+            &::-webkit-scrollbar {
+                display: none;
             }
         }
     }

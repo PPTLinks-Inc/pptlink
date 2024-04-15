@@ -65,7 +65,7 @@ button,
   column-gap: 9rem;
   row-gap: 3rem;
   grid-auto-flow: row;
-  grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
+  grid-template: auto/repeat(auto-fill, minmax(280px, 1fr));
 }
 .parent_page_wrapper .cards_wrapper .card {
   background: rgba(255, 255, 255, 0.1);
@@ -73,6 +73,27 @@ button,
 .parent_page_wrapper .cards_wrapper .card:hover {
   outline: rgba(255, 255, 255, 0.5) !important;
   background: rgba(0, 0, 0, 0.4);
+}
+@media screen and (max-width: 768px) {
+  .parent_page_wrapper .cards_wrapper {
+    display: flex;
+    flex-direction: row;
+    overflow-y: hidden;
+    overflow-x: auto;
+    gap: calc((100% - 280px) / 2);
+    justify-content: space-around;
+    scroll-snap-type: x mandatory;
+  }
+  .parent_page_wrapper .cards_wrapper .card {
+    display: block;
+    min-width: 280px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    scroll-snap-align: start;
+  }
+  .parent_page_wrapper .cards_wrapper::-webkit-scrollbar {
+    display: none;
+  }
 }
 @keyframes signanim {
   from {

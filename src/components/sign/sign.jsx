@@ -41,16 +41,6 @@ export default function SignPage() {
     setValues({ ...values, showPassword: !values.showPassword });
   };
 
-  const switchPage = (e) => {
-    e.preventDefault();
-    setIsSignupPage(!isSignupPage);
-    setValues({ ...values, fullName: "", email: "", password: "", showPassword: false });
-    setPasswordErr(null);
-    setEmailErr(null);
-    setFullNameErr(null);
-    setConfirmPasswordErr(null);
-  }
-
   const signin = useMutation({
     mutationFn: () => {
       return axios
@@ -153,6 +143,18 @@ export default function SignPage() {
     }
   }
 
+  const switchPage = (e) => {
+    e.preventDefault();
+    setIsSignupPage(!isSignupPage);
+    setValues({ ...values, fullName: "", email: "", password: "", showPassword: false });
+    setPasswordErr(null);
+    setEmailErr(null);
+    setFullNameErr(null);
+    setConfirmPasswordErr(null);
+    signin.reset();
+    signup.reset();
+  }
+
   return (
     <section className="signpage h-screen relative">
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
@@ -170,12 +172,12 @@ export default function SignPage() {
           <form onSubmit={handleSubmition} autoComplete="false"> {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
             {/* sign up */}
             {signin.isError && <p className="text-[red] text-center font-bold text-xl">{signin.error.response.data.message}</p>}
-            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response.data}</p>}
+            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response.data.message}</p>}
             <div
               className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col"} maxScreenMobile:flex-col`}
             >
               <div
-                className={`w-[50%] ${!isSignupPage && "!hidden"} maxScreenMobile:!w-full`}
+                className={`w-[50%] ${!isSignupPage && "!hidden"} maxScreenMobile:!w-full relative maxScreenMobile:mt-8`}
               >
                 <label htmlFor="fullname" className="block w-full mb-2 pl-1">
                   *Username
@@ -191,10 +193,10 @@ export default function SignPage() {
                   placeholder="Full Name"
                   className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${fullNameErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {fullNameErr && (<p className="text-[red] pl-2">{fullNameErr}</p>)}
+                {fullNameErr && (<p className="text-[red] pl-2 absolute top-[100]">{fullNameErr}</p>)}
               </div>
               <div
-                className={`w-[50%] ${!isSignupPage && "!w-4/5"} maxScreenMobile:!w-full`}
+                className={`w-[50%] ${!isSignupPage && "!w-4/5"} maxScreenMobile:!w-full relative maxScreenMobile:mt-8`}
               >
                 <label htmlFor="email" className="block w-full mb-2 pl-1">
                   *Email
@@ -210,7 +212,7 @@ export default function SignPage() {
                   placeholder="eg: example@gmail.com"
                   className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${emailErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {emailErr && (<p className="text-[red] pl-2">{emailErr}</p>)}
+                {emailErr && (<p className="text-[red] pl-2 absolute top-[100]">{emailErr}</p>)}
               </div>
             </div>
 
@@ -219,7 +221,7 @@ export default function SignPage() {
               className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col !gap-2"}  maxScreenMobile:!flex-col`}
             >
               <div
-                className={`w-[50%] maxScreenMobile:!w-full ${!isSignupPage && "!w-4/5"}`}
+                className={`w-[50%] maxScreenMobile:!w-full ${!isSignupPage && "!w-4/5"} relative maxScreenMobile:mt-8`}
               >
                 <label htmlFor="password" className="block w-full mb-2 pl-1">
                   *Password
@@ -235,10 +237,10 @@ export default function SignPage() {
                   placeholder="**********"
                   className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${passwordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {passwordErr && (<p className="text-[red] pl-2">{passwordErr}</p>)}
+                {passwordErr && (<p className="text-[red] pl-2 absolute top-[100]">{passwordErr}</p>)}
               </div>
               <div
-                className={`w-[50%] maxScreenMobile:!w-full ${!isSignupPage && "!hidden"}`}
+                className={`w-[50%] maxScreenMobile:!w-full ${!isSignupPage && "!hidden"} relative maxScreenMobile:mt-8`}
               >
                 <label
                   htmlFor="confirmpassword"
@@ -257,10 +259,10 @@ export default function SignPage() {
                   placeholder="**********"
                   className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${confirmPasswordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {confirmPasswordErr && (<p className="text-[red] pl-2">{confirmPasswordErr}</p>)}
+                {confirmPasswordErr && (<p className="text-[red] pl-2 absolute top-[100]">{confirmPasswordErr}</p>)}
               </div>
             </div>
-            <button disabled={signin.isPending || signup.isPending} className="block w-3/5 m-auto mb-2 bg-black rounded-3xl text-white h-[40px] px-5 shadow-xl border-none maxScreenMobile:w-full">
+            <button disabled={signin.isPending || signup.isPending} className="block w-3/5 m-auto mt-14 mb-2 bg-black rounded-3xl text-white h-[40px] px-5 shadow-xl border-none maxScreenMobile:w-full">
               {(signin.isPending || signup.isPending) ? "Loading" : isSignupPage ? "Sign Up" : "Sign In"}
             </button>
             <p className="w-3/5 m-auto mt-4 text-center">
