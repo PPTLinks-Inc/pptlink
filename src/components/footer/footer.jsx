@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { userContext } from "../../contexts/userContext";
 
 import Socials from "../social/socials";
 import {
@@ -15,8 +16,24 @@ import logo_orange from "/imgs/onemorecolor.png";
 export default function Footer() {
   const [getlocation] = useState(useLocation().pathname === '/signup' ? true : false);
   const { pathname } = useLocation();
+  const { user, setUser } = useContext(userContext);
 
   console.log(pathname);
+
+  // const handlePresentationBtn = (e) => {
+  //   if (!user) return navigate('/signin');
+
+  //   if (user) {
+  //     localStorage.removeItem("accessToken");
+  //     setUser(null);
+  //     return navigate('/signin');
+  //   }
+  // };
+
+  // const buttontext = () => {
+  //   if (!user) return "Sign in";
+  //   if (user) return "Sign Out";
+  // };
 
   return (
     <footer
@@ -59,13 +76,13 @@ export default function Footer() {
                 </NavLink>
                 <NavLink
                   to={"/signin"}
-                  className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className={`block ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign In
                 </NavLink>
                 <NavLink
                   to={SIGNUP}
-                  className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className={`block ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign Up
                 </NavLink>

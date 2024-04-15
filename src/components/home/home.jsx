@@ -100,11 +100,11 @@ export default function NewHome() {
             <h2 className="text-[3rem]">RECENT</h2>
           </div>
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5">
-            <button className="flex items-center justify-center w-[70px] translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:scale-y-[1.3] hover:scale-x-[1.3] hover:bg-[rgba(0,0,0,0.5)] active:bg-[#FFA500]">
-              <FaCaretLeft onClick={() => scrollCards(true)} className="text-[3rem] text-[#FFA500] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
+            <button className="flex items-center justify-center w-[60px] translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:scale-y-[1.3] hover:scale-x-[1.3] hover:bg-[rgba(0,0,0,0.5)] active:bg-[#FFA500]">
+              <FaCaretLeft onClick={() => scrollCards(true)} className="text-[2.5rem] text-[#FFA500] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
-            <button className="flex items-center justify-center w-[70px] translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:scale-y-[1.3] hover:scale-x-[1.3] hover:bg-[rgba(0,0,0,0.5)] active:bg-[#FFA500]">
-              <FaCaretRight onClick={() => scrollCards(false)} className="text-[3rem] text-[#FFA500] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
+            <button className="flex items-center justify-center w-[60px] translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:scale-y-[1.3] hover:scale-x-[1.3] hover:bg-[rgba(0,0,0,0.5)] active:bg-[#FFA500]">
+              <FaCaretRight onClick={() => scrollCards(false)} className="text-[2.5rem] text-[#FFA500] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
           </div>
           <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-32 mb-10 scroll-smooth" ref={scrollRef}>
