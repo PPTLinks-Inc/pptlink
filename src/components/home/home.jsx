@@ -107,7 +107,7 @@ export default function NewHome() {
               <FaCaretRight onClick={() => scrollCards(false)} className="text-[3rem] text-[#FFA500] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
           </div>
-          <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-32 mb-10 scroll-smooth snap-x" ref={scrollRef}>
+          <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-32 mb-10 scroll-smooth" ref={scrollRef}>
             {Array(5)
               .fill(0)
               .map((_, i) => ({ id: i }))

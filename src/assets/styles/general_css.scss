@@ -97,13 +97,16 @@ button,
             flex-direction: row;
             overflow-y: hidden;
             overflow-x: auto;
-            gap: 0.5rem;
+            gap: calc((100% - $cardWidth) / 2);
+            justify-content: space-around;
+            scroll-snap-type: x mandatory;
 
             & .card {
                 display: block;
                 min-width: $cardWidth;
                 flex-grow: 1;
                 flex-shrink: 1;
+                scroll-snap-align: start;
             }
 
             &::-webkit-scrollbar {
