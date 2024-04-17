@@ -150,7 +150,7 @@ const Chat = React.memo(
     const hostParticipantAction = useMutation({
       mutationFn: async (participantId) => {
         if (!isHost) return;
-        if (participantsObj[participantId].status === REQ_MIC) {
+        if (participantsObj[participantId].status === REQ_MIC || participantsObj[participantId].status === MIC_OFF) {
           await channel.sendMessage({
             text: `accept-req-toggle-mic_${participantId}`
           });
@@ -224,13 +224,8 @@ const Chat = React.memo(
       };
     }, []);
 
-    const agoraQuery = useQuery({
-      queryKey: ["agora"],
-      retry: false,
-      retryOnMount: false,
-      staleTime: Infinity,
-      enabled: chatOpen.join,
-      queryFn: async () => {
+    const agoraQuery = useMutation({
+      mutationFn: async () => {
         await rtcClient.join(
           AGORA_APP_ID,
           presentation.liveId,
@@ -261,7 +256,6 @@ const Chat = React.memo(
         };
         await rtmClient.addOrUpdateLocalUserAttributes(userState);
         const members = await channel.getMembers();
-        console.log({ members });
 
         for (const member of members) {
           const userData = await rtmClient.getUserAttributesByKeys(member, [
@@ -270,7 +264,6 @@ const Chat = React.memo(
             "name",
             "muted"
           ]);
-          console.log({ userData });
           if (userData.role === "HOST") {
             setHostData({
               id: member,
@@ -381,7 +374,7 @@ const Chat = React.memo(
           }
         });
 
-        setChatOpen((prev) => ({ ...prev, active: true }));
+        setChatOpen((prev) => ({ ...prev, active: true, join: true }));
 
         rtcClient.on("user-published", async (user, mediaType) => {
           await rtcClient.subscribe(user, mediaType);
@@ -449,8 +442,9 @@ const Chat = React.memo(
     }
 
     // Function to join the chat
-    async function joinChat() {
-      setChatOpen((prev) => ({ ...prev, join: true }));
+    function joinChat() {
+      // setChatOpen((prev) => ({ ...prev, join: true }));
+      agoraQuery.mutate();
     }
 
     // Function to expand the chat modal
@@ -503,25 +497,27 @@ const Chat = React.memo(
     }
 
     // Function to leave the chat
-    function leaveChat() {
+    async function leaveChat() {
       if (!isHost) {
         toast.success("Left conversation");
       }
 
       setParticipantsObj({});
       closeChat();
-      setChatOpen((prev) => ({
-        ...prev,
-        join: false
-      }));
+      agoraQuery.reset();
       setChatHeight("2.5rem");
       audioTracks.localAudioTrack?.stop();
       audioTracks.localAudioTrack?.close();
-
+      
       rtcClient?.unpublish();
       rtcClient?.leave();
-      leaveRtmChannel();
+      await leaveRtmChannel();
       localStorage.removeItem("userUid");
+      setChatOpen((prev) => ({
+        ...prev,
+        join: false,
+        active: false
+      }));
     }
 
     const clientAudioOff = useMutation({
@@ -759,6 +755,9 @@ const Chat = React.memo(
                             hostData={hostData}
                             participants={participantsArray}
                             presentationName={presentation.name}
+                            hostParticipantAction={
+                              hostParticipantAction
+                            }
                           />
                         </AnimateInOut>
                       ) : chatOpen.join || chatOpen.active ? (
@@ -854,9 +853,9 @@ const Chat = React.memo(
                                     </div>
                                   </button>
                                   <p>
-                                    {(isHost ||
-                                      participantsObj[presentation.rtcUid]
-                                        ?.status === CAN_SPK) ? (
+                                    {isHost ||
+                                    participantsObj[presentation.rtcUid]
+                                      ?.status === CAN_SPK ? (
                                       <>
                                         {((isHost && !hostData.muted) ||
                                           (!isHost &&
@@ -870,7 +869,13 @@ const Chat = React.memo(
                                               ?.muted)) &&
                                           "Unmute"}
                                       </>
-                                    ) : (!isHost && participantsObj[presentation.rtcUid]?.status === REQ_MIC) ? "Requesting" : "Mic off"}
+                                    ) : !isHost &&
+                                      participantsObj[presentation.rtcUid]
+                                        ?.status === REQ_MIC ? (
+                                      "Requesting"
+                                    ) : (
+                                      "Mic off"
+                                    )}
                                   </p>
                                 </div>
                                 {
@@ -945,7 +950,7 @@ const Chat = React.memo(
                                 ))
                             ) : (
                               <div className="text-center w-full flex items-center justify-center">
-                                {agoraQuery?.isLoading ? (
+                                {agoraQuery.isPending ? (
                                   <div className="w-fit mx-auto">
                                     <LoadingAssetSmall2 />
                                   </div>
@@ -989,7 +994,7 @@ const Chat = React.memo(
                               closeChat={closeChat}
                               activateChat={activateChat}
                               isLoading={
-                                agoraQuery.isLoading || clientAudioOn.isPending
+                                agoraQuery.isPending || clientAudioOn.isPending
                               }
                             />
                           ) : (
@@ -998,7 +1003,7 @@ const Chat = React.memo(
                               joinChat={joinChat}
                               username={username}
                               setUsername={setUsername}
-                              isLoading={agoraQuery.isLoading}
+                              isLoading={agoraQuery.isPending}
                             />
                           )}
                         </AnimateInOut>
@@ -1178,7 +1183,7 @@ function Messaging({ currentUser, hostData, presentationName }) {
 }
 
 // Participants Component
-function Participants({ participants, presentationName, hostData }) {
+function Participants({ participants, presentationName, hostData, hostParticipantAction }) {
   // const Participant = () => (
   //   <div className='w-fit -space-y-1 text-center'>
   //     <div className='rounded-full col-span-1 overflow-clip shrink-0 w-8 h-8 lg:w-12 lg:h-12'>
@@ -1214,6 +1219,9 @@ function Participants({ participants, presentationName, hostData }) {
             key={i}
             participant={participant}
             className={"w-8 h-8 lg:w-12 lg:h-12"}
+            hostParticipantAction={
+              hostParticipantAction
+            }
           />
         ))}
       </div>
