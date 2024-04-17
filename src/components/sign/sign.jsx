@@ -226,17 +226,24 @@ export default function SignPage() {
                 <label htmlFor="password" className="block w-full mb-2 pl-1">
                   *Password
                 </label>
-                <input
-                  type="password"
-                  value={values.password}
-                  onChange={(e) =>
-                    setValues({ ...values, password: e.target.value })
-                  }
-                  id="password"
-                  name="password"
-                  placeholder="**********"
-                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${passwordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
-                />
+                <div className="relative w-full h-fit">
+                  {values.showPassword ? (
+                    <AiFillEyeInvisible className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                  ) : (
+                    <AiFillEye className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                  )}
+                  <input
+                    type={values.showPassword ? "text" : "password"}
+                    value={values.password}
+                    onChange={(e) =>
+                      setValues({ ...values, password: e.target.value })
+                    }
+                    id="password"
+                    name="password"
+                    placeholder="**********"
+                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${passwordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                  />
+                </div>
                 {passwordErr && (<p className="text-[red] pl-2 absolute top-[100]">{passwordErr}</p>)}
               </div>
               <div
@@ -248,17 +255,24 @@ export default function SignPage() {
                 >
                   *confirmpassword
                 </label>
-                <input
-                  type="password"
-                  value={values.confirmPassword}
-                  onChange={(e) =>
-                    setValues({ ...values, confirmPassword: e.target.value })
-                  }
-                  id="confirmpassword"
-                  name="confirmpassword"
-                  placeholder="**********"
-                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${confirmPasswordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
-                />
+                <div className="relative w-full h-fit">
+                  {values.showPassword ? (
+                    <AiFillEyeInvisible className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                  ) : (
+                    <AiFillEye className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                  )}
+                  <input
+                    type={values.showPassword ? "text" : "password"}
+                    value={values.confirmPassword}
+                    onChange={(e) =>
+                      setValues({ ...values, confirmPassword: e.target.value })
+                    }
+                    id="confirmpassword"
+                    name="confirmpassword"
+                    placeholder="**********"
+                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${confirmPasswordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                  />
+                </div>
                 {confirmPasswordErr && (<p className="text-[red] pl-2 absolute top-[100]">{confirmPasswordErr}</p>)}
               </div>
             </div>

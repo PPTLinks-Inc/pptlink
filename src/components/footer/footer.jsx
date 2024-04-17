@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { userContext } from "../../contexts/userContext";
 
@@ -14,27 +14,9 @@ import {
 import logo_orange from "/imgs/onemorecolor.png";
 
 export default function Footer() {
-  const [getlocation] = useState(useLocation().pathname === '/signup' ? true : false);
   const { pathname } = useLocation();
   const { user, setUser } = useContext(userContext);
-
-  console.log(pathname);
-
-  // const handlePresentationBtn = (e) => {
-  //   if (!user) return navigate('/signin');
-
-  //   if (user) {
-  //     localStorage.removeItem("accessToken");
-  //     setUser(null);
-  //     return navigate('/signin');
-  //   }
-  // };
-
-  // const buttontext = () => {
-  //   if (!user) return "Sign in";
-  //   if (user) return "Sign Out";
-  // };
-
+  
   return (
     <footer
       className={`footer pt-10 text-[0.8rem] ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
@@ -89,7 +71,7 @@ export default function Footer() {
               </nav>
             </div>
             <div>
-              <h3 className="font-black mb-5">Dcoumentation</h3>
+              <h3 className="font-black mb-5 maxScreenMobile:mt-5">Dcoumentation</h3>
               <nav className="flex flex-col justify-between align-top">
                 <NavLink
                   to={DOCUMENT}
@@ -118,7 +100,7 @@ export default function Footer() {
               </nav>
             </div>
             <div className=" w-[300px]">
-              <h3 className="font-black mb-5">Location</h3>
+              <h3 className="font-black mb-5 maxScreenMobile:mt-5">Location</h3>
               <nav className="flex flex-col justify-between align-top">
                 <Link
                   to="/"
