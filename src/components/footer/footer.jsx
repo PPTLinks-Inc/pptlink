@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { userContext } from "../../contexts/userContext";
 
 import Socials from "../social/socials";
 import {
@@ -13,11 +14,9 @@ import {
 import logo_orange from "/imgs/onemorecolor.png";
 
 export default function Footer() {
-  const [getlocation] = useState(useLocation().pathname === '/signup' ? true : false);
   const { pathname } = useLocation();
-
-  console.log(pathname);
-
+  const { user, setUser } = useContext(userContext);
+  
   return (
     <footer
       className={`footer pt-10 text-[0.8rem] ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
@@ -59,20 +58,20 @@ export default function Footer() {
                 </NavLink>
                 <NavLink
                   to={"/signin"}
-                  className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className={`block ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign In
                 </NavLink>
                 <NavLink
                   to={SIGNUP}
-                  className="block py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className={`block ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign Up
                 </NavLink>
               </nav>
             </div>
             <div>
-              <h3 className="font-black mb-5">Dcoumentation</h3>
+              <h3 className="font-black mb-5 maxScreenMobile:mt-5">Dcoumentation</h3>
               <nav className="flex flex-col justify-between align-top">
                 <NavLink
                   to={DOCUMENT}
@@ -101,7 +100,7 @@ export default function Footer() {
               </nav>
             </div>
             <div className=" w-[300px]">
-              <h3 className="font-black mb-5">Location</h3>
+              <h3 className="font-black mb-5 maxScreenMobile:mt-5">Location</h3>
               <nav className="flex flex-col justify-between align-top">
                 <Link
                   to="/"
