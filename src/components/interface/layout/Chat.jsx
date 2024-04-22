@@ -3,7 +3,7 @@
 // Importing components and libraries
 import { CloseOutlined, MessageRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
 import {
   FaChevronUp,
   FaMicrophone,
@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import Waves from "./assets/images/waves.svg";
 // import Mic from "./assets/images/mic-gradient.svg";
+import micRequest from "./assets/mic-request.mp3";
 import Media from "react-media";
 import AnimateInOut from "../../AnimateInOut";
 import { toast } from "react-toastify";
@@ -20,7 +21,7 @@ import { PresentationContext } from "../../../contexts/presentationContext";
 import { userContext } from "../../../contexts/userContext";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import AgoraRTM from "agora-rtm-sdk";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AGORA_APP_ID } from "../../../constants/routes";
 import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../../assets/assets";
 
@@ -37,9 +38,9 @@ const activePingSTyles =
   "shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50  shadow-green-500/50 before:bg-green-400/50 after:bg-green-500/50 relative before:w-full before:h-full before:rounded-full  before:animate-ping before:absolute before:inset-0 before:m-auto before:-z-10 after:w-full after:h-full after:rounded-full  after:animate-ping-200 after:absolute after:inset-0 after:m-auto after:-z-20 after:delay-150 z-30";
 
 // MIC States
-const REQ_MIC = "request to speak";
-const CAN_SPK = "user is allowed to speak";
-const MIC_OFF = "mic is off";
+const REQ_MIC = "REQ_MIC";
+const CAN_SPK = "CAN_SPK";
+const MIC_OFF = "MIC_OFF";
 
 // Chat component
 const Chat = React.memo(
@@ -58,6 +59,7 @@ const Chat = React.memo(
     const [conversationLive, setConversationLive] = useState(
       presentation.audio
     );
+    const micRequestAudio = useRef(null);
 
     console.log({ conversationLive });
     // const [isSpeaking, setIsSpeaking] = useState(false);
@@ -185,6 +187,7 @@ const Chat = React.memo(
 
     const leaveRtmChannel = async () => {
       if (!chatOpen.join) return;
+      console.log("Leaving");
       await channel?.leave();
       await rtmClient?.logout();
     };
@@ -195,17 +198,14 @@ const Chat = React.memo(
         joinChat();
       }
       if (!isHost && presentation.audio) openChat();
-
-      if (!isHost && !presentation.audio) {
+      
+      if (!isHost) {
         socket.on("client-audio-on", () => {
           setConversationLive(true);
           openChat();
         });
-      }
-
-      if (!isHost) {
-        socket.on("client-audio-off", () => {
-          leaveChat();
+        socket.on("client-audio-off", async () => {
+          await leaveChat();
           setConversationLive(false);
           toast.success("Audio is no longer active");
         });
@@ -257,6 +257,7 @@ const Chat = React.memo(
         await rtmClient.addOrUpdateLocalUserAttributes(userState);
         const members = await channel.getMembers();
 
+        const tempUses = {};
         for (const member of members) {
           const userData = await rtmClient.getUserAttributesByKeys(member, [
             "role",
@@ -271,17 +272,46 @@ const Chat = React.memo(
               muted: userData.muted === "true"
             });
           } else {
-            setParticipantsObj((prev) => ({
-              ...prev,
-              [member]: {
-                id: member,
-                ...userData,
-                muted: userData.muted === "true"
-              }
-            }));
+            tempUses[member] = {
+              id: member,
+              ...userData,
+              muted: userData.muted === "true"
+            };
           }
         }
 
+        setParticipantsObj(tempUses);
+
+        if (isHost) {
+          micRequestAudio.current = new Audio(micRequest);
+        }
+
+        const debounceMemberJoinedAndLeft = () => {
+          const users = [];
+          let inDebounce;
+
+          return function (userData, status) {
+            clearTimeout(inDebounce);
+            users.push({ userData, status });
+            inDebounce = setTimeout(() => {
+              setParticipantsObj((prev) => {
+                const temp = { ...prev };
+                for (const user of users) {
+                  if (user.status === "joined") {
+                    temp[user.userData.id] = {
+                      ...user.userData
+                    };
+                  } else {
+                    delete temp[user.userData.id];
+                  }
+                }
+                return temp;
+              });
+            }, 500);
+          }
+        };
+        
+        const handleMemberJoinedAndLeft = debounceMemberJoinedAndLeft();
         channel.on("MemberJoined", async (memberId) => {
           const userData = await rtmClient.getUserAttributesByKeys(memberId, [
             "role",
@@ -293,65 +323,125 @@ const Chat = React.memo(
             setHostData({ id: memberId, ...userData });
             return;
           }
-          setParticipantsObj((prev) => ({
-            ...prev,
-            [memberId]: {
-              id: memberId,
-              ...userData,
-              muted: userData.muted === "true"
-            }
-          }));
+          handleMemberJoinedAndLeft({
+            id: memberId,
+            ...userData,
+            muted: userData.muted === "true"
+          }, "joined");
         });
         channel.on("MemberLeft", async (memberId) => {
-          setParticipantsObj((prev) => {
-            const temp = { ...prev };
-            delete temp[memberId];
-            return temp;
-          });
+          handleMemberJoinedAndLeft({ id: memberId }, "left");
         });
 
+        const debounceMicRequest = () => {
+          let requestUser = [];
+          let notifyUser = [];
+          let inDebounce;
+          return function(user, status) {
+            return new Promise((resolve) => {
+              clearTimeout(inDebounce);
+              requestUser.push({id: user, status});
+              inDebounce = setTimeout(() => {
+                setParticipantsObj((prev) => {
+                  const temp = { ...prev };
+                  let shouldPlay = false;
+                  for (const user of requestUser) {
+                    if (user.status === REQ_MIC) {
+                      shouldPlay = true;
+                      notifyUser.push(user);
+                    };
+                    temp[user.id].status = user.status;
+                  }
+                  let message;
+                  if (shouldPlay) {
+                    if (notifyUser.length === 1) {
+                      message = `${temp[notifyUser[0].id].name} is requesting to speak`;
+                    } 
+                    else if (notifyUser.length === 2) {
+                      message = `${temp[notifyUser[0].id].name} and ${temp[notifyUser[1].id].name} are requesting to speak`;
+                    }
+                    else {
+                      message = `${temp[notifyUser[0].id].name} and ${notifyUser.length - 1} others are requesting to speak`;
+                    }
+                    micRequestAudio.current.play();
+                  }
+                  requestUser = [];
+                  notifyUser = [];
+                  resolve(message);
+                  return temp;
+                });
+              }, 500);
+            });
+          }
+        };
+        const debounceMicAccept = () => {
+          let users = [];
+          let inDebounce;
+          return function(user, status) {
+            clearTimeout(inDebounce);
+            users.push({id: user, status});
+            inDebounce = setTimeout(() => {
+              setParticipantsObj((prev) => {
+                const temp = { ...prev };
+                for (const user of users) {
+                  temp[user.id].status = user.status;
+                  if (user.id === presentation.rtcUid) {
+                    rtmClient.addOrUpdateLocalUserAttributes({
+                      status: user.status
+                    });
+                    if (user.status === MIC_OFF) {
+                      audioTracks.localAudioTrack?.setMuted(true);
+                    }
+                  }
+                }
+                users = [];
+                return temp;
+              });
+            }, 500);
+          }
+        };
+        const debounceMicMute = () => {
+          let users = [];
+          let inDebounce;
+          return function(user, status) {
+            clearTimeout(inDebounce);
+            users.push({id: user, status});
+            inDebounce = setTimeout(() => {
+              setParticipantsObj((prev) => {
+                const temp = { ...prev };
+                for (const user of users) {
+                  temp[user.id].muted = user.status === "true";
+                  if (user.id === presentation.rtcUid) {
+                    audioTracks.localAudioTrack?.setMuted(user.status === "true");
+                  }
+                }
+                users = [];
+                return temp;
+              });
+            }, 500);
+          }
+        }
+
+        const handleMicRequest = debounceMicRequest();
+        const handleMicAccept = debounceMicAccept();
+        const handleMicMute = debounceMicMute();
         channel.on("ChannelMessage", async function (message, memberId) {
-          console.log("ChannelMessage", message, memberId);
           if (message.text === "req-toggle-mic") {
             const userData = await rtmClient.getUserAttributesByKeys(memberId, [
               "status"
             ]);
-            setParticipantsObj((prev) => ({
-              ...prev,
-              [memberId]: {
-                ...prev[memberId],
-                status: userData.status
+            
+            handleMicRequest(memberId, userData.status).then((message) => {
+              if (message) {
+                toast.info(message);
               }
-            }));
+            });
           } else if (message.text.includes("accept-req-toggle-mic")) {
             const id = message.text.split("_")[1];
-            if (id === presentation.rtcUid) {
-              await rtmClient.addOrUpdateLocalUserAttributes({
-                status: CAN_SPK
-              });
-            }
-            setParticipantsObj((prev) => ({
-              ...prev,
-              [id]: {
-                ...prev[id],
-                status: CAN_SPK
-              }
-            }));
+            handleMicAccept(id, CAN_SPK);
           } else if (message.text.includes("reject-req-toggle-mic")) {
             const id = message.text.split("_")[1];
-            if (id === presentation.rtcUid) {
-              audioTracks.localAudioTrack?.setMuted(true);
-              await rtmClient.addOrUpdateLocalUserAttributes({
-                status: MIC_OFF
-              });
-            }
-            setParticipantsObj((prev) => ({
-              ...prev,
-              [id]: {
-                ...prev[id],
-                status: MIC_OFF
-              }
-            }));
+            handleMicAccept(id, MIC_OFF);
           } else if (message.text === "host-toggle-mic") {
             const userData = await rtmClient.getUserAttributesByKeys(memberId, [
               "muted"
@@ -364,13 +454,7 @@ const Chat = React.memo(
             const userData = await rtmClient.getUserAttributesByKeys(memberId, [
               "muted"
             ]);
-            setParticipantsObj((prev) => ({
-              ...prev,
-              [memberId]: {
-                ...prev[memberId],
-                muted: userData.muted === "true"
-              }
-            }));
+            handleMicMute(memberId, userData.muted);
           }
         });
 
@@ -511,6 +595,7 @@ const Chat = React.memo(
       
       rtcClient?.unpublish();
       rtcClient?.leave();
+      // await channel.sendMessage({ text: "end-audio" });
       await leaveRtmChannel();
       localStorage.removeItem("userUid");
       setChatOpen((prev) => ({
@@ -1359,13 +1444,13 @@ function InitializeConversation({ closeChat, activateChat, isLoading }) {
 // Custom sorting function
 const compareGuests = (a, b) => {
   // Order by status: CAN_SPEAK > REQUESTED > CANNOT_SPEAK
-  const statusOrder = { CAN_SPEAK: 0, REQUESTED: 1, CANNOT_SPEAK: 2 };
+  const statusOrder = { CAN_SPK: 0, REQ_MIC: 1, MIC_OFF: 2 };
   if (a.status !== b.status) {
     return statusOrder[a.status] - statusOrder[b.status];
   }
 
   // For guests with the same status, prioritize unmuted CAN_SPEAK guests
-  if (a.status === "CAN_SPEAK" && b.status === "CAN_SPEAK") {
+  if (a.status === CAN_SPK && b.status === CAN_SPK) {
     if (a.muted !== b.muted) {
       return a.muted ? 1 : -1;
     }
