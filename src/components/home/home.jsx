@@ -72,14 +72,14 @@ export default function NewHome() {
             </p>
             <div className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col">
               <button
-                className="block w-2/5 bg-[white] text-black text-2xl p-2 rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
+                className="block w-2/5 h-[3rem] bg-[#FFFFF0] text-black text-xl rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
                 onClick={() =>
                   user ? navigate("/upload") : navigate("/signin")
                 }
               >
                 Present
               </button>
-              <button className="block w-2/5 bg-[white] text-black text-2xl p-2 rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
+              <button className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
                 Libraries
               </button>
             </div>
@@ -99,7 +99,7 @@ export default function NewHome() {
           <div className="flex flex-col items-center text-black maxScreenMobile:mb-5">
             <h2 className="text-[3rem]">RECENT</h2>
           </div>
-          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5">
+          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
             <button className="flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft onClick={() => scrollCards(true)} className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
@@ -107,7 +107,7 @@ export default function NewHome() {
               <FaCaretRight onClick={() => scrollCards(false)} className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
           </div>
-          <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 scroll-smooth" ref={scrollRef}>
+          <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth" ref={scrollRef}>
             {Array(5)
               .fill(0)
               .map((_, i) => ({ id: i }))
@@ -247,7 +247,7 @@ export default function NewHome() {
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <label htmlFor="name" className="block w-full">
-                      Name
+                      Name:
                     </label>
                     <input
                       type="text"
@@ -263,7 +263,7 @@ export default function NewHome() {
                   </div>
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <label htmlFor="email" className="block w-full">
-                      Email Address
+                      Email Address:
                     </label>
                     <input
                       type="email"
@@ -281,7 +281,7 @@ export default function NewHome() {
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <label htmlFor="phone" className="block w-full">
-                      Phone Number
+                      Phone Number:
                     </label>
                     <input
                       type="text"
@@ -333,7 +333,7 @@ export default function NewHome() {
                 </div>
                 <button
                   type="submit"
-                  className="h-[40px] w-[10rem] flex items-center justify-center bg-[white] ml-auto text-black text-[.8rem] font-medium rounded-[2rem] maxScreenMobile:w-full"
+                  className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-[2rem] maxScreenMobile:w-full"
                 >
                   {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                 </button>
