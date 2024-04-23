@@ -317,6 +317,7 @@ const Chat = React.memo(
           ]);
           if (userData.role === "HOST") {
             setHostData({ id: memberId, ...userData });
+            toast.info("Host joined the conversation");
             return;
           }
           handleMemberJoinedAndLeft({
@@ -326,6 +327,10 @@ const Chat = React.memo(
           }, "joined");
         });
         channel.on("MemberLeft", async (memberId) => {
+          if (memberId === hostData.id) {
+            toast.info("Host left the conversation");
+            return;
+          }
           handleMemberJoinedAndLeft({ id: memberId }, "left");
         });
 
@@ -724,7 +729,7 @@ const Chat = React.memo(
                       //   ? "100%"
                       //   : "5rem",
                     }}
-                    dragConstraints={interfaceRef}
+                    dragConstraints={interfaceRef !== null ? interfaceRef : {}}
                     transition={{ type: "keyframes" }}
                     drag={!matches.small && true}
                     dragMomentum={false}
