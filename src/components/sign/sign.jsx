@@ -13,6 +13,7 @@ import meetingsvg from "/team/pptlink_resources/presentation-svgrepo-com (3).png
 import groupchats from "/team/pptlink_resources/presentation-svgrepo-com (4).png";
 import flowchat from "/team/pptlink_resources/presentation-svgrepo-com (5).png";
 import switchboard from "/team/pptlink_resources/presentation-whiteboard-svgrepo-com.png";
+import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import "../../assets/styles/general_css.css";
 import logo_orange from "/imgs/onemorecolor.png";
 
@@ -159,7 +160,7 @@ export default function SignPage() {
     <section className="signpage h-screen relative">
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
         <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
-          <div className="sticky top-0 maxScreen:z-50">
+          <div className="_sticky top-0 maxScreen:z-50">
             <Link to="/" className="block text-md mb-3 font-[600]">
               <img src={logo_orange} alt={logo_orange} className="w-5 aspect-square" />
               {/* PPTLINKS */}
@@ -278,8 +279,8 @@ export default function SignPage() {
                 {confirmPasswordErr && (<p className="text-[red] pl-2 absolute top-[100]">{confirmPasswordErr}</p>)}
               </div>
             </div>
-            <button disabled={signin.isPending || signup.isPending} className="block w-3/5 m-auto mt-14 mb-2 bg-black rounded-3xl text-white h-[40px] px-5 shadow-xl border-none maxScreenMobile:w-full">
-              {(signin.isPending || signup.isPending) ? "Loading" : isSignupPage ? "Sign Up" : "Sign In"}
+            <button disabled={signin.isPending || signup.isPending} className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-3xl text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full">
+              {(signin.isPending || signup.isPending) ? <LoadingAssetSmall2 /> : isSignupPage ? "Sign Up" : "Sign In"}
             </button>
             <p className="w-3/5 m-auto mt-4 text-center">
               {isSignupPage

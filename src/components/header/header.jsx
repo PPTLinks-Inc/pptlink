@@ -44,7 +44,7 @@ export default function Header({ bgcolor, handleDropdown }) {
       <div className="container flex justify-between items-center">
         <div className="logo_wrapper">
           <Link to="/" className="hlogo uppercase block w-10 h-10">
-            <img src={bgcolor? logo_black : logo_white} alt={bgcolor? logo_black : logo_white} />
+            <img src={bgcolor ? logo_black : logo_white} alt={bgcolor ? logo_black : logo_white} />
             {/* PPTLINKS */}
             {/* <svg width="800" height="600" id="logo_svg" className="block !w-full !h-full bg-[white]" xmlns="http://www.w3.org/2000/svg">
                             <g>
@@ -67,13 +67,13 @@ export default function Header({ bgcolor, handleDropdown }) {
           <button
             onClick={() => handlePresentationBtn()}
             type="submit"
-            className={`block h-[40px] w-[10rem] flex items-center justify-center text-[.8rem] font-medium h-[35px] rounded-[2rem] ${!bgcolor ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+            className={`w-[10rem] h-[2rem] flex items-center justify-center text-[.8rem] font-medium rounded-[2rem] ${!bgcolor ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
           >
             {buttontext()}
           </button>
 
           <button
-            className="w-[25px] h-[25px]"
+            className="w-[25px] aspect-square"
             onClick={() => handleDropdown()}
           >
             <svg
@@ -85,8 +85,9 @@ export default function Header({ bgcolor, handleDropdown }) {
                 id="Icon_open-menu"
                 data-name="Icon open-menu"
                 d="M0,0V4.5H36V0ZM0,13.365v4.5H36v-4.5Zm0,13.5v4.5H36v-4.5Z"
-                strokeLinecap="round"
-                fill={bgcolor ? "black" : "white"}
+                strokeLinecap="rounded"
+                stroke="#FFFFF0"
+                fill={bgcolor ? "black" : "#FFFFF0"}
               />
             </svg>
           </button>

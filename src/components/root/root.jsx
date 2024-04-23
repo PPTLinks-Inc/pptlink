@@ -105,11 +105,10 @@ export default function Root({ isLoading }) {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${
-          color === "black"
+        className={`px-7 rounded-xl py-1 ${color === "black"
             ? " bg-black text-slate-200"
             : "bg-slate-200 text-black"
-        }`}
+          }`}
         onClick={() => handleClick()}
       >
         Present
@@ -119,20 +118,19 @@ export default function Root({ isLoading }) {
 
   return (
     <div
-      className={`w-full h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "overflow-y-hidden" : "overflow-y-auto"}`}
+      className={`w-full min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${(page.dropdown || isLoading) ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
     >
       <Backmenu handleDropdown={handleDropdown} />
       <div
         ref={mainRef}
-        className={`min-h-screen bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
-          page.dropdown
+        className={`min-h-screen bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
             ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
             : "transition-transform translate-y-0 ease-in-out top-0"
-        }`}
+          }`}
       >
         <Header bgcolor={false} handleDropdown={handleDropdown} />
         {isLoading ? (
-          <div className="w-full h-[85vh] flex justify-center items-center bg-black">
+          <div className="w-full fixed top-0 left-0 !min-h-screen _h-[calc(100vh-4rem)] z-50 grid place-items-center bg-black">
             <LoadingAssetBig2 />
           </div>
         ) : (
