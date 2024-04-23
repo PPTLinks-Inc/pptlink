@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 import "./interface.css";
-import { useState, useContext, useRef, useEffect } from "react";
+import { useContext, useRef, useEffect } from "react";
 import Header from "./layout/Header";
 import { Carousel } from "./layout/Carousel";
 import { LoadingAssetBig2 } from "../../assets/assets";
