@@ -159,13 +159,15 @@ export default function SignPage() {
     <section className="signpage h-screen relative">
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
         <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
-          <Link to="/" className="block text-md mb-3 font-[600]">
-            <img src={logo_orange} alt={logo_orange} className="w-5 aspect-square" />
-            {/* PPTLINKS */}
-          </Link>
-          <p className="mb-5 text-[.7rem]">
-            {isSignupPage ? "Create Account" : "Welcome Back"}
-          </p>
+          <div className="sticky top-0 maxScreen:z-50">
+            <Link to="/" className="block text-md mb-3 font-[600]">
+              <img src={logo_orange} alt={logo_orange} className="w-5 aspect-square" />
+              {/* PPTLINKS */}
+            </Link>
+            <p className="mb-5 text-[.7rem]">
+              {isSignupPage ? "Create Account" : "Welcome Back"}
+            </p>
+          </div>
           <h1 className="text-center text-3xl font-[400] mb-10">
             {isSignupPage ? "Sign Up" : "Sign In"}
           </h1>
