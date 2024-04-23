@@ -61,7 +61,6 @@ const Chat = React.memo(
     );
     const micRequestAudio = useRef(null);
 
-    console.log({ conversationLive });
     // const [isSpeaking, setIsSpeaking] = useState(false);
     const [showLeave, setShowLeave] = useState(false);
     const [username, setUsername] = useState(user ? user.username : "");
@@ -123,7 +122,6 @@ const Chat = React.memo(
 
     const micRequestToggle = useMutation({
       mutationFn: async (newState) => {
-        console.log(newState);
         if (newState === REQ_MIC) {
           await rtmClient.addOrUpdateLocalUserAttributes({ status: REQ_MIC });
           await channel.sendMessage({ text: "req-toggle-mic" });
@@ -179,7 +177,6 @@ const Chat = React.memo(
     });
 
     useEffect(() => {
-      console.log({ closeChatModal });
       if (closeChatModal) {
         closeChat();
       }
@@ -187,7 +184,6 @@ const Chat = React.memo(
 
     const leaveRtmChannel = async () => {
       if (!chatOpen.join) return;
-      console.log("Leaving");
       await channel?.leave();
       await rtmClient?.logout();
     };
@@ -630,10 +626,6 @@ const Chat = React.memo(
       setChatOpen((prev) => ({ ...prev, active: false }));
       clientAudioOff.mutate();
     }
-
-    useEffect(() => {
-      console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
-    }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
 
     const LeaveConversationModal = () => {
       return (

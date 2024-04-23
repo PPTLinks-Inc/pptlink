@@ -56,8 +56,7 @@ const PresentationContextProvider = (props) => {
         localStorage.setItem("userUid", res.data.presentation.rtcUid);
       }
       return res.data.presentation;
-    },
-    staleTime: Infinity
+    }
   });
 
   const syncSlide = () => {
