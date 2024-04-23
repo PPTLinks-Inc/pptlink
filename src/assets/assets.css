@@ -23,7 +23,8 @@
 }
 
 .two .logo {
-  border: 1px solid rgb(226 232 240);
+  /* border: 1px solid rgb(226 232 240); */
+  border: 1px solid #FFFFF0;
 }
 
 .logo > div {
@@ -46,7 +47,8 @@
 }
 
 .two .logo__content1 {
-  background-color: rgb(226 232 240);
+  /* background-color: rgb(226 232 240); */
+  background-color: #FFFFF0;
 }
 
 .logo__content2 {
@@ -56,11 +58,13 @@
 }
 
 .two .logo__content {
-  border: 1px solid rgb(226 232 240);
+  /* border: 1px solid rgb(226 232 240); */
+  border: 1px solid #FFFFF0;
 }
 
 .two .logo__content2 {
-  border: 1px solid rgb(226 232 240);
+  /* border: 1px solid rgb(226 232 240); */
+  border: 1px solid #FFFFF0;
 }
 
 @keyframes logo {
