@@ -1,6 +1,6 @@
 import { FaEllipsisV } from "react-icons/fa";
 
-export default function Card({ img }) {
+export default function Card({ img, name }) {
   return (
     <div className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2]">
       <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
@@ -13,7 +13,7 @@ export default function Card({ img }) {
       </div>
       <div className="card_body pb-5">
         <h3 className="title font-medium w-full text-xl text-ellipsis pt-3">
-          Lorem, ipsum dolor.
+          {name}
         </h3>
         <p className="w-full text-[.8rem] text-ellipsis pt-2 font-light">
           <strong>Presenter: </strong>
