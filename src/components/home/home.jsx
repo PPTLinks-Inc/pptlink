@@ -15,7 +15,7 @@ import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export default function NewHome() {
   // context
@@ -23,6 +23,14 @@ export default function NewHome() {
   const { user, setUser } = useContext(userContext);
 
   const navigate = useNavigate();
+
+  const presentationQuery = useQuery({
+    queryKey: ["public-presentations"],
+    queryFn: () => {
+      return axios
+      .get("/api/v1/ppt/presentations?noPerPage=10&pageNo=1&public=true")
+    }
+  });
 
   const [values, setValues] = useState({
     msgName: "",
@@ -108,14 +116,11 @@ export default function NewHome() {
               <FaCaretRight onClick={() => scrollCards(false)} className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
           </div>
-          <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth" ref={scrollRef}>
-            {Array(5)
-              .fill(0)
-              .map((_, i) => ({ id: i }))
-              .map(({ id }) => (
-                <Card key={id} img={card_img} />
-              ))}
-          </div>
+          {presentationQuery.isSuccess && (<div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth" ref={scrollRef}>
+            {presentationQuery.data.data.presentations.map((presentation) => (
+              <Card key={presentation.id} img={presentation.thumbnail} name={presentation.name} />
+            ))}
+          </div>)}
           <NavLink
             to="/"
             className="block text-center text-[#FFA500] underline"
