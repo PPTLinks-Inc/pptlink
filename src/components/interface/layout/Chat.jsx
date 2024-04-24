@@ -306,7 +306,7 @@ const Chat = React.memo(
             }, 500);
           }
         };
-        
+
         const handleMemberJoinedAndLeft = debounceMemberJoinedAndLeft();
         channel.on("MemberJoined", async (memberId) => {
           const userData = await rtmClient.getUserAttributesByKeys(memberId, [
@@ -347,7 +347,7 @@ const Chat = React.memo(
                   const temp = { ...prev };
                   let shouldPlay = false;
                   for (const user of requestUser) {
-                    if (user.status === REQ_MIC) {
+                    if (user.status === REQ_MIC && isHost) {
                       shouldPlay = true;
                       notifyUser.push(user);
                     };
