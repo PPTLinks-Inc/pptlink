@@ -20,7 +20,7 @@ export default function Card({ presentation }) {
           </h3>
           <p className="w-full text-[.8rem] text-ellipsis pt-2 font-light">
             <strong>Presenter: </strong>
-            <em>{presentation.user}</em>
+            <em>{presentation.User.username}</em>
           </p>
           <p className="w-full text-[.8rem] text-ellipsis pt-2 font-light">
             <strong>Topic: </strong>
