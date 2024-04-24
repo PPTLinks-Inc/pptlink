@@ -1,5 +1,6 @@
-import { useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { useRef, useCallback, useContext, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from 'axios';
 import banner_img from "/team/pptlink_resources/slide.png";
 import card_img from "/team/pptlink_resources/pexels-pixabay-270637 (1).jpg";
 import anim_img1 from "/team/pptlink_resources/presentation.png";
@@ -12,8 +13,6 @@ import location from "/team/pptlink_resources/Group 32.png";
 import Accordion from "../accordion/accordion";
 import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
-import { useCallback, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 
@@ -94,9 +93,10 @@ export default function NewHome() {
           </div>
         </div>
       </div>
-      <div className="recent relative w-full min-h-screen text-white text-justify pb-10">
-        <div className="container relative">
-          <div className="flex flex-col items-center text-black maxScreenMobile:mb-5">
+      {/* /////////////////////////////see more////////////////////////////////////////////////// */}
+      <div className="recent relative w-full min-h-screen text-white text-justify md:pb-20">
+        <div className="container relative pt-10">
+          <div className="flex flex-col items-center text-black maxScreenMobile:pb-10">
             <h2 className="text-[3rem]">RECENT</h2>
           </div>
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
@@ -123,7 +123,8 @@ export default function NewHome() {
           </NavLink>
         </div>
       </div>
-      <div className="why_pptlinks container w-full py-20 maxScreenMobile:py-5">
+      {/* /////////////////////////////see more////////////////////////////////////////////////// */}
+      <div className="why_pptlinks container w-full py-20 maxScreenMobile:py-12">
         <h3 className="text-6xl text-center text-[#FFA500] mb-10">
           WHY USE PPTLINKS?
         </h3>
@@ -246,7 +247,7 @@ export default function NewHome() {
               <form onSubmit={handleMsgSubmit}>
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
-                    <label htmlFor="name" className="block w-full">
+                    <label htmlFor="name" className="block w-full underline underline-offset-2">
                       Name:
                     </label>
                     <input
@@ -257,12 +258,12 @@ export default function NewHome() {
                       onChange={(e) => {
                         setValues({ ...values, msgName: e.target.value });
                       }}
-                      className="block w-full bg-transparent border-b-[1px] border-solid border-white"
+                      className="block w-full bg-transparent border-b-[1px] border-solid border-white py-2"
                       required
                     />
                   </div>
                   <div className="w-[50%] maxScreenMobile:w-full">
-                    <label htmlFor="email" className="block w-full">
+                    <label htmlFor="email" className="block w-full underline underline-offset-2">
                       Email Address:
                     </label>
                     <input
@@ -273,14 +274,14 @@ export default function NewHome() {
                       onChange={(e) => {
                         setValues({ ...values, msgEmail: e.target.value });
                       }}
-                      className="block w-full bg-transparent border-b-[1px] border-solid border-white"
+                      className="block w-full bg-transparent border-b-[1px] border-solid border-white py-2"
                       required
                     />
                   </div>
                 </div>
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
-                    <label htmlFor="phone" className="block w-full">
+                    <label htmlFor="phone" className="block w-full underline underline-offset-2">
                       Phone Number:
                     </label>
                     <input
@@ -292,20 +293,19 @@ export default function NewHome() {
                       onChange={(e) => {
                         setValues({ ...values, msgPhone: e.target.value });
                       }}
-                      className="block w-full bg-transparent border-b-[1px] border-solid border-white"
+                      className="block w-full bg-transparent border-b-[1px] border-solid border-white py-2"
                       required
                     />
                   </div>
-
                   <select
                     id="countries"
                     value={values.msgReason}
                     onChange={(e) => {
                       setValues({ ...values, msgReason: e.target.value });
                     }}
-                    class="bg-black border-b border-white text-white block w-[50%] maxScreenMobile:w-full py-2.5"
+                    class="bg-black border-b border-white text-white block w-[50%] maxScreenMobile:w-full py-4"
                   >
-                    <option selected>Reason for writing?</option>
+                    <option selected className="underline underline-offset-2">Reason for writing?</option>
                     <option value="dog">Dog</option>
                     <option value="cat">Cat</option>
                     <option value="hamster">Hamster</option>
@@ -316,8 +316,8 @@ export default function NewHome() {
                 </div>
 
                 <div className=" mb-8">
-                  <label htmlFor="message" className="block w-full ">
-                    Message
+                  <label htmlFor="message" className="block w-full underline underline-offset-2">
+                    Message:
                   </label>
                   <textarea
                     name="message"
@@ -328,7 +328,7 @@ export default function NewHome() {
                     onChange={(e) => {
                       setValues({ ...values, msg: e.target.value });
                     }}
-                    className="block w-full min-h-[5rem] bg-transparent border-b-[1px] border-solid border-white"
+                    className="block w-full min-h-[5rem] bg-transparent border-b-[1px] border-solid border-white py-2"
                   ></textarea>
                 </div>
                 <button
