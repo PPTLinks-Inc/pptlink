@@ -1,8 +1,6 @@
 import { useRef, useCallback, useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import banner_img from "/team/pptlink_resources/slide.png";
-import card_img from "/team/pptlink_resources/pexels-pixabay-270637 (1).jpg";
 import anim_img1 from "/team/pptlink_resources/presentation.png";
 import anim_img2 from "/team/pptlink_resources/hosting-monitors-server-svgrepo-com.png";
 import anim_img3 from "/team/pptlink_resources/school-svgrepo-com.png";
@@ -13,14 +11,14 @@ import location from "/team/pptlink_resources/Group 32.png";
 import Accordion from "../accordion/accordion";
 import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
-import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../assets/assets";
+import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 
 export default function NewHome() {
   // context
   const scrollRef = useRef();
-  const { user, setUser } = useContext(userContext);
+  const { user } = useContext(userContext);
 
   const navigate = useNavigate();
 
@@ -94,10 +92,10 @@ export default function NewHome() {
           </div>
           <div className="banner_img w-full m-auto">
             <img
-              src={banner_img}
-              alt={banner_img}
+              src="https://res.cloudinary.com/dsmydljex/image/upload/v1713996099/ppt/app%20assets/slide_i4elun.webp"
+              alt="Banner Image"
               className="w-full aspect-square"
-              loading="lazy"
+              fetchpriority="high"
             />
           </div>
         </div>
@@ -118,7 +116,7 @@ export default function NewHome() {
           </div>
           {presentationQuery.isSuccess && (<div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth" ref={scrollRef}>
             {presentationQuery.data.data.presentations.map((presentation) => (
-              <Card key={presentation.id} img={presentation.thumbnail} name={presentation.name} />
+              <Card key={presentation.id} presentation={presentation} />
             ))}
           </div>)}
           <NavLink

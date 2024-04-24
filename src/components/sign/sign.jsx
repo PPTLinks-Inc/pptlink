@@ -1,7 +1,6 @@
-import { useCallback, useContext, useState, useEffect } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { LoadingAssetSmall } from "../../assets/assets";
 import { userContext } from "../../contexts/userContext";
 import { Helmet } from "react-helmet";
 import { useMutation } from "@tanstack/react-query";
@@ -12,13 +11,13 @@ import meetingsvg from "/team/pptlink_resources/presentation-svgrepo-com (3).png
 import groupchats from "/team/pptlink_resources/presentation-svgrepo-com (4).png";
 import flowchat from "/team/pptlink_resources/presentation-svgrepo-com (5).png";
 import switchboard from "/team/pptlink_resources/presentation-whiteboard-svgrepo-com.png";
-import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
+import { LoadingAssetSmall2 } from "../../assets/assets";
 import "../../assets/styles/general_css.css";
 import logo_orange from "/imgs/onemorecolor.png";
 
 export default function SignPage() {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(userContext);
+  const { setUser } = useContext(userContext);
 
   const [isSignupPage, setIsSignupPage] = useState(
     useLocation().pathname === "/signup"
@@ -49,7 +48,7 @@ export default function SignPage() {
           password: values.password
         });
     },
-    onSuccess: ({ data }, variables, context) => {
+    onSuccess: ({ data }) => {
       setUser(data.user);
       localStorage.setItem("accessToken", data.token);
       navigate('/');
@@ -65,7 +64,7 @@ export default function SignPage() {
           username: values.fullName,
         });
     },
-    onSuccess: ({ data }, variables, context) => {
+    onSuccess: ({ data }) => {
       setUser(data.user);
       localStorage.setItem("accessToken", data.token);
       navigate('/');
