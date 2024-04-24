@@ -47,6 +47,7 @@ function App() {
     queryFn: async () => {
       const { data } = await axios.get("/api/v1/auth/user");
       setUser(data.user);
+      return data.user;
     }
   });
 

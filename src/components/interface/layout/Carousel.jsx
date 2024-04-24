@@ -314,7 +314,7 @@ export const Carousel = () => {
           {!specialMedia.animation1 &&
             specialMedia.animation2 &&
             !fullscreen && (
-              <div className="w-screen h-screen fixed top-0 left-0 z-[1000] grid place-content-center">
+              <div className="w-screen h-screen fixed top-0 left-0 z-[1000] grid place-content-center bg-black">
                 <div className="w-fit h-fit flex flex-col justify-between items-center">
                   <FaExpand
                     onClick={removeSpecialMedia}

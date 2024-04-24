@@ -61,7 +61,6 @@ const Chat = React.memo(
     );
     const micRequestAudio = useRef(null);
 
-    console.log({ conversationLive });
     // const [isSpeaking, setIsSpeaking] = useState(false);
     const [showLeave, setShowLeave] = useState(false);
     const [username, setUsername] = useState(user ? user.username : "");
@@ -123,7 +122,6 @@ const Chat = React.memo(
 
     const micRequestToggle = useMutation({
       mutationFn: async (newState) => {
-        console.log(newState);
         if (newState === REQ_MIC) {
           await rtmClient.addOrUpdateLocalUserAttributes({ status: REQ_MIC });
           await channel.sendMessage({ text: "req-toggle-mic" });
@@ -179,7 +177,6 @@ const Chat = React.memo(
     });
 
     useEffect(() => {
-      console.log({ closeChatModal });
       if (closeChatModal) {
         closeChat();
       }
@@ -187,7 +184,6 @@ const Chat = React.memo(
 
     const leaveRtmChannel = async () => {
       if (!chatOpen.join) return;
-      console.log("Leaving");
       await channel?.leave();
       await rtmClient?.logout();
     };
@@ -310,7 +306,7 @@ const Chat = React.memo(
             }, 500);
           }
         };
-        
+
         const handleMemberJoinedAndLeft = debounceMemberJoinedAndLeft();
         channel.on("MemberJoined", async (memberId) => {
           const userData = await rtmClient.getUserAttributesByKeys(memberId, [
@@ -321,6 +317,7 @@ const Chat = React.memo(
           ]);
           if (userData.role === "HOST") {
             setHostData({ id: memberId, ...userData });
+            toast.info("Host joined the conversation");
             return;
           }
           handleMemberJoinedAndLeft({
@@ -330,6 +327,10 @@ const Chat = React.memo(
           }, "joined");
         });
         channel.on("MemberLeft", async (memberId) => {
+          if (memberId === hostData.id) {
+            toast.info("Host left the conversation");
+            return;
+          }
           handleMemberJoinedAndLeft({ id: memberId }, "left");
         });
 
@@ -346,7 +347,7 @@ const Chat = React.memo(
                   const temp = { ...prev };
                   let shouldPlay = false;
                   for (const user of requestUser) {
-                    if (user.status === REQ_MIC) {
+                    if (user.status === REQ_MIC && isHost) {
                       shouldPlay = true;
                       notifyUser.push(user);
                     };
@@ -631,10 +632,6 @@ const Chat = React.memo(
       clientAudioOff.mutate();
     }
 
-    useEffect(() => {
-      console.log({ active: CHAT_ACTIVE, open: chatOpen.open, keepChatOpen });
-    }, [CHAT_ACTIVE, keepChatOpen, chatOpen.open]);
-
     const LeaveConversationModal = () => {
       return (
         <>
@@ -732,7 +729,7 @@ const Chat = React.memo(
                       //   ? "100%"
                       //   : "5rem",
                     }}
-                    dragConstraints={interfaceRef}
+                    dragConstraints={interfaceRef !== null ? interfaceRef : {}}
                     transition={{ type: "keyframes" }}
                     drag={!matches.small && true}
                     dragMomentum={false}

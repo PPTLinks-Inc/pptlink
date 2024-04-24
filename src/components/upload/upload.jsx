@@ -69,10 +69,10 @@ const Upload = () => {
   }, []);
 
   const presentationData = () => {
-    if (user && user.institution) {
+    if (user && user.paid) {
       return ["PUBLIC", false, "opacity-[1]"];
     } else {
-      return ["PRIVATE", true, "opacity-[.4]"];
+      return ["PUBLIC", true, "opacity-[.4]"];
     }
   };
 
@@ -328,7 +328,7 @@ const Upload = () => {
                 onChange={(e) => setValues({ ...values, file: e.target.files })}
                 name="file"
                 id="file"
-                multiple="false"
+                multiple={false}
                 accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
               />
               <div className="h-[140px] flex items-center justify-center w-full">
@@ -353,6 +353,7 @@ const Upload = () => {
                   type="radio"
                   name="type"
                   id="Priv"
+                  disabled={presentationData()[1]}
                   checked={values.presentationType === "PRIVATE"}
                   onChange={() =>
                     setValues({ ...values, presentationType: "PRIVATE" })
@@ -367,7 +368,6 @@ const Upload = () => {
                   name="type"
                   id="Pub"
                   checked={values.presentationType === "PUBLIC"}
-                  disabled={presentationData()[1]}
                   onChange={() =>
                     setValues({ ...values, presentationType: "PUBLIC" })
                   }

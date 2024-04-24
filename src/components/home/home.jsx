@@ -304,9 +304,9 @@ export default function NewHome() {
                     onChange={(e) => {
                       setValues({ ...values, msgReason: e.target.value });
                     }}
-                    class="bg-black border-b border-white text-white block w-[50%] maxScreenMobile:w-full py-4"
+                    className="bg-black border-b border-white text-white block w-[50%] maxScreenMobile:w-full py-2.5"
                   >
-                    <option selected className="underline underline-offset-2">Reason for writing?</option>
+                    <option selected>Reason for writing?</option>
                     <option value="dog">Dog</option>
                     <option value="cat">Cat</option>
                     <option value="hamster">Hamster</option>
