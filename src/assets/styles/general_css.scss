@@ -3,6 +3,7 @@ $maxHeight: 100svh;
 
 * {
     box-sizing: border-box !important;
+    transition: all 50ms ease-in-out !important;
 }
 
 .container {
@@ -101,7 +102,7 @@ button,
             flex-direction: row;
             overflow-y: hidden;
             overflow-x: auto;
-            gap: calc((100% - $cardWidth) / 2);
+            gap: calc((100%-280px)/2);
             justify-content: space-around;
             scroll-snap-type: x mandatory;
 

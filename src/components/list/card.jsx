@@ -2,7 +2,7 @@ import { FaEllipsisV } from "react-icons/fa";
 
 export default function Card({ img, name }) {
   return (
-    <div className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2]">
+    <div className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2] border border-[#FFA500]">
       <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
         <img
           src={img}

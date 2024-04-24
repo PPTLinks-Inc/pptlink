@@ -109,10 +109,10 @@ export default function NewHome() {
             <h2 className="text-[3rem]">RECENT</h2>
           </div>
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
-            <button className="flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border border-[#FFA500] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square _border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft onClick={() => scrollCards(true)} className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
-            <button className="flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border border-[#FFA500] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square _border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretRight onClick={() => scrollCards(false)} className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
             </button>
           </div>
