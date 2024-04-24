@@ -15,6 +15,7 @@ import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
+import { useMutation } from "@tanstack/react-query";
 
 export default function NewHome() {
   // context
