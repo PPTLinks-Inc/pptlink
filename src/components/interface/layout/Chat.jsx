@@ -183,7 +183,7 @@ const Chat = React.memo(
     }, [closeChatModal]);
 
     const leaveRtmChannel = async () => {
-      if (!chatOpen.join) return;
+      // if (!chatOpen.join) return;
       await channel?.leave();
       await rtmClient?.logout();
     };
@@ -309,12 +309,17 @@ const Chat = React.memo(
 
         const handleMemberJoinedAndLeft = debounceMemberJoinedAndLeft();
         channel.on("MemberJoined", async (memberId) => {
-          const userData = await rtmClient.getUserAttributesByKeys(memberId, [
-            "role",
-            "status",
-            "name",
-            "muted"
-          ]);
+          let userData = await rtmClient.getUserAttributes(memberId);
+
+          // if (Object.keys(userData) === 0) {
+          //   userData = await rtmClient.getUserAttributesByKeys(memberId, [
+          //     "role",
+          //     "status",
+          //     "name",
+          //     "muted"
+          //   ]);
+          // };
+          console.log("JOINED:", userData);
           if (userData.role === "HOST") {
             setHostData({ id: memberId, ...userData });
             toast.info("Host joined the conversation");
@@ -1176,7 +1181,7 @@ function Participant({ participant, className, hostParticipantAction }) {
           <span
             className={`absolute z-10 -bottom-0 right-0 inline-block w-[0.65rem] h-[0.65rem] rounded-full ${
               participant.status === MIC_OFF
-                ? "bg-rose-400"
+                ? "bg-rose-700"
                 : participant.status === REQ_MIC
                   ? "bg-orange-400"
                   : ""
