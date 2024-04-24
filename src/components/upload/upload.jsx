@@ -328,7 +328,7 @@ const Upload = () => {
                 onChange={(e) => setValues({ ...values, file: e.target.files })}
                 name="file"
                 id="file"
-                multiple="false"
+                multiple={false}
                 accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
               />
               <div className="h-[140px] flex items-center justify-center w-full">
