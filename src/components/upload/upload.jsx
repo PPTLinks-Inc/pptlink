@@ -69,10 +69,10 @@ const Upload = () => {
   }, []);
 
   const presentationData = () => {
-    if (user && user.institution) {
+    if (user && user.paid) {
       return ["PUBLIC", false, "opacity-[1]"];
     } else {
-      return ["PRIVATE", true, "opacity-[.4]"];
+      return ["PUBLIC", true, "opacity-[.4]"];
     }
   };
 
