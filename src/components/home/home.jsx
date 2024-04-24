@@ -95,6 +95,7 @@ export default function NewHome() {
               src="https://res.cloudinary.com/dsmydljex/image/upload/v1713996099/ppt/app%20assets/slide_i4elun.webp"
               alt="Banner Image"
               className="w-full aspect-square"
+              // eslint-disable-next-line react/no-unknown-property
               fetchpriority="high"
             />
           </div>
