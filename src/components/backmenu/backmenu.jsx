@@ -25,8 +25,8 @@ export default function Backmenu({ handleDropdown }) {
   };
 
   return (
-    <div className="w-full h-full maxScreenMobile:overflow-auto pt-[5.5rem]">
-      <Header bgcolor={true} handleDropdown={handleDropdown} />
+    <div className="w-full h-screen maxScreenMobile:overflow-auto pt-[5.5rem]">
+      <Header isBackMenu={true} handleDropdown={handleDropdown} />
 
       <div className="w-full h-[90vh]">
         <div className="flex-col w-[100%] h-[50%] flex-1 !border-0 justify-center flex lg:flex-wrap lg:flex-row maxScreen:my-14">
