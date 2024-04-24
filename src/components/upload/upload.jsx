@@ -353,6 +353,7 @@ const Upload = () => {
                   type="radio"
                   name="type"
                   id="Priv"
+                  disabled={presentationData()[1]}
                   checked={values.presentationType === "PRIVATE"}
                   onChange={() =>
                     setValues({ ...values, presentationType: "PRIVATE" })
@@ -367,7 +368,6 @@ const Upload = () => {
                   name="type"
                   id="Pub"
                   checked={values.presentationType === "PUBLIC"}
-                  disabled={presentationData()[1]}
                   onChange={() =>
                     setValues({ ...values, presentationType: "PUBLIC" })
                   }
