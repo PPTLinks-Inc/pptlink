@@ -137,6 +137,8 @@ const PresentationContextProvider = (props) => {
           ...prev,
           live
         }));
+
+        
       });
     }
 
