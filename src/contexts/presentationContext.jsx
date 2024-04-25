@@ -46,6 +46,8 @@ const PresentationContextProvider = (props) => {
 
   const presentationQuery = useQuery({
     queryKey: ["presentation", params.id],
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const userUid = localStorage.getItem("userUid");
       const res = await axios.get(
