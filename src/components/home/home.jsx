@@ -26,7 +26,7 @@ export default function NewHome() {
     queryKey: ["public-presentations"],
     queryFn: () => {
       return axios
-      .get("/api/v1/ppt/presentations?noPerPage=10&pageNo=1&public=true")
+        .get("/api/v1/ppt/presentations?noPerPage=10&pageNo=1&public=true")
     }
   });
 
@@ -70,11 +70,11 @@ export default function NewHome() {
               GET PRESENTABLE
             </h1>
             <p className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:">
-              Lorem ipsum dolor sit amet, At vero eos et Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Sequi animi sunt fugiat
-              doloremque, iure aperiam magnam quod quia, placeat explicabo
-              distinctio, doloribus mollitia quae asperiores unde perferendis
-              perspiciatis quis incidunt?
+              PPTLinks is your leading platform for easy sharing and viewing of
+              presentations. It offers a smooth experience, allowing you to
+              effortlessly upload, share, and view presentations from anywhere.
+              Join PPTLinks to unlock a world of possibilities for sharing your
+              ideas with the community.
             </p>
             <div className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col">
               <button
@@ -155,7 +155,7 @@ export default function NewHome() {
                   Make Amazing Presentation
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  and carry your audience along.
                 </p>
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function NewHome() {
                   Host Classes with Libraries
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  to create engaging learning experiences for participants.
                 </p>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function NewHome() {
                   For Physical Presentations
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  backbenchers become part of the session.
                 </p>
               </div>
             </div>
@@ -209,10 +209,10 @@ export default function NewHome() {
               </div>
               <div className="anim_body">
                 <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Physical Presentations
+                  Tell your story visually
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  to give a lasting impression.
                 </p>
               </div>
             </div>
@@ -231,7 +231,9 @@ export default function NewHome() {
                   For Business
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
+                    present Your ideas with Confidence and Clarity.
+                  </p>
                 </p>
               </div>
             </div>
@@ -246,8 +248,8 @@ export default function NewHome() {
             <div className="w-[50%] min-h-[30rem] text-[0.8rem] mb-10 maxScreenMobile:w-full">
               <h5 className="mb-3 text-[1.2rem]">Send a Message</h5>
               <p className="w-full mb-10">
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut
+                Your voice matters! Share your thought and feedback with us and
+                be part of our community.
               </p>
               <form onSubmit={handleMsgSubmit}>
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
@@ -348,8 +350,8 @@ export default function NewHome() {
               <div className="w-full mb-10">
                 <h4 className="mb-3">Call US</h4>
                 <p className="text-[0.8rem] mb-3">
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut
+                  Ready to the next step? Have a question or need guidance? Call
+                  us now and lets discuss how we can help you achieve your goal.
                 </p>
                 <div className="flex items-center">
                   <img
@@ -358,8 +360,8 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="tel:+2349117511763" className="text-[#FFA500]">
-                    +2349117511763
+                  <a href="tel:+2349068314394" className="text-[#FFA500]">
+                    +2349068314394
                   </a>
                 </div>
               </div>
@@ -367,8 +369,8 @@ export default function NewHome() {
               <div className="w-full mb-10">
                 <h4 className="mb-3">Visit Us</h4>
                 <p className="text-[0.8rem] mb-3">
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut
+                  We’d love to welcome you to our office. Visit us and let’s
+                  discuss your project. We can’t wait to see you.
                 </p>
                 <div className="flex items-center">
                   <img
@@ -378,16 +380,17 @@ export default function NewHome() {
                     loading="lazy"
                   />
                   <a href="/" className="text-[#FFA500]">
-                    Greece Nevada East Joanie 06918 Leonard Mission
+                    Nascomsoft in Angwan Cashew, opp Elim church, 740102, Bauchi
+                    Nigeria
                   </a>
                 </div>
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Visit Us</h4>
+                <h4 className="mb-3">Message Us</h4>
                 <p className="text-[0.8rem] mb-3">
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut
+                  Write to us through text, on linkedin or any of our social
+                  handles
                 </p>
                 <div className="flex items-center">
                   <img
@@ -396,8 +399,8 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="sms:+2349117511763" className="text-[#FFA500]">
-                    SMS to +2349117511763
+                  <a href="sms:+2349068314394" className="text-[#FFA500]">
+                    SMS to +2349068314394
                   </a>
                 </div>
               </div>
