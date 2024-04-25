@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box !important;
+  transition: all 50ms ease-in-out !important;
 }
 
 .container {
@@ -84,7 +85,7 @@ button,
     flex-direction: row;
     overflow-y: hidden;
     overflow-x: auto;
-    gap: calc((100% - 280px) / 2);
+    gap: calc(10% + 0.5rem);
     justify-content: space-around;
     scroll-snap-type: x mandatory;
   }
