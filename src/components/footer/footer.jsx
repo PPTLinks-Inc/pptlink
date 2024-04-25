@@ -32,7 +32,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mb-5">
-              PPTLINKS is your go-to source for presentation, inspiration,
+              PPTLinks is your go-to source for presentation, inspiration,
               resource and expertise. Explore our vast library, collaborate with
               our community and achieve your goal with confidence.
             </p>
