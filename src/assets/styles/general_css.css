@@ -65,6 +65,7 @@ button,
   height: 100%;
 }
 .parent_page_wrapper .cards_wrapper {
+  width: 100%;
   display: grid;
   -moz-column-gap: 9rem;
   column-gap: 9rem;
@@ -81,12 +82,11 @@ button,
 }
 @media screen and (max-width: 768px) {
   .parent_page_wrapper .cards_wrapper {
-    display: flex;
+    display: flex !important;
     flex-direction: row;
     overflow-y: hidden;
-    overflow-x: auto;
+    overflow-x: scroll;
     gap: calc(10% + 0.5rem);
-    justify-content: space-around;
     scroll-snap-type: x mandatory;
   }
   .parent_page_wrapper .cards_wrapper .card {
@@ -95,6 +95,9 @@ button,
     flex-grow: 1;
     flex-shrink: 1;
     scroll-snap-align: start;
+  }
+  .parent_page_wrapper .cards_wrapper .card:first-child {
+    margin-left: 50%;
   }
   .parent_page_wrapper .cards_wrapper::-webkit-scrollbar {
     display: none;
