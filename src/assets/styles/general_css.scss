@@ -81,6 +81,7 @@ button,
 
     .cards_wrapper {
         $cardWidth: 280px;
+        width: 100%;
         display: grid;
         -moz-column-gap: 9rem;
         column-gap: 9rem;
@@ -98,12 +99,11 @@ button,
         }
 
         @media screen and (max-width: 768px) {
-            display: flex;
+            display: flex !important;
             flex-direction: row;
             overflow-y: hidden;
-            overflow-x: auto;
-            gap: calc((100%-280px)/2);
-            justify-content: space-around;
+            overflow-x: scroll;
+            gap: calc((100% / 10) + 0.5rem);
             scroll-snap-type: x mandatory;
 
             & .card {
@@ -112,6 +112,10 @@ button,
                 flex-grow: 1;
                 flex-shrink: 1;
                 scroll-snap-align: start;
+
+                &:first-child {
+                    margin-left: calc(100% / 2);
+                }
             }
 
             &::-webkit-scrollbar {
