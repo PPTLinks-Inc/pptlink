@@ -80,7 +80,7 @@ function App() {
           <Route path="signup" element={<SignPage />} />
         </Routes>
       </BrowserRouter>
-      <ToastContainer />
+      <ToastContainer stacked />
     </>
   );
 }

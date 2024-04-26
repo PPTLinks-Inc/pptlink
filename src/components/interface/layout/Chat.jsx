@@ -122,9 +122,9 @@ const Chat = React.memo(
 
     const micRequestToggle = useMutation({
       mutationFn: async (newState) => {
+        await channel.sendMessage({ text: `req-toggle-mic-${participantsObj[presentation.rtcUid].name}` });
         if (newState === REQ_MIC) {
           await rtmClient.addOrUpdateLocalUserAttributes({ status: REQ_MIC });
-          await channel.sendMessage({ text: "req-toggle-mic" });
           setParticipantsObj((prev) => ({
             ...prev,
             [presentation.rtcUid]: {
@@ -133,9 +133,8 @@ const Chat = React.memo(
             }
           }));
         }
-        if (newState === MIC_OFF) {
+        else if (newState === MIC_OFF) {
           await rtmClient.addOrUpdateLocalUserAttributes({ status: MIC_OFF });
-          await channel.sendMessage({ text: "req-toggle-mic" });
           setParticipantsObj((prev) => ({
             ...prev,
             [presentation.rtcUid]: {
@@ -311,15 +310,14 @@ const Chat = React.memo(
         channel.on("MemberJoined", async (memberId) => {
           let userData = await rtmClient.getUserAttributes(memberId);
 
-          // if (Object.keys(userData) === 0) {
-          //   userData = await rtmClient.getUserAttributesByKeys(memberId, [
-          //     "role",
-          //     "status",
-          //     "name",
-          //     "muted"
-          //   ]);
-          // };
-          console.log("JOINED:", userData);
+          if (Object.keys(userData) === 0) {
+            userData = {
+              role: "GUEST",
+              status: MIC_OFF,
+              name: "Guest",
+              muted: "true"
+            };
+          };
           if (userData.role === "HOST") {
             setHostData({ id: memberId, ...userData });
             toast.info("Host joined the conversation");
@@ -343,10 +341,10 @@ const Chat = React.memo(
           let requestUser = [];
           let notifyUser = [];
           let inDebounce;
-          return function(user, status) {
+          return function(user, status, name) {
             return new Promise((resolve) => {
               clearTimeout(inDebounce);
-              requestUser.push({id: user, status});
+              requestUser.push({id: user, status, name});
               inDebounce = setTimeout(() => {
                 setParticipantsObj((prev) => {
                   const temp = { ...prev };
@@ -357,6 +355,7 @@ const Chat = React.memo(
                       notifyUser.push(user);
                     };
                     temp[user.id].status = user.status;
+                    temp[user.id].name = user.name;
                   }
                   let message;
                   if (shouldPlay) {
@@ -432,12 +431,14 @@ const Chat = React.memo(
         const handleMicAccept = debounceMicAccept();
         const handleMicMute = debounceMicMute();
         channel.on("ChannelMessage", async function (message, memberId) {
-          if (message.text === "req-toggle-mic") {
+          if (message.text.includes("req-toggle-mic")) {
+            const name = message.text.split("-")[3];
+            console.log(name);
             const userData = await rtmClient.getUserAttributesByKeys(memberId, [
               "status"
             ]);
             
-            handleMicRequest(memberId, userData.status).then((message) => {
+            handleMicRequest(memberId, userData.status, name).then((message) => {
               if (message) {
                 toast.info(message);
               }
