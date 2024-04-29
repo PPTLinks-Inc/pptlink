@@ -431,7 +431,7 @@ const Chat = React.memo(
         const handleMicAccept = debounceMicAccept();
         const handleMicMute = debounceMicMute();
         channel.on("ChannelMessage", async function (message, memberId) {
-          if (message.text.includes("req-toggle-mic")) {
+          if (message.text.substring(0, 14) === "req-toggle-mic") {
             const name = message.text.split("-")[3];
             console.log(name);
             const userData = await rtmClient.getUserAttributesByKeys(memberId, [
@@ -443,10 +443,10 @@ const Chat = React.memo(
                 toast.info(message);
               }
             });
-          } else if (message.text.includes("accept-req-toggle-mic")) {
+          } else if (message.text.substring(0, 21) === "accept-req-toggle-mic") {
             const id = message.text.split("_")[1];
             handleMicAccept(id, CAN_SPK);
-          } else if (message.text.includes("reject-req-toggle-mic")) {
+          } else if (message.text.substring(0, 21) === "reject-req-toggle-mic") {
             const id = message.text.split("_")[1];
             handleMicAccept(id, MIC_OFF);
           } else if (message.text === "host-toggle-mic") {
