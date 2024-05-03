@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 dumb-code
+test.md
 
 package-lock.json
 yarn.lock

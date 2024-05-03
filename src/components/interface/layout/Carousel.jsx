@@ -1,62 +1,49 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-irregular-whitespace */
-/* eslint-disable no-unused-vars */
 
-import { useState, useRef, useEffect } from "react";
-import debounce from "lodash.debounce";
+import { useState, useRef, useEffect, useContext } from "react";
 import SwiperMySlide from "./assets/carousel/Swiper";
-import { FaExpand, FaChevronUp, FaSync } from "react-icons/fa";
+import { FaExpand } from "react-icons/fa";
 import animation1 from "./assets/images/animation1.gif";
 import animation2 from "./assets/images/animation2.gif";
-import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
-import CopyAllRounded from "@mui/icons-material/CopyAllOutlined";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { Button } from "@mui/material";
-import { LoadingAssetSmall, LoadingAssetSmall2 } from "../../../assets/assets";
+import { LoadingAssetSmall2 } from "../../../assets/assets";
 import { isIOS } from "react-device-detect";
+import { PresentationContext } from "../../../contexts/presentationContext";
+import Actions from "../PresentationActions";
+import ShareAPI from "./Share";
 
-let stopFunction = false;
-let navBar = false;
+// let stopFunction = false;
+// let navBar = false;
 let wakeLock = null;
+let setTimerActive = null;
 
-export const Carousel = ({
-  nav,
-  presentation,
-  makeLive,
-  socket,
-  livePending,
-  requestIndex,
-  socketId,
-}) => {
-  const [active, setActive] = useState(false);
-  const [enableFullscreen, setEnableFullScreen] = useState(false);
+export const Carousel = () => {
+  const { presentation, makeLive, socket, livePending, syncButton, syncSlide } =
+    useContext(PresentationContext);
+  const [actionsActive, setActionsActive] = useState(true);
+  const [enableFullscreen] = useState(false);
   const userRef = useRef();
-  const { navbar, setNavbar, navItems } = nav;
-  const [timer, setTimer] = useState(4000);
-  const [syncButton, setSyncButton] = useState(true);
   const [status, setStatus] = useState({
     online: false,
-    offline: false,
+    offline: false
   });
-
-  const swiperRef = useRef();
+  const [fullscreen, setFullscreen] = useState(false);
+  const [closeChatModal, setCloseChatModal] = useState(false);
 
   const [specialMedia, setSpecialMedia] = useState({
     toggled: false,
     animation1: false,
-    animation2: false,
+    animation2: false
   });
-
-  const list = ["", "", "", ""];
 
   const removeSpecialMedia = async () => {
     if (specialMedia.toggled === true) {
       setSpecialMedia((prev) => ({
         ...prev,
         toggled: false,
-        animation2: false,
+        animation2: false
       }));
 
       toggleFullScreen();
@@ -65,6 +52,7 @@ export const Carousel = ({
 
   function toggleFullScreen() {
     const element = userRef.current;
+    setFullscreen((prev) => !prev);
 
     if (!isIOS && document.fullscreenEnabled) {
       if (
@@ -98,23 +86,37 @@ export const Carousel = ({
           document.msExitFullscreen();
         }
       }
+    } else {
+      setFullscreen(false);
     }
   }
 
-  useEffect(() => {
-    const updateOnlineStatus = () => {
-      if (navigator.onLine) {
-        socket.connect();
-      }
-      setStatus((prevState) => ({
-        ...prevState,
-        online: navigator.onLine ? true : "null",
-        offline: !navigator.onLine ? true : "null",
-      }));
-    };
+  const updateOnlineStatus = () => {
+    if (navigator.onLine) {
+      socket.connect();
+    }
+    setStatus((prevState) => ({
+      ...prevState,
+      online: navigator.onLine ? true : "null",
+      offline: !navigator.onLine ? true : "null"
+    }));
+  };
 
+  useEffect(() => {
+    if (status.online === true) {
+      setTimeout(() => {
+        setStatus((prevState) => ({
+          ...prevState,
+          online: false
+        }));
+      }, 3000);
+    }
+  }, [status]);
+  useEffect(() => {
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
+
+    handleMouseMove();
 
     return () => {
       window.removeEventListener("online", updateOnlineStatus);
@@ -122,37 +124,13 @@ export const Carousel = ({
     };
   }, []);
 
-  if (status.online === true) {
-    setTimeout(() => {
-      setStatus((prevState) => ({
-        ...prevState,
-        online: false,
-      }));
-    }, 3000);
-  }
-
-  const debouncedFunctionLead = debounce(
-    () => {
-      setActive(true);
-      // console.log('wait');
-    },
-    4000,
-    { leading: true, trailing: false }
-  );
-
-  const debouncedFunctionTrail = debounce(() => {
-    if (stopFunction) return;
-
-    setActive(false);
-  }, timer);
-
   const requireWakeLock = async () => {
     try {
       if (wakeLock !== null && document.visibilityState === "visible") {
         wakeLock = await navigator.wakeLock.request("screen");
       }
     } catch (err) {
-      console.error(`${err.name}, ${err.message}`);
+      //
     }
   };
   const handleScreenOrientation = (e) => {
@@ -160,13 +138,13 @@ export const Carousel = ({
       setSpecialMedia((prev) => ({
         ...prev,
         animation1: false,
-        animation2: true,
+        animation2: true
       }));
     } else if (!e.matches && window.innerWidth < 900) {
       setSpecialMedia((prev) => ({
         ...prev,
         toggled: true,
-        animation1: true,
+        animation1: true
       }));
     }
   };
@@ -176,7 +154,7 @@ export const Carousel = ({
       setSpecialMedia((prev) => ({
         ...prev,
         toggled: true,
-        animation1: true,
+        animation1: true
       }));
     }
 
@@ -188,11 +166,9 @@ export const Carousel = ({
           wakeLock = await navigator.wakeLock.request("screen");
 
           document.addEventListener("visibilitychange", requireWakeLock);
-        } else {
-          console.log("not available");
         }
       } catch (err) {
-        console.error(`${err.name}, ${err.message}`);
+        //
       }
     })();
 
@@ -214,6 +190,31 @@ export const Carousel = ({
     };
   }, []);
 
+  // useEffect(() => {}, [fullscreen]);
+
+  const handleMouseMove = () => {
+    setActionsActive(true);
+    if (setTimerActive) {
+      clearTimeout(setTimerActive);
+    }
+
+    setTimerActive = setTimeout(() => {
+      setActionsActive(false);
+    }, 5000);
+  };
+
+  const handleMouseClick = (e) => {
+    if (e.target.tagName !== "IMG") return;
+    if (actionsActive) {
+      setActionsActive(false);
+      if (setTimerActive) {
+        clearTimeout(setTimerActive);
+      }
+    } else {
+      handleMouseMove();
+    }
+  };
+
   return (
     <>
       <div
@@ -221,48 +222,33 @@ export const Carousel = ({
           enableFullscreen && "h-full w-full rotate-90"
         }`}
         ref={userRef}
-        onMouseMove={() => {
-          debouncedFunctionLead(), debouncedFunctionTrail();
-        }}
-        onClick={() => {
-          debouncedFunctionLead(), debouncedFunctionTrail();
-        }}
+        onMouseMove={handleMouseMove}
+        onClick={(e) => handleMouseClick(e)}
       >
-        {presentation.User === "HOST" && active && (
-          <p
-            className="max-w-full bg-[white]/10 backdrop-blur-md text-[white]/50 absolute z-[10] left-4 top-6 lg:hidden py-3 px-2 rounded-md md:max-w-sm flex justify-between "
-            onClick={() => {
-              navigator.clipboard &&
-                navigator.clipboard.writeText(window.location.href);
-              toast.success("Link Copied successfully");
-            }}
-          >
-            <span>{window.location.href}</span> <CopyAllRounded />
-          </p>
+        {presentation.User === "HOST" && actionsActive && (
+          <ShareAPI outline={true} />
         )}
 
-        <div className="carousel__track-container h-full relative">
+        <div
+          onClick={() => {
+            setCloseChatModal(true);
+          }}
+          className="carousel__track-container h-full relative"
+        >
           <ul className="h-full w-full flex relative ">
-            <SwiperMySlide
-              active={active}
-              socket={socket}
-              presentation={presentation}
-              requestIndex={requestIndex}
-              socketId={socketId}
-              setSyncButton={setSyncButton}
-              ref={swiperRef}
-            />
+            <SwiperMySlide actionsActive={actionsActive} />
           </ul>
         </div>
         <div
           className={`absolute lg:hidden z-20 top-6 right-6  ${
-            active ? "block" : "hidden"
+            actionsActive ? "block" : "hidden"
           }`}
         >
           {presentation.User === "HOST" && (
             <Button
               title={presentation.live ? "End live" : "Go live"}
               onClick={makeLive}
+              disabled={livePending}
               className={`w-[140px] h-[40px] !text-slate-200 !rounded-xl space-x-2 ${
                 presentation.live ? "!bg-rose-500/50" : " !bg-green-500/50"
               }`}
@@ -281,115 +267,15 @@ export const Carousel = ({
           )}
         </div>
 
-        <nav
-          className={`h-16 w-16 rounded-full bottom-12 right-12  z-30 fixed transition-all duration-500 ${
-            navbar ? "" : "active"
-          } ${active ? "block" : "hidden"}`}
-          onMouseEnter={() => {
-            stopFunction = true;
-          }}
-          onMouseLeave={() => {
-            if (!navBar) {
-              stopFunction = false;
-            }
-          }}
-        >
-          <ul
-            className={`w-full h-full flex items-center justify-center select-none`}
-          >
-            <button
-              title="Toggle fullscreen"
-              aria-label="Toggle fullscreen"
-              type="button"
-              className={`absolute -left-14 z-50 rounded-full bg-black p-2 bottom-2 hover:bg-slate-400
-            ${active ? "block" : "hidden"}
-          `}
-            >
-              <FaExpand
-                size="30px"
-                onClick={() => toggleFullScreen()}
-                className="text-slate-200"
-              />
-            </button>
-
-            {/* sync button for viewers */}
-
-            {presentation.User !== "HOST" && !syncButton && (
-              <>
-                <button
-                  onClick={() => swiperRef.current?.syncSlide()}
-                  title={syncButton ? "" : "Sync"}
-                  className={`absolute -left-28 bottom-2 bg-black p-2 rounded-full z-50 hover:bg-slate-400  ${
-                    syncButton ? "bg-black" : "bg-slate-400 "
-                  } z-50`}
-                >
-                  <FaSync size="28px" className="text-slate-200" />
-                </button>
-                <div
-                  style={{
-                    animationDelay: "-1s",
-                  }}
-                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-                ></div>
-                <div
-                  style={{
-                    animationDelay: "-2s",
-                  }}
-                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-                ></div>
-                <div
-                  style={{
-                    animationDelay: "-3s",
-                  }}
-                  className="pulsing__animation aspect-square absolute bg-slate-400 w-11 h-11  rounded-full -left-28 bottom-2  "
-                ></div>
-              </>
-            )}
-            <button
-              onClick={() => {
-                stopFunction = !stopFunction;
-                setNavbar((prev) => !prev);
-                navBar = !navBar;
-                console.log(stopFunction);
-              }}
-              className={`text-slate-200 text-2xl rounded-full border active:scale-75 duration-200 border-white bg-black flex items-center z-20 justify-center w-full h-full active:bg-slate-200 transition-all select-none ${
-                navBar ? "rotate-180" : "rotate-0"
-              }`}
-            >
-              <FaChevronUp />
-            </button>
-            {navItems.map(({ icon, link, name }, i) => (
-              <li
-                key={i}
-                className={`absolute w-[80%] rounded-full p-2 h-[80%] bg-black z-10 text-slate-200 border border-white transition-all  duration-500 ${
-                  navbar && "duration-300"
-                }`}
-                style={{
-                  transform: navbar
-                    ? `translatey(-${(i + 1.1) * 100 + (i + 1) * 8}%)`
-                    : "translateY(0)",
-                  transitionDelay: `${(i + 1) / 10}s`,
-                  zIndex: navItems.length - (i + 1),
-                }}
-              >
-                <a
-                  href={name === "download" ? presentation.pptLink : link}
-                  className="w-full relative h-full flex items-center  justify-center flex-row-reverse"
-                  download={name === "download" && presentation.name}
-                >
-                  <span className="">{icon}</span>
-                  <span
-                    className={`text-white absolute right-[calc(100%+1rem)] rounded-md p-2 shadow-md transition-all border-white border ${
-                      navBar ? "opacity-100" : "opacity-0"
-                    } duration-500 font-bold bg-black`}
-                  >
-                    {name}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <Actions
+          active={actionsActive}
+          toggleFullScreen={toggleFullScreen}
+          syncButton={syncButton}
+          syncSlide={syncSlide}
+          fullscreen={fullscreen}
+          closeChatModal={closeChatModal}
+          setCloseChatModal={setCloseChatModal}
+        />
         <ToastContainer />
         {status.online === true ? (
           <div
@@ -410,38 +296,44 @@ export const Carousel = ({
       </div>
 
       {specialMedia.toggled && (
-        <div className="w-full h-screen fixed top-0 left-0 bottom-0 bg-black z-50">
+        // <div className="w-full h-screen fixed top-0 left-0 bottom-0 z-50">
+        <>
           {specialMedia.animation1 && (
-            <div className="w-full h-full grid place-content-center">
-              <div className="w-fit h-fit flex flex-col justify-between">
-                <img src={animation1} alt="animation image" />
+            <div className="w-screen fixed h-screen top-0 left-0 grid place-content-center bg-black z-[1000]">
+              <div className="w-fit h-fit flex flex-col justify-between items-center">
+                <img src={animation1} alt="animation image" loading="lazy" />
 
-                <p className="text-slate-200">
-                  Change Orientation to Landscape
+                <p className="text-slate-200 w-[80%] text-center">
+                  Bring down notifications panel and change orientation to
+                  Landscape
                 </p>
               </div>
             </div>
           )}
 
-          {!specialMedia.animation1 && specialMedia.animation2 && (
-            <div className="w-full h-full grid place-content-center">
-              <div className="w-fit h-fit flex flex-col justify-between">
-                <FaExpand
-                  onClick={removeSpecialMedia}
-                  className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
-                />
+          {!specialMedia.animation1 &&
+            specialMedia.animation2 &&
+            !fullscreen && (
+              <div className="w-screen h-screen fixed top-0 left-0 z-[1000] grid place-content-center bg-black">
+                <div className="w-fit h-fit flex flex-col justify-between items-center">
+                  <FaExpand
+                    onClick={removeSpecialMedia}
+                    className="absolute text-slate-200 text-[70px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+                  />
 
-                <img
-                  src={animation2}
-                  alt="animation image"
-                  className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
-                />
+                  <img
+                    src={animation2}
+                    alt="animation image"
+                    className="mt-[3rem] ml-[1.5rem] z-10 pointer-events-none"
+                    loading="lazy"
+                  />
 
-                <p className="text-slate-200">Click to make full screen</p>
+                  <p className="text-slate-200">Click to make full screen</p>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          {/* </div> */}
+        </>
       )}
     </>
   );

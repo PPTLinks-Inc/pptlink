@@ -1,0 +1,83 @@
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { userContext } from "../../contexts/userContext";
+import {
+  ABOUT,
+  DASHBOARD,
+  HOME,
+  LEGAL,
+  SIGNUP,
+  UPLOAD
+} from "../../constants/routes";
+import logo_white from "/imgs/WHITE.png";
+import logo_black from "/imgs/BLACK.png";
+import logo_orange from "/imgs/onemorecolor.png";
+
+export default function Header({ isBackMenu, handleDropdown }) {
+  const [getlocation] = useState(
+    useLocation().pathname === "/document" ? true : false
+  );
+
+  // context
+  const { user, setUser } = useContext(userContext);
+
+  const navigate = useNavigate();
+
+  const handlePresentationBtn = () => {
+    if (!user) return navigate("/signin");
+    if (user && user.presentations < 1) return navigate(UPLOAD);
+    if (user.presentations > 0) return navigate(DASHBOARD);
+  };
+
+  const buttontext = () => {
+    if (!user) return "Sign in";
+    if (user && user.presentations < 1) return "Upload";
+    if (user.presentations > 0) return "Dashboard";
+  };
+
+  return (
+    <header
+      className={`absolute top-0 left-0 right-0 pt-10 pb-5 flex items-center justify-center ${isBackMenu ? "" : "z-50"} 
+        ${isBackMenu ? "bg-[#FFFFF0]" : "bg-black"}`}
+    >
+      <div className="container flex justify-between items-center">
+        <div className="logo_wrapper">
+          <Link to="/" className="hlogo uppercase block w-10 h-10">
+            <img src={isBackMenu ? logo_black : logo_white} alt={isBackMenu ? logo_black : logo_white} />
+          </Link>
+        </div>
+
+        <div className="btnGroup1 flex flex-row justify-between items-center w-[225px]">
+          <button
+            onClick={() => handlePresentationBtn()}
+            type="submit"
+            className={`w-[10rem] h-[2rem] flex items-center justify-center text-[.8rem] font-medium rounded-[2rem] ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+          >
+            {buttontext()}
+          </button>
+
+          <button
+            className="w-[25px] aspect-square"
+            onClick={() => handleDropdown()}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="!w-full !h-full"
+              viewBox="0 0 36 31.365"
+            >
+              <path
+                id="Icon_open-menu"
+                data-name="Icon open-menu"
+                d="M0,0V4.5H36V0ZM0,13.365v4.5H36v-4.5Zm0,13.5v4.5H36v-4.5Z"
+                strokeLinecap="rounded"
+                stroke="#FFFFF0"
+                fill={isBackMenu ? "black" : "#FFFFF0"}
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
