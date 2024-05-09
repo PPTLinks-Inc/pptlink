@@ -11,7 +11,7 @@ import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { MdClose } from "react-icons/md";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import CarouselItems from "../interface/layout/assets/carousel/CarouselItems";
+import CarouselItems from "../interface/CarouselItems";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { useNavigate } from "react-router-dom";
