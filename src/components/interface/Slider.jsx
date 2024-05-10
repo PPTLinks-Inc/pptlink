@@ -93,6 +93,7 @@ export default function Slider({ setIsLoaded }) {
           ref={swiperElRef}
           slides-per-view="1"
           navigation="true"
+          keyboard="true"
         >
           {Array.from(new Array(numPages), (el, index) => (
             <swiper-slide key={`page_${index + 1}`}>
