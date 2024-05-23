@@ -10,7 +10,7 @@ canvas {
 }
 
 progress[value] {
-    --color: rgb(226 232 240);;
+    --color: rgb(226 232 240);
     /* the progress color */
     --background: black;
     /* the background color */

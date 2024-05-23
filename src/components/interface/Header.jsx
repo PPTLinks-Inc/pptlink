@@ -1,20 +1,21 @@
+/* eslint-disable react/prop-types */
 import { BsRecord2 } from "react-icons/bs";
 import { useContext, useMemo } from "react";
 import { useOrientation } from "react-use";
 import { PresentationContext } from "../../contexts/presentationContext";
 import ShareAPI from "./Share";
 
-export default function Header() {
+export default function Header({actionsActive}) {
   const { fullScreenShow, isMobile } = useContext(PresentationContext);
   const orientation = useOrientation();
 
   const style = useMemo(function() {
     if ((isMobile({ iphone: false }) && orientation.type.includes("landscape") || fullScreenShow)) {
-      return `absolute bg-transparent top-0 left-0 right-0`;
+      return `absolute bg-transparent top-0 left-0 right-0 ${!actionsActive && "hidden"}`;
     }
 
     return "";
-  }, [isMobile, orientation, fullScreenShow]);
+  }, [isMobile, orientation, fullScreenShow, actionsActive]);
 
   return (
     <header

@@ -43,7 +43,11 @@ function LoadError() {
   );
 }
 
-export default function Slider({ setIsLoaded }) {
+export default function Slider({
+  setIsLoaded,
+  handleMouseClick,
+  handleMouseMove
+}) {
   const swiperElRef = useRef(null);
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
@@ -77,7 +81,11 @@ export default function Slider({ setIsLoaded }) {
   }
 
   return (
-    <div className={`w-full ${isMobile({iphone: false}) && orientation.type.includes("portrait") && "mt-40"}`}>
+    <div
+      className={`w-full ${isMobile({ iphone: false }) && orientation.type.includes("portrait") && "mt-40"}`}
+      onClick={handleMouseClick}
+      onMouseMove={handleMouseMove}
+    >
       {isError && <LoadError />}
       <Document
         file={file}
