@@ -18,6 +18,7 @@ import About from "./components/about-us/about";
 import Document from "./components/document/document";
 import PresentationContextProvider from "./contexts/presentationContext";
 import SignPage from "./components/sign/sign";
+import NewUploadPage from "./components/upload/newupload";
 import "./assets/styles/general_css.css";
 
 axios.defaults.baseURL = SERVER_URL;
@@ -58,14 +59,13 @@ function App() {
           <Route path="/" element={<Root isLoading={userQuery.isLoading} />}>
             <Route exact path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
-            {/* <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Login />} /> */}
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="institutions" element={<List />} />
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="upload" element={<Upload />} />
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
+            <Route path="newupload" element={<NewUploadPage />} />
           </Route>
           {/* <Route path="about-us" element={<About />} /> */}
           <Route

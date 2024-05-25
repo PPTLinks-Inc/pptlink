@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { userContext } from "../../contexts/userContext";
 
@@ -16,10 +16,13 @@ import logo_orange from "/imgs/onemorecolor.png";
 export default function Footer() {
   const { pathname } = useLocation();
   const { user, setUser } = useContext(userContext);
-  
+  const [getlocation] = useState(
+      useLocation().pathname === "/newupload" ? true : false
+  );
+
   return (
     <footer
-      className={`footer pt-10 text-[0.8rem] ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
+      className={`footer pt-10 text-[0.8rem] ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
     >
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
