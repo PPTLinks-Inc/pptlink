@@ -16,6 +16,7 @@ import logo_orange from "/imgs/onemorecolor.png";
 export default function Footer() {
   const { pathname } = useLocation();
   const { user, setUser } = useContext(userContext);
+
   const [getlocation] = useState(
       useLocation().pathname === "/newupload" ? true : false
   );
@@ -35,11 +36,9 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mb-5">
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-              nonumy eirmod tempor invidunt ut labore  et dolore magna aliquyam
-              erat, sed diam voluptua. At vero eos et accusam et justo duo
-              dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-              sanctus
+              PPTLinks is your go-to source for presentation, inspiration,
+              resource and expertise. Explore our vast library, collaborate with
+              our community and achieve your goal with confidence.
             </p>
             <Socials />
           </div>
