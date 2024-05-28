@@ -1,6 +1,6 @@
 import { useRef, useCallback, useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import anim_img1 from "/team/pptlink_resources/presentation.png";
 import anim_img2 from "/team/pptlink_resources/hosting-monitors-server-svgrepo-com.png";
 import anim_img3 from "/team/pptlink_resources/school-svgrepo-com.png";
@@ -25,8 +25,9 @@ export default function NewHome() {
   const presentationQuery = useQuery({
     queryKey: ["public-presentations"],
     queryFn: () => {
-      return axios
-      .get("/api/v1/ppt/presentations?noPerPage=10&pageNo=1&public=true")
+      return axios.get(
+        "/api/v1/ppt/presentations?noPerPage=10&pageNo=1&public=true"
+      );
     }
   });
 
@@ -45,21 +46,23 @@ export default function NewHome() {
   const handleMsgSubmit = useCallback((e) => {
     e.preventDefault();
 
-    setValues({ ...values, msgPending: true })
+    setValues({ ...values, msgPending: true });
   }, []);
 
   const scrollCards = (isLeft) => {
     const scrollAmount = 250;
     const scrollContainer = scrollRef.current;
 
-    return isLeft ? scrollContainer.scrollTo({
-      left: scrollContainer.scrollLeft - scrollAmount,
-      behavior: 'smooth',
-    }) : scrollContainer.scrollTo({
-      left: scrollContainer.scrollLeft + scrollAmount,
-      behavior: 'smooth',
-    });
-  }
+    return isLeft
+      ? scrollContainer.scrollTo({
+          left: scrollContainer.scrollLeft - scrollAmount,
+          behavior: "smooth"
+        })
+      : scrollContainer.scrollTo({
+          left: scrollContainer.scrollLeft + scrollAmount,
+          behavior: "smooth"
+        });
+  };
 
   return (
     <section className="parent_page_wrapper min-h-screen w-full">
@@ -70,11 +73,11 @@ export default function NewHome() {
               GET PRESENTABLE
             </h1>
             <p className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:">
-              Lorem ipsum dolor sit amet, At vero eos et Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Sequi animi sunt fugiat
-              doloremque, iure aperiam magnam quod quia, placeat explicabo
-              distinctio, doloribus mollitia quae asperiores unde perferendis
-              perspiciatis quis incidunt?
+              PPTLinks is your leading platform for easy sharing and viewing of
+              presentations. It offers a smooth experience, allowing you to
+              effortlessly upload, share, and view presentations from anywhere.
+              Join PPTLinks to unlock a world of possibilities for sharing your
+              ideas with the community.
             </p>
             <div className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col">
               <button
@@ -109,17 +112,28 @@ export default function NewHome() {
           </div>
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
             <button className="border border-[#FFA500] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square _border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
-              <FaCaretLeft onClick={() => scrollCards(true)} className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
+              <FaCaretLeft
+                onClick={() => scrollCards(true)}
+                className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+              />
             </button>
             <button className="border border-[#FFA500] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square _border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
-              <FaCaretRight onClick={() => scrollCards(false)} className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
+              <FaCaretRight
+                onClick={() => scrollCards(false)}
+                className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+              />
             </button>
           </div>
-          {presentationQuery.isSuccess && (<div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth" ref={scrollRef}>
-            {presentationQuery.data.data.presentations.map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} />
-            ))}
-          </div>)}
+          {presentationQuery.isSuccess && (
+            <div
+              className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+              ref={scrollRef}
+            >
+              {presentationQuery.data.data.presentations.map((presentation) => (
+                <Card key={presentation.id} presentation={presentation} />
+              ))}
+            </div>
+          )}
           <NavLink
             to="/"
             className="block text-center text-[#FFA500] underline"
@@ -155,7 +169,7 @@ export default function NewHome() {
                   Make Amazing Presentation
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  and carry your audience along.
                 </p>
               </div>
             </div>
@@ -174,7 +188,7 @@ export default function NewHome() {
                   Host Classes with Libraries
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  to create engaging learning experiences for participants.
                 </p>
               </div>
             </div>
@@ -193,7 +207,7 @@ export default function NewHome() {
                   For Physical Presentations
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  Backbenchers become part of the session
                 </p>
               </div>
             </div>
@@ -209,10 +223,10 @@ export default function NewHome() {
               </div>
               <div className="anim_body">
                 <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Physical Presentations
+                  Tell your story visually
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  to give a lasting impression
                 </p>
               </div>
             </div>
@@ -231,7 +245,7 @@ export default function NewHome() {
                   For Business
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Lorem ipsum dolor sit amet, consetetur
+                  Present Your ideas with Confidence and Clarity
                 </p>
               </div>
             </div>
@@ -246,13 +260,16 @@ export default function NewHome() {
             <div className="w-[50%] min-h-[30rem] text-[0.8rem] mb-10 maxScreenMobile:w-full">
               <h5 className="mb-3 text-[1.2rem]">Send a Message</h5>
               <p className="w-full mb-10">
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut
+                Your voice matters! Share your thought and feedback with us and
+                be part of our community.
               </p>
               <form onSubmit={handleMsgSubmit}>
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
-                    <label htmlFor="name" className="block w-full underline underline-offset-2">
+                    <label
+                      htmlFor="name"
+                      className="block w-full underline underline-offset-2"
+                    >
                       Name:
                     </label>
                     <input
@@ -268,7 +285,10 @@ export default function NewHome() {
                     />
                   </div>
                   <div className="w-[50%] maxScreenMobile:w-full">
-                    <label htmlFor="email" className="block w-full underline underline-offset-2">
+                    <label
+                      htmlFor="email"
+                      className="block w-full underline underline-offset-2"
+                    >
                       Email Address:
                     </label>
                     <input
@@ -286,7 +306,10 @@ export default function NewHome() {
                 </div>
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
-                    <label htmlFor="phone" className="block w-full underline underline-offset-2">
+                    <label
+                      htmlFor="phone"
+                      className="block w-full underline underline-offset-2"
+                    >
                       Phone Number:
                     </label>
                     <input
@@ -310,7 +333,9 @@ export default function NewHome() {
                     }}
                     className="bg-black border-b border-white text-white block w-[50%] maxScreenMobile:w-full py-[1.1rem]"
                   >
-                    <option value="" disabled>Reason for writing?</option>
+                    <option value="" disabled>
+                      Reason for writing?
+                    </option>
                     <option value="dog">Dog</option>
                     <option value="cat">Cat</option>
                     <option value="hamster">Hamster</option>
@@ -321,7 +346,10 @@ export default function NewHome() {
                 </div>
 
                 <div className=" mb-8">
-                  <label htmlFor="message" className="block w-full underline underline-offset-2">
+                  <label
+                    htmlFor="message"
+                    className="block w-full underline underline-offset-2"
+                  >
                     Message:
                   </label>
                   <textarea
@@ -348,8 +376,8 @@ export default function NewHome() {
               <div className="w-full mb-10">
                 <h4 className="mb-3">Call US</h4>
                 <p className="text-[0.8rem] mb-3">
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut
+                  Ready to the next step? Have a question or need guidance? Call
+                  us now and lets discuss how we can help you achieve your goal.
                 </p>
                 <div className="flex items-center">
                   <img
@@ -358,8 +386,8 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="tel:+2349117511763" className="text-[#FFA500]">
-                    +2349117511763
+                  <a href="tel:+2349068314394" className="text-[#FFA500]">
+                    +2349068314394
                   </a>
                 </div>
               </div>
@@ -367,8 +395,8 @@ export default function NewHome() {
               <div className="w-full mb-10">
                 <h4 className="mb-3">Visit Us</h4>
                 <p className="text-[0.8rem] mb-3">
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut
+                  We’d love to welcome you to our office. Visit us and let’s
+                  discuss your project. We can’t wait to see you.
                 </p>
                 <div className="flex items-center">
                   <img
@@ -378,16 +406,17 @@ export default function NewHome() {
                     loading="lazy"
                   />
                   <a href="/" className="text-[#FFA500]">
-                    Greece Nevada East Joanie 06918 Leonard Mission
+                    Nascomsoft in Angwan Cashew, opp Elim church, 740102, Bauchi
+                    Nigeria
                   </a>
                 </div>
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Visit Us</h4>
+                <h4 className="mb-3">Message Us</h4>
                 <p className="text-[0.8rem] mb-3">
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut
+                  Write to us through text, on linkedin or any of our social
+                  handles
                 </p>
                 <div className="flex items-center">
                   <img
@@ -396,8 +425,8 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="sms:+2349117511763" className="text-[#FFA500]">
-                    SMS to +2349117511763
+                  <a href="sms:+2349068314394" className="text-[#FFA500]">
+                    SMS to +2349068314394
                   </a>
                 </div>
               </div>

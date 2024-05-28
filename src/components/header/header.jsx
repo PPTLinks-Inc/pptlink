@@ -44,7 +44,10 @@ export default function Header({ isBackMenu, handleDropdown }) {
       <div className="container flex justify-between items-center">
         <div className="logo_wrapper">
           <Link to="/" className="hlogo uppercase block w-10 h-10">
-            <img src={isBackMenu ? logo_black : logo_white} alt={isBackMenu ? logo_black : logo_white} />
+            <img
+              src={isBackMenu ? logo_black : logo_white}
+              alt={isBackMenu ? logo_black : logo_white}
+            />
           </Link>
         </div>
 
