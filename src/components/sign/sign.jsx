@@ -89,7 +89,6 @@ export default function SignPage() {
       } else {
         setPasswordErr(null);
       }
-      console.log(values);
       if (emailErr || passwordErr) return;
       // handle axios FOR SIGNIN 😂
       if (emailErr === null &&
@@ -126,7 +125,6 @@ export default function SignPage() {
       } else {
         setConfirmPasswordErr(null);
       }
-      console.log(values);
       if (fullNameErr || emailErr || passwordErr || confirmPasswordErr) return;
       // handle axios FOR SIGNUP 😂
       if (fullNameErr === null &&
@@ -172,8 +170,8 @@ export default function SignPage() {
           </h1>
           <form onSubmit={handleSubmition} autoComplete="false"> {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
             {/* sign up */}
-            {signin.isError && <p className="text-[red] text-center font-bold text-xl">{signin.error.response.data.message}</p>}
-            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response.data.message}</p>}
+            {signin.isError && <p className="text-[red] text-center font-bold text-xl">{signin.error.response?.data ? signin.error.response.data.message : signin.error.message}</p>}
+            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response?.data ? signup.error.response.data.message : signup.error.message}</p>}
             <div
               className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col"} maxScreenMobile:flex-col`}
             >

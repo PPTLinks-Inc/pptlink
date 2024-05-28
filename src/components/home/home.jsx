@@ -111,13 +111,13 @@ export default function NewHome() {
             <h2 className="text-[3rem]">RECENT</h2>
           </div>
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
-            <button className="border border-[#FFA500] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square _border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCards(true)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
-            <button className="border border-[#FFA500] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square _border-none rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretRight
                 onClick={() => scrollCards(false)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
@@ -207,7 +207,7 @@ export default function NewHome() {
                   For Physical Presentations
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Backbenchers become part of the session
+                  backbenchers become part of the session.
                 </p>
               </div>
             </div>
@@ -226,7 +226,7 @@ export default function NewHome() {
                   Tell your story visually
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  to give a lasting impression
+                  to give a lasting impression.
                 </p>
               </div>
             </div>
@@ -245,7 +245,9 @@ export default function NewHome() {
                   For Business
                 </h4>
                 <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  Present Your ideas with Confidence and Clarity
+                  <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
+                    present Your ideas with Confidence and Clarity.
+                  </p>
                 </p>
               </div>
             </div>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function Card({ presentation }) {
   return (
-    <div className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2]">
+    <div className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2] border border-[rgba(255,166,0,0.53)]">
       <Link to={`/${presentation.liveId}`}>
         <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
           <img

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { userContext } from "../../contexts/userContext";
 
@@ -17,9 +17,13 @@ export default function Footer() {
   const { pathname } = useLocation();
   const { user, setUser } = useContext(userContext);
 
+  const [getlocation] = useState(
+    useLocation().pathname === "/newupload" ? true : false
+  );
+
   return (
     <footer
-      className={`footer pt-10 text-[0.8rem] ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
+      className={`footer pt-10 text-[0.8rem] ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
     >
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
@@ -37,7 +41,7 @@ export default function Footer() {
               <span className="block w-fit">PPTLINKS</span>
             </Link>
             <p className="mb-5">
-              PPTLINKS is your go-to source for presentation, inspiration,
+              PPTLinks is your go-to source for presentation, inspiration,
               resource and expertise. Explore our vast library, collaborate with
               our community and achieve your goal with confidence.
             </p>
