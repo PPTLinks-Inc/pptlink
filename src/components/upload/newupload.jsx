@@ -71,7 +71,9 @@ export default function NewUploadPage() {
                     </span>
                 </div>
                 <form className="addshadow w-full min-h-screen bg-[#FFFFF0] _shadow-md relative py-20">
-                    <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium">Upload File</span>
+                    <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium">
+                        {currentView === 1 ? "Upload File" : currentView === 2 ? "Presenter's Information" : currentView === 3 ? "Preview" : ""}
+                    </span>
                     {/* first stage elements */}
                     <div className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}>
                         {/* first stage 🐱‍👤😒 upload el onNext remove */}
