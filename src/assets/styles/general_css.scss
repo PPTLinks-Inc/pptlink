@@ -4,6 +4,10 @@ $maxHeight: 100svh;
 * {
     box-sizing: border-box !important;
     transition: all 50ms ease-in-out !important;
+
+    // &::-webkit-scrollbar {
+    //     display: none !important;
+    // }
 }
 
 .container {
@@ -209,6 +213,10 @@ button,
         min-height: 100vh;
         background: #fffff0;
         z-index: -1;
+    }
+
+    & .addshadow {
+        box-shadow: 0.1px 0.1px 8px rgba(128, 128, 128, 0.4), -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
     }
 }
 

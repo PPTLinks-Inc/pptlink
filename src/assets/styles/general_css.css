@@ -169,6 +169,9 @@ button,
   background: #fffff0;
   z-index: -1;
 }
+.bottom_cover .addshadow {
+  box-shadow: 0.1px 0.1px 8px rgba(128, 128, 128, 0.4), -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
+}
 
 .form_tracker_wrapper > span {
   overflow-x: hidden;

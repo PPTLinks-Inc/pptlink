@@ -70,7 +70,7 @@ export default function NewUploadPage() {
                         <span className="!block w-full text-[.5rem] text-center text-white">Preview</span>
                     </span>
                 </div>
-                <form className="w-full min-h-screen bg-[#FFFFF0] shadow-md relative py-20">
+                <form className="addshadow w-full min-h-screen bg-[#FFFFF0] _shadow-md relative py-20">
                     <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium">Upload File</span>
                     {/* first stage elements */}
                     <div className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}>
@@ -233,8 +233,83 @@ export default function NewUploadPage() {
                         {/* end */}
                     </div>
                     {/* Third stage show els 👀👀 */}
-                    <div className={`w-full h-full ${currentView === 3 ? "flex" : "hidden"} justify-center items-center`}>
-                        <h1 className='text-[3rem] font-black text-black'>Coming Soon pls🐱‍🏍</h1>
+                    <div className={`w-full min-h-full ${currentView === 3 ? "flex" : "hidden"} justify-center items-center`}>
+                        {/* <h1 className='text-[3rem] font-black text-black'>Coming Soon pls🐱‍🏍</h1> */}
+                        <div className='w-full h-fit flex justify-between items-start'>
+                            <div className='!w-[50%] h-screen flex flex-col justify-between bg-[#FFFFF0]'>
+                                <div className='flex justify-between items-center w-[95%] m-auto mt-0 h-[20rem] bg-white rounded-md border-2 border-black'>
+                                </div>
+                                <div className='bg-[#ffa500] h-fit mt-16 pb-4'>
+                                    <p className='w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]'>PRESENTER'S INFORMATION</p>
+                                    <div className='w-[95%] m-auto min-h-64 bg-[#FFFFF0] text-black'>
+                                        <ul className='block w-full py-4'>
+                                            <li className='block w-full mb-4 px-4'>
+                                                <span>Name</span>
+                                                <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                                <p className='text-[0.9rem] italic mt-2'>Lorem ipsum dolor sit amet</p>
+                                            </li>
+                                            <li className='block w-full mb-4 px-4'>
+                                                <span>Bio</span>
+                                                <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                                <p className='text-[0.9rem] italic mt-2'>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata</p>
+                                            </li>
+                                            <li className='block w-full mb-4 px-4'>
+                                                <span>Social Media Link</span>
+                                                <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                                <p className='text-[0.9rem] italic mt-2'>
+                                                    Rosemary_Haley@example.com
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='!w-[50%] overflow-auto h-screen bg-[#ffa500] pb-4 flex flex-col justify-between'>
+                                <p className='w-fit m-auto pt-14 pb-4 text-black text-[1.2rem] mt-0'>PRESENTATION TITLE</p>
+                                <div className='w-[95%] m-auto mb-0 min-h-[calc(100%-(5.7rem))] _overflow-auto bg-[#FFFFF0] text-black'>
+                                    <ul className='block w-full pt-4'>
+                                        <li className='block w-full mb-4 px-4'>
+                                            <span>Description</span>
+                                            <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                            <p className='text-[0.9rem] italic mt-2'>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata</p>
+                                        </li>
+                                        <li className='block w-full mb-4 px-4'>
+                                            <span>Privacy</span>
+                                            <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                            <p className='text-[0.9rem] italic mt-2'>Public</p>
+                                        </li>
+                                        <li className='block w-full mb-4 px-4'>
+                                            <span>Key Words</span>
+                                            <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                            <p className='text-[0.9rem] italic mt-2'>Cybersecurity, Cybercrimes, Cyber war, cyber protection, Hacking...</p>
+                                        </li>
+                                        <li className='block w-full mb-4 px-4'>
+                                            <span>Category</span>
+                                            <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                            <p className='text-[0.9rem] italic mt-2'>Educational</p>
+                                        </li>
+                                        <li className='block w-full mb-4 px-4'>
+                                            <span>Shareable</span>
+                                            <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                            <p className='text-[0.9rem] italic mt-2'>YES</p>
+                                        </li>
+                                    </ul>
+                                    <p className='bg-[#ffa500] w-3/6 pl-4 py-2'>SCHEDULE</p>
+                                    <ul className='block w-full pb-4'>
+                                        <li className='block w-full mb-4 px-4'>
+                                            <span>Date</span>
+                                            <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                            <p className='text-[0.9rem] italic mt-2'>21st January, 2024</p>
+                                        </li>
+                                        <li className='block w-full mb-4 px-4'>
+                                            <span>Time</span>
+                                            <hr className='p-[0.8px] mt-1 bg-black w-[80%]' />
+                                            <p className='text-[0.9rem] italic mt-2'>2 : 00 pm - 4: 00 pm</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 <div className="flex justify-between items-center mt-6">
