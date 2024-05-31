@@ -36,27 +36,29 @@ const Upload = () => {
       eventSourse.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
-        if (data.event === "upload-done") {
-          setValues((prev) => ({ ...prev, pending: false }));
-          setPopup((prev) => ({
-            ...prev,
-            popup: true,
-            processingFile: false,
-            presentationId: data.id,
-            liveId: data.liveId
-          }));
-          setList(data.imageSlides);
-        }
+        console.log(data);
 
-        if (data.event === "upload-error") {
-          setPopup((prev) => ({
-            ...prev,
-            processingFile: false,
-            pending: false,
-            cancelPending: true,
-            popupErr: [data.message]
-          }));
-        }
+        // if (data.event === "upload-done") {
+        //   setValues((prev) => ({ ...prev, pending: false }));
+        //   setPopup((prev) => ({
+        //     ...prev,
+        //     popup: true,
+        //     processingFile: false,
+        //     presentationId: data.id,
+        //     liveId: data.liveId
+        //   }));
+        //   setList(data.imageSlides);
+        // }
+
+        // if (data.event === "upload-error") {
+        //   setPopup((prev) => ({
+        //     ...prev,
+        //     processingFile: false,
+        //     pending: false,
+        //     cancelPending: true,
+        //     popupErr: [data.message]
+        //   }));
+        // }
       };
     }
 

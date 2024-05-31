@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect, useContext, useMemo } from "react";
 import { register } from "swiper/element/bundle";
 import { pdfjs, Document, Page } from "react-pdf";
 import { useOrientation } from "react-use";
@@ -52,12 +52,12 @@ export default function Slider({
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [isError, setIsError] = useState(false);
-  const [file, setFile] = useState(
-    "https://res.cloudinary.com/drll74ba7/image/upload/v1714656210/sample_k9xcl8.pdf"
-  );
   const [maxWidth, setMaxWidth] = useState(0);
-  const { isMobile } = useContext(PresentationContext);
+  const { isMobile, presentation } = useContext(PresentationContext);
   const orientation = useOrientation();
+  const file = useMemo(function() {
+    return presentation.data.pdfLink
+  }, [presentation.data.pdfLink]);
 
   useEffect(() => {
     // Update window height state when window is resized

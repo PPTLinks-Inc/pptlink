@@ -5,6 +5,7 @@ import { useOrientation } from "react-use";
 import Header from "./Header";
 import Slider from "./Slider";
 import Controls from "./Controls";
+// import Modal from "./Modal";
 import { PresentationContext } from "../../contexts/presentationContext";
 
 let wakeLock = null;
@@ -85,7 +86,7 @@ function Interface() {
       <Header actionsActive={actionsActive} />
       <Slider
         setIsLoaded={setIsLoaded}
-        handleMouseMeove={handleMouseMove}
+        handleMouseMove={handleMouseMove}
         handleMouseClick={handleMouseClick}
       />
       {loaded && <Controls containerRef={ref} actionsActive={actionsActive} />}
