@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useRef, useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import { register } from "swiper/element/bundle";
 import { pdfjs, Document, Page } from "react-pdf";
 import { useOrientation } from "react-use";
@@ -46,14 +46,14 @@ function LoadError() {
 export default function Slider({
   setIsLoaded,
   handleMouseClick,
-  handleMouseMove
+  handleMouseMove,
 }) {
-  const swiperElRef = useRef(null);
+  const swiperRef = useRef(null);
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [isError, setIsError] = useState(false);
   const [maxWidth, setMaxWidth] = useState(0);
-  const { isMobile, presentation } = useContext(PresentationContext);
+  const { isMobile, presentation, setSwiperRef } = useContext(PresentationContext);
   const orientation = useOrientation();
   const file = useMemo(function() {
     return presentation.data.pdfLink
@@ -65,6 +65,11 @@ export default function Slider({
     window.addEventListener("resize", adjustWidth);
     return () => window.removeEventListener("resize", adjustWidth);
   }, []);
+
+  useEffect(() => {
+    if (!swiperRef.current) return;
+    setSwiperRef(swiperRef.current);
+  }, [swiperRef.current]);
 
   function adjustWidth() {
     const aspectRatio = 16 / 9; // Adjust this value to match the aspect ratio of your element
@@ -98,7 +103,7 @@ export default function Slider({
         loading={<FullScreenLoading progress={fileDownloadProgress} />}
       >
         <swiper-container
-          ref={swiperElRef}
+          ref={swiperRef}
           slides-per-view="1"
           navigation="true"
           keyboard="true"

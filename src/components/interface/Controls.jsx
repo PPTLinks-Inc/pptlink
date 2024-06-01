@@ -5,7 +5,7 @@ import { IoIosMic } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdCallEnd } from "react-icons/md";
-import { IoCloudDownloadOutline } from "react-icons/io5";
+import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
 import { FiHome } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import { PresentationContext } from "../../contexts/presentationContext";
@@ -21,7 +21,9 @@ export default function Controls({ containerRef, actionsActive }) {
     fullScreenShow,
     isMobile,
     presentation,
-    joinAudio
+    joinAudio,
+    syncButton,
+    syncSlide
   } = useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
@@ -118,16 +120,21 @@ export default function Controls({ containerRef, actionsActive }) {
               </>
             )}
           </div>
-          <button
-            onClick={() => fullScreenToggle()}
-            className="shadow bg-black rounded-full p-2 block w-fit h-fit absolute sm:bottom-5 bottom-24 right-5 border-gray-100 border-[1px]"
-          >
-            {isFullscreen ? (
-              <RxExitFullScreen color="white" size={32} />
-            ) : (
-              <RxEnterFullScreen color="white" size={32} />
-            )}
-          </button>
+          <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
+            {!syncButton && <button onClick={syncSlide} className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]">
+              <IoSync color="white" size={32} />
+            </button>}
+            <button
+              onClick={() => fullScreenToggle()}
+              className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+            >
+              {isFullscreen ? (
+                <RxExitFullScreen color="white" size={32} />
+              ) : (
+                <RxEnterFullScreen color="white" size={32} />
+              )}
+            </button>
+          </div>
         </div>
       )}
       <Modal
