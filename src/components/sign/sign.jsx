@@ -303,6 +303,7 @@ export default function SignPage() {
               <span className="block w-fit text-center mx-1 font-bold">Or</span>
               <hr className="block w-[35%] h-[.1px] bg-black" />
             </span>
+            
             <button
               disabled
               className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
