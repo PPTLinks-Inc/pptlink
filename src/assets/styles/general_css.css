@@ -273,7 +273,7 @@ label.toggle__label {
   text-indent: -9999px;
   width: 40px; /* 20% of 200px */
   height: 20px; /* 20% of 100px */
-  background: #ffa500;
+  background: black;
   display: block;
   border-radius: 20px; /* 20% of 100px */
   position: relative;
@@ -286,17 +286,17 @@ label.toggle__label:after {
   left: 1px; /* 20% of 5px */
   width: 18px; /* 20% of 90px */
   height: 18px; /* 20% of 90px */
-  background: #fff;
+  background: white;
   border-radius: 18px; /* 20% of 90px */
   transition: 0.3s;
 }
 
 input.toggle:checked + label.toggle__label:after {
-  background: #ffa500;
+  background: white;
 }
 
 input.toggle:checked + label {
-  background: black;
+  background: #ffa500;
 }
 
 input.toggle:checked + label:after {

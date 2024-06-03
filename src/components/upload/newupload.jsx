@@ -156,7 +156,9 @@ export default function NewUploadPage() {
             className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}
           >
             {/* first stage 🐱‍👤😒 upload el onNext remove */}
-            <div className="w-[90%] h-[15rem] m-auto bg-black border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none">
+            <div
+              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none`}
+            >
               <input
                 type="file"
                 name="file"
@@ -217,7 +219,7 @@ export default function NewUploadPage() {
                 name="title"
                 value={values.title}
                 onChange={handleChange}
-                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md `}
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.title ? "border border-[red] outline-offset-2" : "border-none"}`}
               />
               {errors.errors?.title && (
                 <p className="text-[red]">{errors.errors.title}</p>
@@ -230,7 +232,7 @@ export default function NewUploadPage() {
               </label>
               <textarea
                 id="textarea"
-                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.description ? "border border-[red] outline-offset-2" : "border-none"}`}
                 rows="5"
                 cols="50"
                 name="description"
@@ -251,7 +253,7 @@ export default function NewUploadPage() {
                   name="privacy"
                   id="publicSelector"
                   onChange={handleChange}
-                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.privacy ? "border border-[red] outline-offset-2" : "border-none"}`}
                 >
                   <option value="public">Public</option>
                   <option value="private">Private</option>
@@ -270,7 +272,7 @@ export default function NewUploadPage() {
                   name="downloadable"
                   id="downloadSelector"
                   onChange={handleChange}
-                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.downloadable ? "border border-[red] outline-offset-2" : "border-none"}`}
                 >
                   <option value={true}>Yes</option>
                   <option value={false}>No</option>
@@ -288,7 +290,7 @@ export default function NewUploadPage() {
                     <sup className="w-full text-xl font-bold">*</sup>Category
                   </label>
                   <div
-                    className={`bg-white h-fit justify-between items-center overflow-hidden flex w-full indent-4 focus:outline focus:outline-[1px] shadow-md rounded-md`}
+                    className={`bg-white h-fit justify-between items-center overflow-hidden flex w-full indent-4 focus:outline focus:outline-[1px] shadow-md rounded-md ${categoryError || errors.errors?.category ? "border border-[red] outline-offset-2" : "border-none"}`}
                   >
                     <select
                       name="category"
@@ -321,7 +323,7 @@ export default function NewUploadPage() {
                       <img
                         src={img_plus}
                         alt={img_plus}
-                        className="block w-4 h-4 scale-150 _aspect-square"
+                        className="block w-2 h-2 scale-150"
                       />
                       <span className="text-white text-[0.9rem] block w-fit h-fit italic">
                         Create New
@@ -403,7 +405,7 @@ export default function NewUploadPage() {
                 onChange={handleChange}
                 name="name"
                 id="name"
-                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors2?.name ? "border border-[red] outline-offset-2" : "border-none"}`}
               />
               {errors.errors2?.name && (
                 <p className="text-[red]">{errors.errors2.name}</p>
@@ -416,7 +418,7 @@ export default function NewUploadPage() {
               </label>
               <textarea
                 id="BioOptional"
-                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors2?.bio ? "border border-[red] outline-offset-2" : "border-none"}`}
                 rows="5"
                 cols="50"
                 name="bio"
@@ -439,7 +441,7 @@ export default function NewUploadPage() {
                 name="social"
                 onChange={handleChange}
                 value={values.social}
-                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors2?.social ? "border border-[red] outline-offset-2" : "border-none"}`}
               />
               {errors.errors2?.social && (
                 <p className="text-[red]">{errors.errors2.social}</p>
@@ -474,7 +476,7 @@ export default function NewUploadPage() {
                       Selection
                     </label>
                     <div
-                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
+                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.date ? "border border-[red] outline-offset-2" : "border-none"}`}
                     >
                       <input
                         type="date"
@@ -510,7 +512,7 @@ export default function NewUploadPage() {
                       Time
                     </label>
                     <div
-                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
+                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow- ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"}`}
                     >
                       <input
                         type="time"
@@ -540,11 +542,11 @@ export default function NewUploadPage() {
                 <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
                   <div className="w-full relative">
                     <label htmlFor="EndTime" className="block mb-2">
-                      <span className="w-full text-xl font-bold">*</span>End
-                      Time
+                      <span className="w-full text-xl font-bold"></span>End Time
+                      (Optional)
                     </label>
                     <div
-                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
+                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"}`}
                     >
                       <input
                         type="time"

@@ -94,6 +94,7 @@ export default function validate(values) {
     errors2.social = "Input a valid social media link";
   }
 
+  // date and time rules
   if (values.toggle && !values.date) {
     errors2.date = "Choose a presentation date";
   }
@@ -102,7 +103,7 @@ export default function validate(values) {
     errors2.startTime = "Select when presentation starts";
   }
 
-  if (values.toggle && !values.endTime) {
+  if (values.toggle && values.endTime > values.startTime) {
     errors2.endTime = "Select when presentation ends";
   }
 
