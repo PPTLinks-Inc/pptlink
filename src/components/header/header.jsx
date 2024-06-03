@@ -16,8 +16,7 @@ import logo_orange from "/imgs/onemorecolor.png";
 
 export default function Header({ isBackMenu, handleDropdown }) {
   const [getlocation] = useState(
-    useLocation().pathname === "/document" ? true :
-      useLocation().pathname === "/newupload" ? true : false
+    useLocation().pathname === "/document" ? true : false
   );
 
   // context
@@ -40,7 +39,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
   return (
     <header
       className={`absolute top-0 left-0 right-0 pt-10 pb-5 flex items-center justify-center ${isBackMenu ? "" : "z-50"} 
-        ${isBackMenu ? "bg-[#FFFFF0]" : getlocation ? "!bg-transparent chokes" :"bg-black"}`}
+        ${isBackMenu ? "bg-[#FFFFF0]" : "bg-black"}`}
     >
       <div className="container flex justify-between items-center">
         <div className="logo_wrapper">
