@@ -22,9 +22,15 @@ export default function Root({ isLoading }) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // scroll to the top on route change
+  const mainScrollRef = useRef(null);
   useEffect(() => {
     setPage({ ...page, dropdown: false });
-    window.scrollTo({ top: 0 });
+
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollIntoView({ behavior: "smooth" });
+      console.log("mainScrollRef");
+    }
   }, [location.pathname]);
 
   const [page, setPage] = useState({
@@ -132,6 +138,7 @@ export default function Root({ isLoading }) {
             ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
             : "transition-transform translate-y-0 ease-in-out top-0"
         }`}
+        ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
         {!isLoading && <Outlet />}

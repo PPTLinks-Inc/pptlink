@@ -1,9 +1,11 @@
 export default function validate(values) {
+  console.log(values);
+
   let errors = {};
+  let errors2 = {};
 
   // upload file error
   if (values.file) {
-
     const mimeTypes = [
       "application/vnd.ms-powerpoint",
       "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -61,5 +63,48 @@ export default function validate(values) {
     errors.category = "Category too short";
   }
 
-  return errors;
+  // errors on page 2
+  if (!values.name) {
+    errors2.name = "Type in presenters name";
+  }
+
+  if (values.name && values.name.length < 2) {
+    errors2.name = "Presenters name is too short";
+  }
+
+  if (values.bio && values.bio.length < 5) {
+    errors2.bio = "Please give more details about the presenter";
+  }
+
+  const socialMediaRegexes = [
+    /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]{20,}$/,
+    /^(https?:\/\/)?(www\.)?(web\.)?facebook\.com\/[a-zA-Z0-9.\/_-]+$/,
+    /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9._]{1,}/,
+    /^https:\/\/www\.tiktok\.com\/@[\w.-]+(\/video\/\d+)?(\?[^\/\s]*)?$/,
+    /^(https?:\/\/)?(www\.)?(x\.com|twitter\.com)\//,
+    /^(https?:\/\/)?(www\.)?(youtube\.com\/(@[\w.-]+|[\w.-]+)|youtu\.be\/[\w.-]+)(\?[^\/\s]*)?$/,
+    /^(https?:\/\/)?(www\.)?(t\.me|telegram\.me)\/[a-zA-Z0-9_]{5,32}$/
+  ];
+
+  const isValidSocialLink = socialMediaRegexes.some((regex) =>
+    regex.test(values.social)
+  );
+
+  if (values.social && !isValidSocialLink) {
+    errors2.social = "Input a valid social media link";
+  }
+
+  if (values.toggle && !values.date) {
+    errors2.date = "Choose a presentation date";
+  }
+
+  if (values.toggle && !values.startTime) {
+    errors2.startTime = "Select when presentation starts";
+  }
+
+  if (values.toggle && !values.endTime) {
+    errors2.endTime = "Select when presentation ends";
+  }
+
+  return { errors, errors2 };
 }

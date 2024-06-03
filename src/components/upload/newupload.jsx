@@ -21,6 +21,7 @@ export default function NewUploadPage() {
   ]);
   const [addedCategory, setAddedCategory] = useState("");
   const [categoryError, setCategoryError] = useState("");
+  const [toggle, setToggle] = useState(false);
 
   // function to open new category input form
   function addCategory() {
@@ -73,27 +74,28 @@ export default function NewUploadPage() {
 
   const showPreviousStage = () =>
     setCurrentView((prev) => {
-      console.log(prev);
       if (prev <= 1) return (prev = 1);
       return prev - 1;
     });
 
-  const showNextStage = () =>
-    setCurrentView((prev) => {
-      console.log(prev);
-      if (prev >= 3) return (prev = 3);
-      return prev + 1;
-    });
+  const showNextStage = (num) => setCurrentView(num);
 
   // scroll page to the top when currentView changes
   useEffect(() => {
-    console.log("reached");
-    window.scrollTo(0, 0);
+    if (scrollableRef.current) {
+      scrollableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [currentView]);
 
-  const nextFunction = () => {
-    console.log("drink");
-    if (Object.keys(errors).length === 0) showNextStage();
+  const nextFunction = (updateNum) => {
+    if (Object.keys(errors.errors).length === 0 && currentView === updateNum) {
+      showNextStage(2);
+    }
+
+    if (Object.keys(errors.errors2).length === 0 && currentView === updateNum) {
+      showNextStage(3);
+      return;
+    }
   };
 
   // form validation functions
@@ -176,10 +178,13 @@ export default function NewUploadPage() {
                   Browse...
                 </span>
               </div>
-              {errors.file && <p className="text-[red]">{errors.file}</p>}
+              {errors.errors?.file && (
+                <p className="text-[red]">{errors.errors?.file}</p>
+              )}
             </div>
+
             {/* first stage 🐱‍👤😒 loading animation onNext remain at top */}
-            {values.file && (
+            {values.file && !errors.errors?.file && (
               <div className="w-[70%] m-auto my-6 flex justify-between items-center">
                 <span className="block w-fit h-fit">
                   <img
@@ -214,7 +219,9 @@ export default function NewUploadPage() {
                 onChange={handleChange}
                 className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md `}
               />
-              {errors.title && <p className="text-[red]">{errors.title}</p>}
+              {errors.errors?.title && (
+                <p className="text-[red]">{errors.errors.title}</p>
+              )}
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
             <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
@@ -230,8 +237,8 @@ export default function NewUploadPage() {
                 value={values.description}
                 onChange={handleChange}
               ></textarea>
-              {errors.description && (
-                <p className="text-[red]">{errors.description}</p>
+              {errors.errors?.description && (
+                <p className="text-[red]">{errors.errors.description}</p>
               )}
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
@@ -250,8 +257,8 @@ export default function NewUploadPage() {
                   <option value="private">Private</option>
                   <option value="temprary">Temprary</option>
                 </select>
-                {errors.privacy && (
-                  <p className="text-[red]">{errors.privacy}</p>
+                {errors.errors?.privacy && (
+                  <p className="text-[red]">{errors.errors.privacy}</p>
                 )}
               </div>
 
@@ -268,8 +275,8 @@ export default function NewUploadPage() {
                   <option value={true}>Yes</option>
                   <option value={false}>No</option>
                 </select>
-                {errors.downloadable && (
-                  <p className="text-[red]">{errors.downloadable}</p>
+                {errors.errors?.downloadable && (
+                  <p className="text-[red]">{errors.errors.downloadable}</p>
                 )}
               </div>
             </div>
@@ -295,8 +302,12 @@ export default function NewUploadPage() {
                       </option>
 
                       <>
-                        {categories.map((category) => (
-                          <option value={category[0]} selected={category[1]}>
+                        {categories.map((category, i) => (
+                          <option
+                            value={category[0]}
+                            selected={category[1]}
+                            key={i}
+                          >
                             {category[0]}
                           </option>
                         ))}
@@ -344,15 +355,15 @@ export default function NewUploadPage() {
                 {categoryError ? (
                   <p className="text-[red]">{categoryError}</p>
                 ) : (
-                  errors.category && (
-                    <p className="text-[red]">{errors.category}</p>
+                  errors.errors?.category && (
+                    <p className="text-[red]">{errors.errors.category}</p>
                   )
                 )}
               </div>
             </div>
           </div>
           {/* first stage second 🐱‍👤😒 loading animation onNext remain at top */}
-          {values.file && (
+          {values.file && !errors.errors.file && (
             <div
               className={`w-[70%] ${currentView === 2 ? "flex" : "hidden"} m-auto my-6 justify-between items-center`}
             >
@@ -388,10 +399,15 @@ export default function NewUploadPage() {
               </label>
               <input
                 type="text"
+                value={values.name}
+                onChange={handleChange}
+                name="name"
                 id="name"
                 className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
               />
-              <p className="text-[red]">Error message</p>
+              {errors.errors2?.name && (
+                <p className="text-[red]">{errors.errors2.name}</p>
+              )}
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
             <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
@@ -403,8 +419,13 @@ export default function NewUploadPage() {
                 className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
                 rows="5"
                 cols="50"
+                name="bio"
+                onChange={handleChange}
+                value={values.bio}
               ></textarea>
-              <p className="text-[red]">Error message</p>
+              {errors.errors2?.bio && (
+                <p className="text-[red]">{errors.errors2.bio}</p>
+              )}
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
             <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
@@ -415,107 +436,142 @@ export default function NewUploadPage() {
               <input
                 type="text"
                 id="title"
+                name="social"
+                onChange={handleChange}
+                value={values.social}
                 className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md`}
               />
-              <p className="text-[red]">Error message</p>
+              {errors.errors2?.social && (
+                <p className="text-[red]">{errors.errors2.social}</p>
+              )}
             </div>
             {/* time of presentation */}
-            <span className="bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 mt-8 border-[2px] border-black text-xl font-medium">
+            <span className="bg-[#FFFFF0] text-[#ffa500] w-fit p-4 mt-8 border-[2px] border-black text-xl font-medium flex justify-between items-center">
               Time of Presentation
+              <div className="ml-[20px] flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  id="switch"
+                  name="toggle"
+                  className="toggle"
+                  onChange={(event) => {
+                    setToggle(!toggle);
+                    handleChange(event);
+                  }}
+                />
+                <label for="switch" className="toggle__label">
+                  Toggle
+                </label>
+              </div>
             </span>
             {/* time constants for presentaions */}
-            <div className="flex justify-between w-[90%] m-auto">
-              <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
-                <div className="w-full relative">
-                  <label htmlFor="DateSelectionID" className="block mb-2">
-                    <span className="w-full text-xl font-bold">*</span>Date
-                    Selection
-                  </label>
-                  <div
-                    className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
-                  >
-                    <input
-                      type="date"
-                      ref={dateInputRef}
-                      name=""
-                      id="DateSelectionID"
-                      className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
-                    />
-                    <label
-                      htmlFor="DateSelectionID"
-                      onClick={handleLabelClick}
-                      className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
-                    >
-                      <img
-                        src={Icon_metro_calendar}
-                        alt={Icon_metro_calendar}
-                        className="block w-4 h-4 scale-150 _aspect-square"
-                      />
+            {toggle && (
+              <div className="flex justify-between w-[90%] m-auto">
+                <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+                  <div className="w-full relative">
+                    <label htmlFor="DateSelectionID" className="block mb-2">
+                      <span className="w-full text-xl font-bold">*</span>Date
+                      Selection
                     </label>
+                    <div
+                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
+                    >
+                      <input
+                        type="date"
+                        ref={dateInputRef}
+                        name=""
+                        id="DateSelectionID"
+                        onChange={handleChange}
+                        value={() => (!values.toggle ? "" : values.date)}
+                        className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                      />
+                      <label
+                        htmlFor="DateSelectionID"
+                        onClick={handleLabelClick}
+                        className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
+                      >
+                        <img
+                          src={Icon_metro_calendar}
+                          alt={Icon_metro_calendar}
+                          className="block w-4 h-4 scale-150 _aspect-square"
+                        />
+                      </label>
+                    </div>
+                    {errors.errors2?.date && (
+                      <p className="text-[red]">{errors.errors2.date}</p>
+                    )}
                   </div>
-                  <p className="text-[red]">Error message</p>
+                </div>
+                {/* 2 */}
+                <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+                  <div className="w-full relative">
+                    <label htmlFor="StartTime" className="block mb-2">
+                      <span className="w-full text-xl font-bold">*</span>Start
+                      Time
+                    </label>
+                    <div
+                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
+                    >
+                      <input
+                        type="time"
+                        name=""
+                        id="StartTime"
+                        onChange={handleChange}
+                        value={() => (!values.toggle ? "" : values.startTime)}
+                        className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                      />
+                      <label
+                        htmlFor="StartTime"
+                        className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
+                      >
+                        <img
+                          src={Icon_awesome_clock}
+                          alt={Icon_awesome_clock}
+                          className="block w-4 h-4 scale-150 _aspect-square"
+                        />
+                      </label>
+                    </div>
+                    {errors.errors2?.startTime && (
+                      <p className="text-[red]">{errors.errors2.startTime}</p>
+                    )}
+                  </div>
+                </div>
+                {/* 3 */}
+                <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+                  <div className="w-full relative">
+                    <label htmlFor="EndTime" className="block mb-2">
+                      <span className="w-full text-xl font-bold">*</span>End
+                      Time
+                    </label>
+                    <div
+                      className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
+                    >
+                      <input
+                        type="time"
+                        name=""
+                        id="EndTime"
+                        onChange={handleChange}
+                        value={() => (!values.toggle ? "" : values.endTime)}
+                        className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                      />
+                      <label
+                        htmlFor="EndTime"
+                        className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
+                      >
+                        <img
+                          src={Icon_awesome_clock}
+                          alt={Icon_awesome_clock}
+                          className="block w-4 h-4 scale-150 _aspect-square"
+                        />
+                      </label>
+                    </div>
+                    {errors.errors2?.endTime && (
+                      <p className="text-[red]">{errors.errors2.endTime}</p>
+                    )}
+                  </div>
                 </div>
               </div>
-              {/* 2 */}
-              <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
-                <div className="w-full relative">
-                  <label htmlFor="StartTime" className="block mb-2">
-                    <span className="w-full text-xl font-bold">*</span>Start
-                    Time
-                  </label>
-                  <div
-                    className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
-                  >
-                    <input
-                      type="time"
-                      name=""
-                      id="StartTime"
-                      className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
-                    />
-                    <label
-                      htmlFor="StartTime"
-                      className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
-                    >
-                      <img
-                        src={Icon_awesome_clock}
-                        alt={Icon_awesome_clock}
-                        className="block w-4 h-4 scale-150 _aspect-square"
-                      />
-                    </label>
-                  </div>
-                  <p className="text-[red]">Error message</p>
-                </div>
-              </div>
-              {/* 3 */}
-              <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
-                <div className="w-full relative">
-                  <label htmlFor="EndTime" className="block mb-2">
-                    <span className="w-full text-xl font-bold">*</span>End Time
-                  </label>
-                  <div
-                    className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-2 focus:outline focus:outline-[1px] shadow-md`}
-                  >
-                    <input
-                      type="time"
-                      name=""
-                      id="EndTime"
-                      className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
-                    />
-                    <label
-                      htmlFor="EndTime"
-                      className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
-                    >
-                      <img
-                        src={Icon_awesome_clock}
-                        alt={Icon_awesome_clock}
-                        className="block w-4 h-4 scale-150 _aspect-square"
-                      />
-                    </label>
-                  </div>
-                  <p className="text-[red]">Error message</p>
-                </div>
-              </div>
-            </div>
+            )}
             {/* end */}
           </div>
           {/* Third stage show els 👀👀 */}
