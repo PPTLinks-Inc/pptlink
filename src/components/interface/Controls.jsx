@@ -9,9 +9,10 @@ import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
 import { FiHome } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import { PresentationContext } from "../../contexts/presentationContext";
-
 import "./styles/style.css";
-import Modal from "./Modal";
+import Modal from "./Modals/Modal";
+import ConfirmModal from "./Modals/confirmModal";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({ containerRef, actionsActive }) {
@@ -22,27 +23,40 @@ export default function Controls({ containerRef, actionsActive }) {
     isMobile,
     presentation,
     joinAudio,
+    setJoinAudio,
     syncButton,
-    syncSlide
+    syncSlide,
+    startAudio,
+    startPrompt,
+    setStartPrompt,
+    fetchRtcToken,
+    userName,
+    setUserName
   } = useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
   });
 
   const [enterName, setEnterName] = useState(false);
-  const [startConversation, setStartConversation] = useState(false);
 
   const styles = useMemo(() => {
     if (
       (isMobile({ iphone: false }) && orientation.type.includes("portrait")) ||
       actionsActive ||
       enterName ||
-      startConversation
+      startPrompt
     ) {
       return "opacity-100";
     }
     return "opacity-0";
-  }, [actionsActive, orientation, enterName, startConversation, isMobile]);
+  }, [actionsActive, orientation, enterName, startPrompt, isMobile]);
+
+  function actionMicButton() {
+    if (!joinAudio) {
+      setStartPrompt(true);
+      return;
+    }
+  }
 
   return (
     <div
@@ -69,7 +83,7 @@ export default function Controls({ containerRef, actionsActive }) {
               presentation.data?.User === "HOST") && (
               <button
                 className="bg-orange-500 rounded-full p-3 shadow"
-                onClick={() => setStartConversation(true)}
+                onClick={actionMicButton}
               >
                 <IoIosMic size={60} />
               </button>
@@ -82,7 +96,10 @@ export default function Controls({ containerRef, actionsActive }) {
                 <button className="rounded-full p-3 bg-gray-300 shadow">
                   <LuMessagesSquare size={24} />
                 </button>
-                <button className="rounded-full p-3 bg-[#ff0000]">
+                <button
+                  onClick={() => startAudio.mutate()}
+                  className="rounded-full p-3 bg-[#ff0000]"
+                >
                   <MdCallEnd size={24} />
                 </button>
               </>
@@ -104,7 +121,7 @@ export default function Controls({ containerRef, actionsActive }) {
               presentation.data?.User === "HOST") && (
               <button
                 className="bg-orange-500 rounded-full p-3 shadow"
-                onClick={() => setStartConversation(true)}
+                onClick={actionMicButton}
               >
                 <IoIosMic size={60} />
               </button>
@@ -114,16 +131,24 @@ export default function Controls({ containerRef, actionsActive }) {
                 <button className="rounded-full p-3 bg-gray-300 shadow">
                   <LuMessagesSquare size={24} />
                 </button>
-                <button className="rounded-full p-3 bg-[#ff0000]">
+                <button
+                  onClick={() => startAudio.mutate()}
+                  className="rounded-full p-3 bg-[#ff0000]"
+                >
                   <MdCallEnd size={24} />
                 </button>
               </>
             )}
           </div>
           <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
-            {!syncButton && <button onClick={syncSlide} className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]">
-              <IoSync color="white" size={32} />
-            </button>}
+            {!syncButton && (
+              <button
+                onClick={syncSlide}
+                className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+              >
+                <IoSync color="white" size={32} />
+              </button>
+            )}
             <button
               onClick={() => fullScreenToggle()}
               className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
@@ -142,13 +167,29 @@ export default function Controls({ containerRef, actionsActive }) {
         onClose={() => setEnterName(false)}
         color="bg-black"
       >
-        <form className="flex flex-col gap-5">
+        <form
+          className="flex flex-col gap-5"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            try {
+              await fetchRtcToken.mutateAsync();
+              setJoinAudio(true);
+              setEnterName(false);
+            } catch (error) {
+              toast.error("Could'nt join conversation");
+            }
+          }}
+        >
           <h4 className="text-2xl text-white text-center">Enter your name</h4>
           <input
             type="text"
             placeholder="Enter your name"
             className="rounded p-2 w-full text-center"
             autoFocus={true}
+            value={userName}
+            onChange={(e) => {
+              setUserName(e.target.value);
+            }}
           />
           <div className="flex gap-3">
             <button
@@ -164,29 +205,30 @@ export default function Controls({ containerRef, actionsActive }) {
           </div>
         </form>
       </Modal>
-      <Modal
-        open={startConversation}
-        onClose={() => setStartConversation(false)}
-        color="bg-black"
-      >
-        <form className="flex flex-col gap-3">
-          <h4 className="text-2xl text-white text-center">
-            Start Conversation
-          </h4>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setStartConversation(false)}
-              className="bg-slate-200 p-2 w-full rounded"
-              type="button"
-            >
-              Cancel
-            </button>
-            <button className="bg-slate-200 p-2 w-full rounded" type="submit">
-              Start
-            </button>
-          </div>
-        </form>
-      </Modal>
+
+      <ConfirmModal
+        open={startPrompt}
+        onClose={() => setStartPrompt(false)}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (presentation.data?.User === "HOST") {
+            try {
+              await startAudio.mutateAsync();
+            } catch (error) {
+              toast.error("Could'nt start conversation");
+              return;
+            }
+          } else setEnterName(true);
+          setStartPrompt(false);
+        }}
+        isLoading={startAudio.isPending}
+        message={
+          presentation.data?.User === "HOST"
+            ? "Start Conversation"
+            : "Join Conversation"
+        }
+        actionText={presentation.data?.User === "HOST" ? "Start" : "Join"}
+      />
     </div>
   );
 }

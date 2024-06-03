@@ -1,7 +1,6 @@
-import React from "react";
 
 // eslint-disable-next-line react/prop-types
-function Modal({ open, onClose, children, color }) {
+export default function Modal({ open, onClose, children, color }) {
   return (
     <div
       onClick={onClose}
@@ -11,5 +10,3 @@ function Modal({ open, onClose, children, color }) {
     </div>
   );
 }
-
-export default Modal;

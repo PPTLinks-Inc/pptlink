@@ -1,14 +1,7 @@
 /* eslint-disable react/prop-types */
 
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useState,
-  useRef,
-  useMemo
-} from "react";
-import { useToggle, useOrientation } from "react-use";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,8 +12,6 @@ import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import io from "socket.io-client";
 import { SERVER_URL } from "../constants/routes";
-
-const socket = io(SERVER_URL);
 
 let state = {
   maxNext: 0,
@@ -47,6 +38,7 @@ function OrientationPrompt({ setShowPrompt }) {
 }
 
 const PresentationContextProvider = (props) => {
+  const {current: socket} = useRef(io(SERVER_URL));
   const [swiperRef, setSwiperRef] = useState(null);
   const [syncButton, setSyncButton] = useState(true);
   const params = useParams();
@@ -55,7 +47,11 @@ const PresentationContextProvider = (props) => {
   const [fullScreenShow, fullScreenToggle] = useToggle(false);
   const [joinAudio, setJoinAudio] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [startPrompt, setStartPrompt] = useState(false);
   const orientation = useOrientation();
+  const [userUid, setUserUid] = useLocalStorage("userUid");
+  const [tokens, setTokens] = useState(null);
+  const [userName, setUserName] = useState("");
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
       return /iPhone/i.test(navigator.userAgent);
@@ -68,19 +64,20 @@ const PresentationContextProvider = (props) => {
     swiperRef.swiper.slideTo(state.hostSlideIndex, 1000, true);
   }
 
-  const receiveSlideChange = useCallback(function(currentSlide) {
-    console.log(currentSlide);
-    state.hostSlideIndex = currentSlide;
-    if (currentSlide > state.maxNext) {
-      state.maxNext = currentSlide;
-    }
+  const receiveSlideChange = useCallback(
+    function (currentSlide) {
+      state.hostSlideIndex = currentSlide;
+      if (currentSlide > state.maxNext) {
+        state.maxNext = currentSlide;
+      }
 
-    if (state.sync) {
-      console.log(swiperRef);
-      swiperRef.swiper.allowSlideNext = true;
-      swiperRef.swiper.slideTo(currentSlide, 1000, true);
-    }
-  }, [swiperRef]);
+      if (state.sync) {
+        swiperRef.swiper.allowSlideNext = true;
+        swiperRef.swiper.slideTo(currentSlide, 1000, true);
+      }
+    },
+    [swiperRef]
+  );
 
   const queryClient = useQueryClient();
   const presentationQuery = useQuery({
@@ -89,14 +86,12 @@ const PresentationContextProvider = (props) => {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     queryFn: async () => {
-      // const userUid = localStorage.getItem("userUid");
       const res = await axios.get(
         `/api/v1/ppt/presentations/present/${params.id}`
       );
-
-      // if (!userUid) {
-      //   localStorage.setItem("userUid", res.data.presentation.rtcUid);
-      // }
+      if (res.data.presentation.User === "HOST" && res.data.presentation.audio) {
+        await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
+      }
       return res.data.presentation;
     }
   });
@@ -126,20 +121,32 @@ const PresentationContextProvider = (props) => {
         }));
       });
     }
+
+    if (
+      !socket.hasListeners("client-audio") &&
+      presentationQuery.isSuccess &&
+      presentationQuery.data?.User !== "HOST"
+    ) {
+      socket.on("client-audio", (audio) => {
+        queryClient.setQueryData(["presentation", params.id], (prev) => ({
+          ...prev,
+          audio
+        }));
+        if (audio) {
+          setStartPrompt(true);
+        }
+      });
+    }
   }, [presentationQuery.isSuccess]);
 
-  // console.log(socketConnected, presentationQuery.isSuccess, swiperRef.current);
   useEffect(() => {
-    // console.log(socketConnected, presentationQuery.isSuccess, swiperRef.current)
     if (socketConnected && presentationQuery.isSuccess) {
       socket.emit(
         "join-presentation",
         {
           liveId: params.id,
           user: presentationQuery.data.User,
-          hostCurrentSlide: swiperRef
-            ? swiperRef.swiper.activeIndex
-            : 0
+          hostCurrentSlide: swiperRef ? swiperRef.swiper.activeIndex : 0
         },
         (response) => {
           if (presentationQuery.data.User != "HOST") {
@@ -162,7 +169,10 @@ const PresentationContextProvider = (props) => {
     enabled: swiperRef !== null,
     queryFn: function () {
       swiperRef.addEventListener("swiperslidechange", function () {
-        if (presentationQuery.data.User === "HOST" && presentationQuery.data.live) {
+        if (
+          presentationQuery.data.User === "HOST" &&
+          presentationQuery.data.live
+        ) {
           socket.emit("change-slide", {
             liveId: presentationQuery.data.liveId,
             currentSlide: swiperRef.swiper.activeIndex
@@ -186,7 +196,7 @@ const PresentationContextProvider = (props) => {
               swiperRef.swiper.allowSlideNext = false;
               return;
             }
-    
+
             if (!state.sync) {
               swiperRef.swiper.allowSlideNext = true;
             }
@@ -203,12 +213,11 @@ const PresentationContextProvider = (props) => {
       }
 
       if (!socket.hasListeners("change-slide")) {
-        console.log("swiper", swiperRef);
         socket.on("change-slide", receiveSlideChange);
       }
-      return true
+      return true;
     }
-  })
+  });
 
   useQuery({
     refetchOnWindowFocus: false,
@@ -232,12 +241,9 @@ const PresentationContextProvider = (props) => {
   }, [start, orientation, presentationQuery.data?.live]);
 
   const makeLive = useMutation({
-    mutationFn: async function () {
-      await axios.put(
-        `/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`,
-        {
-          data: !presentationQuery.data.live
-        }
+    mutationFn: function () {
+      return axios.put(
+        `/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`
       );
     },
     onSuccess: function () {
@@ -245,6 +251,43 @@ const PresentationContextProvider = (props) => {
         ...prev,
         live: !prev.live
       }));
+    }
+  });
+
+  const startAudio = useMutation({
+    mutationKey: ["make-audio"],
+    retry: false,
+    mutationFn: function () {
+      return axios.put(
+        `/api/v1/ppt/presentations/make-audio/${presentationQuery.data.id}`,
+        {},
+        { params: { userUid } }
+      );
+    },
+    onSuccess: function ({ data }) {
+      setTokens(data);
+      setUserUid(data.rtcUid);
+      setJoinAudio(!presentationQuery.data.audio);
+      queryClient.setQueryData(["presentation", params.id], (prev) => ({
+        ...prev,
+        audio: !prev.audio
+      }));
+    }
+  });
+
+  const fetchRtcToken = useMutation({
+    retry: false,
+    mutationFn: function (liveId) {
+      return axios.get(
+        `/api/v1/ppt/presentations/present/token/${liveId ? liveId : presentationQuery.data.liveId}`,
+        {
+          params: { userUid }
+        }
+      );
+    },
+    onSuccess: function ({ data }) {
+      setUserUid(data.rtcUid);
+      setTokens(data);
     }
   });
 
@@ -256,10 +299,18 @@ const PresentationContextProvider = (props) => {
         isMobile,
         presentation: presentationQuery,
         makeLive,
+        startAudio,
         joinAudio,
+        setJoinAudio,
         setSwiperRef,
         syncButton,
-        syncSlide
+        syncSlide,
+        startPrompt,
+        setStartPrompt,
+        fetchRtcToken,
+        userName,
+        setUserName,
+        tokens
       }}
     >
       {presentationQuery.isLoading ? (
@@ -283,7 +334,9 @@ const PresentationContextProvider = (props) => {
               <Spinner />
             )
           ) : (
-            <>{props.children}</>
+            <>
+              {props.children}
+            </>
           )}
         </>
       )}
