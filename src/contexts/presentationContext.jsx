@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
@@ -12,6 +12,7 @@ import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import io from "socket.io-client";
 import { SERVER_URL } from "../constants/routes";
+import useAudio from "../components/interface/hooks/useAudio";
 
 let state = {
   maxNext: 0,
@@ -91,6 +92,7 @@ const PresentationContextProvider = (props) => {
       );
       if (res.data.presentation.User === "HOST" && res.data.presentation.audio) {
         await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
+        setJoinAudio(true);
       }
       return res.data.presentation;
     }
@@ -291,6 +293,9 @@ const PresentationContextProvider = (props) => {
     }
   });
 
+  const isReady = useMemo(() => joinAudio && tokens !== null && presentationQuery.data?.audio, [joinAudio, tokens, presentationQuery.data?.audio]);
+  const audioData = useAudio(isReady, presentationQuery, tokens, setJoinAudio);
+
   return (
     <PresentationContext.Provider
       value={{
@@ -310,7 +315,8 @@ const PresentationContextProvider = (props) => {
         fetchRtcToken,
         userName,
         setUserName,
-        tokens
+        tokens,
+        audioData
       }}
     >
       {presentationQuery.isLoading ? (
