@@ -216,7 +216,9 @@ button,
     }
 
     & .addshadow {
-        box-shadow: 0.1px 0.1px 8px rgba(128, 128, 128, 0.4), -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
+        box-shadow:
+            0.1px 0.1px 8px rgba(128, 128, 128, 0.4),
+            -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
     }
 }
 
@@ -333,6 +335,61 @@ button,
                     }
                 }
             }
+        }
+    }
+}
+
+/* toggle animation css */
+input.toggle {
+    &[type="checkbox"] {
+        height: 0;
+        width: 0;
+        visibility: hidden;
+    }
+
+    &:checked {
+        & + label.toggle__label {
+            &:after {
+                background: white;
+            }
+        }
+
+        & + label {
+            background: #ffa500;
+        }
+
+        & + label:after {
+            left: calc(100% - 1px); /* 20% of 5px */
+            transform: translateX(-100%);
+        }
+    }
+}
+
+label.toggle__label {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 40px; /* 20% of 200px */
+    height: 20px; /* 20% of 100px */
+    background: black;
+    display: block;
+    border-radius: 20px; /* 20% of 100px */
+    position: relative;
+
+    &:after {
+        content: "";
+        position: absolute;
+        top: 1px; /* 20% of 5px */
+        left: 1px; /* 20% of 5px */
+        width: 18px; /* 20% of 90px */
+        height: 18px; /* 20% of 90px */
+        background: white;
+        border-radius: 18px; /* 20% of 90px */
+        transition: 0.3s;
+    }
+
+    &:active {
+        &:after {
+            width: 26px; /* 20% of 130px */
         }
     }
 }
