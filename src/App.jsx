@@ -44,7 +44,7 @@ axios.interceptors.response.use(function (response) {
 function App() {
   const { setUser } = useContext(userContext);
 
-  const userQuery = useQuery({
+  useQuery({
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -62,7 +62,7 @@ function App() {
     <>
       <AnimatePresence exit>
         <Routes location={location} key={location.key}>
-          <Route path="/" element={<Root isLoading={userQuery.isLoading} />}>
+          <Route path="/" element={<Root />}>
             <Route exact path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
             <Route path="dashboard" element={<Dashboard />} />
