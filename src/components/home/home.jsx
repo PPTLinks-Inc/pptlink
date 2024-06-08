@@ -1,4 +1,6 @@
-import { useRef, useCallback, useContext, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { useRef, useCallback, useContext, useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import anim_img1 from "/team/pptlink_resources/presentation.png";
@@ -14,6 +16,7 @@ import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
+import { animate, motion, stagger, useInView, useAnimate } from "framer-motion";
 
 export default function NewHome() {
   // context
@@ -64,22 +67,125 @@ export default function NewHome() {
         });
   };
 
+  // framer
+  const targetRef = useRef(null);
+  const parentVarient = {
+    initial: {
+      // y: 5,
+      opacity: 0
+    },
+    animate: {
+      y: 0,
+      opacity: 100,
+      transition: { duration: 1, staggerChildren: 0.5 }
+    }
+  };
+  const containerVarient = {
+    initial: {
+      y: 50,
+      opacity: 0
+    },
+    inView: {
+      y: 0,
+      opacity: 100,
+      transition: {
+        duration: 1,
+        staggerChildren: 0.2,
+        type: "spring",
+        stiffness: 120
+      }
+    }
+  };
+  const secondVarient = {
+    initial: {
+      y: 50,
+      opacity: 0
+    },
+    inView: {
+      y: 0,
+      opacity: 100,
+      transition: {
+        duration: 1,
+        staggerChildren: 0.2,
+        when: "beforeChildren"
+        // type: "spring",
+        // stiffness: 120
+      }
+    }
+  };
+  const [scope, animate] = useAnimate();
+  const isInView = useInView(scope, { once: true });
+  useEffect(() => {
+    if (isInView) {
+      animate(
+        "div",
+        { opacity: 1 },
+        {
+          delay: stagger(0.15, { from: "first" }),
+          duration: 1,
+          at: "<"
+        }
+      );
+    } else {
+      animate("div", { opacity: 0 });
+    }
+  }, [isInView]);
+
+  const containertVarients = {
+    hidden: {
+      opacity: 0
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        delay: 0.5,
+        duration: 1.5
+      }
+    },
+    exit: {
+      x: "-100vw",
+      transition: {
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <section className="parent_page_wrapper min-h-screen w-full">
+    <motion.section
+      className="parent_page_wrapper min-h-screen w-full"
+      variants={containertVarients}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
       <div className="banner relative w-full min-h-screen text-white">
         <div className="container h-full text-center">
-          <div className="flex flex-col justify-between items-center pt-[4rem]">
-            <h1 className="text-[4rem] mb-5 maxScreenMobile:text-4xl">
+          <motion.div
+            variants={parentVarient}
+            initial="initial"
+            animate="animate"
+            className="flex flex-col justify-between items-center pt-[4rem]"
+          >
+            <motion.h1
+              variants={parentVarient}
+              className="text-[4rem] mb-5 maxScreenMobile:text-4xl"
+            >
               GET PRESENTABLE
-            </h1>
-            <p className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:">
+            </motion.h1>
+            <motion.p
+              variants={parentVarient}
+              className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
+            >
               PPTLinks is your leading platform for easy sharing and viewing of
               presentations. It offers a smooth experience, allowing you to
               effortlessly upload, share, and view presentations from anywhere.
               Join PPTLinks to unlock a world of possibilities for sharing your
               ideas with the community.
-            </p>
-            <div className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col">
+            </motion.p>
+            <motion.div
+              variants={parentVarient}
+              className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col"
+            >
               <button
                 className="block w-2/5 h-[3rem] bg-[#FFFFF0] text-black text-xl rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
                 onClick={() =>
@@ -91,10 +197,14 @@ export default function NewHome() {
               <button className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
                 Libraries
               </button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
           <div className="banner_img w-full m-auto">
-            <img
+            <motion.img
+              // initial={}
+              // animate
+              whileanimate={{ skewY: "-20deg", skewX: "deg" }}
+              ref={targetRef}
               src="https://res.cloudinary.com/dsmydljex/image/upload/v1713996099/ppt/app%20assets/slide_i4elun.webp"
               alt="Banner Image"
               className="w-full aspect-square"
@@ -125,14 +235,18 @@ export default function NewHome() {
             </button>
           </div>
           {presentationQuery.isSuccess && (
-            <div
+            <motion.div
+              variants={containerVarient}
+              initial="initial"
+              whileInView="inView"
+              viewport={{ once: true }}
               className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth"
               ref={scrollRef}
             >
               {presentationQuery.data.data.presentations.map((presentation) => (
                 <Card key={presentation.id} presentation={presentation} />
               ))}
-            </div>
+            </motion.div>
           )}
           <NavLink
             to="/"
@@ -144,11 +258,28 @@ export default function NewHome() {
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
       <div className="why_pptlinks container w-full py-20 maxScreenMobile:py-12">
-        <h3 className="text-6xl text-center text-[#FFA500] mb-10">
+        <motion.h3
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            transition: { duration: 1, type: "tween" }
+          }}
+          viewport={{ once: true }}
+          className="text-6xl text-center text-[#FFA500] mb-10"
+        >
           WHY USE PPTLINKS?
-        </h3>
+        </motion.h3>
         <div className="wrap_circle w-full h-fit mt-40 !text-black maxScreenMobile:mt-10">
-          <div
+          <motion.div
+            initial={{ opacity: 1, rotate: "180deg" }}
+            whileInView={{
+              opacity: 1,
+              rotate: "0deg",
+              x: 0,
+              transition: { duration: 1 }
+            }}
+            viewport={{ margin: "100px", once: true }}
             className="wrapAnim relative w-[40rem] h-[40rem] m-auto 
                 mt-20 bg-transparent rounded-[20rem] border-[2px]
                 border-solid border-black maxScreenMobile:flex maxScreenMobile:flex-col maxScreenMobile:justify-between maxScreenMobile:items-center maxScreenMobile:gap-[1rem] maxScreenMobile:w-full maxScreenMobile:h-fit maxScreenMobile:!rounded-none maxScreenMobile:!border-none maxScreenMobile:!m-0 maxScreenMobile:!p-0"
@@ -252,20 +383,39 @@ export default function NewHome() {
               </div>
             </div>
             {/* ///////////////////////////////////////////////////// */}
-          </div>
+          </motion.div>
         </div>
       </div>
       <div className="get_intouch bg-black text-white py-10">
         <div className="container">
-          <h3 className="text-5xl mb-10">Get in touch</h3>
+          <motion.h3
+            variants={secondVarient}
+            initial="initial"
+            whileInView="inView"
+            viewport={{ margin: "100px", once: true }}
+            className="text-5xl mb-10"
+          >
+            Get in touch
+          </motion.h3>
           <div className="wrap_contacts w-full flex justify-between items-center flex-wrap maxScreenMobile:flex-col-reverse">
-            <div className="w-[50%] min-h-[30rem] text-[0.8rem] mb-10 maxScreenMobile:w-full">
-              <h5 className="mb-3 text-[1.2rem]">Send a Message</h5>
-              <p className="w-full mb-10">
+            <motion.div
+              variants={secondVarient}
+              initial="initial"
+              whileInView="inView"
+              viewport={{ margin: "100px", once: true }}
+              className="w-[50%] min-h-[30rem] text-[0.8rem] mb-10 maxScreenMobile:w-full"
+            >
+              <motion.h5
+                variants={secondVarient}
+                className="mb-3 text-[1.2rem]"
+              >
+                Send a Message
+              </motion.h5>
+              <motion.p variants={secondVarient} className="w-full mb-10">
                 Your voice matters! Share your thought and feedback with us and
                 be part of our community.
-              </p>
-              <form onSubmit={handleMsgSubmit}>
+              </motion.p>
+              <motion.form variants={secondVarient} onSubmit={handleMsgSubmit}>
                 <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <label
@@ -372,9 +522,15 @@ export default function NewHome() {
                 >
                   {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                 </button>
-              </form>
-            </div>
-            <div className="w-2/5 min-h-[30rem] maxScreenMobile:w-full">
+              </motion.form>
+            </motion.div>
+            <motion.div
+              variants={secondVarient}
+              initial="initial"
+              whileInView="inView"
+              viewport={{ margin: "100px", once: true }}
+              className="w-2/5 min-h-[30rem] maxScreenMobile:w-full"
+            >
               <div className="w-full mb-10">
                 <h4 className="mb-3">Call US</h4>
                 <p className="text-[0.8rem] mb-3">
@@ -432,18 +588,27 @@ export default function NewHome() {
                   </a>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
         <div className="container flex justify-between align-top maxScreenMobile:flex-col">
-          <div className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full">
+          <motion.div
+            className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full"
+            variants={secondVarient}
+            initial="initial"
+            whileInView="inView"
+            viewport={{ margin: "100px", once: true }}
+          >
             <p className="mb-1">FAQs</p>
             <h3 className="text-[3rem] font-black break-all leading-[4rem] maxScreenMobile:text-[2rem]">
               Frequently <br /> Asked <br /> Questions.
             </h3>
-          </div>
+          </motion.div>
 
-          <div className="accurdion w-3/5 min-h-[50vh] maxScreenMobile:w-full">
+          <div
+            className="accurdion w-3/5 min-h-[50vh] maxScreenMobile:w-full"
+            ref={scope}
+          >
             {Array(4)
               .fill(0)
               .map((_, i) => ({ id: i }))
@@ -453,21 +618,23 @@ export default function NewHome() {
                   title="World of hives"
                   className="transition-all duration-300"
                 >
-                  <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
-                    Let of kings.
-                  </h3>
+                  <div>
+                    <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
+                      Let of kings.
+                    </h3>
 
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quae iusto provident neque. Nulla molestiae quam rerum velit
-                    fugiat labore, quia fugit obcaecati quo architecto officiis
-                    sit consectetur! Omnis, deserunt consequatur.
-                  </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Quae iusto provident neque. Nulla molestiae quam rerum
+                      velit fugiat labore, quia fugit obcaecati quo architecto
+                      officiis sit consectetur! Omnis, deserunt consequatur.
+                    </p>
+                  </div>
                 </Accordion>
               ))}
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

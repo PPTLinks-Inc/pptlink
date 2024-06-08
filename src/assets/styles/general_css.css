@@ -171,6 +171,9 @@ button,
   background: #fffff0;
   z-index: -1;
 }
+.bottom_cover .addshadow {
+  box-shadow: 0.1px 0.1px 8px rgba(128, 128, 128, 0.4), -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
+}
 
 .form_tracker_wrapper > span {
   overflow-x: hidden;
@@ -259,14 +262,34 @@ button,
 }
 .form_tracker_wrapper > span:nth-child(3).active > span:last-child {
   color: #ffa500 !important;
+<<<<<<< HEAD
 } /*# sourceMappingURL=general_css.css.map */
 
 /* toggle animation css */
 input.toggle[type="checkbox"] {
+=======
+}
+
+/* toggle animation css */
+input.toggle[type=checkbox] {
+>>>>>>> 9018b1cc5f200bd8b9067a0e0ef5c98850f55941
   height: 0;
   width: 0;
   visibility: hidden;
 }
+<<<<<<< HEAD
+=======
+input.toggle:checked + label.toggle__label:after {
+  background: white;
+}
+input.toggle:checked + label {
+  background: #ffa500;
+}
+input.toggle:checked + label:after {
+  left: calc(100% - 1px); /* 20% of 5px */
+  transform: translateX(-100%);
+}
+>>>>>>> 9018b1cc5f200bd8b9067a0e0ef5c98850f55941
 
 label.toggle__label {
   cursor: pointer;
@@ -278,7 +301,10 @@ label.toggle__label {
   border-radius: 20px; /* 20% of 100px */
   position: relative;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9018b1cc5f200bd8b9067a0e0ef5c98850f55941
 label.toggle__label:after {
   content: "";
   position: absolute;
@@ -290,6 +316,7 @@ label.toggle__label:after {
   border-radius: 18px; /* 20% of 90px */
   transition: 0.3s;
 }
+<<<<<<< HEAD
 
 input.toggle:checked + label.toggle__label:after {
   background: white;
@@ -307,3 +334,8 @@ input.toggle:checked + label:after {
 label.toggle__label:active:after {
   width: 26px; /* 20% of 130px */
 }
+=======
+label.toggle__label:active:after {
+  width: 26px; /* 20% of 130px */
+}/*# sourceMappingURL=general_css.css.map */
+>>>>>>> 9018b1cc5f200bd8b9067a0e0ef5c98850f55941

@@ -110,11 +110,10 @@ export default function Root({ isLoading }) {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${
-          color === "black"
-            ? " bg-black text-slate-200"
-            : "bg-slate-200 text-black"
-        }`}
+        className={`px-7 rounded-xl py-1 ${color === "black"
+          ? " bg-black text-slate-200"
+          : "bg-slate-200 text-black"
+          }`}
         onClick={() => handleClick()}
       >
         Present
@@ -133,11 +132,10 @@ export default function Root({ isLoading }) {
         </div>
       )}
       <div
-        className={`h-fit bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
-          page.dropdown
-            ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
-            : "transition-transform translate-y-0 ease-in-out top-0"
-        }`}
+        className={`h-fit bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
+          ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
+          : "transition-transform translate-y-0 ease-in-out top-0"
+          }`}
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
