@@ -1,0 +1,112 @@
+body {
+    background-color: black;
+}
+
+/* center canvas */
+canvas {
+    display: block;
+    margin: 0 auto;
+    background-color: black;
+}
+
+progress[value] {
+    --color: rgb(226 232 240);
+    /* the progress color */
+    --background: black;
+    /* the background color */
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    width: 200px;
+    margin: 0 10px;
+    border-radius: 10em;
+    border: 1px solid rgb(226 232 240);
+    background: var(--background);
+}
+
+progress[value]::-webkit-progress-bar {
+    border-radius: 10em;
+    background: var(--background);
+}
+
+progress[value]::-webkit-progress-value {
+    border-radius: 10em;
+    background: var(--color);
+}
+
+progress[value]::-moz-progress-bar {
+    border-radius: 10em;
+    background: var(--color);
+}
+
+/* .doc-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    background-color: black;
+} */
+.network__bar {
+    height: 50px;
+    width: 60px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    scale: 0.5;
+}
+
+.network__bar>span {
+    width: 30%;
+}
+
+.network__bar :nth-child(1) {
+    height: 33.334%;
+}
+
+.network__bar :nth-child(2) {
+    height: 66.667%;
+}
+
+.network__bar :nth-child(3) {
+    height: 100%;
+}
+
+/* if network is poor therefore the class 'poor' */
+.network__bar.poor :nth-child(1) {
+    background-color: red;
+}
+
+.network__bar.poor :nth-child(2) {
+    border: 1px solid red;
+}
+
+.network__bar.poor :nth-child(3) {
+    border: 1px solid red;
+}
+
+/* if network is mid therefore the class 'mid' */
+.network__bar.mid :nth-child(1) {
+    background-color: #f97316;
+}
+
+.network__bar.mid :nth-child(2) {
+    background-color: #f97316;
+}
+
+.network__bar.mid :nth-child(3) {
+    border: 1px solid #f97316;
+}
+
+/* if network is good therefore the class 'good' */
+.network__bar.good :nth-child(1) {
+    background-color: #22c55e;
+}
+
+.network__bar.good :nth-child(2) {
+    background-color: #22c55e;
+}
+
+.network__bar.good :nth-child(3) {
+    background-color: #22c55e;
+}

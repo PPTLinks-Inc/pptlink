@@ -11,7 +11,7 @@ import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { MdClose } from "react-icons/md";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import CarouselItems from "../interface/layout/assets/carousel/CarouselItems";
+import CarouselItems from "../interface/CarouselItems";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { useNavigate } from "react-router-dom";
@@ -36,27 +36,29 @@ const Upload = () => {
       eventSourse.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
-        if (data.event === "upload-done") {
-          setValues((prev) => ({ ...prev, pending: false }));
-          setPopup((prev) => ({
-            ...prev,
-            popup: true,
-            processingFile: false,
-            presentationId: data.id,
-            liveId: data.liveId
-          }));
-          setList(data.imageSlides);
-        }
+        console.log(data);
 
-        if (data.event === "upload-error") {
-          setPopup((prev) => ({
-            ...prev,
-            processingFile: false,
-            pending: false,
-            cancelPending: true,
-            popupErr: [data.message]
-          }));
-        }
+        // if (data.event === "upload-done") {
+        //   setValues((prev) => ({ ...prev, pending: false }));
+        //   setPopup((prev) => ({
+        //     ...prev,
+        //     popup: true,
+        //     processingFile: false,
+        //     presentationId: data.id,
+        //     liveId: data.liveId
+        //   }));
+        //   setList(data.imageSlides);
+        // }
+
+        // if (data.event === "upload-error") {
+        //   setPopup((prev) => ({
+        //     ...prev,
+        //     processingFile: false,
+        //     pending: false,
+        //     cancelPending: true,
+        //     popupErr: [data.message]
+        //   }));
+        // }
       };
     }
 
