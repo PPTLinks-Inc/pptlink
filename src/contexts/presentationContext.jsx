@@ -377,7 +377,8 @@ const PresentationContextProvider = (props) => {
         changeMicState: signallingData.changeMicState,
         acceptMicRequest: signallingData.acceptMicRequest,
         micState,
-        setMicState
+        setMicState,
+        networkStatus: audioData.networkStatus,
       }}
     >
       {presentationQuery.isLoading ? (

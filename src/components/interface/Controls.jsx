@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useFullscreen, useOrientation, useLocalStorage } from "react-use";
+import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoIosMic, IoIosMicOff } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
@@ -46,7 +46,8 @@ export default function Controls({ containerRef, actionsActive }) {
     changeMicState,
     acceptMicRequest,
     micState,
-    setMicState
+    setMicState,
+    networkStatus
   } = useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
@@ -82,25 +83,29 @@ export default function Controls({ containerRef, actionsActive }) {
   );
 
   const getUserMicStatusColor = useCallback(function (micStatus) {
-    if (micStatus === MIC_STATE.MIC_OFF || micStatus === MIC_STATE.MIC_MUTED) {
+    if (micStatus === MIC_STATE.MIC_MUTED) {
       return "bg-[#ff0000]";
     } else if (micStatus === MIC_STATE.REQ_MIC) {
       return "bg-orange-500";
     } else if (micStatus === MIC_STATE.CAN_SPK) {
       return "bg-green-500";
+    } else {
+      return "";
     }
   }, []);
 
-  const handleAcceptMicRequest = useCallback(function(user) {
-    if (presentation.data?.User !== "HOST") return;
+  const handleAcceptMicRequest = useCallback(
+    function (user) {
+      if (presentation.data?.User !== "HOST") return;
 
-    if (user.status === MIC_STATE.REQ_MIC) {
-      acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
-    }
-    else if (user.status === MIC_STATE.CAN_SPK) {
-      acceptMicRequest(user.id, MIC_STATE.MIC_OFF);
-    }
-  }, [acceptMicRequest, presentation.data?.User]);
+      if (user.status === MIC_STATE.REQ_MIC) {
+        acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
+      } else if (user.status === MIC_STATE.CAN_SPK) {
+        acceptMicRequest(user.id, MIC_STATE.MIC_OFF);
+      }
+    },
+    [acceptMicRequest, presentation.data?.User]
+  );
 
   const styles = useMemo(() => {
     if (
@@ -139,7 +144,7 @@ export default function Controls({ containerRef, actionsActive }) {
     if (audioSuccess) {
       if (presentation.data?.User === "HOST") {
         if (micState === MIC_STATE.CAN_SPK) {
-          setMicState(MIC_STATE.MIC_OFF);
+          setMicState(MIC_STATE.MIC_MUTED);
           setMute(true);
         } else {
           setMicState(MIC_STATE.CAN_SPK);
@@ -187,6 +192,11 @@ export default function Controls({ containerRef, actionsActive }) {
       onMouseEnter={() => setHideControls(false)}
       onMouseLeave={() => setHideControls(true)}
     >
+      {audioSuccess && <div className={`absolute sm:bottom-5 bottom-24 left-5 network__bar ${networkStatus}`}>
+        <span className="bar1"></span>
+        <span className="bar2"></span>
+        <span className="bar3"></span>
+      </div>}
       {document.fullscreenEnabled && (
         <div className="flex flex-row gap-20 items-center justify-center relative w-full">
           {/* Desktop controls */}
@@ -416,7 +426,7 @@ export default function Controls({ containerRef, actionsActive }) {
             type="text"
             placeholder="Enter your name"
             className="rounded p-2 w-full text-center"
-            autoFocus={true}
+            autoFocus
             value={userName}
             onChange={(e) => {
               setUserName(e.target.value);
@@ -439,7 +449,7 @@ export default function Controls({ containerRef, actionsActive }) {
 
       <ConfirmModal
         open={startPrompt}
-        onClose={() => setStartPrompt(false)}
+        onClose={startAudio.isPending ? null : () => setStartPrompt(false)}
         onSubmit={async (e) => {
           e.preventDefault();
           if (presentation.data?.User === "HOST") {
@@ -463,7 +473,7 @@ export default function Controls({ containerRef, actionsActive }) {
 
       <ConfirmModal
         open={endAudioPrompt}
-        onClose={() => setEndAudioPrompt(false)}
+        onClose={startAudio.isPending ? null : () => setEndAudioPrompt(false)}
         onSubmit={(e) => {
           e.preventDefault();
           endAudio();

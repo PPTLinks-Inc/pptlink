@@ -2,10 +2,10 @@
 /* eslint-disable no-unused-vars */
 import { useRef, useState, useContext, useEffect } from "react";
 import { useOrientation } from "react-use";
+import { ToastContainer } from "react-toastify";
 import Header from "./Header";
 import Slider from "./Slider";
 import Controls from "./Controls";
-// import Modal from "./Modal";
 import { PresentationContext } from "../../contexts/presentationContext";
 
 let wakeLock = null;
@@ -17,6 +17,40 @@ function Interface() {
   const [actionsActive, setActionsActive] = useState(true);
   const { isMobile } = useContext(PresentationContext);
   const orientation = useOrientation();
+
+  const [status, setStatus] = useState({
+    online: false,
+    offline: false
+  });
+
+  const updateOnlineStatus = () => {
+    setStatus((prevState) => ({
+      ...prevState,
+      online: navigator.onLine ? true : "null",
+      offline: !navigator.onLine ? true : "null"
+    }));
+  };
+
+  useEffect(() => {
+    if (status.online === true) {
+      setTimeout(() => {
+        setStatus((prevState) => ({
+          ...prevState,
+          online: false
+        }));
+      }, 3000);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+
+    return () => {
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
+    };
+  }, []);
 
   useEffect(function () {
     function requireWakeLock() {
@@ -90,6 +124,22 @@ function Interface() {
         handleMouseClick={handleMouseClick}
       />
       {loaded && <Controls containerRef={ref} actionsActive={actionsActive} />}
+      {status.online === true ? (
+        <div
+          className={`text-center fixed bottom-0 transition-all duration-500 z-40 text-white w-full bg-green-500 font-bold px-2`}
+        >
+          Back online
+        </div>
+      ) : (
+        status.offline === true && (
+          <div
+            className={`fixed bottom-0 text-center transition-all duration-500 z-50 text-white w-full bg-[#ff0000] font-bold px-2`}
+          >
+            No internet connection
+          </div>
+        )
+      )}
+      <ToastContainer />
     </div>
   );
 }

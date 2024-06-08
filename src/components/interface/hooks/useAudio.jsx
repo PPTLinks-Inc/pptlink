@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { AGORA_APP_ID } from "../../../constants/routes";
 
@@ -12,6 +12,23 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
   });
   const rtcClient = useRef(
     AgoraRTC.createClient({ mode: "rtc", codec: "vp8" })
+  );
+  const [networkScore, setNetworkScore] = useState(0);
+
+  const networkStatus = useMemo(
+    function () {
+      const networkLabels = {
+        0: "Unknown",
+        1: "good",
+        2: "mid",
+        3: "poor",
+        4: "poor",
+        5: "poor",
+        6: "No Connection"
+      };
+      return networkLabels[networkScore.uplinkNetworkQuality];
+    },
+    [networkScore]
   );
 
   function setMute(mute) {
@@ -62,6 +79,11 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
         rtcClient.current.on("user-left", (user) => {
           delete audioTracks.current.remoteAudioTracks[user.uid];
         });
+
+        rtcClient.current.on("network-quality", function(quality) {
+          setNetworkScore(quality);
+        });
+
         setSuccess(true);
       } catch (err) {
         setError(true);
@@ -73,7 +95,7 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
 
     init();
 
-    return function() {
+    return function () {
       if (audioTracks.current.localAudioTrack) {
         audioTracks.current.localAudioTrack.stop();
         audioTracks.current.localAudioTrack.close();
@@ -82,7 +104,6 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
         }
       }
     };
-
   }, [isReady]);
 
   return {
@@ -90,6 +111,7 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
     success,
     error,
     setMute,
-    rtcClient: rtcClient.current
+    rtcClient: rtcClient.current,
+    networkStatus
   };
 }
