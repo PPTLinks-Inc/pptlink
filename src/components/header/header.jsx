@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -13,11 +15,17 @@ import {
 import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
 import logo_orange from "/imgs/onemorecolor.png";
+import { motion } from "framer-motion";
 
 export default function Header({ isBackMenu, handleDropdown }) {
+  const location = useLocation();
   const [getlocation] = useState(
     useLocation().pathname === "/document" ? true : false
   );
+
+  const getPathName = () => {
+    return location.pathname === "/" ? true : false;
+  };
 
   // context
   const { user, setUser } = useContext(userContext);
@@ -35,16 +43,40 @@ export default function Header({ isBackMenu, handleDropdown }) {
     if (user && user.presentations < 1) return "Upload";
     if (user.presentations > 0) return "Dashboard";
   };
-
+  const containertVarients = {
+    hidden: {
+      opacity: 0
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        delay: getPathName ? 0.5 : 1.5,
+        duration: 1.5
+      }
+    },
+    exit: {
+      x: "-100vw",
+      transition: {
+        ease: "easeInOut"
+      }
+    }
+  };
   return (
-    <header
+    <motion.header
+      variants={containertVarients}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       className={`absolute top-0 left-0 right-0 pt-10 pb-5 flex items-center justify-center ${isBackMenu ? "" : "z-50"} 
         ${isBackMenu ? "bg-[#FFFFF0]" : "bg-black"}`}
     >
       <div className="container flex justify-between items-center">
         <div className="logo_wrapper">
           <Link to="/" className="hlogo uppercase block w-10 h-10">
-            <img src={isBackMenu ? logo_black : logo_white} alt={isBackMenu ? logo_black : logo_white} />
+            <img
+              src={isBackMenu ? logo_black : logo_white}
+              alt={isBackMenu ? logo_black : logo_white}
+            />
           </Link>
         </div>
 
@@ -78,6 +110,6 @@ export default function Header({ isBackMenu, handleDropdown }) {
           </button>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }

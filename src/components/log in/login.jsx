@@ -9,6 +9,8 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
+import { delay, motion } from "framer-motion";
+import { duration } from "@mui/material";
 
 const Login = () => {
   const controller = new AbortController();
@@ -30,7 +32,7 @@ const Login = () => {
     loginPending: false,
     signupPending: false,
 
-    validateError: [],
+    validateError: []
   });
 
   useEffect(() => {
@@ -82,28 +84,27 @@ const Login = () => {
 
         axios
           .post("/api/v1/auth/login", sendData, {
-            signal: controller.signal,
+            signal: controller.signal
           })
           .then(({ data }) => {
             setUser(data.user);
             localStorage.setItem("accessToken", data.token);
 
-            navigate('/');
+            navigate("/");
 
             setValues({
               ...values,
               loginPending: false,
               email: "",
-              password: "",
+              password: ""
             });
             controller.abort();
           })
           .catch((err) => {
-
             setValues({
               ...values,
               loginPending: false,
-              validateError: [err.response.data.message],
+              validateError: [err.response.data.message]
             });
           });
       }
@@ -121,13 +122,13 @@ const Login = () => {
         const sendData = {
           email: values.email,
           password: values.password,
-          username: values.userName,
+          username: values.userName
         };
         setValues({ ...values, signupPending: true, validateError: tempArr });
 
         axios
           .post("/api/v1/auth/register", sendData, {
-            signal: controller.signal,
+            signal: controller.signal
           })
           .then(({ data }) => {
             setUser(data.user);
@@ -137,7 +138,7 @@ const Login = () => {
               ...values,
               signupPending: false,
               email: "",
-              password: "",
+              password: ""
             });
             controller.abort();
           })
@@ -145,7 +146,7 @@ const Login = () => {
             setValues({
               ...values,
               signupPending: false,
-              validateError: [err.response.data.message],
+              validateError: [err.response.data.message]
             });
           });
       }
@@ -208,8 +209,9 @@ const Login = () => {
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
             <div
-              className={`w-full h-fit flex bg-transparent ${values.validateError.length > 0 && "border-b border-slate-200"
-                }`}
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && "border-b border-slate-200"
+              }`}
             >
               <input
                 type={values.showPassword ? "text" : "password"}
@@ -221,8 +223,9 @@ const Login = () => {
                 }
               />
               <div
-                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${values.validateError.length === 0 && "rounded-br-xl"
-                  }`}
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
+                  values.validateError.length === 0 && "rounded-br-xl"
+                }`}
                 onClick={showPassword}
               >
                 {values.showPassword ? (
@@ -243,16 +246,16 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex m-auto gap-3 justify-between items-center lg:w-[500px]'>
+          <div className="flex m-auto gap-3 justify-between items-center lg:w-[500px]">
             <button
               type="submit"
               disabled={values.loginPending}
-              className='px-0.5 w-36 md:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]'
+              className="px-0.5 w-36 md:px-7 flex items-center justify-center !h-fit rounded-xl bg-slate-200 text-black my-[20px]"
             >
               {values.loginPending ? (
                 <LoadingAssetSmall />
               ) : (
-                <p className='py-3 md:py-[9px]'>Log in</p>
+                <p className="py-3 md:py-[9px]">Log in</p>
               )}
             </button>
 
@@ -271,9 +274,9 @@ const Login = () => {
 
       {values.signup && (
         <form onSubmit={handleSignup} className="w-full">
-          <div className='w-full m-auto border border-slate-200 rounded-xl border-collapse lg:w-[500px]'>
-            <div className='border-b border-slate-200 w-full p-[30px]'>
-              <h1 className='text-xl font-bold'>Sign up</h1>
+          <div className="w-full m-auto border border-slate-200 rounded-xl border-collapse lg:w-[500px]">
+            <div className="border-b border-slate-200 w-full p-[30px]">
+              <h1 className="text-xl font-bold">Sign up</h1>
               Please input the necessary information and create an account
             </div>
             <input
@@ -294,8 +297,9 @@ const Login = () => {
               onChange={(e) => setValues({ ...values, email: e.target.value })}
             />
             <div
-              className={`w-full h-fit flex bg-transparent ${values.validateError.length > 0 && "border-b border-slate-200"
-                }`}
+              className={`w-full h-fit flex bg-transparent ${
+                values.validateError.length > 0 && "border-b border-slate-200"
+              }`}
             >
               <input
                 type={values.showPassword ? "text" : "password"}
@@ -307,8 +311,9 @@ const Login = () => {
                 }
               />
               <div
-                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${values.validateError.length === 0 && "rounded-br-xl"
-                  }`}
+                className={`flex-[.25] bg-slate-200 py-[30px] border border-slate-200 border-collapse flex items-center justify-center cursor-pointer ${
+                  values.validateError.length === 0 && "rounded-br-xl"
+                }`}
                 onClick={showPassword}
               >
                 {values.showPassword ? (
@@ -329,16 +334,16 @@ const Login = () => {
             )}
           </div>
 
-          <div className='flex m-auto gap-3 justify-between items-center lg:w-[500px]'>
+          <div className="flex m-auto gap-3 justify-between items-center lg:w-[500px]">
             <button
-              type='submit'
-              className='px-0.5 flex items-center justify-center w-36 md:px-7 rounded-xl bg-slate-200 text-black my-[20px]'
+              type="submit"
+              className="px-0.5 flex items-center justify-center w-36 md:px-7 rounded-xl bg-slate-200 text-black my-[20px]"
               disabled={values.signupPending}
             >
               {values.signupPending ? (
                 <LoadingAssetSmall />
               ) : (
-                <p className='py-2 md:py-[9px]'>Sign up</p>
+                <p className="py-2 md:py-[9px]">Sign up</p>
               )}
             </button>
 

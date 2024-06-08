@@ -1,5 +1,6 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useContext } from "react";
+import { AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { userContext } from "./contexts/userContext";
@@ -54,10 +55,12 @@ function App() {
     }
   });
 
+  const location = useLocation();
+
   return (
     <>
-      <BrowserRouter>
-        <Routes>
+      <AnimatePresence exit>
+        <Routes location={location} key={location.key}>
           <Route path="/" element={<Root isLoading={userQuery.isLoading} />}>
             <Route exact path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
@@ -82,7 +85,8 @@ function App() {
           <Route path="signin" element={<SignPage />} />
           <Route path="signup" element={<SignPage />} />
         </Routes>
-      </BrowserRouter>
+      </AnimatePresence>
+
       <ToastContainer stacked />
     </>
   );
