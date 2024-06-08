@@ -7,6 +7,7 @@ import App from "./App";
 import UserContextProvider from "./contexts/userContext";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +21,9 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <UserContextProvider>
         <PostHogProvider client={posthog}>
-          <App />
+          <Router>
+            <App />
+          </Router>
         </PostHogProvider>
       </UserContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />

@@ -1,10 +1,37 @@
 /* eslint-disable react/prop-types */
 import { FaEllipsisV } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Card({ presentation }) {
+  const containerVarient = {
+    initial: {
+      y: 50,
+      opacity: 0
+    },
+    inView: {
+      y: 0,
+      opacity: 100,
+      transition: {
+        duration: 1,
+        staggerChildren: 0.2,
+        type: "spring",
+        stiffness: 120
+      }
+    }
+    // hover: {
+    //   y: 10,
+    //   scale: 1.05,
+    //   boxShadow: "0px 0px 15px rgba(255,166,0,0.53)"
+    // }
+  };
+
   return (
-    <div className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2] border border-[rgba(255,166,0,0.53)]">
+    <motion.div
+      variants={containerVarient}
+      // whileHover="hover"
+      className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2] border border-[rgba(255,166,0,0.53)] "
+    >
       <Link to={`/${presentation.liveId}`}>
         <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
           <img
@@ -31,6 +58,6 @@ export default function Card({ presentation }) {
           </span>
         </div>
       </Link>
-    </div>
+    </motion.div>
   );
 }

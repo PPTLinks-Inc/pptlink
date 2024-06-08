@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 import { userContext } from "../../contexts/userContext";
-import { Helmet } from "react-helmet";
+// import { Helmet } from "react-helmet";
 import { useMutation } from "@tanstack/react-query";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import play from "/team/pptlink_resources/presentation-play-svgrepo-com.png";
@@ -33,7 +34,7 @@ export default function SignPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    showPassword: false,
+    showPassword: false
   });
 
   const showPassword = () => {
@@ -42,32 +43,30 @@ export default function SignPage() {
 
   const signin = useMutation({
     mutationFn: () => {
-      return axios
-        .post("/api/v1/auth/login", {
-          email: values.email,
-          password: values.password
-        });
+      return axios.post("/api/v1/auth/login", {
+        email: values.email,
+        password: values.password
+      });
     },
     onSuccess: ({ data }) => {
       setUser(data.user);
       localStorage.setItem("accessToken", data.token);
-      navigate('/');
+      navigate("/");
     }
   });
 
   const signup = useMutation({
     mutationFn: () => {
-      return axios
-        .post("/api/v1/auth/register", {
-          email: values.email,
-          password: values.password,
-          username: values.fullName,
-        });
+      return axios.post("/api/v1/auth/register", {
+        email: values.email,
+        password: values.password,
+        username: values.fullName
+      });
     },
     onSuccess: ({ data }) => {
       setUser(data.user);
       localStorage.setItem("accessToken", data.token);
-      navigate('/');
+      navigate("/");
     }
   });
 
@@ -78,7 +77,11 @@ export default function SignPage() {
       // handle validations for SIGNIN NOTE: shine your eye 👀✨
       if (values.email.length === 0) {
         setEmailErr("Email value is empty!");
-      } else if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(values.email)) {
+      } else if (
+        !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          values.email
+        )
+      ) {
         setEmailErr("Invalid Email address!");
       } else {
         setEmailErr(null);
@@ -91,13 +94,14 @@ export default function SignPage() {
       }
       if (emailErr || passwordErr) return;
       // handle axios FOR SIGNIN 😂
-      if (emailErr === null &&
+      if (
+        emailErr === null &&
         passwordErr === null &&
         values.email.length !== 0 &&
-        values.password.length !== 0) {
+        values.password.length !== 0
+      ) {
         signin.mutate();
       }
-
     } else {
       // handle validations for SIGNUP NOTE: shine your eye 👀✨
       if (values.fullName.length === 0) {
@@ -108,7 +112,11 @@ export default function SignPage() {
 
       if (values.email.length === 0) {
         setEmailErr("Email value is empty!");
-      } else if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(values.email)) {
+      } else if (
+        !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          values.email
+        )
+      ) {
         setEmailErr("Invalid Email address!");
       } else {
         setEmailErr(null);
@@ -127,14 +135,16 @@ export default function SignPage() {
       }
       if (fullNameErr || emailErr || passwordErr || confirmPasswordErr) return;
       // handle axios FOR SIGNUP 😂
-      if (fullNameErr === null &&
+      if (
+        fullNameErr === null &&
         emailErr === null &&
         passwordErr === null &&
         confirmPasswordErr === null &&
         values.fullName.length !== 0 &&
         values.email.length !== 0 &&
         values.password.length !== 0 &&
-        values.confirmPassword.length !== 0) {
+        values.confirmPassword.length !== 0
+      ) {
         signup.mutate();
       }
     }
@@ -143,22 +153,57 @@ export default function SignPage() {
   const switchPage = (e) => {
     e.preventDefault();
     setIsSignupPage(!isSignupPage);
-    setValues({ ...values, fullName: "", email: "", password: "", showPassword: false });
+    setValues({
+      ...values,
+      fullName: "",
+      email: "",
+      password: "",
+      showPassword: false
+    });
     setPasswordErr(null);
     setEmailErr(null);
     setFullNameErr(null);
     setConfirmPasswordErr(null);
     signin.reset();
     signup.reset();
-  }
+  };
+
+  const containertVarients = {
+    hidden: {
+      opacity: 0
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        delay: 1.5,
+        duration: 1.5
+      }
+    },
+    exit: {
+      x: "-100vw",
+      transition: {
+        ease: "easeInOut"
+      }
+    }
+  };
 
   return (
-    <section className="signpage h-screen relative">
+    <motion.section
+      className="signpage h-screen relative"
+      variants={containertVarients}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
         <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
           <div className="_sticky top-0 maxScreen:z-50">
             <Link to="/" className="block text-md mb-3 font-[600]">
-              <img src={logo_orange} alt={logo_orange} className="w-5 aspect-square" />
+              <img
+                src={logo_orange}
+                alt={logo_orange}
+                className="w-5 aspect-square"
+              />
               {/* PPTLINKS */}
             </Link>
             <p className="mb-5 text-[.7rem]">
@@ -168,10 +213,24 @@ export default function SignPage() {
           <h1 className="text-center text-3xl font-[400] mb-10">
             {isSignupPage ? "Sign Up" : "Sign In"}
           </h1>
-          <form onSubmit={handleSubmition} autoComplete="false"> {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
+          <form onSubmit={handleSubmition} autoComplete="false">
+            {" "}
+            {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
             {/* sign up */}
-            {signin.isError && <p className="text-[red] text-center font-bold text-xl">{signin.error.response?.data ? signin.error.response.data.message : signin.error.message}</p>}
-            {signup.isError && <p className="text-[red] text-center font-bold text-xl">{signup.error.response?.data ? signup.error.response.data.message : signup.error.message}</p>}
+            {signin.isError && (
+              <p className="text-[red] text-center font-bold text-xl">
+                {signin.error.response?.data
+                  ? signin.error.response.data.message
+                  : signin.error.message}
+              </p>
+            )}
+            {signup.isError && (
+              <p className="text-[red] text-center font-bold text-xl">
+                {signup.error.response?.data
+                  ? signup.error.response.data.message
+                  : signup.error.message}
+              </p>
+            )}
             <div
               className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col"} maxScreenMobile:flex-col`}
             >
@@ -192,7 +251,11 @@ export default function SignPage() {
                   placeholder="Full Name"
                   className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${fullNameErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {fullNameErr && (<p className="text-[red] pl-2 absolute top-[100]">{fullNameErr}</p>)}
+                {fullNameErr && (
+                  <p className="text-[red] pl-2 absolute top-[100]">
+                    {fullNameErr}
+                  </p>
+                )}
               </div>
               <div
                 className={`w-[50%] ${!isSignupPage && "!w-4/5"} maxScreenMobile:!w-full relative maxScreenMobile:mt-8`}
@@ -211,10 +274,13 @@ export default function SignPage() {
                   placeholder="eg: example@gmail.com"
                   className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${emailErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {emailErr && (<p className="text-[red] pl-2 absolute top-[100]">{emailErr}</p>)}
+                {emailErr && (
+                  <p className="text-[red] pl-2 absolute top-[100]">
+                    {emailErr}
+                  </p>
+                )}
               </div>
             </div>
-
             {/* sign in */}
             <div
               className={`flex justify-between items-center gap-4 mb-8 ${!isSignupPage && "!flex-col !gap-2"}  maxScreenMobile:!flex-col`}
@@ -227,9 +293,15 @@ export default function SignPage() {
                 </label>
                 <div className="relative w-full h-fit">
                   {values.showPassword ? (
-                    <AiFillEyeInvisible className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                    <AiFillEyeInvisible
+                      className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                      onClick={showPassword}
+                    />
                   ) : (
-                    <AiFillEye className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                    <AiFillEye
+                      className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                      onClick={showPassword}
+                    />
                   )}
                   <input
                     type={values.showPassword ? "text" : "password"}
@@ -243,7 +315,11 @@ export default function SignPage() {
                     className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${passwordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                   />
                 </div>
-                {passwordErr && (<p className="text-[red] pl-2 absolute top-[100]">{passwordErr}</p>)}
+                {passwordErr && (
+                  <p className="text-[red] pl-2 absolute top-[100]">
+                    {passwordErr}
+                  </p>
+                )}
               </div>
               <div
                 className={`w-[50%] maxScreenMobile:!w-full ${!isSignupPage && "!hidden"} relative maxScreenMobile:mt-8`}
@@ -256,9 +332,15 @@ export default function SignPage() {
                 </label>
                 <div className="relative w-full h-fit">
                   {values.showPassword ? (
-                    <AiFillEyeInvisible className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                    <AiFillEyeInvisible
+                      className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                      onClick={showPassword}
+                    />
                   ) : (
-                    <AiFillEye className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer" onClick={showPassword} />
+                    <AiFillEye
+                      className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                      onClick={showPassword}
+                    />
                   )}
                   <input
                     type={values.showPassword ? "text" : "password"}
@@ -272,21 +354,31 @@ export default function SignPage() {
                     className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${confirmPasswordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
                   />
                 </div>
-                {confirmPasswordErr && (<p className="text-[red] pl-2 absolute top-[100]">{confirmPasswordErr}</p>)}
+                {confirmPasswordErr && (
+                  <p className="text-[red] pl-2 absolute top-[100]">
+                    {confirmPasswordErr}
+                  </p>
+                )}
               </div>
             </div>
-            <button disabled={signin.isPending || signup.isPending} className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-3xl text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full">
-              {(signin.isPending || signup.isPending) ? <LoadingAssetSmall2 /> : isSignupPage ? "Sign Up" : "Sign In"}
+            <button
+              disabled={signin.isPending || signup.isPending}
+              className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-3xl text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
+            >
+              {signin.isPending || signup.isPending ? (
+                <LoadingAssetSmall2 />
+              ) : isSignupPage ? (
+                "Sign Up"
+              ) : (
+                "Sign In"
+              )}
             </button>
             <p className="w-3/5 m-auto mt-4 text-center">
               {isSignupPage
                 ? "Already have an account?"
                 : "Don't have an account?"}{" "}
               {/* href={isSignupPage ? "/signin" : "/signup"} */}
-              <a
-                onClick={switchPage}
-                className="text-[#FFA500]"
-              >
+              <a onClick={switchPage} className="text-[#FFA500]">
                 {isSignupPage ? "Sign In" : "SIgn Up"}
               </a>
             </p>
@@ -388,6 +480,6 @@ export default function SignPage() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
