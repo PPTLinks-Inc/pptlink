@@ -1,6 +1,13 @@
 /* eslint-disable react/prop-types */
 
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
@@ -11,8 +18,10 @@ import { Spinner, SpinnerIos } from "../components/interface/spinner/Spinner";
 import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import io from "socket.io-client";
-import { SERVER_URL } from "../constants/routes";
+import { MIC_STATE, SERVER_URL } from "../constants/routes";
 import useAudio from "../components/interface/hooks/useAudio";
+import { toast } from "react-toastify";
+import useSignalling from "../components/interface/hooks/useSignalling";
 
 let state = {
   maxNext: 0,
@@ -39,7 +48,7 @@ function OrientationPrompt({ setShowPrompt }) {
 }
 
 const PresentationContextProvider = (props) => {
-  const {current: socket} = useRef(io(SERVER_URL));
+  const { current: socket } = useRef(io(SERVER_URL));
   const [swiperRef, setSwiperRef] = useState(null);
   const [syncButton, setSyncButton] = useState(true);
   const params = useParams();
@@ -53,6 +62,7 @@ const PresentationContextProvider = (props) => {
   const [userUid, setUserUid] = useLocalStorage("userUid");
   const [tokens, setTokens] = useState(null);
   const [userName, setUserName] = useState("");
+  const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
       return /iPhone/i.test(navigator.userAgent);
@@ -90,7 +100,10 @@ const PresentationContextProvider = (props) => {
       const res = await axios.get(
         `/api/v1/ppt/presentations/present/${params.id}`
       );
-      if (res.data.presentation.User === "HOST" && res.data.presentation.audio) {
+      if (
+        res.data.presentation.User === "HOST" &&
+        res.data.presentation.audio
+      ) {
         await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
         setJoinAudio(true);
       }
@@ -138,6 +151,20 @@ const PresentationContextProvider = (props) => {
           setStartPrompt(true);
         }
       });
+    }
+
+    if (
+      presentationQuery.data?.User === "HOST" &&
+      presentationQuery.data?.audio
+    ) {
+      fetchRtcToken
+        .mutateAsync(presentationQuery.data?.liveId)
+        .then(function () {
+          setJoinAudio(true);
+        })
+        .catch(function() {
+          toast.error("Failed to join audio");
+        });
     }
   }, [presentationQuery.isSuccess]);
 
@@ -293,8 +320,31 @@ const PresentationContextProvider = (props) => {
     }
   });
 
-  const isReady = useMemo(() => joinAudio && tokens !== null && presentationQuery.data?.audio, [joinAudio, tokens, presentationQuery.data?.audio]);
+  const isReady = useMemo(
+    () => joinAudio && tokens !== null && presentationQuery.data?.audio,
+    [joinAudio, tokens, presentationQuery.data?.audio]
+  );
   const audioData = useAudio(isReady, presentationQuery, tokens, setJoinAudio);
+
+  const signallingData = useSignalling(isReady, presentationQuery, tokens, setJoinAudio, userName, setMicState, audioData.setMute);
+
+  const audioSuccess = useMemo(() => audioData.success && signallingData.success, [audioData.success, signallingData.success]);
+  const audioError = useMemo(() => audioData.error || signallingData.error, [audioData.error, signallingData.error]);
+  const audioLoading = useMemo(() => audioData.loading || signallingData.loading, [audioData.loading, signallingData.loading]);
+
+  const setMute = useCallback(function(mic) {
+    audioData.setMute(mic);
+  }, [audioData]);
+
+  useEffect(function() {
+    if (audioSuccess) {
+      toast.success("Audio connected");
+    }
+
+    if (audioError) {
+      toast.error("Failed to connect audio");
+    }
+  }, [audioSuccess, audioError]);
 
   return (
     <PresentationContext.Provider
@@ -316,7 +366,18 @@ const PresentationContextProvider = (props) => {
         userName,
         setUserName,
         tokens,
-        audioData
+        setMute,
+        audioSuccess,
+        audioError,
+        audioLoading,
+        users: signallingData.users,
+        usersObj: signallingData.usersObj,
+        numberOfUsers: signallingData.numberOfUsers,
+        host: signallingData.host,
+        changeMicState: signallingData.changeMicState,
+        acceptMicRequest: signallingData.acceptMicRequest,
+        micState,
+        setMicState
       }}
     >
       {presentationQuery.isLoading ? (
@@ -340,9 +401,7 @@ const PresentationContextProvider = (props) => {
               <Spinner />
             )
           ) : (
-            <>
-              {props.children}
-            </>
+            <>{props.children}</>
           )}
         </>
       )}

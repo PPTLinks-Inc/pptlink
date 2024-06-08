@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { AGORA_APP_ID } from "../../../constants/routes";
-import { toast } from "react-toastify";
 
 export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
   const [error, setError] = useState(false);
@@ -64,17 +63,26 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
           delete audioTracks.current.remoteAudioTracks[user.uid];
         });
         setSuccess(true);
-        toast.success("Joined audio successfully");
       } catch (err) {
         setError(true);
         setJoinAudio(false);
-        toast.error("Failed to join audio");
       } finally {
         setLoading(false);
       }
     }
 
     init();
+
+    return function() {
+      if (audioTracks.current.localAudioTrack) {
+        audioTracks.current.localAudioTrack.stop();
+        audioTracks.current.localAudioTrack.close();
+        if (rtcClient.current.channelName) {
+          rtcClient.current.leave();
+        }
+      }
+    };
+
   }, [isReady]);
 
   return {
