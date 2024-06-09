@@ -15,7 +15,7 @@ function Interface() {
   const ref = useRef(null);
   const [loaded, setIsLoaded] = useState(false);
   const [actionsActive, setActionsActive] = useState(true);
-  const { isMobile } = useContext(PresentationContext);
+  const { isMobilePhone } = useContext(PresentationContext);
   const orientation = useOrientation();
 
   const [status, setStatus] = useState({
@@ -114,7 +114,7 @@ function Interface() {
 
   return (
     <div
-      className={`bg-black w-full ${isMobile({ iphone: false }) && !orientation.type.includes("portrait") && "relative"}`}
+      className={`bg-black w-full ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
       ref={ref}
     >
       <Header actionsActive={actionsActive} />

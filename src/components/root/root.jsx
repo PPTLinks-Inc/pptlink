@@ -12,7 +12,6 @@ import MovingEllipses from "../animation/MovingEllipes";
 import Header from "../header/header";
 import Footer from "../footer/footer";
 import Backmenu from "../backmenu/backmenu";
-// import { socket } from '../../socket';
 export default function Root() {
   const controller = new AbortController();
   // context

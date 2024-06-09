@@ -53,7 +53,7 @@ export default function Slider({
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [isError, setIsError] = useState(false);
   const [maxWidth, setMaxWidth] = useState(0);
-  const { isMobile, presentation, setSwiperRef } = useContext(PresentationContext);
+  const { isMobilePhone, presentation, setSwiperRef } = useContext(PresentationContext);
   const orientation = useOrientation();
   const file = useMemo(function() {
     return presentation.data.pdfLink
@@ -87,7 +87,7 @@ export default function Slider({
 
   return (
     <div
-      className={`w-full ${isMobile({ iphone: false }) && orientation.type.includes("portrait") && "mt-40"}`}
+      className={`w-full ${isMobilePhone && orientation.type.includes("portrait") && "mt-40"}`}
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
     >
