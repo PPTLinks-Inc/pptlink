@@ -20,6 +20,7 @@ import Document from "./components/document/document";
 import PresentationContextProvider from "./contexts/presentationContext";
 import SignPage from "./components/sign/sign";
 import NewUploadPage from "./components/upload/newupload";
+import DateTest from "./components/upload/dateTest";
 import "./assets/styles/general_css.css";
 
 axios.defaults.baseURL = SERVER_URL;
@@ -84,6 +85,7 @@ function App() {
           />
           <Route path="signin" element={<SignPage />} />
           <Route path="signup" element={<SignPage />} />
+          <Route path="datetest" element={<DateTest />} />
         </Routes>
       </AnimatePresence>
 
