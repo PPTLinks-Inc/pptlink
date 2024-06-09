@@ -45,9 +45,6 @@ function App() {
   const { setUser } = useContext(userContext);
 
   useQuery({
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
     queryKey: ["user"],
     queryFn: async () => {
       const { data } = await axios.get("/api/v1/auth/user");

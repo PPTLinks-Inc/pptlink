@@ -7,14 +7,14 @@ import ShareAPI from "./Share";
 import { LoadingAssetSmall2 } from "../../assets/assets";
 
 export default function Header({ actionsActive }) {
-  const { fullScreenShow, isMobile, makeLive, presentation } =
+  const { fullScreenShow, isMobilePhone, makeLive, presentation } =
     useContext(PresentationContext);
   const orientation = useOrientation();
 
   const style = useMemo(
     function () {
       if (
-        (isMobile({ iphone: false }) &&
+        (isMobilePhone &&
           orientation.type.includes("landscape")) ||
         fullScreenShow
       ) {
@@ -23,7 +23,7 @@ export default function Header({ actionsActive }) {
 
       return "";
     },
-    [isMobile, orientation, fullScreenShow, actionsActive]
+    [isMobilePhone, orientation, fullScreenShow, actionsActive]
   );
 
   return (
@@ -32,8 +32,8 @@ export default function Header({ actionsActive }) {
     >
       <ShareAPI />
       {((orientation.type.includes("portrait") &&
-        isMobile({ isphone: false })) ||
-        (!isMobile({ isphone: false }) && !fullScreenShow)) && (
+        isMobilePhone) ||
+        (!isMobilePhone && !fullScreenShow)) && (
         <p className="text-white text-lg">PPTLINKS</p>
       )}
       {presentation.data?.User === "HOST" ? <button

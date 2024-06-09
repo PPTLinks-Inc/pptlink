@@ -346,12 +346,16 @@ const PresentationContextProvider = (props) => {
     }
   }, [audioSuccess, audioError]);
 
+  const isIphone = isMobile({ iphone: true });
+  const isMobilePhone = isMobile({ isphone: false });
+
   return (
     <PresentationContext.Provider
       value={{
         fullScreenShow,
         fullScreenToggle,
-        isMobile,
+        isIphone,
+        isMobilePhone,
         presentation: presentationQuery,
         makeLive,
         startAudio,
@@ -389,14 +393,14 @@ const PresentationContextProvider = (props) => {
         <PresentationNotFound />
       ) : (
         <>
-          {isMobile({ isphone: false }) &&
+          {isMobilePhone &&
             showPrompt &&
             presentationQuery.data.live && (
               <OrientationPrompt setShowPrompt={setShowPrompt} />
             )}
           {!presentationQuery.data.live &&
           presentationQuery.data.User !== "HOST" ? (
-            isMobile({ isphone: true }) ? (
+            isIphone ? (
               <SpinnerIos />
             ) : (
               <Spinner />
