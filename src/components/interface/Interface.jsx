@@ -1,66 +1,146 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-
-import "./interface.css";
-import { useContext, useRef, useEffect } from "react";
-import Header from "./layout/Header";
-import { Carousel } from "./layout/Carousel";
-import { LoadingAssetBig2 } from "../../assets/assets";
-import { isIOS } from "react-device-detect";
-
-import { Spinner, SpinnerIos } from "./layout/assets/spinner/Spinner";
-import PresentationNotFound from "./404";
+import { useRef, useState, useContext, useEffect } from "react";
+import { useOrientation } from "react-use";
+import { ToastContainer } from "react-toastify";
+import Header from "./Header";
+import Slider from "./Slider";
+import Controls from "./Controls";
 import { PresentationContext } from "../../contexts/presentationContext";
 
-let mobileHeader;
-
-if (window.innerWidth < 900) {
-  mobileHeader = false;
-} else {
-  mobileHeader = true;
-}
+let wakeLock = null;
+let setTimerActive = null;
 
 function Interface() {
-  const { presentation, presentationQuery, setInterfaceRef } =
-    useContext(PresentationContext);
+  const ref = useRef(null);
+  const [loaded, setIsLoaded] = useState(false);
+  const [actionsActive, setActionsActive] = useState(true);
+  const { isMobilePhone } = useContext(PresentationContext);
+  const orientation = useOrientation();
 
-  const interfaceRef = useRef();
+  const [status, setStatus] = useState({
+    online: false,
+    offline: false
+  });
+
+  const updateOnlineStatus = () => {
+    setStatus((prevState) => ({
+      ...prevState,
+      online: navigator.onLine ? true : "null",
+      offline: !navigator.onLine ? true : "null"
+    }));
+  };
 
   useEffect(() => {
-    setInterfaceRef(interfaceRef);
+    if (status.online === true) {
+      setTimeout(() => {
+        setStatus((prevState) => ({
+          ...prevState,
+          online: false
+        }));
+      }, 3000);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+
+    return () => {
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
+    };
   }, []);
 
-  return !presentationQuery.isError ? (
-    <main
-      className={`overflow-hidden min-h-screen  relative duration-300 transition-all bg-black md:overflow-auto `}
+  useEffect(function () {
+    function requireWakeLock() {
+      try {
+        if (wakeLock !== null && document.visibilityState === "visible") {
+          wakeLock = navigator.wakeLock.request("screen").then((lock) => {
+            wakeLock = lock;
+          });
+        }
+      } catch (err) {
+        //
+      }
+    }
+
+    (async function () {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen");
+
+          document.addEventListener("visibilitychange", requireWakeLock);
+        }
+      } catch (err) {
+        //
+      }
+    })();
+
+    handleMouseMove();
+
+    return () => {
+      if (wakeLock) {
+        document.removeEventListener("visibilitychange", requireWakeLock);
+        wakeLock.release().then(() => {
+          wakeLock = null;
+        });
+      }
+    };
+  }, []);
+
+  function handleMouseMove() {
+    setActionsActive(true);
+    if (setTimerActive) {
+      clearTimeout(setTimerActive);
+    }
+
+    setTimerActive = setTimeout(() => {
+      setActionsActive(false);
+    }, 5000);
+  }
+
+  function handleMouseClick(e) {
+    if (e.target.tagName !== "DIV") return;
+    if (actionsActive) {
+      setActionsActive(false);
+      if (setTimerActive) {
+        clearTimeout(setTimerActive);
+      }
+    } else {
+      handleMouseMove();
+    }
+  }
+
+  return (
+    <div
+      className={`bg-black w-full ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
+      ref={ref}
     >
-      {mobileHeader && presentationQuery.isSuccess && <Header />}
-      {/* navigation */}
-      {/* body */}
-      <section
-        className={`main-body w-full ${
-          mobileHeader && "px-0"
-        }  rounded-2xl relative  transition-all duration-500 bg-white`}
-      >
-        {presentationQuery.isSuccess ? (
-          <div ref={interfaceRef} className=" h-fit min-h-[100%]">
-            {presentation.live || presentation.User === "HOST" ? (
-              <Carousel />
-            ) : !isIOS ? (
-              <Spinner />
-            ) : (
-              <SpinnerIos />
-            )}
+      <Header actionsActive={actionsActive} />
+      <Slider
+        setIsLoaded={setIsLoaded}
+        handleMouseMove={handleMouseMove}
+        handleMouseClick={handleMouseClick}
+      />
+      {loaded && <Controls containerRef={ref} actionsActive={actionsActive} />}
+      {status.online === true ? (
+        <div
+          className={`text-center fixed bottom-0 transition-all duration-500 z-40 text-white w-full bg-green-500 font-bold px-2`}
+        >
+          Back online
+        </div>
+      ) : (
+        status.offline === true && (
+          <div
+            className={`fixed bottom-0 text-center transition-all duration-500 z-50 text-white w-full bg-[#ff0000] font-bold px-2`}
+          >
+            No internet connection
           </div>
-        ) : (
-          <div className="w-full h-[85vh] flex justify-center bg-black items-center">
-            <LoadingAssetBig2 />
-          </div>
-        )}
-      </section>
-    </main>
-  ) : (
-    <PresentationNotFound />
+        )
+      )}
+      <ToastContainer />
+    </div>
   );
 }
 

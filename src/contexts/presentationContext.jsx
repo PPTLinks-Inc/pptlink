@@ -1,123 +1,115 @@
 /* eslint-disable react/prop-types */
 
-import { createContext, useState, useRef, useEffect } from "react";
-import io from "socket.io-client";
-import { useParams } from "react-router-dom";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import rotateImage from "../components/interface/assets/rotate.gif";
+import { Spinner, SpinnerIos } from "../components/interface/spinner/Spinner";
+import { LoadingAssetBig2 } from "../assets/assets";
+import PresentationNotFound from "../components/interface/404";
+import io from "socket.io-client";
+import { MIC_STATE, SERVER_URL } from "../constants/routes";
+import useAudio from "../components/interface/hooks/useAudio";
 import { toast } from "react-toastify";
-import { SERVER_URL } from "../constants/routes";
+import useSignalling from "../components/interface/hooks/useSignalling";
 
-export const PresentationContext = createContext({
-  presentationQuery: {},
-  presentation: {},
-  makeLive() {},
-  livePending: false,
-  socket: {},
-  syncButton: true,
-  setSyncButton() {},
-  swiperRef: null,
-  syncSlide() {},
-  state: {
-    maxNext: 0,
-    hostSlideIndex: 0,
-    sync: true
-  },
-  slideChange() {},
-  interfaceRef: null,
-  setInterfaceRef() {}
-});
-
-const socket = io(SERVER_URL);
 let state = {
   maxNext: 0,
   hostSlideIndex: 0,
   sync: true
 };
 
+export const PresentationContext = createContext();
+
+function OrientationPrompt({ setShowPrompt }) {
+  return (
+    <div className="bg-black absolute w-screen h-full z-50">
+      <button
+        onClick={() => setShowPrompt(false)}
+        className="absolute right-5 top-5"
+      >
+        <IoCloseCircleOutline color="white" size={32} />
+      </button>
+      <div className="flex flex-col justify-center items-center h-full">
+        <img src={rotateImage} alt="Rotate Image" className="w-fit" />
+      </div>
+    </div>
+  );
+}
+
 const PresentationContextProvider = (props) => {
-  const swiperRef = useRef();
-  const queryClient = useQueryClient();
-
-  const [socketConnected, setSocketConnected] = useState(false);
-  const params = useParams();
-  const [interfaceRef, setInterfaceRef] = useState(null);
+  const { current: socket } = useRef(io(SERVER_URL));
+  const [swiperRef, setSwiperRef] = useState(null);
   const [syncButton, setSyncButton] = useState(true);
+  const params = useParams();
+  const [start, setStart] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(true);
+  const [fullScreenShow, fullScreenToggle] = useToggle(false);
+  const [joinAudio, setJoinAudio] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [startPrompt, setStartPrompt] = useState(false);
+  const orientation = useOrientation();
+  const [userUid, setUserUid] = useLocalStorage("userUid");
+  const [tokens, setTokens] = useState(null);
+  const [userName, setUserName] = useState("");
+  const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
+  const isMobile = useCallback(function ({ iphone = false }) {
+    if (iphone) {
+      return /iPhone/i.test(navigator.userAgent);
+    }
+    return /Android|iPhone/i.test(navigator.userAgent);
+  }, []);
 
+  function syncSlide() {
+    swiperRef.swiper.allowSlideNext = true;
+    swiperRef.swiper.slideTo(state.hostSlideIndex, 1000, true);
+  }
+
+  const receiveSlideChange = useCallback(
+    function (currentSlide) {
+      state.hostSlideIndex = currentSlide;
+      if (currentSlide > state.maxNext) {
+        state.maxNext = currentSlide;
+      }
+
+      if (state.sync) {
+        swiperRef.swiper.allowSlideNext = true;
+        swiperRef.swiper.slideTo(currentSlide, 1000, true);
+      }
+    },
+    [swiperRef]
+  );
+
+  const queryClient = useQueryClient();
   const presentationQuery = useQuery({
     queryKey: ["presentation", params.id],
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     queryFn: async () => {
-      const userUid = localStorage.getItem("userUid");
       const res = await axios.get(
-        `/api/v1/ppt/presentations/present/${params.id}?userUid=${userUid}`
+        `/api/v1/ppt/presentations/present/${params.id}`
       );
-
-      if (!userUid) {
-        localStorage.setItem("userUid", res.data.presentation.rtcUid);
+      if (
+        res.data.presentation.User === "HOST" &&
+        res.data.presentation.audio
+      ) {
+        await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
+        setJoinAudio(true);
       }
       return res.data.presentation;
     }
   });
-
-  const syncSlide = () => {
-    swiperRef.current.allowSlideNext = true;
-    swiperRef.current.slideTo(state.hostSlideIndex, 1000, true);
-  };
-
-  const receiveSlideChange = (currentSlide) => {
-    state.hostSlideIndex = currentSlide;
-    if (currentSlide > state.maxNext) {
-      state.maxNext = currentSlide;
-    }
-
-    if (state.sync) {
-      swiperRef.current.allowSlideNext = true;
-      swiperRef.current.slideTo(currentSlide, 1000, true);
-    }
-  };
-
-  const joinRoom = () => {
-    if (socket.connected && presentationQuery.isSuccess) {
-      socket.emit(
-        "join-presentation",
-        {
-          liveId: params.id,
-          presentationId: presentationQuery.data.id,
-          user: presentationQuery.data.User,
-          userUid: presentationQuery.data.rtcUid,
-          hostCurrentSlide: swiperRef.current
-            ? swiperRef.current.activeIndex
-            : 0
-        },
-        (response) => {
-          if (presentationQuery.data.User != "HOST") {
-            if (!socket.hasListeners("change-slide")) {
-              socket.on("change-slide", receiveSlideChange);
-            }
-            state = {
-              ...state,
-              maxNext: response.maxSlide,
-              hostSlideIndex: response.currentSlide
-            };
-            if (!swiperRef.current) return;
-            if (
-              presentationQuery.data.live &&
-              state.sync &&
-              swiperRef.current.activeIndex !== state.hostSlideIndex
-            ) {
-              syncSlide();
-            }
-          }
-        }
-      );
-    }
-  };
-
-  useEffect(() => {
-    joinRoom();
-  }, [socketConnected, presentationQuery.isSuccess]);
 
   useEffect(() => {
     if (!socket.hasListeners("connect")) {
@@ -132,101 +124,292 @@ const PresentationContextProvider = (props) => {
       });
     }
 
-    if (!socket.hasListeners("client-live")) {
+    if (
+      !socket.hasListeners("client-live") &&
+      presentationQuery.isSuccess &&
+      presentationQuery.data?.User !== "HOST"
+    ) {
       socket.on("client-live", (live) => {
         queryClient.setQueryData(["presentation", params.id], (prev) => ({
           ...prev,
           live
         }));
-
-        
       });
     }
 
-    return () => {
-      socket.removeListener("change-slide", receiveSlideChange);
-    };
-  }, []);
-
-  const slideChange = (slide) => {
-    if (presentationQuery.data.User === "HOST" && presentationQuery.data.live) {
-      socket.emit("change-slide", {
-        liveId: presentationQuery.data.liveId,
-        currentSlide: slide.activeIndex
-      });
-    } else {
-      if (presentationQuery.data.live) {
-        if (slide.activeIndex > state.maxNext) {
-          swiperRef.current.allowSlideNext = true;
-          swiperRef.current.slideTo(state.maxNext, 0, false);
-          swiperRef.current.allowSlideNext = false;
-          return;
-        }
-        if (slide.activeIndex === state.hostSlideIndex) {
-          state.sync = true;
-          setSyncButton(true);
-        } else {
-          state.sync = false;
-          setSyncButton(false);
-        }
-        if (slide.activeIndex === state.maxNext) {
-          swiperRef.current.allowSlideNext = false;
-          return;
-        }
-
-        if (!state.sync) {
-          swiperRef.current.allowSlideNext = true;
-        }
-      }
-    }
-  };
-
-  const [livePending, setLivePending] = useState(false);
-
-  const makeLive = () => {
-    setLivePending(true);
-    axios
-      .put(`/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`, {
-        data: !presentationQuery.data.live
-      })
-      .then(() => {
-        if (socket.connected) {
-          socket.emit("client-live", {
-            liveId: params.id,
-            live: !presentationQuery.data.live
-          });
-        }
+    if (
+      !socket.hasListeners("client-audio") &&
+      presentationQuery.isSuccess &&
+      presentationQuery.data?.User !== "HOST"
+    ) {
+      socket.on("client-audio", (audio) => {
         queryClient.setQueryData(["presentation", params.id], (prev) => ({
           ...prev,
-          live: !prev.live
+          audio
         }));
-        setLivePending(false);
-      })
-      .catch((err) => {
-        setLivePending(false);
-        toast.error(err.response.data.message);
+        if (audio) {
+          setStartPrompt(true);
+        }
       });
-  };
+    }
+
+    if (
+      presentationQuery.data?.User === "HOST" &&
+      presentationQuery.data?.audio
+    ) {
+      fetchRtcToken
+        .mutateAsync(presentationQuery.data?.liveId)
+        .then(function () {
+          setJoinAudio(true);
+        })
+        .catch(function() {
+          toast.error("Failed to join audio");
+        });
+    }
+  }, [presentationQuery.isSuccess]);
+
+  useEffect(() => {
+    if (socketConnected && presentationQuery.isSuccess) {
+      socket.emit(
+        "join-presentation",
+        {
+          liveId: params.id,
+          user: presentationQuery.data.User,
+          hostCurrentSlide: swiperRef ? swiperRef.swiper.activeIndex : 0
+        },
+        (response) => {
+          if (presentationQuery.data.User != "HOST") {
+            state = {
+              ...state,
+              maxNext: response.maxSlide,
+              hostSlideIndex: response.currentSlide
+            };
+          }
+        }
+      );
+    }
+  }, [socketConnected, presentationQuery.isSuccess]);
+
+  useQuery({
+    queryKey: ["swiper"],
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    enabled: swiperRef !== null,
+    queryFn: function () {
+      swiperRef.addEventListener("swiperslidechange", function () {
+        if (
+          presentationQuery.data.User === "HOST" &&
+          presentationQuery.data.live
+        ) {
+          socket.emit("change-slide", {
+            liveId: presentationQuery.data.liveId,
+            currentSlide: swiperRef.swiper.activeIndex
+          });
+        } else {
+          if (presentationQuery.data.live) {
+            if (swiperRef.swiper.activeIndex > state.maxNext) {
+              swiperRef.swiper.allowSlideNext = true;
+              swiperRef.swiper.slideTo(state.maxNext, 0, false);
+              swiperRef.swiper.allowSlideNext = false;
+              return;
+            }
+            if (swiperRef.swiper.activeIndex === state.hostSlideIndex) {
+              state.sync = true;
+              setSyncButton(true);
+            } else {
+              setSyncButton(false);
+              state.sync = false;
+            }
+            if (swiperRef.swiper.activeIndex === state.maxNext) {
+              swiperRef.swiper.allowSlideNext = false;
+              return;
+            }
+
+            if (!state.sync) {
+              swiperRef.swiper.allowSlideNext = true;
+            }
+          }
+        }
+      });
+
+      if (
+        presentationQuery.data.live &&
+        state.sync &&
+        swiperRef?.swiper.activeIndex !== state.hostSlideIndex
+      ) {
+        syncSlide();
+      }
+
+      if (!socket.hasListeners("change-slide")) {
+        socket.on("change-slide", receiveSlideChange);
+      }
+      return true;
+    }
+  });
+
+  useQuery({
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    queryKey: ["orientation"],
+    queryFn: function () {
+      setStart(true);
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    if (
+      orientation.type.includes("landscape") &&
+      start &&
+      presentationQuery.data?.live
+    ) {
+      setShowPrompt(false);
+    }
+  }, [start, orientation, presentationQuery.data?.live]);
+
+  const makeLive = useMutation({
+    mutationFn: function () {
+      return axios.put(
+        `/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`
+      );
+    },
+    onSuccess: function () {
+      queryClient.setQueryData(["presentation", params.id], (prev) => ({
+        ...prev,
+        live: !prev.live
+      }));
+    }
+  });
+
+  const startAudio = useMutation({
+    mutationKey: ["make-audio"],
+    retry: false,
+    mutationFn: function () {
+      return axios.put(
+        `/api/v1/ppt/presentations/make-audio/${presentationQuery.data.id}`,
+        {},
+        { params: { userUid } }
+      );
+    },
+    onSuccess: function ({ data }) {
+      setTokens(data);
+      setUserUid(data.rtcUid);
+      setJoinAudio(!presentationQuery.data.audio);
+      queryClient.setQueryData(["presentation", params.id], (prev) => ({
+        ...prev,
+        audio: !prev.audio
+      }));
+    }
+  });
+
+  const fetchRtcToken = useMutation({
+    retry: false,
+    mutationFn: function (liveId) {
+      return axios.get(
+        `/api/v1/ppt/presentations/present/token/${liveId ? liveId : presentationQuery.data.liveId}`,
+        {
+          params: { userUid }
+        }
+      );
+    },
+    onSuccess: function ({ data }) {
+      setUserUid(data.rtcUid);
+      setTokens(data);
+    }
+  });
+
+  const isReady = useMemo(
+    () => joinAudio && tokens !== null && presentationQuery.data?.audio,
+    [joinAudio, tokens, presentationQuery.data?.audio]
+  );
+  const audioData = useAudio(isReady, presentationQuery, tokens, setJoinAudio);
+
+  const signallingData = useSignalling(isReady, presentationQuery, tokens, setJoinAudio, userName, setMicState, audioData.setMute);
+
+  const audioSuccess = useMemo(() => audioData.success && signallingData.success, [audioData.success, signallingData.success]);
+  const audioError = useMemo(() => audioData.error || signallingData.error, [audioData.error, signallingData.error]);
+  const audioLoading = useMemo(() => audioData.loading || signallingData.loading, [audioData.loading, signallingData.loading]);
+
+  const setMute = useCallback(function(mic) {
+    audioData.setMute(mic);
+  }, [audioData]);
+
+  useEffect(function() {
+    if (audioSuccess) {
+      toast.success("Audio connected");
+    }
+
+    if (audioError) {
+      toast.error("Failed to connect audio");
+    }
+  }, [audioSuccess, audioError]);
+
+  const isIphone = isMobile({ iphone: true });
+  const isMobilePhone = isMobile({ isphone: false });
 
   return (
     <PresentationContext.Provider
       value={{
-        presentationQuery,
-        presentation: presentationQuery.data,
+        fullScreenShow,
+        fullScreenToggle,
+        isIphone,
+        isMobilePhone,
+        presentation: presentationQuery,
         makeLive,
-        livePending,
-        socket,
+        startAudio,
+        joinAudio,
+        setJoinAudio,
+        setSwiperRef,
         syncButton,
-        setSyncButton,
-        swiperRef,
         syncSlide,
-        state,
-        slideChange,
-        interfaceRef,
-        setInterfaceRef
+        startPrompt,
+        setStartPrompt,
+        fetchRtcToken,
+        userName,
+        setUserName,
+        tokens,
+        setMute,
+        audioSuccess,
+        audioError,
+        audioLoading,
+        users: signallingData.users,
+        usersObj: signallingData.usersObj,
+        numberOfUsers: signallingData.numberOfUsers,
+        host: signallingData.host,
+        changeMicState: signallingData.changeMicState,
+        acceptMicRequest: signallingData.acceptMicRequest,
+        micState,
+        setMicState,
+        networkStatus: audioData.networkStatus,
       }}
     >
-      {props.children}
+      {presentationQuery.isLoading ? (
+        <div className="flex justify-center items-center h-screen w-full">
+          <LoadingAssetBig2 />
+        </div>
+      ) : presentationQuery.isError ? (
+        <PresentationNotFound />
+      ) : (
+        <>
+          {isMobilePhone &&
+            showPrompt &&
+            presentationQuery.data.live && (
+              <OrientationPrompt setShowPrompt={setShowPrompt} />
+            )}
+          {!presentationQuery.data.live &&
+          presentationQuery.data.User !== "HOST" ? (
+            isIphone ? (
+              <SpinnerIos />
+            ) : (
+              <Spinner />
+            )
+          ) : (
+            <>{props.children}</>
+          )}
+        </>
+      )}
     </PresentationContext.Provider>
   );
 };

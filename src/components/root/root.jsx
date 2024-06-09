@@ -8,13 +8,11 @@ import { useRef } from "react";
 import { useContext, useEffect } from "react";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
-import { LoadingAssetBig2 } from "../../assets/assets";
 import MovingEllipses from "../animation/MovingEllipes";
 import Header from "../header/header";
 import Footer from "../footer/footer";
 import Backmenu from "../backmenu/backmenu";
-// import { socket } from '../../socket';
-export default function Root({ isLoading }) {
+export default function Root() {
   const controller = new AbortController();
   // context
   const { user } = useContext(userContext);
@@ -123,14 +121,9 @@ export default function Root({ isLoading }) {
 
   return (
     <div
-      className={`w-full min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown || isLoading ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
+      className={`w-full min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
     >
       <Backmenu handleDropdown={handleDropdown} />
-      {isLoading && (
-        <div className="w-full fixed top-0 left-0 bottom-0 right-0 z-50 grid place-items-center bg-black">
-          <LoadingAssetBig2 />
-        </div>
-      )}
       <div
         className={`h-fit bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
           ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
@@ -139,7 +132,7 @@ export default function Root({ isLoading }) {
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
-        {!isLoading && <Outlet />}
+        <Outlet />
         <MovingEllipses />
         <Footer />
       </div>

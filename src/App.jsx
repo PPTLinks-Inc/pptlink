@@ -45,10 +45,7 @@ axios.interceptors.response.use(function (response) {
 function App() {
   const { setUser } = useContext(userContext);
 
-  const userQuery = useQuery({
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+  useQuery({
     queryKey: ["user"],
     queryFn: async () => {
       const { data } = await axios.get("/api/v1/auth/user");
@@ -63,7 +60,7 @@ function App() {
     <>
       <AnimatePresence exit>
         <Routes location={location} key={location.key}>
-          <Route path="/" element={<Root isLoading={userQuery.isLoading} />}>
+          <Route path="/" element={<Root />}>
             <Route exact path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
             <Route path="dashboard" element={<Dashboard />} />
