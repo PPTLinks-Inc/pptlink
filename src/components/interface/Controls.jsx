@@ -24,7 +24,7 @@ export default function Controls({ containerRef, actionsActive }) {
   const {
     fullScreenToggle,
     fullScreenShow,
-    isMobile,
+    isMobilePhone,
     presentation,
     joinAudio,
     setJoinAudio,
@@ -109,7 +109,7 @@ export default function Controls({ containerRef, actionsActive }) {
 
   const styles = useMemo(() => {
     if (
-      (isMobile({ iphone: false }) && orientation.type.includes("portrait")) ||
+      (isMobilePhone && orientation.type.includes("portrait")) ||
       actionsActive ||
       enterName ||
       startPrompt ||
@@ -127,7 +127,7 @@ export default function Controls({ containerRef, actionsActive }) {
     orientation,
     enterName,
     startPrompt,
-    isMobile,
+    isMobilePhone,
     audioLoading,
     endAudioPrompt,
     hideControls,
