@@ -5,7 +5,7 @@ const useForm = (callback, validate) => {
     toggle: false,
     file: null,
     downloadable: "true",
-    privacy: "public"
+    privacy: "public",
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -43,7 +43,7 @@ const useForm = (callback, validate) => {
   };
 
   const handleChange = (event) => {
-    event.persist();
+    // event.persist(); // what is this sapost to do...😒🤦‍♀️I don't tink it's a thing... it should be defined... it not yet so it's not a thing...
     const { name, value, files, checked } = event.target;
 
     setValues((prevValues) => ({
