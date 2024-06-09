@@ -219,6 +219,7 @@ export default function Controls({ containerRef, actionsActive }) {
               <button
                 className={`${micStyle.style} rounded-full p-3 shadow`}
                 onClick={actionMicButton}
+                disabled={audioLoading}
               >
                 {audioLoading ? (
                   <LoadingAssetBig2 />
@@ -283,6 +284,7 @@ export default function Controls({ containerRef, actionsActive }) {
               <button
                 className={`${micStyle.style} rounded-full p-3 shadow`}
                 onClick={actionMicButton}
+                disabled={audioLoading}
               >
                 {audioLoading ? (
                   <LoadingAssetBig2 />
@@ -404,10 +406,10 @@ export default function Controls({ containerRef, actionsActive }) {
       </Menu>
       <Modal
         open={enterName}
-        onClose={() => setEnterName(false)}
+        onClose={fetchRtcToken.isPending ? null : () => setEnterName(false)}
         color="bg-black"
       >
-        <form
+        {fetchRtcToken.isPending ? <LoadingAssetBig2 /> : <form
           className="flex flex-col gap-5"
           onSubmit={async (e) => {
             e.preventDefault();
@@ -444,7 +446,7 @@ export default function Controls({ containerRef, actionsActive }) {
               Join Conversation
             </button>
           </div>
-        </form>
+        </form>}
       </Modal>
 
       <ConfirmModal
