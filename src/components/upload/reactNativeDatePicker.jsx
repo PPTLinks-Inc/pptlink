@@ -25,7 +25,7 @@ const NativeDatepicker = ({
     }
   }, [datepicker, value]);
   return h(
-    'div',
+    'span',
     {
       ref: spanRef,
       className,

@@ -10,7 +10,6 @@ import { DatePicker, EndTimePicker, StartTimePicker } from "./calender";
 export default function NewUploadPage() {
   const [currentView, setCurrentView] = useState(1);
   const addcategoryref = useRef(null);
-  const dateInputRef = useRef(null);
   const scrollableRef = useRef(null);
   const [categories, setCategories] = useState([
     ["category 1", false],
@@ -32,13 +31,6 @@ export default function NewUploadPage() {
     setAddedCategory("");
     setCategoryError("");
   }
-
-  const handleLabelClick = () => {
-    if (dateInputRef.current) {
-      dateInputRef.current.focus();
-      dateInputRef.current.click();
-    }
-  };
 
   // function to add a new category
   const newCategory = () => {
@@ -482,23 +474,19 @@ export default function NewUploadPage() {
               <div className="flex justify-between w-[90%] m-auto">
                 {/* 1 */}
                 <DatePicker
-                  dateInputRef={dateInputRef}
                   handleChange={handleChange}
-                  handleLabelClick={handleLabelClick}
                   values={values}
                   errors={errors}
                 />
                 {/* 2 */}
                 <StartTimePicker
                   handleChange={handleChange}
-                  handleLabelClick={handleLabelClick}
                   values={values}
                   errors={errors}
                 />
                 {/* 3 */}{" "}
                 <EndTimePicker
                   handleChange={handleChange}
-                  handleLabelClick={handleLabelClick}
                   values={values}
                   errors={errors}
                 />

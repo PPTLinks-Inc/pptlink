@@ -113,8 +113,8 @@
 //         <h1 className="text-[3rem] text-[#FFFFF0]">New Presentation</h1>
 //         <hr />
 //         <div className="form_tracker_wrapper w-full flex justify-center mb-20">
-//           {/* Note: true simply means all inputs for that view is 
-//                     met("not empty and valid") you can use required. first 
+//           {/* Note: true simply means all inputs for that view is
+//                     met("not empty and valid") you can use required. first
 //                     stage need not have, by default it is what it is 👀🥂 */}
 //           <span className="active !block text-center w-[calc(100%/4)] relative">
 //             <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
@@ -636,3 +636,292 @@
 // };
 
 // export default DateTest;
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+
+// /* global define */
+// (function nativeDatepickerFactory1(factory) {
+//   if (typeof exports === 'object' && typeof module === 'object') {
+//     module.exports = factory();
+//   } else if (typeof define === 'function' && define.amd) {
+//     define(factory);
+//   } else {
+//     window['NativeDatepicker'] = factory();
+//   }
+// })(function nativeDatepickerFactory2() {
+//   var classNames = {
+//     wrapper: 'NativeDatepicker',
+//     input: 'NativeDatepicker__input',
+//   };
+
+//   var dateRegex = /\d{4}-\d{2}-\d{2}/;
+
+//   function NativeDatepicker(options) {
+//     this.options = Object.assign(
+//       {
+//         win: typeof window !== 'undefined' ? window : undefined,
+//         existingElement: null,
+//         onChange: function defaultOnChange() {},
+//         initialValue: '',
+//       },
+//       options
+//     );
+
+//     this.addStylesheet();
+//     this.buildDom();
+//     this.setValue(this.options.initialValue);
+//   }
+
+//   NativeDatepicker.prototype.setValue = function setValue(fullString) {
+//     var match = fullString.match(dateRegex);
+//     if (match) {
+//       this.fullValue = fullString;
+//       this.dateValue = match[0];
+//       this.dateInputElement.value = match[0];
+//     }
+//   };
+
+//   NativeDatepicker.prototype.buildDom = function buildDom() {
+//     // DOM structure:
+//     //   <span class="NativeDatepicker">
+//     //     <input type="date" class="NativeDatepicker__input">
+//     //   </span>
+
+//     var element =
+//       this.options.existingElement ||
+//       this.options.win.document.createElement('span');
+//     element.classList.add(classNames.wrapper);
+//     this.element = element;
+
+//     if (!this.isSupported()) {
+//       // Not via CSS class because we don't want to mess with
+//       // CSS-set display values, to not mess up user styles
+//       element.style.display = 'none';
+//     }
+
+//     var dateInputElement = this.options.win.document.createElement('input');
+//     dateInputElement.type = 'date';
+//     dateInputElement.classList.add(classNames.input);
+//     element.appendChild(dateInputElement);
+//     this.dateInputElement = dateInputElement;
+
+//     var self = this;
+//     dateInputElement.addEventListener(
+//       'change',
+//       function onNativeDatepickerChange() {
+//         var newValue = self.fullValue.replace(
+//           dateRegex,
+//           dateInputElement.value
+//         );
+//         // Regex didn't match, fallback to setting the entire value
+//         if (!newValue.includes(dateInputElement.value)) {
+//           newValue = dateInputElement.value;
+//         }
+//         dateInputElement.value = self.dateValue;
+//         self.options.onChange(newValue);
+//       }
+//     );
+//   };
+
+//   NativeDatepicker.prototype.addStylesheet = function addStylesheet() {
+//     var styleId = 'NativeDatepickerStyles';
+//     if (!this.options.win.document.querySelector('style#' + styleId)) {
+//       var style = this.options.win.document.createElement('style');
+//       style.id = styleId;
+//       style.textContent =
+//         '.' +
+//         classNames.wrapper +
+//         ' {' +
+//         '  display: inline-block;' +
+//         '  position: relative;' +
+//         '}' +
+//         '.' +
+//         classNames.input +
+//         ' {' +
+//         '  position: absolute;' +
+//         '  left: 0;' +
+//         '  top: 0;' +
+//         '  width: 100%;' +
+//         '  height: 100%;' +
+//         '  opacity: 0;' +
+//         '  cursor: pointer;' +
+//         '  box-sizing: border-box;' +
+//         '}' +
+//         '.' +
+//         classNames.input +
+//         '::-webkit-calendar-picker-indicator {' +
+//         '  position: absolute;' +
+//         '  left: 0;' +
+//         '  top: 0;' +
+//         '  width: 100%;' +
+//         '  height: 100%;' +
+//         '  margin: 0;' +
+//         '  padding: 0;' +
+//         '  cursor: pointer;' +
+//         '}';
+//       this.options.win.document.head.appendChild(style);
+//     }
+//   };
+
+//   NativeDatepicker.prototype.isSupported = function isSupported() {
+//     var input = this.options.win.document.createElement('input');
+//     input.type = 'date';
+//     input.value = 'invalid date value';
+//     return input.value !== 'invalid date value';
+//   };
+
+//   return NativeDatepicker;
+// });
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// import React, { useState, useRef, useEffect } from "react";
+// import { Calendar } from "primereact/calendar";
+// import Icon_metro_calendar from "/Icon-metro-calendar.svg";
+// import Icon_awesome_clock from "/Icon-awesome-clock.svg";
+// import NativeDatepicker from "./reactNativeDatePicker";
+
+// const DatePicker = ({ handleChange, values, errors }) => {
+//   const getCurrentDate = () => {
+//     const today = new Date();
+//     const yyyy = today.getFullYear();
+//     const mm = String(today.getMonth() + 1).padStart(2, "0");
+//     const dd = String(today.getDate()).padStart(2, "0");
+//     return `${yyyy}-${mm}-${dd}`;
+//   };
+//   const [date, setDate] = useState(getCurrentDate);
+//   const nativeDatepickerRef = useRef(null);
+
+//   const handleChangeTwo = (event) => {
+//     const newValue = event.target.value;
+//     setDate(newValue);
+//   };
+
+//   useEffect(() => {
+//     if (nativeDatepickerRef.current) {
+//       nativeDatepickerRef.current.setValue(date);
+//     }
+//   }, [date]);
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="DateSelectionID" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>Date Selection
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.date ? "border border-[red] outline-offset-2" : "border-none"}`}
+//         >
+//           <input
+//             type="date"
+//             name=""
+//             id="DateSelectionID"
+//             value={date}
+//             onChange={handleChange}
+//             // value={() => (!values.toggle ? "" : values.date)}
+//             min={getCurrentDate()}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             htmlFor="DateSelectionIDTwo"
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <NativeDatepicker
+//               id="DateSelectionIDTwo"
+//               ref={nativeDatepickerRef}
+//               value={date}
+//               onChange={(newValue) => setDate(newValue)}
+//               min={getCurrentDate()}
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.date && (
+//           <p className="text-[red]">{errors.errors2.date}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// const StartTimePicker = ({ handleChange, values, errors }) => {
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="StartTime" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>Start Time
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow- ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+//         >
+//           <input
+//             type="time"
+//             name=""
+//             id="StartTime"
+//             onChange={handleChange}
+//             value={() => (!values.toggle ? "" : values.startTime)}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             htmlFor="StartTime"
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <img
+//               src={Icon_awesome_clock}
+//               alt={Icon_awesome_clock}
+//               className="block w-4 h-4 scale-150 _aspect-square"
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.startTime && (
+//           <p className="text-[red]">{errors.errors2.startTime}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// const EndTimePicker = ({ handleChange, values, errors }) => {
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="EndTime" className="block mb-2">
+//           <span className="w-full text-xl font-bold"></span>End Time (Optional)
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+//         >
+//           <input
+//             type="time"
+//             name=""
+//             id="EndTime"
+//             onChange={handleChange}
+//             value={() => (!values.toggle ? "" : values.endTime)}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             htmlFor="EndTime"
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <img
+//               src={Icon_awesome_clock}
+//               alt={Icon_awesome_clock}
+//               className="block w-4 h-4 scale-150 _aspect-square"
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.endTime && (
+//           <p className="text-[red]">{errors.errors2.endTime}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export { DatePicker, StartTimePicker, EndTimePicker };
