@@ -60,7 +60,9 @@ export default function Controls({ containerRef, actionsActive }) {
 
   const micStyle = useMemo(
     function () {
-      if (micState === MIC_STATE.MIC_OFF) {
+      if (micState === MIC_STATE.MIC_OFF && !audioSuccess) {
+        return { style: "bg-gray-300", icon: <IoIosMic size={60} /> };
+      } else if (micState === MIC_STATE.MIC_OFF) {
         return { style: "bg-[#ff0000]", icon: <IoIosMicOff size={60} /> };
       } else if (micState === MIC_STATE.REQ_MIC) {
         return { style: "bg-orange-500", icon: <PiHandWaving size={60} /> };
@@ -70,7 +72,7 @@ export default function Controls({ containerRef, actionsActive }) {
         return { style: "bg-green-500", icon: <IoIosMic size={60} /> };
       }
     },
-    [micState]
+    [micState, audioSuccess]
   );
 
   useEffect(
@@ -79,7 +81,7 @@ export default function Controls({ containerRef, actionsActive }) {
         changeMicState(micState);
       }
     },
-    [micState]
+    [audioSuccess, micState]
   );
 
   const getUserMicStatusColor = useCallback(function (micStatus) {
@@ -206,11 +208,11 @@ export default function Controls({ containerRef, actionsActive }) {
                 <button className="rounded-full p-3 bg-gray-300 shadow">
                   <BsThreeDots size={24} />
                 </button>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
+                <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
                   <FiHome size={24} />
-                </button>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <IoCloudDownloadOutline size={24} />
+                </a>
+                <button disabled={!presentation.data.downloadable} className="rounded-full p-3 bg-gray-300 shadow">
+                  <IoCloudDownloadOutline size={24} color={presentation.data.downloadable ? "black" : "gray"} />
                 </button>
               </>
             )}
@@ -380,7 +382,7 @@ export default function Controls({ containerRef, actionsActive }) {
           </div>
           <div className="flex flex-col justify-between w-full border-2 border-[#BFBFA4] p-3 rounded-2xl">
             <p className="font-bold text-sm">{presentation.data.name}</p>
-            <p className="text-sm">By Yohanna</p>
+            {presentation.data.presenter && <p className="text-sm">By Yohanna</p>}
           </div>
         </div>
 
