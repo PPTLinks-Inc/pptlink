@@ -18,7 +18,7 @@ export default function Footer() {
   const { user, setUser } = useContext(userContext);
 
   const [getlocation] = useState(
-      useLocation().pathname === "/newupload" ? true : false
+    useLocation().pathname === "/newupload" ? true : false
   );
 
   return (
@@ -28,12 +28,17 @@ export default function Footer() {
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
           <div className="footerlft w-2/5 maxScreenMobile:w-full">
-            <Link to={HOME} className="flogo flex flex-row justify-start items-end h-[4rem] text-[2rem] text-[#FFA500] 
-                relative !baseline mb-5">
-              <img src={logo_orange} alt={logo_orange} className="block w-10 aspect-square mr-3" />
-              <span className="block w-fit">
-                PPTLINKS
-              </span>
+            <Link
+              to={HOME}
+              className="flogo flex flex-row justify-start items-end h-[4rem] text-[2rem] text-[#FFA500] 
+                relative !baseline mb-5"
+            >
+              <img
+                src={logo_orange}
+                alt={logo_orange}
+                className="block w-10 aspect-square mr-3"
+              />
+              <span className="block w-fit">PPTLINKS</span>
             </Link>
             <p className="mb-5">
               PPTLinks is your go-to source for presentation, inspiration,
@@ -73,7 +78,9 @@ export default function Footer() {
               </nav>
             </div>
             <div>
-              <h3 className="font-black mb-5 maxScreenMobile:mt-5">Dcoumentation</h3>
+              <h3 className="font-black mb-5 maxScreenMobile:mt-5">
+                Dcoumentation
+              </h3>
               <nav className="flex flex-col justify-between align-top">
                 <NavLink
                   to={DOCUMENT}
