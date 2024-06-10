@@ -39,10 +39,6 @@ export default function validate(values) {
     errors.title = "Presentation title is too short";
   }
 
-  if (!values.description) {
-    errors.description = "Describe your presentation";
-  }
-
   if (values.description && values.description.length < 5) {
     errors.description = "Presentation Description is too short";
   }
