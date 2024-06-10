@@ -6,6 +6,7 @@ const useForm = (callback, validate) => {
     file: null,
     downloadable: "true",
     privacy: "public",
+    date: ""
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -33,7 +34,7 @@ const useForm = (callback, validate) => {
 
     const validationErrors = validate(values);
     setErrors(validationErrors);
-
+    // this should be && not ||, only when no error in both shoulb form be submitted...
     if (
       Object.keys(validationErrors.errors).length === 0 ||
       Object.keys(validationErrors.errors2).length === 0
@@ -100,6 +101,7 @@ const useForm = (callback, validate) => {
     }
   };
 
+  console.log("Checks: ", values);
   return {
     handleChange,
     handleSubmit,
