@@ -24,7 +24,11 @@ export default function Root() {
   const mainScrollRef = useRef(null);
   useEffect(() => {
     setPage({ ...page, dropdown: false });
-    window.scrollTo({ top: 0 });
+
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollIntoView({ behavior: "smooth" });
+      console.log("mainScrollRef");
+    }
   }, [location.pathname]);
 
   const [page, setPage] = useState({

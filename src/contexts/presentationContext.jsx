@@ -106,6 +106,8 @@ const PresentationContextProvider = (props) => {
       ) {
         await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
         setJoinAudio(true);
+      } if (res.data.presentation.User !== "HOST" && res.data.presentation.audio) {
+        setStartPrompt(true);
       }
       return res.data.presentation;
     }

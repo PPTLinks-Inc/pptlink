@@ -5,7 +5,8 @@ const useForm = (callback, validate) => {
     toggle: false,
     file: null,
     downloadable: "true",
-    privacy: "public"
+    privacy: "public",
+    date: ""
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -33,7 +34,7 @@ const useForm = (callback, validate) => {
 
     const validationErrors = validate(values);
     setErrors(validationErrors);
-
+    // this should be && not ||, only when no error in both shoulb form be submitted...
     if (
       Object.keys(validationErrors.errors).length === 0 ||
       Object.keys(validationErrors.errors2).length === 0
@@ -43,7 +44,7 @@ const useForm = (callback, validate) => {
   };
 
   const handleChange = (event) => {
-    event.persist();
+    // event.persist(); // what is this sapost to do...😒🤦‍♀️I don't tink it's a thing... it should be defined... it not yet so it's not a thing...
     const { name, value, files, checked } = event.target;
 
     setValues((prevValues) => ({
@@ -100,6 +101,7 @@ const useForm = (callback, validate) => {
     }
   };
 
+  console.log("Checks: ", values);
   return {
     handleChange,
     handleSubmit,
