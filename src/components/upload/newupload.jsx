@@ -231,7 +231,8 @@ export default function NewUploadPage() {
             {/* first stage 🐱‍👤😒 onNext remove */}
             <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
               <label htmlFor="textarea" className="block mb-2">
-                <sup className="w-full text-xl font-bold">*</sup>Description
+                <sup className="w-full text-xl font-bold"></sup>Description
+                (Optional)
               </label>
               <textarea
                 id="textarea"
