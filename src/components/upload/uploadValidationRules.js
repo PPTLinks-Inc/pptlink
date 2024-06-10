@@ -99,13 +99,22 @@ export default function validate(values) {
     errors2.date = "Choose a presentation date";
   }
 
+  // Get the current date in YYYY-MM-DD format
+  const currentDate = new Date().toISOString().split('T')[0];
+  // Check if the date is in the past
+  if (values.toggle && values.date && values.date < currentDate) {
+    errors2.date = "Date cannot be in the past";
+  }
+
   if (values.toggle && !values.startTime) {
     errors2.startTime = "Select when presentation starts";
   }
-
+  // this should be (values.toggle && values.endTime < values.startTime)
+  // since start time is future...
   if (values.toggle && values.endTime > values.startTime) {
     errors2.endTime = "Select when presentation ends";
   }
 
   return { errors, errors2 };
 }
+

@@ -24,13 +24,21 @@ const DatePicker = ({ handleChange, values, errors }) => {
 
   const handleInputChange = (event) => {
     const newValue = event.target.value;
-    setDate(newValue);
-    handleChange({ target: { name: "date", value: newValue } });
+    validateDate(newValue);
   };
 
   const handleDatePickerChange = (newValue) => {
-    setDate(newValue);
-    handleChange({ target: { name: "date", value: newValue } });
+    validateDate(newValue);
+  };
+
+  const validateDate = (newValue) => {
+    const currentDate = getCurrentDate();
+    if (newValue < currentDate) {
+      handleChange({ target: { name: "date", value: newValue } }, "Date cannot be in the past");
+    } else {
+      setDate(newValue);
+      handleChange({ target: { name: "date", value: newValue } });
+    }
   };
 
   return (
@@ -48,7 +56,6 @@ const DatePicker = ({ handleChange, values, errors }) => {
             id="DateSelectionID"
             value={date}
             onChange={handleInputChange}
-            min={getCurrentDate()}
             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
           />
           <label
@@ -60,7 +67,6 @@ const DatePicker = ({ handleChange, values, errors }) => {
               ref={nativeDatepickerRef}
               value={date}
               onChange={handleDatePickerChange}
-              min={getCurrentDate()}//no need cuz its not defined too, internally to be handled 🤦‍♀️ yet..
             />
           </label>
         </div>
@@ -71,6 +77,7 @@ const DatePicker = ({ handleChange, values, errors }) => {
     </div>
   );
 };
+
 
 const StartTimePicker = ({ handleChange, values, errors }) => {
   return (
