@@ -338,7 +338,7 @@ export default function Controls({ containerRef, actionsActive }) {
         </div>
       )}
       <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
-        <div className="p-5 flex items-center justify-between border-b-2 border-[#BFBFA4] fixed w-full bg-[#FFFFDB]">
+        <div className="rounded-t-xl p-5 flex items-center justify-between border-b-2 border-[#BFBFA4] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
             <h4 className="text-2xl text-center text-black font-bold">
               Live Audience
@@ -382,7 +382,7 @@ export default function Controls({ containerRef, actionsActive }) {
           </div>
           <div className="flex flex-col justify-between w-full border-2 border-[#BFBFA4] p-3 rounded-2xl">
             <p className="font-bold text-sm">{presentation.data.name}</p>
-            {presentation.data.presenter && <p className="text-sm">By Yohanna</p>}
+            {presentation.data?.presenter && <p className="text-sm">By {presentation.data.presenter}</p>}
           </div>
         </div>
 

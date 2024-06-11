@@ -1,10 +1,11 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import Socials from "../social/socials";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../header/header";
-import { ABOUT, LEGAL, LOGIN, UPLOAD } from "../../constants/routes";
+import { ABOUT, LEGAL, UPLOAD } from "../../constants/routes";
 import { userContext } from "../../contexts/userContext";
 
+// eslint-disable-next-line react/prop-types
 export default function Backmenu({ handleDropdown }) {
   const { user, setUser } = useContext(userContext);
   const navigate = useNavigate();

@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import { register } from "swiper/element/bundle";
 import { pdfjs, Document, Page } from "react-pdf";
-import { useOrientation } from "react-use";
+import { useOrientation, useWindowSize } from "react-use";
 import { PresentationContext } from "../../contexts/presentationContext";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -49,15 +49,17 @@ export default function Slider({
   handleMouseMove,
 }) {
   const swiperRef = useRef(null);
+  const slideContainer = useRef(null);
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [isError, setIsError] = useState(false);
   const [maxWidth, setMaxWidth] = useState(0);
-  const { isMobilePhone, presentation, setSwiperRef } = useContext(PresentationContext);
+  const { isMobilePhone, presentation, setSwiperRef, fullScreenShow } = useContext(PresentationContext);
   const orientation = useOrientation();
   const file = useMemo(function() {
     return presentation.data.pdfLink
   }, [presentation.data.pdfLink]);
+  const { height: windowHeight } = useWindowSize();
 
   useEffect(() => {
     // Update window height state when window is resized
@@ -85,9 +87,21 @@ export default function Slider({
     setIsLoaded(true);
   }
 
+  useEffect(function() {
+    if (isMobilePhone && orientation.type.includes("portrait") && slideContainer && fullScreenShow) {
+      slideContainer.current.style.marginTop = Math.floor((windowHeight / 2) * 100 / windowHeight) + 10 + "%";
+    } else if (isMobilePhone && orientation.type.includes("portrait") && slideContainer) {
+      slideContainer.current.style.marginTop = Math.floor((windowHeight / 2) * 100 / windowHeight) + "%";
+    } else {
+      slideContainer.current.style.marginTop = "0";
+    }
+  }, [isMobilePhone, orientation.type, windowHeight, fullScreenShow]);
+
+
   return (
     <div
-      className={`w-full ${isMobilePhone && orientation.type.includes("portrait") && "mt-40"}`}
+      ref={slideContainer}
+      className="w-full"
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
     >
@@ -105,7 +119,7 @@ export default function Slider({
         <swiper-container
           ref={swiperRef}
           slides-per-view="1"
-          navigation="true"
+          navigation={isMobilePhone ? false : true}
           keyboard="true"
         >
           {Array.from(new Array(numPages), (el, index) => (
