@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import tailwindcss from "tailwindcss";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { normalizePath, defineConfig } from "vite";
@@ -17,6 +18,10 @@ const plugins = [react(), tailwindcss(), viteStaticCopy({
     src: standardFontsDir,
     dest: ""
   }]
+}), sentryVitePlugin({
+  authToken: "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",
+  org: "pptlinks",
+  project: "pptlinks-frontend",
 })];
 export default defineConfig({
   plugins: plugins,
