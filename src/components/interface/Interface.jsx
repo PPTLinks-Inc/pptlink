@@ -77,8 +77,6 @@ function Interface() {
       }
     })();
 
-    handleMouseMove();
-
     return () => {
       if (wakeLock) {
         document.removeEventListener("visibilitychange", requireWakeLock);
