@@ -60,7 +60,9 @@ export default function Controls({ containerRef, actionsActive }) {
 
   const micStyle = useMemo(
     function () {
-      if (micState === MIC_STATE.MIC_OFF) {
+      if (micState === MIC_STATE.MIC_OFF && !audioSuccess) {
+        return { style: "bg-gray-300", icon: <IoIosMic size={60} /> };
+      } else if (micState === MIC_STATE.MIC_OFF) {
         return { style: "bg-[#ff0000]", icon: <IoIosMicOff size={60} /> };
       } else if (micState === MIC_STATE.REQ_MIC) {
         return { style: "bg-orange-500", icon: <PiHandWaving size={60} /> };
@@ -70,7 +72,7 @@ export default function Controls({ containerRef, actionsActive }) {
         return { style: "bg-green-500", icon: <IoIosMic size={60} /> };
       }
     },
-    [micState]
+    [micState, audioSuccess]
   );
 
   useEffect(
@@ -79,7 +81,7 @@ export default function Controls({ containerRef, actionsActive }) {
         changeMicState(micState);
       }
     },
-    [micState]
+    [audioSuccess, micState]
   );
 
   const getUserMicStatusColor = useCallback(function (micStatus) {
@@ -192,151 +194,157 @@ export default function Controls({ containerRef, actionsActive }) {
       onMouseEnter={() => setHideControls(false)}
       onMouseLeave={() => setHideControls(true)}
     >
-      {audioSuccess && <div className={`absolute sm:bottom-5 bottom-24 left-5 network__bar ${networkStatus}`}>
-        <span className="bar1"></span>
-        <span className="bar2"></span>
-        <span className="bar3"></span>
-      </div>}
-      {document.fullscreenEnabled && (
-        <div className="flex flex-row gap-20 items-center justify-center relative w-full">
-          {/* Desktop controls */}
-          <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
-            {audioSuccess && (
-              <>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <BsThreeDots size={24} />
-                </button>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <FiHome size={24} />
-                </button>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <IoCloudDownloadOutline size={24} />
-                </button>
-              </>
-            )}
-            {(presentation.data?.audio ||
-              presentation.data?.User === "HOST") && (
-              <button
-                className={`${micStyle.style} rounded-full p-3 shadow`}
-                onClick={actionMicButton}
-                disabled={audioLoading}
-              >
-                {audioLoading ? (
-                  <LoadingAssetBig2 />
-                ) : (
-                  <>
-                    {(audioSuccess || !audioSuccess) && !audioError ? (
-                      micStyle.icon
-                    ) : (
-                      <MdError size={60} />
-                    )}
-                  </>
-                )}
-              </button>
-            )}
-            {audioSuccess && (
-              <>
-                <div className="relative">
-                  <button
-                    className="rounded-full p-3 bg-gray-300 shadow"
-                    onClick={() => setShowUsersList(true)}
-                  >
-                    <FaRegUser size={24} />
-                  </button>
-                  <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                    {numberOfUsers}
-                  </span>
-                </div>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <LuMessagesSquare size={24} />
-                </button>
-                <button
-                  onClick={endAudio}
-                  className="rounded-full p-3 bg-[#ff0000]"
-                >
-                  <MdCallEnd size={24} />
-                </button>
-              </>
-            )}
-          </div>
-          {/* mobile controls */}
-          <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
-            {audioSuccess && (
-              <>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <BsThreeDots size={24} />
-                </button>
-                <div className="relative">
-                  <button
-                    className="rounded-full p-3 bg-gray-300 shadow"
-                    onClick={() => setShowUsersList(true)}
-                  >
-                    <FaRegUser size={24} />
-                  </button>
-                  <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                    {numberOfUsers}
-                  </span>
-                </div>
-              </>
-            )}
-            {(presentation.data?.audio ||
-              presentation.data?.User === "HOST") && (
-              <button
-                className={`${micStyle.style} rounded-full p-3 shadow`}
-                onClick={actionMicButton}
-                disabled={audioLoading}
-              >
-                {audioLoading ? (
-                  <LoadingAssetBig2 />
-                ) : (
-                  <>
-                    {(audioSuccess || !audioSuccess) && !audioError ? (
-                      micStyle.icon
-                    ) : (
-                      <MdError color="white" size={60} />
-                    )}
-                  </>
-                )}
-              </button>
-            )}
-            {audioSuccess && (
-              <>
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <LuMessagesSquare size={24} />
-                </button>
-                <button
-                  onClick={endAudio}
-                  className="rounded-full p-3 bg-[#ff0000]"
-                >
-                  <MdCallEnd size={24} />
-                </button>
-              </>
-            )}
-          </div>
-          <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
-            {!syncButton && (
-              <button
-                onClick={syncSlide}
-                className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
-              >
-                <IoSync color="white" size={32} />
-              </button>
-            )}
-            <button
-              onClick={() => fullScreenToggle()}
-              className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
-            >
-              {isFullscreen ? (
-                <RxExitFullScreen color="white" size={32} />
-              ) : (
-                <RxEnterFullScreen color="white" size={32} />
-              )}
-            </button>
-          </div>
+      {audioSuccess && (
+        <div
+          className={`absolute sm:bottom-5 bottom-24 left-5 network__bar ${networkStatus}`}
+        >
+          <span className="bar1"></span>
+          <span className="bar2"></span>
+          <span className="bar3"></span>
         </div>
       )}
+      <div className="flex flex-row gap-20 items-center justify-center relative w-full">
+        {/* Desktop controls */}
+        <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
+          {audioSuccess && (
+            <>
+              <button className="rounded-full p-3 bg-gray-300 shadow">
+                <BsThreeDots size={24} />
+              </button>
+              <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
+                <FiHome size={24} />
+              </a>
+              <button
+                disabled={!presentation.data.downloadable}
+                className="rounded-full p-3 bg-gray-300 shadow"
+              >
+                <IoCloudDownloadOutline
+                  size={24}
+                  color={presentation.data.downloadable ? "black" : "gray"}
+                />
+              </button>
+            </>
+          )}
+          {(presentation.data?.audio || presentation.data?.User === "HOST") && (
+            <button
+              className={`${micStyle.style} rounded-full p-3 shadow`}
+              onClick={actionMicButton}
+              disabled={audioLoading}
+            >
+              {audioLoading ? (
+                <LoadingAssetBig2 />
+              ) : (
+                <>
+                  {(audioSuccess || !audioSuccess) && !audioError ? (
+                    micStyle.icon
+                  ) : (
+                    <MdError size={60} />
+                  )}
+                </>
+              )}
+            </button>
+          )}
+          {audioSuccess && (
+            <>
+              <div className="relative">
+                <button
+                  className="rounded-full p-3 bg-gray-300 shadow"
+                  onClick={() => setShowUsersList(true)}
+                >
+                  <FaRegUser size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
+                  {numberOfUsers}
+                </span>
+              </div>
+              <button className="rounded-full p-3 bg-gray-300 shadow">
+                <LuMessagesSquare size={24} />
+              </button>
+              <button
+                onClick={endAudio}
+                className="rounded-full p-3 bg-[#ff0000]"
+              >
+                <MdCallEnd size={24} />
+              </button>
+            </>
+          )}
+        </div>
+        {/* mobile controls */}
+        <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
+          {audioSuccess && (
+            <>
+              <button className="rounded-full p-3 bg-gray-300 shadow">
+                <BsThreeDots size={24} />
+              </button>
+              <div className="relative">
+                <button
+                  className="rounded-full p-3 bg-gray-300 shadow"
+                  onClick={() => setShowUsersList(true)}
+                >
+                  <FaRegUser size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
+                  {numberOfUsers}
+                </span>
+              </div>
+            </>
+          )}
+          {(presentation.data?.audio || presentation.data?.User === "HOST") && (
+            <button
+              className={`${micStyle.style} rounded-full p-3 shadow`}
+              onClick={actionMicButton}
+              disabled={audioLoading}
+            >
+              {audioLoading ? (
+                <LoadingAssetBig2 />
+              ) : (
+                <>
+                  {(audioSuccess || !audioSuccess) && !audioError ? (
+                    micStyle.icon
+                  ) : (
+                    <MdError color="white" size={60} />
+                  )}
+                </>
+              )}
+            </button>
+          )}
+          {audioSuccess && (
+            <>
+              <button className="rounded-full p-3 bg-gray-300 shadow">
+                <LuMessagesSquare size={24} />
+              </button>
+              <button
+                onClick={endAudio}
+                className="rounded-full p-3 bg-[#ff0000]"
+              >
+                <MdCallEnd size={24} />
+              </button>
+            </>
+          )}
+        </div>
+        <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
+          {!syncButton && (
+            <button
+              onClick={syncSlide}
+              className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+            >
+              <IoSync color="white" size={32} />
+            </button>
+          )}
+          {document.fullscreenEnabled && <button
+            onClick={() => fullScreenToggle()}
+            className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+          >
+            {isFullscreen ? (
+              <RxExitFullScreen color="white" size={32} />
+            ) : (
+              <RxEnterFullScreen color="white" size={32} />
+            )}
+          </button>}
+        </div>
+      </div>
       <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
-        <div className="p-5 flex items-center justify-between border-b-2 border-[#BFBFA4] fixed w-full bg-[#FFFFDB]">
+        <div className="rounded-t-xl p-5 flex items-center justify-between border-b-2 border-[#BFBFA4] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
             <h4 className="text-2xl text-center text-black font-bold">
               Live Audience
@@ -380,7 +388,9 @@ export default function Controls({ containerRef, actionsActive }) {
           </div>
           <div className="flex flex-col justify-between w-full border-2 border-[#BFBFA4] p-3 rounded-2xl">
             <p className="font-bold text-sm">{presentation.data.name}</p>
-            <p className="text-sm">By Yohanna</p>
+            {presentation.data?.presenter && (
+              <p className="text-sm">By {presentation.data.presenter}</p>
+            )}
           </div>
         </div>
 
@@ -409,44 +419,48 @@ export default function Controls({ containerRef, actionsActive }) {
         onClose={fetchRtcToken.isPending ? null : () => setEnterName(false)}
         color="bg-black"
       >
-        {fetchRtcToken.isPending ? <LoadingAssetBig2 /> : <form
-          className="flex flex-col gap-5"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            if (!userName) return toast.error("Please enter your name");
-            try {
-              await fetchRtcToken.mutateAsync();
-              setJoinAudio(true);
-              setEnterName(false);
-            } catch (error) {
-              toast.error("Could'nt join conversation");
-            }
-          }}
-        >
-          <h4 className="text-2xl text-white text-center">Enter your name</h4>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            className="rounded p-2 w-full text-center"
-            autoFocus
-            value={userName}
-            onChange={(e) => {
-              setUserName(e.target.value);
+        {fetchRtcToken.isPending ? (
+          <LoadingAssetBig2 />
+        ) : (
+          <form
+            className="flex flex-col gap-5"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (!userName) return toast.error("Please enter your name");
+              try {
+                await fetchRtcToken.mutateAsync();
+                setJoinAudio(true);
+                setEnterName(false);
+              } catch (error) {
+                toast.error("Could'nt join conversation");
+              }
             }}
-          />
-          <div className="flex gap-3">
-            <button
-              onClick={() => setEnterName(false)}
-              className="bg-slate-200 p-2 w-full rounded"
-              type="button"
-            >
-              Cancel
-            </button>
-            <button className="bg-slate-200 p-2 w-full rounded" type="submit">
-              Join Conversation
-            </button>
-          </div>
-        </form>}
+          >
+            <h4 className="text-2xl text-white text-center">Enter your name</h4>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              className="rounded p-2 w-full text-center"
+              autoFocus
+              value={userName}
+              onChange={(e) => {
+                setUserName(e.target.value);
+              }}
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => setEnterName(false)}
+                className="bg-slate-200 p-2 w-full rounded"
+                type="button"
+              >
+                Cancel
+              </button>
+              <button className="bg-slate-200 p-2 w-full rounded" type="submit">
+                Join Conversation
+              </button>
+            </div>
+          </form>
+        )}
       </Modal>
 
       <ConfirmModal
