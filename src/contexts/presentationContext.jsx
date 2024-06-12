@@ -263,9 +263,9 @@ const PresentationContextProvider = (props) => {
 
   useEffect(() => {
     if (
-      orientation.type.includes("landscape") &&
+      (orientation.type.includes("landscape") &&
       start &&
-      presentationQuery.data?.live
+      presentationQuery.data?.live) || !('orientation' in screen)
     ) {
       setShowPrompt(false);
     }
