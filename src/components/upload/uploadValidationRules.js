@@ -1,6 +1,5 @@
 export default function validate(values) {
-  console.log(values);
-
+  // console.log(values);
   let errors = {};
   let errors2 = {};
 

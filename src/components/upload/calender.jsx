@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Calendar } from "primereact/calendar";
-import Icon_metro_calendar from "/Icon-metro-calendar.svg";
-import Icon_awesome_clock from "/Icon-awesome-clock.svg";
+import Icon_awesome_clock from "/Icon-awesome-clock.svg"; // Ensure this path is correct
 import NativeDatepicker from "./reactNativeDatePicker";
 
 const DatePicker = ({ handleChange, values, errors }) => {
@@ -62,6 +60,7 @@ const DatePicker = ({ handleChange, values, errors }) => {
             htmlFor="DateSelectionIDTwo"
             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
           >
+            {/* would have just used normal vjs event to trigger date model, but no offence its still a native library 🤦‍♂️🥂 */}
             <NativeDatepicker
               id="DateSelectionIDTwo"
               ref={nativeDatepickerRef}
@@ -78,8 +77,33 @@ const DatePicker = ({ handleChange, values, errors }) => {
   );
 };
 
-
 const StartTimePicker = ({ handleChange, values, errors }) => {
+  const [startTime, setStartTime] = useState(values.startTime || "");
+  const startTimeRef = useRef(null);
+
+  useEffect(() => {
+    if (startTimeRef.current) {
+      startTimeRef.current.value = startTime;
+    }
+  }, [startTime]);
+
+  const handleClickStartTime = () => {
+    const timeInput = startTimeRef.current;
+    if (timeInput) {
+      if (timeInput.showPicker) {
+        timeInput.showPicker();
+      } else {
+        timeInput.focus();
+      }
+    }
+  };
+
+  const handleStartTimeChange = (event) => {
+    const newVal = event.target.value;
+    setStartTime(newVal);
+    handleChange({ target: { name: "startTime", value: newVal } });
+  };
+
   return (
     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
       <div className="w-full relative">
@@ -87,24 +111,28 @@ const StartTimePicker = ({ handleChange, values, errors }) => {
           <span className="w-full text-xl font-bold">*</span>Start Time
         </label>
         <div
-          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow- ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"
+            }`}
         >
           <input
             type="time"
-            name=""
             id="StartTime"
-            onChange={handleChange}
-            value={() => (!values.toggle ? "" : values.startTime)}
+            ref={startTimeRef}
+            value={startTime}
+            onChange={handleStartTimeChange}
             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
           />
           <label
+            type="button"
+            aria-label="button"
             htmlFor="StartTime"
+            onClick={handleClickStartTime}
             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
           >
             <img
               src={Icon_awesome_clock}
-              alt={Icon_awesome_clock}
-              className="block w-4 h-4 scale-150 _aspect-square"
+              alt="Clock Icon"
+              className="block w-4 h-4 scale-150 pointer-events-auto"
             />
           </label>
         </div>
@@ -117,31 +145,61 @@ const StartTimePicker = ({ handleChange, values, errors }) => {
 };
 
 const EndTimePicker = ({ handleChange, values, errors }) => {
+  const [endTime, setEndTime] = useState(values.endTime || "");
+  const endTimeRef = useRef(null);
+
+  useEffect(() => {
+    if (endTimeRef.current) {
+      endTimeRef.current.value = endTime;
+    }
+  }, [endTime]);
+
+  const handleClickEndTime = () => {
+    const timeInput = endTimeRef.current;
+    if (timeInput) {
+      if (timeInput.showPicker) {
+        timeInput.showPicker();
+      } else {
+        timeInput.focus();
+      }
+    }
+  };
+
+  const handleEndTimeChange = (event) => {
+    const newVal = event.target.value;
+    setEndTime(newVal);
+    handleChange({ target: { name: "endTime", value: newVal } });
+  };
+
   return (
     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
       <div className="w-full relative">
         <label htmlFor="EndTime" className="block mb-2">
-          <span className="w-full text-xl font-bold"></span>End Time (Optional)
+          <span className="w-full text-xl font-bold">*</span>End Time (Optional)
         </label>
         <div
-          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"
+            }`}
         >
           <input
             type="time"
-            name=""
             id="EndTime"
-            onChange={handleChange}
-            value={() => (!values.toggle ? "" : values.endTime)}
+            ref={endTimeRef}
+            value={endTime}
+            onChange={handleEndTimeChange}
             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
           />
           <label
+            type="button"
+            aria-label="button"
             htmlFor="EndTime"
+            onClick={handleClickEndTime}
             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
           >
             <img
               src={Icon_awesome_clock}
-              alt={Icon_awesome_clock}
-              className="block w-4 h-4 scale-150 _aspect-square"
+              alt="Clock Icon"
+              className="block w-4 h-4 scale-150 pointer-events-auto"
             />
           </label>
         </div>

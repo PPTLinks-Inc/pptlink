@@ -64,6 +64,7 @@ export default function NewUploadPage() {
 
   const showPreviousStage = () =>
     setCurrentView((prev) => {
+      validate(values)
       if (prev <= 1) return (prev = 1);
       return prev - 1;
     });
