@@ -106,6 +106,8 @@ const PresentationContextProvider = (props) => {
       ) {
         await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
         setJoinAudio(true);
+      } if (res.data.presentation.User !== "HOST" && res.data.presentation.audio) {
+        setStartPrompt(true);
       }
       return res.data.presentation;
     }
@@ -261,9 +263,9 @@ const PresentationContextProvider = (props) => {
 
   useEffect(() => {
     if (
-      orientation.type.includes("landscape") &&
+      (orientation.type.includes("landscape") &&
       start &&
-      presentationQuery.data?.live
+      presentationQuery.data?.live) || !('orientation' in screen)
     ) {
       setShowPrompt(false);
     }

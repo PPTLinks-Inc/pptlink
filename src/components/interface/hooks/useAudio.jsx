@@ -64,7 +64,9 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
           tokens.rtcUid
         );
         audioTracks.current.localAudioTrack =
-          await AgoraRTC.createMicrophoneAudioTrack();
+          await AgoraRTC.createMicrophoneAudioTrack({
+            encoderConfig: "speech_standard"
+          });
         audioTracks.current.localAudioTrack.setMuted(true);
         await rtcClient.current.publish(audioTracks.current.localAudioTrack);
 
