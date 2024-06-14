@@ -12,7 +12,6 @@ import Upload from "./components/upload/upload";
 import Interface from "./components/interface/Interface";
 import Root from "./components/root/root";
 import Institutions from "./components/institutions/institutions";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import About from "./components/about-us/about";
@@ -86,7 +85,7 @@ function App() {
         </Routes>
       </AnimatePresence>
 
-      <ToastContainer stacked />
+      {/* <ToastContainer stacked /> */}
     </>
   );
 }
