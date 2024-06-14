@@ -395,7 +395,7 @@ export default function SignPage() {
               <span className="block w-fit text-center mx-1 font-bold">Or</span>
               <hr className="block w-[35%] h-[.1px] bg-black" />
             </span>
-            
+
             <button
               disabled
               className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
@@ -471,12 +471,13 @@ export default function SignPage() {
         <div className="w-[45%] text-white maxScreenMobile:hidden">
           <div className="min-h-[95vh] flex flex-col justify-evenly items-center text-[#FFFFF0]">
             <h1 className="block w-full text-right text-4xl">PPTLINKS</h1>
-            <p className="block w-full text-[.8rem] -mb-24 leading-6 text-justify">
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-              nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-              erat, sed diam voluptua. At vero eos et accusam et justo duo
-              dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-              sanctus est Lorem ipsum dolor
+            <p className="block w-full text-[.8rem] -mb-24 leading-6 text-left">
+              PPTLinks is your ultimate solution for seamless presentations,
+              designed to excel in challenging network environments, replace
+              traditional projectors in classrooms, boardrooms, and seminars,
+              and provide flawless performance for both live and virtual
+              audiences with robust security and seamless integration with other
+              software and devices.
             </p>
           </div>
         </div>
