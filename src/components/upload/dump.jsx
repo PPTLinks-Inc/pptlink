@@ -994,114 +994,205 @@
 //   );
 // };
 
-import { useState, useEffect, useRef } from "react";
+// import { useState, useEffect, useRef } from "react";
 
-const useForm = (callback, validate) => {
-  const [values, setValues] = useState({
-    toggle: false,
-    file: null,
-    downloadable: "true",
-    privacy: "public",
-    date: "" // Add date to the initial state
-  });
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
-  const isInitialRender = useRef(true);
+// const useForm = (callback, validate) => {
+//   const [values, setValues] = useState({
+//     toggle: false,
+//     file: null,
+//     downloadable: "true",
+//     privacy: "public",
+//     date: "" // Add date to the initial state
+//   });
+//   const [errors, setErrors] = useState({});
+//   const [submitting, setSubmitting] = useState(false);
+//   const isInitialRender = useRef(true);
 
-  useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      return; // Skip the effect on the initial render
-    }
+//   useEffect(() => {
+//     if (isInitialRender.current) {
+//       isInitialRender.current = false;
+//       return; // Skip the effect on the initial render
+//     }
 
-    if (Object.keys({ ...errors.errors }).length === 0 && submitting) {
-      callback(1);
-      setSubmitting(false); // Reset submitting after callback
-    }
+//     if (Object.keys({ ...errors.errors }).length === 0 && submitting) {
+//       callback(1);
+//       setSubmitting(false); // Reset submitting after callback
+//     }
 
-    if (Object.keys({ ...errors.errors2 }).length === 0 && submitting) {
-      callback(2);
-      setSubmitting(false); // Reset submitting after callback
-    }
-  }, [errors, callback, submitting]);
+//     if (Object.keys({ ...errors.errors2 }).length === 0 && submitting) {
+//       callback(2);
+//       setSubmitting(false); // Reset submitting after callback
+//     }
+//   }, [errors, callback, submitting]);
 
-  const handleSubmit = (event) => {
-    if (event) event.preventDefault();
+//   const handleSubmit = (event) => {
+//     if (event) event.preventDefault();
 
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
+//     const validationErrors = validate(values);
+//     setErrors(validationErrors);
 
-    if (
-      Object.keys(validationErrors.errors).length === 0 ||
-      Object.keys(validationErrors.errors2).length === 0
-    ) {
-      setSubmitting(true);
-    }
-  };
+//     if (
+//       Object.keys(validationErrors.errors).length === 0 ||
+//       Object.keys(validationErrors.errors2).length === 0
+//     ) {
+//       setSubmitting(true);
+//     }
+//   };
 
-  const handleChange = (event, customError = null) => {
-    const { name, value, files, checked } = event.target;
+//   const handleChange = (event, customError = null) => {
+//     const { name, value, files, checked } = event.target;
 
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: files ? files[0] : value,
-    }));
+//     setValues((prevValues) => ({
+//       ...prevValues,
+//       [name]: files ? files[0] : value,
+//     }));
 
-    if (checked !== undefined)
-      setValues((prevValues) => ({ ...prevValues, toggle: checked }));
+//     if (checked !== undefined)
+//       setValues((prevValues) => ({ ...prevValues, toggle: checked }));
 
-    // Custom validation error handling for the date field
-    if (customError) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        errors2: { ...prevErrors.errors2, [name]: customError }
-      }));
-    } else {
-      // Clear the error if the date is valid
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        errors2: { ...prevErrors.errors2, [name]: "" }
-      }));
-    }
+//     // Custom validation error handling for the date field
+//     if (customError) {
+//       setErrors((prevErrors) => ({
+//         ...prevErrors,
+//         errors2: { ...prevErrors.errors2, [name]: customError }
+//       }));
+//     } else {
+//       // Clear the error if the date is valid
+//       setErrors((prevErrors) => ({
+//         ...prevErrors,
+//         errors2: { ...prevErrors.errors2, [name]: "" }
+//       }));
+//     }
 
-    if (
-      (errors.errors && errors.errors[event.target.name] && name !== "file") ||
-      (errors.errors2 && errors.errors2[event.target.name] && name !== "file")
-    ) {
-      setErrors(validate(values));
-    }
-  };
+//     if (
+//       (errors.errors && errors.errors[event.target.name] && name !== "file") ||
+//       (errors.errors2 && errors.errors2[event.target.name] && name !== "file")
+//     ) {
+//       setErrors(validate(values));
+//     }
+//   };
 
-  return {
-    handleChange,
-    handleSubmit,
-    values,
-    errors
-  };
-};
+//   return {
+//     handleChange,
+//     handleSubmit,
+//     values,
+//     errors
+//   };
+// };
 
-export default useForm;
+// export default useForm;
 
 
-const validate = (values) => {
-    const errors = {};
-    const errors2 = {};
-  
-    // Example validation logic for the date field
-    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-    if (values.date && values.date < currentDate) {
-      errors2.date = "Date cannot be in the past";
-    }
-  
-    // Other validation logic...
-  
-    return { errors, errors2 };
-  };
-  
-  export default validate;
+// const validate = (values) => {
+//     const errors = {};
+//     const errors2 = {};
 
-  
-  import React, { useState, useRef, useEffect } from "react";
+//     // Example validation logic for the date field
+//     const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+//     if (values.date && values.date < currentDate) {
+//       errors2.date = "Date cannot be in the past";
+//     }
+
+//     // Other validation logic...
+
+//     return { errors, errors2 };
+//   };
+
+//   export default validate;
+
+
+//   import React, { useState, useRef, useEffect } from "react";
+// import NativeDatepicker from "./reactNativeDatePicker";
+
+// const DatePicker = ({ handleChange, values, errors }) => {
+//   const getCurrentDate = () => {
+//     const today = new Date();
+//     const yyyy = today.getFullYear();
+//     const mm = String(today.getMonth() + 1).padStart(2, "0");
+//     const dd = String(today.getDate()).padStart(2, "0");
+//     return `${yyyy}-${mm}-${dd}`;
+//   };
+
+//   const [date, setDate] = useState(getCurrentDate());
+//   const nativeDatepickerRef = useRef(null);
+
+//   useEffect(() => {
+//     if (nativeDatepickerRef.current) {
+//       nativeDatepickerRef.current.setValue(date);
+//     }
+//   }, [date]);
+
+//   const handleInputChange = (event) => {
+//     const newValue = event.target.value;
+//     validateDate(newValue);
+//   };
+
+//   const handleDatePickerChange = (newValue) => {
+//     validateDate(newValue);
+//   };
+
+//   const validateDate = (newValue) => {
+//     const currentDate = getCurrentDate();
+//     if (newValue < currentDate) {
+//       handleChange({ target: { name: "date", value: newValue } }, "Date cannot be in the past");
+//     } else {
+//       setDate(newValue);
+//       handleChange({ target: { name: "date", value: newValue } });
+//     }
+//   };
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="DateSelectionID" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>Date Selection
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.date ? "border border-[red] outline-offset-2" : "border-none"}`}
+//         >
+//           <input
+//             type="date"
+//             name="date"
+//             id="DateSelectionID"
+//             value={date}
+//             onChange={handleInputChange}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             htmlFor="DateSelectionIDTwo"
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <NativeDatepicker
+//               id="DateSelectionIDTwo"
+//               ref={nativeDatepickerRef}
+//               value={date}
+//               onChange={handleDatePickerChange}
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.date && (
+//           <p className="text-[red]">{errors.errors2.date}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default DatePicker;
+
+
+
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+
+
+import React, { useState, useRef, useEffect } from "react";
+import { Calendar } from "primereact/calendar";
+import Icon_metro_calendar from "/Icon-metro-calendar.svg";
+import Icon_awesome_clock from "/Icon-awesome-clock.svg";
 import NativeDatepicker from "./reactNativeDatePicker";
 
 const DatePicker = ({ handleChange, values, errors }) => {
@@ -1178,7 +1269,249 @@ const DatePicker = ({ handleChange, values, errors }) => {
   );
 };
 
-export default DatePicker;
+const StartTimePicker = ({ handleChange, values, errors }) => {
+  const [timeValue, setTimeValue] = useState("");
 
+  const handleClickStartTime = () => {
+    const timeInput = document.getElementById("StartTime");
+    if (timeInput) {
+      if (timeInput.showPicker) {
+        timeInput.showPicker();
+      } else {
+        timeInput.focus();
+      }
+    }
+  };
+
+  const handleTimeChange = (event) => {
+    const newVal = event.target.value;
+    setTimeValue(newVal);
+  };
+
+  console.log(timeValue);
+
+  return (
+    <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+      <div className="w-full relative">
+        <label htmlFor="StartTime" className="block mb-2">
+          <span className="w-full text-xl font-bold">*</span>Start Time
+        </label>
+        <div
+          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow- ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+        >
+          <input
+            // ref={inputRef}
+            type="time"
+            name=""
+            id="StartTime"
+            onChange={handleChange}
+            value={handleTimeChange}
+            // pattern="[0-9]{2}:[0-9]{2}"
+            className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+          />
+          <label
+            type="button"
+            aria-label="button"
+            id="StartTime"
+            htmlFor="StartTime"
+            onClick={handleClickStartTime}
+            className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+          >
+            <img
+              src={Icon_awesome_clock}
+              alt={Icon_awesome_clock}
+              className="block w-4 h-4 scale-150 pointer-events-auto"
+            />
+          </label>
+        </div>
+        {errors.errors2?.startTime && (
+          <p className="text-[red]">{errors.errors2.startTime}</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const EndTimePicker = ({ handleChange, values, errors }) => {
+  const [timeValue, setTimeValue] = useState("");
+
+  const handleClickEndTime = () => {
+    const timeInput = document.getElementById("StartTime");
+    if (timeInput) {
+      if (timeInput.showPicker) {
+        timeInput.showPicker();
+      } else {
+        timeInput.focus();
+      }
+    }
+  };
+
+  const handleTimeChange = (event) => {
+    const newVal = event.target.value;
+    setTimeValue(newVal);
+  };
+
+  console.log(timeValue);
+
+  return (
+    <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+      <div className="w-full relative">
+        <label htmlFor="EndTime" className="block mb-2">
+          <span className="w-full text-xl font-bold"></span>End Time (Optional)
+        </label>
+        <div
+          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+        >
+          <input
+            type="time"
+            name=""
+            id="EndTime"
+            onChange={handleChange}
+            // value={() => (!values.toggle ? "" : values.endTime)}
+            value={handleTimeChange}
+            // pattern="[0-9]{2}:[0-9]{2}"
+            className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+          />
+          <label
+            type="button"
+            aria-label="button"
+            id="EndTime"
+            htmlFor="EndTime"
+            onClick={handleClickEndTime}
+            className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+          >
+            <img
+              src={Icon_awesome_clock}
+              alt={Icon_awesome_clock}
+              className="block w-4 h-4 scale-150 pointer-events-auto"
+            />
+          </label>
+        </div>
+        {errors.errors2?.endTime && (
+          <p className="text-[red]">{errors.errors2.endTime}</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export { DatePicker, StartTimePicker, EndTimePicker };
+
+// const StartTimePicker = ({ handleChange, values, errors }) => {
+//   const [startTime, setStartTime] = useState("");
+
+//   const handleClickStartTime = () => {
+//     const timeInput = document.getElementById("StartTime");
+//     if (timeInput) {
+//       if (timeInput.showPicker) {
+//         timeInput.showPicker();
+//       } else {
+//         timeInput.focus();
+//       }
+//     }
+//   };
+
+//   const handleStartTimeChange = (event) => {
+//     const newVal = event.target.value;
+//     setStartTime(newVal);
+//     handleChange({ target: { name: "startTime", value: newVal } });
+//   };
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="StartTime" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>Start Time
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+//         >
+//           <input
+//             type="time"
+//             id="StartTime"
+//             value={startTime}
+//             onChange={handleStartTimeChange}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             type="button"
+//             aria-label="button"
+//             htmlFor="StartTime"
+//             onClick={handleClickStartTime}
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <img
+//               src={Icon_awesome_clock}
+//               alt="Clock Icon"
+//               className="block w-4 h-4 scale-150 pointer-events-auto"
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.startTime && (
+//           <p className="text-[red]">{errors.errors2.startTime}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+
+// const EndTimePicker = ({ handleChange, values, errors }) => {
+//   const [endTime, setEndTime] = useState("");
+
+//   const handleClickEndTime = () => {
+//     const timeInput = document.getElementById("EndTime");
+//     if (timeInput) {
+//       if (timeInput.showPicker) {
+//         timeInput.showPicker();
+//       } else {
+//         timeInput.focus();
+//       }
+//     }
+//   };
+
+//   const handleEndTimeChange = (event) => {
+//     const newVal = event.target.value;
+//     setEndTime(newVal);
+//     handleChange({ target: { name: "endTime", value: newVal } });
+//   };
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="EndTime" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>End Time (Optional)
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"}`}
+//         >
+//           <input
+//             type="time"
+//             id="EndTime"
+//             value={endTime}
+//             onChange={handleEndTimeChange}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             type="button"
+//             aria-label="button"
+//             htmlFor="EndTime"
+//             onClick={handleClickEndTime}
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <img
+//               src={Icon_awesome_clock}
+//               alt="Clock Icon"
+//               className="block w-4 h-4 scale-150 pointer-events-auto"
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.endTime && (
+//           <p className="text-[red]">{errors.errors2.endTime}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
 
 
