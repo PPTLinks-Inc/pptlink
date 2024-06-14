@@ -42,7 +42,7 @@ export default function Card({ presentation }) {
           />
         </div>
         <div className="card_body pb-5">
-          <h3 className="title font-medium w-full text-xl text-ellipsis pt-3">
+          <h3 className="title font-medium w-full text-xl text-ellipsis text-left pt-3">
             {presentation.name}
           </h3>
           <p className="w-full text-[.8rem] text-ellipsis pt-2 font-light">
@@ -50,7 +50,7 @@ export default function Card({ presentation }) {
             <em>{presentation.User.username}</em>
           </p>
           <p className="w-full text-[.8rem] text-ellipsis pt-2 font-light">
-            <strong>Topic: </strong>
+            <strong>Cartegory: </strong>
             <em>edge computing</em>
           </p>
           <span className="block mt-2">
