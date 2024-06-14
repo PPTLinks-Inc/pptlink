@@ -1663,3 +1663,630 @@ export { DatePicker, StartTimePicker, EndTimePicker };
 
 
 
+
+import React, { useState, useRef, useEffect } from "react";
+import "../../assets/styles/general_css.css";
+import img_feather from "/Icon-feather-upload-cloud.svg";
+import img_plus from "/Icon-awesome-plus.png";
+import upload_progress_svg from "/upload_progress_svg.svg";
+import validate from "./uploadValidationRules";
+import useForm from "./useForm";
+import { DatePicker, EndTimePicker, StartTimePicker } from "./calender";
+
+export default function NewUploadPage() {
+  const [currentView, setCurrentView] = useState(1);
+  const addcategoryref = useRef(null);
+  const scrollableRef = useRef(null);
+  const [categories, setCategories] = useState([
+    ["Category One", false]
+  ]);
+  const [addedCategory, setAddedCategory] = useState("");
+  const [categoryError, setCategoryError] = useState("");
+  const [toggle, setToggle] = useState(false);
+
+  // function to open new category input form
+  function addCategory() {
+    if (addcategoryref.current.style.display === "none") {
+      addcategoryref.current.style.display = "flex";
+    } else {
+      addcategoryref.current.style.display = "none";
+    }
+    setAddedCategory("");
+    setCategoryError("");
+  }
+
+  // function to add a new category
+  const newCategory = () => {
+    const regex =
+      /^(?=.*[a-zA-Z])(?=(?:.*[!@#$%^&*]){0,2})[a-zA-Z0-9!@#$%^&*]+(?: [a-zA-Z0-9!@#$%^&*]+)*$/;
+    const trimmedCategory = addedCategory.trim();
+
+    // Check if trimmedCategory is in predefinedCategories, ignoring the boolean part
+    const isPredefined = categories.some(
+      ([category]) => category.toLowerCase() === trimmedCategory.toLowerCase()
+    );
+
+    if (
+      !isPredefined &&
+      trimmedCategory !== "" &&
+      regex.test(trimmedCategory)
+    ) {
+      if (addcategoryref.current.style.display === "none") {
+        addcategoryref.current.style.display = "flex";
+      } else {
+        addcategoryref.current.style.display = "none";
+      }
+
+      setCategories([...categories, [trimmedCategory, true]]);
+      setAddedCategory("");
+      setCategoryError("");
+    } else {
+      setCategoryError("Category already exists or is invalid");
+    }
+  };
+
+  const showPreviousStage = () =>
+    setCurrentView((prev) => {
+      validate(values)
+      if (prev <= 1) return (prev = 1);
+      return prev - 1;
+    });
+
+  const showNextStage = () =>
+    setCurrentView((prev) => {
+      if (prev >= 3) return (prev = 3);
+      console.log("prev value for next ", prev);
+      return prev + 1;
+    });
+
+  const nextFunction = (updateNum) => {
+    if (Object.keys(errors.errors).length === 0 && currentView === updateNum) {
+      showNextStage(2);
+    }
+
+    if (Object.keys(errors.errors2).length === 0 && currentView === updateNum) {
+      showNextStage(3);
+      return;
+    }
+  };
+
+  // form validation functions
+  const { handleChange, handleSubmit, setValues, values, errors } = useForm(
+    nextFunction,
+    validate
+  );
+
+  // scroll page to the top when currentView changes
+  useEffect(() => {
+    if (scrollableRef.current) {
+      scrollableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentView]);
+
+  useEffect(() => {
+
+  }, [values.toggle]);
+
+  // form validation functions
+  return (
+    <section
+      className="upload_svg_cover min-h-[100vh] relative bg-[#FFFFF0]"
+      ref={scrollableRef}
+    >
+      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent min-h-screen z-50">
+        <h1 className="text-[3rem] text-[#FFFFF0]">New Presentation</h1>
+        <hr />
+        <div className="form_tracker_wrapper w-full flex justify-center mb-20">
+          {/* Note: true simply means all inputs for that view is 
+                    met("not empty and valid") you can use required. first 
+                    stage need not have, by default it is what it is 👀🥂 */}
+          <span className="active !block text-center w-[calc(100%/4)] relative">
+            <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
+              1
+            </span>
+            <span className="!block w-full text-[.5rem] text-center text-white">
+              Upload <br />
+              Presentation
+            </span>
+          </span>
+          <span
+            className={`${(currentView === 2 || currentView === 3) & true ? "active" : ""} !block text-center w-[calc(100%/4)] relative`}
+          >
+            <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
+              2
+            </span>
+            <span className="!block w-full text-[.5rem] text-center text-white">
+              Presenter's Information <br />
+              and Time of Presentation
+            </span>
+          </span>
+          <span
+            className={`${(currentView === 3) & true ? "active" : ""} !block text-center w-[calc(100%/4)] relative`}
+          >
+            <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
+              3
+            </span>
+            <span className="!block w-full text-[.5rem] text-center text-white">
+              Preview
+            </span>
+          </span>
+        </div>
+        <form className="addshadow w-full min-h-screen bg-[#FFFFF0] _shadow-md relative py-20">
+          <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium">
+            {currentView === 1
+              ? "Upload File"
+              : currentView === 2
+                ? "Presenter's Information"
+                : currentView === 3
+                  ? "Preview"
+                  : ""}
+          </span>
+          {/* first stage elements */}
+          <div
+            className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}
+          >
+            {/* first stage 🐱‍👤😒 upload el onNext remove */}
+            {/* <div className="w-[90%] h-[15rem] m-auto bg-black border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none"> */}
+            <div
+              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} ${!errors.errors?.file && values.file && "hidden"} border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none`}
+            >
+              <input
+                type="file"
+                name="file"
+                onChange={handleChange}
+                accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
+                multiple={false}
+                className="block w-full h-full bg-[red] cursor-pointer"
+              />
+              <div className="flex flex-col gap-2 justify-center items-center w-full h-full bg-[rgba(255,165,0,0.3)]  absolute top-0 left-0 pointer-events-none">
+                <img
+                  src={img_feather}
+                  alt={img_feather}
+                  className="block w-16 aspect-square"
+                />
+                <span className="w-fit h-fit text-black">
+                  Drop your file in here
+                </span>
+                <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full">
+                  Browse...
+                </span>
+              </div>
+              {errors.errors?.file && (
+                <p className="text-[red]">{errors.errors?.file}</p>
+              )}
+            </div>
+
+            {/* first stage 🐱‍👤😒 loading animation onNext remain at top */}
+            {values.file && !errors.errors?.file && (
+              <div className="w-[70%] m-auto my-6 flex justify-between items-center">
+                <span className="block w-fit h-fit">
+                  <img
+                    src={upload_progress_svg}
+                    alt={upload_progress_svg}
+                    className="block w-32 aspect-square contrast-200"
+                  />
+                </span>
+                <div className="w-[calc(100%-8rem)] ">
+                  <div className="text-center relative">
+                    <p className="text-[#ffa500] text-[1.2rem] font-light italic">
+                      {`${values.file.name} Uploading...`}
+                    </p>
+                    <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
+                      3500kbs
+                    </span>
+                  </div>
+                  <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[40%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
+                </div>
+              </div>
+            )}
+            {/* first stage 🐱‍👤😒 onNext remove */}
+            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
+              <label htmlFor="title" className="block mb-2">
+                <sup className="w-full text-xl font-bold">*</sup>Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={values.title}
+                onChange={handleChange}
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.title ? "border border-[red] outline-offset-2" : "border-none"}`}
+              />
+              {errors.errors?.title && (
+                <p className="text-[red]">{errors.errors.title}</p>
+              )}
+            </div>
+            {/* first stage 🐱‍👤😒 onNext remove */}
+            <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
+              <label htmlFor="textarea" className="block mb-2">
+                <sup className="w-full text-xl font-bold"></sup>Description
+                (Optional)
+              </label>
+              <textarea
+                id="textarea"
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.description ? "border border-[red] outline-offset-2" : "border-none"}`}
+                rows="5"
+                cols="50"
+                name="description"
+                value={values.description}
+                onChange={handleChange}
+              ></textarea>
+              {errors.errors?.description && (
+                <p className="text-[red]">{errors.errors.description}</p>
+              )}
+            </div>
+            {/* first stage 🐱‍👤😒 onNext remove */}
+            <div className="flex justify-between w-[90%] m-auto">
+              <div className="w-[48%] h-fit mt-6 text-lg text-black">
+                <label htmlFor="publicSelector" className="block mb-2">
+                  <sup className="w-full text-xl font-bold">*</sup>Privacy
+                </label>
+                <select
+                  name="privacy"
+                  id="publicSelector"
+                  onChange={handleChange}
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.privacy ? "border border-[red] outline-offset-2" : "border-none"}`}
+                >
+                  <option value="public">Public</option>
+                  <option value="private">Private</option>
+                  <option value="temprary">Temprary</option>
+                </select>
+                {errors.errors?.privacy && (
+                  <p className="text-[red]">{errors.errors.privacy}</p>
+                )}
+              </div>
+
+              <div className="w-[48%] h-fit mt-6 text-lg text-black">
+                <label htmlFor="downloadSelector" className="block mb-2">
+                  <sup className="w-full text-xl font-bold">*</sup>Downloadable
+                </label>
+                <select
+                  name="downloadable"
+                  id="downloadSelector"
+                  onChange={handleChange}
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors?.downloadable ? "border border-[red] outline-offset-2" : "border-none"}`}
+                >
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
+                </select>
+                {errors.errors?.downloadable && (
+                  <p className="text-[red]">{errors.errors.downloadable}</p>
+                )}
+              </div>
+            </div>
+            {/* first stage 🐱‍👤😒 onNext remove */}
+            <div className="flex justify-between w-[90%] m-auto">
+              <div className="w-[48%] mr-auto flex flex-col justify-center _items-center h-fit mt-6 text-lg text-black">
+                <div className="w-full relative">
+                  <label htmlFor="publicSelector" className="block mb-2">
+                    <sup className="w-full text-xl font-bold">*</sup>Category
+                  </label>
+                  <div
+                    className={`bg-white h-fit justify-between items-center overflow-hidden flex w-full indent-4 focus:outline focus:outline-[1px] shadow-md rounded-md ${categoryError || errors.errors?.category ? "border border-[red] outline-offset-2" : "border-none"}`}
+                  >
+                    <select
+                      name="category"
+                      title="category"
+                      onChange={handleChange}
+                      id="publicSelector"
+                      className="block w-[68%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
+                    >
+                      <option value="" className="text-[gray]">
+                        Choose a category
+                      </option>
+
+                      <>
+                        {categories.map((category, i) => (
+                          <option
+                            value={category[0]}
+                            selected={category[1]}
+                            key={i}
+                          >
+                            {category[0]}
+                          </option>
+                        ))}
+                      </>
+                    </select>
+
+                    <div
+                      onClick={addCategory}
+                      className="max-w-[30%] flex gap-1 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md cursor-pointer"
+                    >
+                      <img
+                        src={img_plus}
+                        alt={img_plus}
+                        className="block w-2 h-2 scale-150"
+                      />
+                      <span className="text-white text-[0.9rem] block w-fit h-fit italic">
+                        Create New
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    ref={addcategoryref}
+                    className="hidden bg-white h-fit justify-between items-center overflow-hidden w-full indent-4 focus:outline focus:outline-[1px] shadow-md rounded-md transition-all mt-[20px]"
+                  >
+                    <input
+                      type="text"
+                      id="title"
+                      value={addedCategory}
+                      onChange={(e) => setAddedCategory(e.target.value)}
+                      className="block w-[70%] p-2 indent-8 border-2 border-black border-r-0 rounded-tl-md rounded-bl-md"
+                      placeholder="ADD CATEGORY"
+                    />
+
+                    <div
+                      onClick={newCategory}
+                      className="w-[30%] flex gap-1 justify-center items-center h-full p-2 bg-black border-2 border-black rounded-tr-md rounded-br-md cursor-pointer"
+                    >
+                      <span className="text-white text-[0.9rem] block w-fit h-fit italic">
+                        Add
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {categoryError ? (
+                  <p className="text-[red]">{categoryError}</p>
+                ) : (
+                  errors.errors?.category && (
+                    <p className="text-[red]">{errors.errors.category}</p>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+          {/* first stage second 🐱‍👤😒 loading animation onNext remain at top */}
+          {values.file && !errors.errors.file && (
+            <div
+              className={`w-[70%] ${currentView === 2 ? "flex" : "hidden"} m-auto my-6 justify-between items-center`}
+            >
+              <span className="block w-fit h-fit">
+                <img
+                  src={upload_progress_svg}
+                  alt={upload_progress_svg}
+                  className="block w-32 aspect-square contrast-200"
+                />
+              </span>
+              <div className="w-[calc(100%-8rem)] ">
+                <div className="text-center relative">
+                  <p className="text-[#ffa500] text-[1.2rem] font-light italic">
+                    {`${values.file.name} Uploading...`}
+                  </p>
+                  <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
+                    3500kbs
+                  </span>
+                </div>
+                <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[80%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
+              </div>
+            </div>
+          )}
+          {/* Second stage show els 👀👀 */}
+          <div
+            className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}
+          >
+            {/* first stage 🐱‍👤😒 onNext remove */}
+            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
+              <label htmlFor="name" className="block mb-2">
+                <sup className="w-full text-xl font-bold">*</sup>Presenter's
+                Name
+              </label>
+              <input
+                type="text"
+                value={values.name}
+                onChange={handleChange}
+                name="name"
+                id="name"
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors2?.name ? "border border-[red] outline-offset-2" : "border-none"}`}
+              />
+              {errors.errors2?.name && (
+                <p className="text-[red]">{errors.errors2.name}</p>
+              )}
+            </div>
+            {/* first stage 🐱‍👤😒 onNext remove */}
+            <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
+              <label htmlFor="BioOptional" className="block mb-2">
+                <sup className="w-full text-xl font-bold"></sup>Bio (Optional)
+              </label>
+              <textarea
+                id="BioOptional"
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors2?.bio ? "border border-[red] outline-offset-2" : "border-none"}`}
+                rows="5"
+                cols="50"
+                name="bio"
+                onChange={handleChange}
+                value={values.bio}
+              ></textarea>
+              {errors.errors2?.bio && (
+                <p className="text-[red]">{errors.errors2.bio}</p>
+              )}
+            </div>
+            {/* first stage 🐱‍👤😒 onNext remove */}
+            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
+              <label htmlFor="title" className="block mb-2">
+                <sup className="w-full text-xl font-bold"></sup>Social Media
+                Link (Optional)
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="social"
+                onChange={handleChange}
+                value={values.social}
+                className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.errors2?.social ? "border border-[red] outline-offset-2" : "border-none"}`}
+              />
+              {errors.errors2?.social && (
+                <p className="text-[red]">{errors.errors2.social}</p>
+              )}
+            </div>
+            {/* time of presentation */}
+            <span className="bg-[#FFFFF0] text-[#ffa500] w-fit p-4 mt-8 border-[2px] border-black text-xl font-medium flex justify-between items-center">
+              Time of Presentation
+              <div className="ml-[20px] flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  id="switch"
+                  name="toggle"
+                  className="toggle"
+                  onChange={(event) => {
+                    setToggle(!toggle);
+                    handleChange(event);
+                  }}
+                />
+                <label for="switch" className="toggle__label">
+                  Toggle
+                </label>
+              </div>
+            </span>
+            {/* time constants for presentaions */}
+            {toggle && (
+              <div className="flex justify-between w-[90%] m-auto">
+                {/* 1 */}
+                <DatePicker
+                  handleChange={handleChange}
+                  setValues={setValues}
+                  values={values}
+                  errors={errors}
+                />
+
+                {/* 2 */}
+                <StartTimePicker
+                  handleChange={handleChange}
+                  setValues={setValues}
+                  values={values}
+                  errors={errors}
+                />
+
+                {/* 3 */}
+                <EndTimePicker
+                  handleChange={handleChange}
+                  setValues={setValues}
+                  values={values}
+                  errors={errors}
+                />
+              </div>
+            )}
+            {/* end */}
+          </div>
+          {/* Third stage show els 👀👀 */}
+          <div
+            className={`w-full min-h-full ${currentView === 3 ? "flex" : "hidden"} justify-center items-center`}
+          >
+            {/* <h1 className='text-[3rem] font-black text-black'>Coming Soon pls🐱‍🏍</h1> */}
+            <div className="w-full h-fit flex justify-between items-start">
+              <div className="!w-[50%] min-h-screen mt-auto mb-0 flex flex-col justify-between bg-[#FFFFF0]">
+                <div className="flex justify-between items-center w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black"></div>
+                <div className="bg-[#ffa500] h-fit mt-16 pb-4">
+                  <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]">
+                    PRESENTER'S INFORMATION
+                  </p>
+                  <div className="w-[95%] m-auto min-h-64 bg-[#FFFFF0] text-black">
+                    <ul className="block w-full py-4">
+                      <li className="block w-full mb-4 px-4">
+                        <span>Name</span>
+                        <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                        <p className="text-[0.9rem] italic mt-2">
+                          {values.name}
+                        </p>
+                      </li>
+                      <li className="block w-full mb-4 px-4">
+                        <span>Bio</span>
+                        <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                        <p className="text-[0.9rem] italic mt-2">
+                          {values.bio ? values.bio : ""}
+                        </p>
+                      </li>
+                      <li className="block w-full mb-4 px-4">
+                        <span>Social Media Link</span>
+                        <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                        <p className="text-[0.9rem] italic mt-2">
+                          {values.social ? values.social : ""}
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="!w-[50%] _overflow-auto min-h-screen bg-[#ffa500] pb-4 flex flex-col justify-between">
+                <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem] mt-0">
+                  PRESENTATION TITLE
+                </p>
+                <div className="w-[95%] m-auto mb-0 min-h-[calc(100%-(5.7rem))] _overflow-auto bg-[#FFFFF0] text-black">
+                  <ul className="block w-full pt-4">
+                    <li className="block w-full mb-4 px-4">
+                      <span>Description</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">
+                        {values.description ? values.description : ""}
+                      </p>
+                    </li>
+                    <li className="block w-full mb-4 px-4">
+                      <span>Privacy</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">{values.privacy ? values.privacy : ""}</p>
+                    </li>
+                    <li className="block w-full mb-4 px-4">
+                      <span>Key Words</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">
+                        {values.key ? values.key.array.forEach(element => {
+                          return JSON.stringify([...element]);
+                        }) : ""}
+                        {/* Cybersecurity, Cybercrimes, Cyber war, cyber protection,
+                        Hacking... */}
+                      </p>
+                    </li>
+                    <li className="block w-full mb-4 px-4">
+                      <span>Category</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">{values.category ? values.category : ""}</p>
+                    </li>
+                    <li className="block w-full mb-4 px-4">
+                      <span>Shareable</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">{values.downloadable ? values.downloadable : ""}</p>
+                    </li>
+                  </ul>
+                  <p className="bg-[#ffa500] w-3/6 pl-4 py-2">SCHEDULE</p>
+                  <ul className="block w-full pb-4">
+                    <li className="block w-full mb-4 px-4">
+                      <span>Date</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">
+                        {values.date ? values.date : ""}
+                        {/* 21st January, 2024 */}
+                      </p>
+                    </li>
+                    <li className="block w-full mb-4 px-4">
+                      <span>Time</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">
+                        {values.startTime ? values.startTime : ""}-{values.endTime ? values.endTime : ""}
+                        {/* 2 : 00 pm - 4: 00 pm */}
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div className="flex justify-between items-center mt-6">
+          <button
+            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed" : "border border-black pointer-events-auto"} text-black text-[1.5rem] p-2 rounded-full w-[25%]`}
+            onClick={showPreviousStage}
+          >
+            Back
+          </button>
+
+          <button
+            className={`${currentView === 3 ? "bg-[#808080bf] !cursor-not-allowed" : "bg-[Black] pointer-events-auto"} text-white text-[1.5rem] p-2 border-none rounded-full w-[25%]`}
+            onClick={handleSubmit}
+          >
+            {currentView === 3 ? "Submit" : "Next"}
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
