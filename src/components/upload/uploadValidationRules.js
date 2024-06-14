@@ -1,6 +1,5 @@
 export default function validate(values) {
-  console.log(values);
-
+  // console.log(values);
   let errors = {};
   let errors2 = {};
 
@@ -107,8 +106,8 @@ export default function validate(values) {
   }
   // this should be (values.toggle && values.endTime < values.startTime)
   // since start time is future...
-  if (values.toggle && values.endTime > values.startTime) {
-    errors2.endTime = "Select when presentation ends";
+  if (values.toggle && values.endTime <= values.startTime) {
+    errors2.endTime = "End time can not be less or equal than start time";
   }
 
   return { errors, errors2 };

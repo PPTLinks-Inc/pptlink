@@ -6,7 +6,8 @@ const useForm = (callback, validate) => {
     file: null,
     downloadable: "true",
     privacy: "public",
-    date: ""
+    date: "",
+    startTime: ''
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
