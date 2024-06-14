@@ -16,7 +16,7 @@ export default function Socials() {
           className="block w-4 aspect-square mr-10 maxScreenMobile:mr-0 hover:relative hover:z-10 hover:scale-[1.5] rounded shadow-md"
         />
       </NavLink>
-      <NavLink to="#Socials">
+      <NavLink to="https://x.com/pptlinks">
         <img
           loading="lazy"
           src={twitter}
@@ -24,7 +24,7 @@ export default function Socials() {
           className="block w-4 aspect-square mr-10 maxScreenMobile:mr-0 hover:relative hover:z-10 hover:scale-[1.5] rounded shadow-md"
         />
       </NavLink>
-      <NavLink to="#Socials">
+      <NavLink to="https://www.linkedin.com/company/101626621/">
         <img
           loading="lazy"
           src={linkedin}
@@ -32,7 +32,7 @@ export default function Socials() {
           className="block w-4 aspect-square mr-10 maxScreenMobile:mr-0 hover:relative hover:z-10 hover:scale-[1.5] rounded shadow-md"
         />
       </NavLink>
-      <NavLink to="#Socials">
+      <NavLink to="https://www.instagram.com/pptlinks?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
         <img
           loading="lazy"
           src={instagram}
@@ -40,7 +40,7 @@ export default function Socials() {
           className="block w-4 aspect-square mr-10 maxScreenMobile:mr-0 hover:relative hover:z-10 hover:scale-[1.5] rounded shadow-md"
         />
       </NavLink>
-      <NavLink to="#Socials">
+      <NavLink to="https://github.com/beekay19/pptlink">
         <img
           loading="lazy"
           src={github}
@@ -48,7 +48,7 @@ export default function Socials() {
           className="block w-4 aspect-square mr-10 maxScreenMobile:mr-0 hover:relative hover:z-10 hover:scale-[1.5] rounded shadow-md"
         />
       </NavLink>
-      <NavLink to="#Socials">
+      <NavLink to="https://nascomsoft.com/">
         <img
           loading="lazy"
           src={www}
