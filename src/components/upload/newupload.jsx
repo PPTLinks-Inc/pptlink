@@ -12,10 +12,7 @@ export default function NewUploadPage() {
   const addcategoryref = useRef(null);
   const scrollableRef = useRef(null);
   const [categories, setCategories] = useState([
-    ["category 1", false],
-    ["category 2", false],
-    ["category 3", false],
-    ["category 4", false]
+    ["Category One", false]
   ]);
   const [addedCategory, setAddedCategory] = useState("");
   const [categoryError, setCategoryError] = useState("");
@@ -69,19 +66,12 @@ export default function NewUploadPage() {
       return prev - 1;
     });
 
-  //   const showNextStage = (num) => setCurrentView(num);
   const showNextStage = () =>
     setCurrentView((prev) => {
       if (prev >= 3) return (prev = 3);
+      console.log("prev value for next ", prev);
       return prev + 1;
     });
-
-  // scroll page to the top when currentView changes
-  useEffect(() => {
-    if (scrollableRef.current) {
-      scrollableRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [currentView]);
 
   const nextFunction = (updateNum) => {
     if (Object.keys(errors.errors).length === 0 && currentView === updateNum) {
@@ -95,10 +85,21 @@ export default function NewUploadPage() {
   };
 
   // form validation functions
-  const { handleChange, handleSubmit, values, errors } = useForm(
+  const { handleChange, handleSubmit, setValues, values, errors } = useForm(
     nextFunction,
     validate
   );
+
+  // scroll page to the top when currentView changes
+  useEffect(() => {
+    if (scrollableRef.current) {
+      scrollableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentView]);
+
+  useEffect(() => {
+
+  }, [values.toggle]);
 
   // form validation functions
   return (
@@ -161,7 +162,7 @@ export default function NewUploadPage() {
             {/* first stage 🐱‍👤😒 upload el onNext remove */}
             {/* <div className="w-[90%] h-[15rem] m-auto bg-black border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none"> */}
             <div
-              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none`}
+              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} ${!errors.errors?.file && values.file && "hidden"} border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none`}
             >
               <input
                 type="file"
@@ -208,7 +209,7 @@ export default function NewUploadPage() {
                       3500kbs
                     </span>
                   </div>
-                  <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[80%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
+                  <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[40%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
                 </div>
               </div>
             )}
@@ -477,21 +478,30 @@ export default function NewUploadPage() {
                 {/* 1 */}
                 <DatePicker
                   handleChange={handleChange}
+                  setValues={setValues}
                   values={values}
                   errors={errors}
                 />
+
+
                 {/* 2 */}
                 <StartTimePicker
                   handleChange={handleChange}
+                  setValues={setValues}
                   values={values}
                   errors={errors}
                 />
-                {/* 3 */}{" "}
+
+
+                {/* 3 */}
                 <EndTimePicker
                   handleChange={handleChange}
+                  setValues={setValues}
                   values={values}
                   errors={errors}
                 />
+
+
               </div>
             )}
             {/* end */}
@@ -514,26 +524,21 @@ export default function NewUploadPage() {
                         <span>Name</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          Lorem ipsum dolor sit amet
+                          {values.name}
                         </p>
                       </li>
                       <li className="block w-full mb-4 px-4">
                         <span>Bio</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          Lorem ipsum dolor sit amet, consetetur sadipscing
-                          elitr, sed diam nonumy eirmod tempor invidunt ut
-                          labore et dolore magna aliquyam erat, sed diam
-                          voluptua. At vero eos et accusam et justo duo dolores
-                          et ea rebum. Stet clita kasd gubergren, no sea
-                          takimata
+                          {values.bio ? values.bio : ""}
                         </p>
                       </li>
                       <li className="block w-full mb-4 px-4">
                         <span>Social Media Link</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          Rosemary_Haley@example.com
+                          {values.social ? values.social : ""}
                         </p>
                       </li>
                     </ul>
@@ -550,35 +555,34 @@ export default function NewUploadPage() {
                       <span>Description</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                        sed diam nonumy eirmod tempor invidunt ut labore et
-                        dolore magna aliquyam erat, sed diam voluptua. At vero
-                        eos et accusam et justo duo dolores et ea rebum. Stet
-                        clita kasd gubergren, no sea takimata
+                        {values.description ? values.description : ""}
                       </p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Privacy</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">Public</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.privacy ? values.privacy : ""}</p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Key Words</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        Cybersecurity, Cybercrimes, Cyber war, cyber protection,
-                        Hacking...
+                        {values.key ? values.key.array.forEach(element => {
+                          return JSON.stringify([...element]);
+                        }) : ""}
+                        {/* Cybersecurity, Cybercrimes, Cyber war, cyber protection,
+                        Hacking... */}
                       </p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Category</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">Educational</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.category ? values.category : ""}</p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Shareable</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">YES</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.downloadable ? values.downloadable : ""}</p>
                     </li>
                   </ul>
                   <p className="bg-[#ffa500] w-3/6 pl-4 py-2">SCHEDULE</p>
@@ -587,14 +591,16 @@ export default function NewUploadPage() {
                       <span>Date</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        21st January, 2024
+                        {values.date ? values.date : ""}
+                        {/* 21st January, 2024 */}
                       </p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Time</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        2 : 00 pm - 4: 00 pm
+                        {values.startTime ? values.startTime : ""}-{values.endTime ? values.endTime : ""}
+                        {/* 2 : 00 pm - 4: 00 pm */}
                       </p>
                     </li>
                   </ul>

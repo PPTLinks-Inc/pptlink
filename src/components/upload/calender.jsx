@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import Icon_awesome_clock from "/Icon-awesome-clock.svg"; // Ensure this path is correct
+import Icon_awesome_clock from "/Icon-awesome-clock.svg";
 import NativeDatepicker from "./reactNativeDatePicker";
 
-const DatePicker = ({ handleChange, values, errors }) => {
+const DatePicker = ({ handleChange, setValues, values, errors }) => {
   const getCurrentDate = () => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -13,12 +13,6 @@ const DatePicker = ({ handleChange, values, errors }) => {
 
   const [date, setDate] = useState(getCurrentDate());
   const nativeDatepickerRef = useRef(null);
-
-  useEffect(() => {
-    if (nativeDatepickerRef.current) {
-      nativeDatepickerRef.current.setValue(date);
-    }
-  }, [date]);
 
   const handleInputChange = (event) => {
     const newValue = event.target.value;
@@ -38,6 +32,16 @@ const DatePicker = ({ handleChange, values, errors }) => {
       handleChange({ target: { name: "date", value: newValue } });
     }
   };
+
+  useEffect(() => {
+    if (nativeDatepickerRef.current) {
+      nativeDatepickerRef.current.setValue(date);
+    }
+
+    if (values.toggle === false) {
+      setDate(null);
+    }
+  }, [date, values.toggle]);
 
   return (
     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
@@ -77,15 +81,161 @@ const DatePicker = ({ handleChange, values, errors }) => {
   );
 };
 
-const StartTimePicker = ({ handleChange, values, errors }) => {
-  const [startTime, setStartTime] = useState(values.startTime || "");
-  const startTimeRef = useRef(null);
+// const DatePicker = ({ handleChange, setValues, values, errors }) => {
+//   const getCurrentDate = () => {
+//     const today = new Date();
+//     const yyyy = today.getFullYear();
+//     const mm = String(today.getMonth() + 1).padStart(2, "0");
+//     const dd = String(today.getDate()).padStart(2, "0");
+//     return `${yyyy}-${mm}-${dd}`;
+//   };
 
-  useEffect(() => {
-    if (startTimeRef.current) {
-      startTimeRef.current.value = startTime;
-    }
-  }, [startTime]);
+//   const nativeDatepickerRef = useRef(null);
+
+//   const handleInputChange = (event) => {
+//     const newValue = event.target.value;
+//     validateDate(newValue);
+//   };
+
+//   const handleDatePickerChange = (newValue) => {
+//     validateDate(newValue);
+//   };
+
+//   const validateDate = (newValue) => {
+//     const currentDate = getCurrentDate();
+//     if (newValue < currentDate) {
+//       handleChange({ target: { name: "date", value: newValue } }, "Date cannot be in the past");
+//     } else {
+//       setValues((prevValues) => ({ ...prevValues, date: newValue }));
+//       handleChange({ target: { name: "date", value: newValue } });
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (nativeDatepickerRef.current) {
+//       nativeDatepickerRef.current.setValue(values.date || getCurrentDate());
+//     }
+
+//     if (values.toggle === false) {
+//       setValues((prevValues) => ({ ...prevValues, date: null }));
+//     }
+//   }, [values.toggle]);
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="DateSelectionID" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>Date Selection
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.date ? "border border-[red] outline-offset-2" : "border-none"}`}
+//         >
+//           <input
+//             type="date"
+//             name="date"
+//             id="DateSelectionID"
+//             value={values.date || ""}
+//             onChange={handleInputChange}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             htmlFor="DateSelectionIDTwo"
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <NativeDatepicker
+//               id="DateSelectionIDTwo"
+//               ref={nativeDatepickerRef}
+//               value={values.date || ""}
+//               onChange={handleDatePickerChange}
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.date && (
+//           <p className="text-[red]">{errors.errors2.date}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// const StartTimePicker = ({ handleChange, setValues, values, errors }) => {
+//   const [startTime, setStartTime] = useState(values.startTime || "");
+//   const startTimeRef = useRef(null);
+
+//   useEffect(() => {
+//     if (values.toggle === false) {
+//       setStartTime("");
+//       if (startTimeRef.current) {
+//         startTimeRef.current.value = "";
+//       }
+//     }
+//   }, [values.toggle]);
+
+//   useEffect(() => {
+//     if (startTimeRef.current) {
+//       startTimeRef.current.value = startTime;
+//     }
+//   }, [startTime]);
+
+//   const handleClickStartTime = () => {
+//     const timeInput = startTimeRef.current;
+//     if (timeInput) {
+//       if (timeInput.showPicker) {
+//         timeInput.showPicker();
+//       } else {
+//         timeInput.focus();
+//       }
+//     }
+//   };
+
+//   const handleStartTimeChange = (event) => {
+//     const newVal = event.target.value;
+//     setStartTime(newVal);
+//     handleChange({ target: { name: "startTime", value: newVal } });
+//   };
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="StartTime" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>Start Time
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"
+//             }`}
+//         >
+//           <input
+//             type="time"
+//             id="StartTime"
+//             ref={startTimeRef}
+//             value={startTime}
+//             onChange={handleStartTimeChange}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             type="button"
+//             aria-label="button"
+//             htmlFor="StartTime"
+//             onClick={handleClickStartTime}
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <img
+//               src={Icon_awesome_clock}
+//               alt="Clock Icon"
+//               className="block w-4 h-4 scale-150 pointer-events-auto"
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.startTime && (
+//           <p className="text-[red]">{errors.errors2.startTime}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+const StartTimePicker = ({ handleChange, setValues, values, errors }) => {
+  const startTimeRef = useRef(null);
 
   const handleClickStartTime = () => {
     const timeInput = startTimeRef.current;
@@ -98,9 +248,24 @@ const StartTimePicker = ({ handleChange, values, errors }) => {
     }
   };
 
+  useEffect(() => {
+    if (startTimeRef.current) {
+      startTimeRef.current.value = values.startTime || "";
+    }
+  }, [values.startTime]);
+
+  // useEffect(() => {
+  //   if (values.toggle === false) {
+  //     setValues((prevValues) => ({ ...prevValues, startTime: "" }));
+  //     if (startTimeRef.current) {
+  //       startTimeRef.current.value = "";
+  //     }
+  //   }
+  // }, [values.toggle]);
+
   const handleStartTimeChange = (event) => {
     const newVal = event.target.value;
-    setStartTime(newVal);
+    setValues((prevValues) => ({ ...prevValues, startTime: newVal }));
     handleChange({ target: { name: "startTime", value: newVal } });
   };
 
@@ -118,7 +283,7 @@ const StartTimePicker = ({ handleChange, values, errors }) => {
             type="time"
             id="StartTime"
             ref={startTimeRef}
-            value={startTime}
+            value={values.startTime || ""}
             onChange={handleStartTimeChange}
             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
           />
@@ -144,15 +309,8 @@ const StartTimePicker = ({ handleChange, values, errors }) => {
   );
 };
 
-const EndTimePicker = ({ handleChange, values, errors }) => {
-  const [endTime, setEndTime] = useState(values.endTime || "");
+const EndTimePicker = ({ handleChange, setValues, values, errors }) => {
   const endTimeRef = useRef(null);
-
-  useEffect(() => {
-    if (endTimeRef.current) {
-      endTimeRef.current.value = endTime;
-    }
-  }, [endTime]);
 
   const handleClickEndTime = () => {
     const timeInput = endTimeRef.current;
@@ -165,9 +323,24 @@ const EndTimePicker = ({ handleChange, values, errors }) => {
     }
   };
 
+  useEffect(() => {
+    if (endTimeRef.current) {
+      endTimeRef.current.value = values.endTime || "";
+    }
+  }, [values.endTime]);
+
+  // useEffect(() => {
+  //   if (values.toggle === false) {
+  //     setValues((prevValues) => ({ ...prevValues, endTime: "" }));
+  //     if (endTimeRef.current) {
+  //       endTimeRef.current.value = "";
+  //     }
+  //   }
+  // }, [values.toggle]);
+
   const handleEndTimeChange = (event) => {
     const newVal = event.target.value;
-    setEndTime(newVal);
+    setValues((prevValues) => ({ ...prevValues, endTime: newVal }));
     handleChange({ target: { name: "endTime", value: newVal } });
   };
 
@@ -185,7 +358,7 @@ const EndTimePicker = ({ handleChange, values, errors }) => {
             type="time"
             id="EndTime"
             ref={endTimeRef}
-            value={endTime}
+            value={values.endTime || ""}
             onChange={handleEndTimeChange}
             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
           />
@@ -210,5 +383,6 @@ const EndTimePicker = ({ handleChange, values, errors }) => {
     </div>
   );
 };
+
 
 export { DatePicker, StartTimePicker, EndTimePicker };

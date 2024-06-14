@@ -1514,4 +1514,152 @@ export { DatePicker, StartTimePicker, EndTimePicker };
 //   );
 // };
 
+// ////////////////////////////////////////////////////////////////////////////
+
+// const EndTimePicker = ({ handleChange, values, errors }) => {
+//   const [endTime, setEndTime] = useState(values.endTime || "");
+//   const endTimeRef = useRef(null);
+
+//   useEffect(() => {
+//     if (endTimeRef.current) {
+//       endTimeRef.current.value = endTime;
+//     }
+
+//     if (values.toggle === false) {
+//       setEndTime(null);
+//     }
+//   }, [endTime, values.toggle]);
+
+//   const handleClickEndTime = () => {
+//     const timeInput = endTimeRef.current;
+//     if (timeInput) {
+//       if (timeInput.showPicker) {
+//         timeInput.showPicker();
+//       } else {
+//         timeInput.focus();
+//       }
+//     }
+//   };
+
+//   const handleEndTimeChange = (event) => {
+//     const newVal = event.target.value;
+//     setEndTime(newVal);
+//     handleChange({ target: { name: "endTime", value: newVal } });
+//   };
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="EndTime" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>End Time (Optional)
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"
+//             }`}
+//         >
+//           <input
+//             type="time"
+//             id="EndTime"
+//             ref={endTimeRef}
+//             value={endTime}
+//             onChange={handleEndTimeChange}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             type="button"
+//             aria-label="button"
+//             htmlFor="EndTime"
+//             onClick={handleClickEndTime}
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <img
+//               src={Icon_awesome_clock}
+//               alt="Clock Icon"
+//               className="block w-4 h-4 scale-150 pointer-events-auto"
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.endTime && (
+//           <p className="text-[red]">{errors.errors2.endTime}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// //////////////////////////////////////////////////////////////////////
+
+
+// const StartTimePicker = ({ handleChange, values, errors }) => {
+//   const [startTime, setStartTime] = useState(values.startTime || "");
+//   const startTimeRef = useRef(null);
+
+//   useEffect(() => {
+//     if (startTimeRef.current) {
+//       startTimeRef.current.value = startTime;
+//     }
+
+//     if (values.toggle === false) {
+//       setStartTime(null);
+//     }
+//   }, [startTime, values.toggle]);
+
+//   const handleClickStartTime = () => {
+//     const timeInput = startTimeRef.current;
+//     if (timeInput) {
+//       if (timeInput.showPicker) {
+//         timeInput.showPicker();
+//       } else {
+//         timeInput.focus();
+//       }
+//     }
+//   };
+
+//   const handleStartTimeChange = (event) => {
+//     const newVal = event.target.value;
+//     setStartTime(newVal);
+//     handleChange({ target: { name: "startTime", value: newVal } });
+//   };
+
+//   return (
+//     <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+//       <div className="w-full relative">
+//         <label htmlFor="StartTime" className="block mb-2">
+//           <span className="w-full text-xl font-bold">*</span>Start Time
+//         </label>
+//         <div
+//           className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"
+//             }`}
+//         >
+//           <input
+//             type="time"
+//             id="StartTime"
+//             ref={startTimeRef}
+//             value={startTime}
+//             onChange={handleStartTimeChange}
+//             className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+//           />
+//           <label
+//             type="button"
+//             aria-label="button"
+//             htmlFor="StartTime"
+//             onClick={handleClickStartTime}
+//             className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+//           >
+//             <img
+//               src={Icon_awesome_clock}
+//               alt="Clock Icon"
+//               className="block w-4 h-4 scale-150 pointer-events-auto"
+//             />
+//           </label>
+//         </div>
+//         {errors.errors2?.startTime && (
+//           <p className="text-[red]">{errors.errors2.startTime}</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+
 
