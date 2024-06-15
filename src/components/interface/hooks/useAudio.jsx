@@ -57,20 +57,9 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
         setError(false);
         setSuccess(false);
         setLoading(true);
-        await rtcClient.current.join(
-          AGORA_APP_ID,
-          presentation.data.liveId,
-          tokens.rtcToken,
-          tokens.rtcUid
-        );
-        audioTracks.current.localAudioTrack =
-          await AgoraRTC.createMicrophoneAudioTrack({
-            encoderConfig: "speech_standard"
-          });
-        audioTracks.current.localAudioTrack.setMuted(true);
-        await rtcClient.current.publish(audioTracks.current.localAudioTrack);
 
         rtcClient.current.on("user-published", async (user, mediaType) => {
+          console.log("user-published", user, mediaType);
           await rtcClient.current.subscribe(user, mediaType);
 
           if (mediaType == "audio") {
@@ -78,6 +67,7 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
             user.audioTrack.play();
           }
         });
+
         rtcClient.current.on("user-left", (user) => {
           delete audioTracks.current.remoteAudioTracks[user.uid];
         });
@@ -85,6 +75,20 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
         rtcClient.current.on("network-quality", function(quality) {
           setNetworkScore(quality);
         });
+
+        await rtcClient.current.join(
+          AGORA_APP_ID,
+          presentation.data.liveId,
+          tokens.rtcToken,
+          tokens.rtcUid
+        );
+
+        audioTracks.current.localAudioTrack =
+          await AgoraRTC.createMicrophoneAudioTrack({
+            encoderConfig: "speech_low_quality"
+          });
+          await rtcClient.current.publish(audioTracks.current.localAudioTrack);
+          audioTracks.current.localAudioTrack.setMuted(true);
 
         setSuccess(true);
       } catch (err) {
@@ -113,7 +117,6 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
     success,
     error,
     setMute,
-    rtcClient: rtcClient.current,
     networkStatus
   };
 }
