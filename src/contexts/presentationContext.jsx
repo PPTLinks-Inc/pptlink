@@ -104,9 +104,15 @@ const PresentationContextProvider = (props) => {
         res.data.presentation.User === "HOST" &&
         res.data.presentation.audio
       ) {
-        await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
+        // await fetchRtcToken.mutateAsync(res.data.presentation.liveId);
+        setTokens(res.data.presentation.rtc);
         setJoinAudio(true);
-      } if (res.data.presentation.User !== "HOST" && res.data.presentation.audio) {
+      }
+      if (
+        res.data.presentation.User !== "HOST" &&
+        res.data.presentation.audio
+      ) {
+        setTokens(res.data.presentation.rtc);
         setStartPrompt(true);
       }
       return res.data.presentation;
@@ -155,19 +161,19 @@ const PresentationContextProvider = (props) => {
       });
     }
 
-    if (
-      presentationQuery.data?.User === "HOST" &&
-      presentationQuery.data?.audio
-    ) {
-      fetchRtcToken
-        .mutateAsync(presentationQuery.data?.liveId)
-        .then(function () {
-          setJoinAudio(true);
-        })
-        .catch(function() {
-          toast.error("Failed to join audio");
-        });
-    }
+    // if (
+    //   presentationQuery.data?.User === "HOST" &&
+    //   presentationQuery.data?.audio
+    // ) {
+    //   fetchRtcToken
+    //     .mutateAsync(presentationQuery.data?.liveId)
+    //     .then(function () {
+    //       setJoinAudio(true);
+    //     })
+    //     .catch(function () {
+    //       toast.error("Failed to join audio");
+    //     });
+    // }
   }, [presentationQuery.isSuccess]);
 
   useEffect(() => {
@@ -264,8 +270,9 @@ const PresentationContextProvider = (props) => {
   useEffect(() => {
     if (
       (orientation.type.includes("landscape") &&
-      start &&
-      presentationQuery.data?.live) || !('orientation' in screen)
+        start &&
+        presentationQuery.data?.live) ||
+      !("orientation" in screen)
     ) {
       setShowPrompt(false);
     }
@@ -328,25 +335,48 @@ const PresentationContextProvider = (props) => {
   );
   const audioData = useAudio(isReady, presentationQuery, tokens, setJoinAudio);
 
-  const signallingData = useSignalling(isReady, presentationQuery, tokens, setJoinAudio, userName, setMicState, audioData.setMute);
+  const signallingData = useSignalling(
+    isReady,
+    presentationQuery,
+    tokens,
+    setJoinAudio,
+    userName,
+    setMicState,
+    audioData.setMute
+  );
 
-  const audioSuccess = useMemo(() => audioData.success && signallingData.success, [audioData.success, signallingData.success]);
-  const audioError = useMemo(() => audioData.error || signallingData.error, [audioData.error, signallingData.error]);
-  const audioLoading = useMemo(() => audioData.loading || signallingData.loading, [audioData.loading, signallingData.loading]);
+  const audioSuccess = useMemo(
+    () => audioData.success && signallingData.success,
+    [audioData.success, signallingData.success]
+  );
+  const audioError = useMemo(
+    () => audioData.error || signallingData.error,
+    [audioData.error, signallingData.error]
+  );
+  const audioLoading = useMemo(
+    () => audioData.loading || signallingData.loading,
+    [audioData.loading, signallingData.loading]
+  );
 
-  const setMute = useCallback(function(mic) {
-    audioData.setMute(mic);
-  }, [audioData]);
+  const setMute = useCallback(
+    function (mic) {
+      audioData.setMute(mic);
+    },
+    [audioData]
+  );
 
-  useEffect(function() {
-    if (audioSuccess) {
-      toast.success("Audio connected");
-    }
+  useEffect(
+    function () {
+      if (audioSuccess) {
+        toast.success("Audio connected");
+      }
 
-    if (audioError) {
-      toast.error("Failed to connect audio");
-    }
-  }, [audioSuccess, audioError]);
+      if (audioError) {
+        toast.error("Failed to connect audio");
+      }
+    },
+    [audioSuccess, audioError]
+  );
 
   const isIphone = isMobile({ iphone: true });
   const isMobilePhone = isMobile({ isphone: false });
@@ -384,7 +414,7 @@ const PresentationContextProvider = (props) => {
         acceptMicRequest: signallingData.acceptMicRequest,
         micState,
         setMicState,
-        networkStatus: audioData.networkStatus,
+        networkStatus: audioData.networkStatus
       }}
     >
       {presentationQuery.isLoading ? (
@@ -395,11 +425,9 @@ const PresentationContextProvider = (props) => {
         <PresentationNotFound />
       ) : (
         <>
-          {isMobilePhone &&
-            showPrompt &&
-            presentationQuery.data.live && (
-              <OrientationPrompt setShowPrompt={setShowPrompt} />
-            )}
+          {isMobilePhone && showPrompt && presentationQuery.data.live && (
+            <OrientationPrompt setShowPrompt={setShowPrompt} />
+          )}
           {!presentationQuery.data.live &&
           presentationQuery.data.User !== "HOST" ? (
             isIphone ? (
