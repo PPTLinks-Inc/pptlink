@@ -3,13 +3,11 @@ import "../../assets/styles/general_css.css";
 import img_feather from "/Icon-feather-upload-cloud.svg";
 import img_plus from "/Icon-awesome-plus.png";
 import upload_progress_svg from "/upload_progress_svg.svg";
-import Icon_awesome_clock from "/Icon-awesome-clock.svg";
-import NativeDatepicker from "./reactNativeDatePicker";
 import validate from "./uploadValidationRules";
 import useForm from "./useForm";
+import { DatePicker, EndTimePicker, StartTimePicker } from "./calender";
 
 export default function NewUploadPage() {
-  // useStates area 👀👀👀
   const [currentView, setCurrentView] = useState(1);
   const addcategoryref = useRef(null);
   const scrollableRef = useRef(null);
@@ -20,8 +18,7 @@ export default function NewUploadPage() {
   const [categoryError, setCategoryError] = useState("");
   const [toggle, setToggle] = useState(false);
 
-  // function areas 🐱‍👤🐱‍👤🐱‍👤
-  // add category func
+  // function to open new category input form
   function addCategory() {
     if (addcategoryref.current.style.display === "none") {
       addcategoryref.current.style.display = "flex";
@@ -31,6 +28,7 @@ export default function NewUploadPage() {
     setAddedCategory("");
     setCategoryError("");
   }
+
   // function to add a new category
   const newCategory = () => {
     const regex =
@@ -60,21 +58,21 @@ export default function NewUploadPage() {
       setCategoryError("Category already exists or is invalid");
     }
   };
-  // previous view func
+
   const showPreviousStage = () =>
     setCurrentView((prev) => {
       validate(values)
       if (prev <= 1) return (prev = 1);
       return prev - 1;
     });
-  // next view func
+
   const showNextStage = () =>
     setCurrentView((prev) => {
       if (prev >= 3) return (prev = 3);
       console.log("prev value for next ", prev);
       return prev + 1;
     });
-  // error trigger 
+
   const nextFunction = (updateNum) => {
     if (Object.keys(errors.errors).length === 0 && currentView === updateNum) {
       showNextStage(2);
@@ -98,6 +96,13 @@ export default function NewUploadPage() {
       scrollableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [currentView]);
+
+  useEffect(() => {
+
+    if (!values.toggle) { 
+      setValues(prev => ({ ...prev, date: "", startTime: "", endTime: "" }));
+    }
+  }, [values.toggle]);
 
   // form validation functions
   return (
@@ -471,151 +476,33 @@ export default function NewUploadPage() {
               </div>
             </span>
             {/* time constants for presentaions */}
-            {/* {toggle && ( */}
-            <div className="flex justify-between items-center w-[90%] m-auto">
-              {/* 1 */}
-              {/* <DatePicker
+            {toggle && (
+              <div className="flex justify-between w-[90%] m-auto">
+                {/* 1 */}
+                <DatePicker
                   handleChange={handleChange}
                   setValues={setValues}
                   values={values}
                   errors={errors}
-                /> */}
-              <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
-                <div className="w-full relative">
-                  <label htmlFor="DateSelectionID" className="block mb-2">
-                    <span className="w-full text-xl font-bold">*</span>Date Selection
-                  </label>
-                  <div
-                    className={`relative bg-white w-full h-fit flex 
-                        justify-between items-center rounded-md overflow-hidden 
-                        indent-4 py-1 focus:outline focus:outline-[1px] shadow-md 
-                        ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
-                  >
-                    <input
-                      type="date"
-                      name="date"
-                      id="DateSelectionID"
-                      // value={date}
-                      // onChange={handleInputChange}
-                      className="block w-[100%] p-2 !border-[0px] !border-none bg-white 
-                        outline outline-[white] indent-2"
-                    />
-                    <label
-                      htmlFor="DateSelectionIDTwo"
-                      className="absolute top-0 left-auto right-0 bottom-0 w-[35%] 
-                        _pointer-events-none flex gap-8 justify-center items-center h-full 
-                        p-1 bg-black border-none rounded-tl-md rounded-bl-md"
-                    >
-                      {/* would have just used normal vjs event to trigger date model, but no offence its still a native library 🤦‍♂️🥂 */}
-                      <NativeDatepicker
-                        id="DateSelectionIDTwo"
-                      // ref={nativeDatepickerRef}
-                      // value={date}
-                      // onChange={handleDatePickerChange}
-                      />
-                    </label>
-                  </div>
-                  {false && (
-                    <p className="text-[red]">{"errors.errors2.date"}</p>
-                  )}
-                </div>
-              </div>
-              {/* ////////////////////////////////// */}
-              {/* 2 */}
-              {/* <StartTimePicker
-                  handleChange={handleChange}
-                  setValues={setValues}
-                  values={values}
-                  errors={errors}
-                /> */}
-              <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
-                <div className="w-full relative">
-                  <label htmlFor="StartTime" className="block mb-2">
-                    <span className="w-full text-xl font-bold">*</span>Start Time
-                  </label>
-                  <div
-                    className={`relative bg-white w-full h-fit flex justify-between 
-                        items-center rounded-md overflow-hidden indent-4 py-1 focus:outline 
-                        focus:outline-[1px] shadow-md ${false ? "border border-[red] outline-offset-2" : "border-none"
-                      }`}
-                  >
-                    <input
-                      type="time"
-                      id="StartTime"
-                      // ref={startTimeRef}
-                      // value={values.startTime || ""}
-                      // onChange={handleStartTimeChange}
-                      className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
-                    />
-                    <label
-                      type="button"
-                      aria-label="button"
-                      htmlFor="StartTime"
-                      // onClick={handleClickStartTime}
-                      className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
-                    >
-                      <img
-                        src={Icon_awesome_clock}
-                        alt="Clock Icon"
-                        className="block w-4 h-4 scale-150 pointer-events-auto"
-                      />
-                    </label>
-                  </div>
-                  {false && (
-                    <p className="text-[red]">{"errors.errors2.startTime"}</p>
-                  )}
-                </div>
-              </div>
-              {/* ////////////////////////////////// */}
+                />
 
-              {/* 3 */}
-              {/* <EndTimePicker
+                {/* 2 */}
+                <StartTimePicker
                   handleChange={handleChange}
                   setValues={setValues}
                   values={values}
                   errors={errors}
-                /> */}
-              <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
-                <div className="w-full relative">
-                  <label htmlFor="EndTime" className="block mb-2">
-                    <span className="w-full text-xl font-bold">*</span>End Time (Optional)
-                  </label>
-                  <div
-                    className={`relative bg-white w-full h-fit flex justify-between 
-                        items-center rounded-md overflow-hidden indent-4 py-1 focus:outline 
-                        focus:outline-[1px] shadow-md ${false ? "border border-[red] outline-offset-2" : "border-none"
-                      }`}
-                  >
-                    <input
-                      type="time"
-                      id="EndTime"
-                      // ref={endTimeRef}
-                      // value={values.endTime || ""}
-                      // onChange={handleEndTimeChange}
-                      className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
-                    />
-                    <label
-                      type="button"
-                      aria-label="button"
-                      htmlFor="EndTime"
-                      // onClick={handleClickEndTime}
-                      className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
-                    >
-                      <img
-                        src={Icon_awesome_clock}
-                        alt="Clock Icon"
-                        className="block w-4 h-4 scale-150 pointer-events-auto"
-                      />
-                    </label>
-                  </div>
-                  {false && (
-                    <p className="text-[red]">{"errors.errors2.endTime"}</p>
-                  )}
-                </div>
+                />
+
+                {/* 3 */}
+                <EndTimePicker
+                  handleChange={handleChange}
+                  setValues={setValues}
+                  values={values}
+                  errors={errors}
+                />
               </div>
-              {/* ////////////////////////////////// */}
-            </div>
-            {/* // )} */}
+            )}
             {/* end */}
           </div>
           {/* Third stage show els 👀👀 */}

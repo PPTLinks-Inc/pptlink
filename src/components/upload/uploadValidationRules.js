@@ -95,9 +95,12 @@ export default function validate(values) {
   }
 
   // Get the current date in YYYY-MM-DD format
-  const currentDate = new Date().toISOString().split('T')[0];
-  console.log(values.date - currentDate);
-  if (values.toggle && values.date && values.date < currentDate) {
+  const currentDate = new Date();
+  currentDate.setHours(1, 0, 0, 0); 
+  const choosenDate = new Date(values.date);
+  choosenDate.setHours(1, 0, 0, 0);
+  console.log("Choosen", choosenDate);
+  if (values.toggle && values.date && choosenDate < currentDate) {
     errors2.date = "Date cannot be in the past";
   }
 
@@ -105,7 +108,7 @@ export default function validate(values) {
     errors2.startTime = "Select when presentation starts";
   }
 
-  if (values.toggle && values.startTime && values.endTime) {
+  if (values.toggle && values.startTime.length !== 0) {
     const startTime = new Date(`1970-01-01T${values.startTime}:00Z`).getTime();
     const endTime = new Date(`1970-01-01T${values.endTime}:00Z`).getTime();
     const tenMinutesInMillis = 10 * 60 * 1000;
@@ -113,10 +116,6 @@ export default function validate(values) {
     if ((endTime - startTime) < tenMinutesInMillis) {
       errors2.endTime = "End time must be at least 10 minutes after start time";
     }
-  }
-
-  if (values.toggle && values.endTime <= values.startTime) {
-    errors2.endTime = "End time cannot be less or equal to start time";
   }
 
   return { errors, errors2 };

@@ -32,7 +32,7 @@
   }
 
   NativeDatepicker.prototype.setValue = function setValue(fullString) {
-    var match = fullString.match(dateRegex);
+    var match = fullString?.match(dateRegex);
     if (match) {
       this.fullValue = fullString;
       this.dateValue = match[0];
