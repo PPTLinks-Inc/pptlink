@@ -246,5 +246,5 @@ export default function useSignalling(
     [isReady]
   );
 
-  return { error, loading, success, rtm, users: userArr, usersObj: users, numberOfUsers, host, changeMicState, acceptMicRequest };
+  return { error, loading, success, users: userArr, usersObj: users, numberOfUsers, host, changeMicState, acceptMicRequest };
 }

@@ -10,6 +10,7 @@ import anim_img4 from "/team/pptlink_resources/presentation-education-svgrepo-co
 import anim_img5 from "/team/pptlink_resources/analytics-presentation-svgrepo-com.png";
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
+import sms from "/team/pptlink_resources/Group 33.png";
 import Accordion from "../accordion/accordion";
 import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
@@ -488,12 +489,41 @@ export default function NewHome() {
                     <option value="" disabled>
                       Reason for writing?
                     </option>
-                    <option value="dog">Dog</option>
-                    <option value="cat">Cat</option>
-                    <option value="hamster">Hamster</option>
-                    <option value="parrot">Parrot</option>
-                    <option value="spider">Spider</option>
-                    <option value="goldfish">Goldfish</option>
+                    <option value="Perfomance issues">
+                      Slow platform and frequent lags
+                    </option>
+
+                    <option value="Technical bugs">Frequent crashes</option>
+
+                    <option value="Interface design issues">
+                      Difficulty in navigation and design
+                    </option>
+
+                    <option value="Compatibility issues">
+                      Poor compatibility with operating systems or device
+                    </option>
+
+                    <option value="UPload/Download problems">
+                      Problems uploading or downloading file
+                    </option>
+
+                    <option value="Features request">
+                      Missing essential features
+                    </option>
+
+                    <option value="Customer Support">
+                      Slow or unhelpful customer support
+                    </option>
+
+                    <option value="Account Management">
+                      Difficulties with account settings or access
+                    </option>
+
+                    <option value="Security Concerns">
+                      Concerns about data security and privacy
+                    </option>
+
+                    <option value="Other">Other messages</option>
                   </select>
                 </div>
 
@@ -532,10 +562,10 @@ export default function NewHome() {
               className="w-2/5 min-h-[30rem] maxScreenMobile:w-full"
             >
               <div className="w-full mb-10">
-                <h4 className="mb-3">Call US</h4>
+                <h4 className="mb-3">Call Us</h4>
                 <p className="text-[0.8rem] mb-3">
-                  Ready to the next step? Have a question or need guidance? Call
-                  us now and lets discuss how we can help you achieve your goal.
+                  Have a question or need guidance? Call us now and lets discuss
+                  how we can help you achieve your goal.
                 </p>
                 <div className="flex items-center">
                   <img
@@ -553,8 +583,8 @@ export default function NewHome() {
               <div className="w-full mb-10">
                 <h4 className="mb-3">Visit Us</h4>
                 <p className="text-[0.8rem] mb-3">
-                  We’d love to welcome you to our office. Visit us and let’s
-                  discuss your project. We can’t wait to see you.
+                  We’d love to welcome you to our office. Visit us let’s discuss
+                  your project.
                 </p>
                 <div className="flex items-center">
                   <img
@@ -578,8 +608,8 @@ export default function NewHome() {
                 </p>
                 <div className="flex items-center">
                   <img
-                    src={location}
-                    alt={location}
+                    src={sms}
+                    alt={sms}
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />

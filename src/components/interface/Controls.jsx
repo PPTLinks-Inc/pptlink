@@ -47,7 +47,8 @@ export default function Controls({ containerRef, actionsActive }) {
     acceptMicRequest,
     micState,
     setMicState,
-    networkStatus
+    networkStatus,
+    tokens
   } = useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
@@ -428,7 +429,8 @@ export default function Controls({ containerRef, actionsActive }) {
               e.preventDefault();
               if (!userName) return toast.error("Please enter your name");
               try {
-                await fetchRtcToken.mutateAsync();
+                if (!tokens)
+                  await fetchRtcToken.mutateAsync();
                 setJoinAudio(true);
                 setEnterName(false);
               } catch (error) {
