@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import "../../assets/styles/general_css.css";
 import img_feather from "/Icon-feather-upload-cloud.svg";
 import img_plus from "/Icon-awesome-plus.png";
-import upload_progress_svg from "/upload_progress_svg.svg";
 import validate from "./uploadValidationRules";
 import useForm from "./useForm";
+import Uploadanimation from "./uploadAnim";
 import { DatePicker, EndTimePicker, StartTimePicker } from "./calender";
 
 export default function NewUploadPage() {
@@ -90,6 +90,11 @@ export default function NewUploadPage() {
     validate
   );
 
+  // cancel upload
+  const cancelUpload = () => {
+    setValues(prev => ({ ...prev, file: "" }));
+  }
+
   // scroll page to the top when currentView changes
   useEffect(() => {
     if (scrollableRef.current) {
@@ -99,7 +104,7 @@ export default function NewUploadPage() {
 
   useEffect(() => {
 
-    if (!values.toggle) { 
+    if (!values.toggle) {
       setValues(prev => ({ ...prev, date: "", startTime: "", endTime: "" }));
     }
   }, [values.toggle]);
@@ -194,28 +199,11 @@ export default function NewUploadPage() {
             </div>
 
             {/* first stage 🐱‍👤😒 loading animation onNext remain at top */}
-            {values.file && !errors.errors?.file && (
-              <div className="w-[70%] m-auto my-6 flex justify-between items-center">
-                <span className="block w-fit h-fit">
-                  <img
-                    src={upload_progress_svg}
-                    alt={upload_progress_svg}
-                    className="block w-32 aspect-square contrast-200"
-                  />
-                </span>
-                <div className="w-[calc(100%-8rem)] ">
-                  <div className="text-center relative">
-                    <p className="text-[#ffa500] text-[1.2rem] font-light italic">
-                      {`${values.file.name} Uploading...`}
-                    </p>
-                    <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
-                      3500kbs
-                    </span>
-                  </div>
-                  <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[40%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
-                </div>
-              </div>
-            )}
+            <Uploadanimation
+              cancelUpload={cancelUpload}
+              values={values}
+              errors={errors}
+            />
             {/* first stage 🐱‍👤😒 onNext remove */}
             <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
               <label htmlFor="title" className="block mb-2">
@@ -374,30 +362,13 @@ export default function NewUploadPage() {
             </div>
           </div>
           {/* first stage second 🐱‍👤😒 loading animation onNext remain at top */}
-          {values.file && !errors.errors.file && (
-            <div
-              className={`w-[70%] ${currentView === 2 ? "flex" : "hidden"} m-auto my-6 justify-between items-center`}
-            >
-              <span className="block w-fit h-fit">
-                <img
-                  src={upload_progress_svg}
-                  alt={upload_progress_svg}
-                  className="block w-32 aspect-square contrast-200"
-                />
-              </span>
-              <div className="w-[calc(100%-8rem)] ">
-                <div className="text-center relative">
-                  <p className="text-[#ffa500] text-[1.2rem] font-light italic">
-                    {`${values.file.name} Uploading...`}
-                  </p>
-                  <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
-                    3500kbs
-                  </span>
-                </div>
-                <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[80%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
-              </div>
-            </div>
-          )}
+          {currentView === 2 &&
+            <Uploadanimation
+              cancelUpload={cancelUpload}
+              values={values}
+              errors={errors}
+            />
+          }
           {/* Second stage show els 👀👀 */}
           <div
             className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}
@@ -523,21 +494,21 @@ export default function NewUploadPage() {
                         <span>Name</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          {values.name}
+                          {values.name ? values.name : "No Name Set"}
                         </p>
                       </li>
                       <li className="block w-full mb-4 px-4">
                         <span>Bio</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          {values.bio ? values.bio : ""}
+                          {values.bio ? values.bio : "No Bios Set"}
                         </p>
                       </li>
                       <li className="block w-full mb-4 px-4">
                         <span>Social Media Link</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          {values.social ? values.social : ""}
+                          {values.social ? values.social : "No Social Link Set"}
                         </p>
                       </li>
                     </ul>
@@ -546,23 +517,30 @@ export default function NewUploadPage() {
               </div>
               <div className="!w-[50%] _overflow-auto min-h-screen bg-[#ffa500] pb-4 flex flex-col justify-between">
                 <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem] mt-0">
-                  PRESENTATION TITLE
+                  PRESENTATION DETAILS
                 </p>
                 <div className="w-[95%] m-auto mb-0 min-h-[calc(100%-(5.7rem))] _overflow-auto bg-[#FFFFF0] text-black">
                   <ul className="block w-full pt-4">
                     <li className="block w-full mb-4 px-4">
+                      <span>Presentation title</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">
+                        {values.title ? values.title : "No Title Set"}
+                      </p>
+                    </li>
+                    <li className="block w-full mb-4 px-4">
                       <span>Description</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        {values.description ? values.description : ""}
+                        {values.description ? values.description : "No Description Set"}
                       </p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Privacy</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">{values.privacy ? values.privacy : ""}</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.privacy ? values.privacy : "No Privacy Set"}</p>
                     </li>
-                    <li className="block w-full mb-4 px-4">
+                    {/* <li className="block w-full mb-4 px-4">
                       <span>Key Words</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
@@ -570,18 +548,18 @@ export default function NewUploadPage() {
                           return JSON.stringify([...element]);
                         }) : ""}
                         {/* Cybersecurity, Cybercrimes, Cyber war, cyber protection,
-                        Hacking... */}
+                        Hacking...
                       </p>
-                    </li>
+                    </li> */}
                     <li className="block w-full mb-4 px-4">
                       <span>Category</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">{values.category ? values.category : ""}</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.category ? values.category : "No Category Set"}</p>
                     </li>
                     <li className="block w-full mb-4 px-4">
-                      <span>Shareable</span>
+                      <span>Downloadable</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">{values.downloadable ? values.downloadable : ""}</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.downloadable ? "Downloadable" : "Not downloadable"}</p>
                     </li>
                   </ul>
                   <p className="bg-[#ffa500] w-3/6 pl-4 py-2">SCHEDULE</p>
@@ -590,16 +568,14 @@ export default function NewUploadPage() {
                       <span>Date</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        {values.date ? values.date : ""}
-                        {/* 21st January, 2024 */}
+                        {values.date ? `Start Date: ${values.date}` : "No Date Set"}
                       </p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Time</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        {values.startTime ? values.startTime : ""}-{values.endTime ? values.endTime : ""}
-                        {/* 2 : 00 pm - 4: 00 pm */}
+                        {values.startTime ? `Start Time(${values.startTime}) ` : "No Start Time Set "}-{values.endTime ? ` End Time(${values.endTime})` : " No End Time Set"}
                       </p>
                     </li>
                   </ul>
