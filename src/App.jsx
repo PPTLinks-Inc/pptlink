@@ -21,6 +21,7 @@ import SignPage from "./components/sign/sign";
 import NewUploadPage from "./components/upload/newupload";
 import DateTest from "./components/upload/dateTest";
 import "./assets/styles/general_css.css";
+import ErrorBoundary from "./ErrorBoundary";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -46,6 +47,8 @@ function App() {
 
   useQuery({
     queryKey: ["user"],
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data } = await axios.get("/api/v1/auth/user");
       setUser(data.user);
@@ -74,9 +77,11 @@ function App() {
           <Route
             path="/:id"
             element={
-              <PresentationContextProvider>
-                <Interface />
-              </PresentationContextProvider>
+              <ErrorBoundary>
+                <PresentationContextProvider>
+                  <Interface />
+                </PresentationContextProvider>
+              </ErrorBoundary>
             }
           />
           <Route path="signin" element={<SignPage />} />
