@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import "../../assets/styles/general_css.css";
 import img_feather from "/Icon-feather-upload-cloud.svg";
 import img_plus from "/Icon-awesome-plus.png";
-import upload_progress_svg from "/upload_progress_svg.svg";
 import validate from "./uploadValidationRules";
 import useForm from "./useForm";
+import Uploadanimation from "./uploadAnim";
 import { DatePicker, EndTimePicker, StartTimePicker } from "./calender";
 
 export default function NewUploadPage() {
@@ -12,10 +12,7 @@ export default function NewUploadPage() {
   const addcategoryref = useRef(null);
   const scrollableRef = useRef(null);
   const [categories, setCategories] = useState([
-    ["category 1", false],
-    ["category 2", false],
-    ["category 3", false],
-    ["category 4", false]
+    ["Category One", false]
   ]);
   const [addedCategory, setAddedCategory] = useState("");
   const [categoryError, setCategoryError] = useState("");
@@ -69,19 +66,12 @@ export default function NewUploadPage() {
       return prev - 1;
     });
 
-  //   const showNextStage = (num) => setCurrentView(num);
   const showNextStage = () =>
     setCurrentView((prev) => {
       if (prev >= 3) return (prev = 3);
+      console.log("prev value for next ", prev);
       return prev + 1;
     });
-
-  // scroll page to the top when currentView changes
-  useEffect(() => {
-    if (scrollableRef.current) {
-      scrollableRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [currentView]);
 
   const nextFunction = (updateNum) => {
     if (Object.keys(errors.errors).length === 0 && currentView === updateNum) {
@@ -95,10 +85,29 @@ export default function NewUploadPage() {
   };
 
   // form validation functions
-  const { handleChange, handleSubmit, values, errors } = useForm(
+  const { handleChange, handleSubmit, setValues, values, errors } = useForm(
     nextFunction,
     validate
   );
+
+  // cancel upload
+  const cancelUpload = () => {
+    setValues(prev => ({ ...prev, file: "" }));
+  }
+
+  // scroll page to the top when currentView changes
+  useEffect(() => {
+    if (scrollableRef.current) {
+      scrollableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentView]);
+
+  useEffect(() => {
+
+    if (!values.toggle) {
+      setValues(prev => ({ ...prev, date: "", startTime: "", endTime: "" }));
+    }
+  }, [values.toggle]);
 
   // form validation functions
   return (
@@ -161,7 +170,7 @@ export default function NewUploadPage() {
             {/* first stage 🐱‍👤😒 upload el onNext remove */}
             {/* <div className="w-[90%] h-[15rem] m-auto bg-black border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none"> */}
             <div
-              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none`}
+              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} ${!errors.errors?.file && values.file && "hidden"} border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none`}
             >
               <input
                 type="file"
@@ -190,28 +199,11 @@ export default function NewUploadPage() {
             </div>
 
             {/* first stage 🐱‍👤😒 loading animation onNext remain at top */}
-            {values.file && !errors.errors?.file && (
-              <div className="w-[70%] m-auto my-6 flex justify-between items-center">
-                <span className="block w-fit h-fit">
-                  <img
-                    src={upload_progress_svg}
-                    alt={upload_progress_svg}
-                    className="block w-32 aspect-square contrast-200"
-                  />
-                </span>
-                <div className="w-[calc(100%-8rem)] ">
-                  <div className="text-center relative">
-                    <p className="text-[#ffa500] text-[1.2rem] font-light italic">
-                      {`${values.file.name} Uploading...`}
-                    </p>
-                    <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
-                      3500kbs
-                    </span>
-                  </div>
-                  <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[80%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
-                </div>
-              </div>
-            )}
+            <Uploadanimation
+              cancelUpload={cancelUpload}
+              values={values}
+              errors={errors}
+            />
             {/* first stage 🐱‍👤😒 onNext remove */}
             <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
               <label htmlFor="title" className="block mb-2">
@@ -370,30 +362,13 @@ export default function NewUploadPage() {
             </div>
           </div>
           {/* first stage second 🐱‍👤😒 loading animation onNext remain at top */}
-          {values.file && !errors.errors.file && (
-            <div
-              className={`w-[70%] ${currentView === 2 ? "flex" : "hidden"} m-auto my-6 justify-between items-center`}
-            >
-              <span className="block w-fit h-fit">
-                <img
-                  src={upload_progress_svg}
-                  alt={upload_progress_svg}
-                  className="block w-32 aspect-square contrast-200"
-                />
-              </span>
-              <div className="w-[calc(100%-8rem)] ">
-                <div className="text-center relative">
-                  <p className="text-[#ffa500] text-[1.2rem] font-light italic">
-                    {`${values.file.name} Uploading...`}
-                  </p>
-                  <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
-                    3500kbs
-                  </span>
-                </div>
-                <div className="w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[80%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]"></div>
-              </div>
-            </div>
-          )}
+          {currentView === 2 &&
+            <Uploadanimation
+              cancelUpload={cancelUpload}
+              values={values}
+              errors={errors}
+            />
+          }
           {/* Second stage show els 👀👀 */}
           <div
             className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}
@@ -477,18 +452,23 @@ export default function NewUploadPage() {
                 {/* 1 */}
                 <DatePicker
                   handleChange={handleChange}
+                  setValues={setValues}
                   values={values}
                   errors={errors}
                 />
+
                 {/* 2 */}
                 <StartTimePicker
                   handleChange={handleChange}
+                  setValues={setValues}
                   values={values}
                   errors={errors}
                 />
-                {/* 3 */}{" "}
+
+                {/* 3 */}
                 <EndTimePicker
                   handleChange={handleChange}
+                  setValues={setValues}
                   values={values}
                   errors={errors}
                 />
@@ -514,26 +494,21 @@ export default function NewUploadPage() {
                         <span>Name</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          Lorem ipsum dolor sit amet
+                          {values.name ? values.name : "No Name Set"}
                         </p>
                       </li>
                       <li className="block w-full mb-4 px-4">
                         <span>Bio</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          Lorem ipsum dolor sit amet, consetetur sadipscing
-                          elitr, sed diam nonumy eirmod tempor invidunt ut
-                          labore et dolore magna aliquyam erat, sed diam
-                          voluptua. At vero eos et accusam et justo duo dolores
-                          et ea rebum. Stet clita kasd gubergren, no sea
-                          takimata
+                          {values.bio ? values.bio : "No Bios Set"}
                         </p>
                       </li>
                       <li className="block w-full mb-4 px-4">
                         <span>Social Media Link</span>
                         <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                         <p className="text-[0.9rem] italic mt-2">
-                          Rosemary_Haley@example.com
+                          {values.social ? values.social : "No Social Link Set"}
                         </p>
                       </li>
                     </ul>
@@ -542,43 +517,49 @@ export default function NewUploadPage() {
               </div>
               <div className="!w-[50%] _overflow-auto min-h-screen bg-[#ffa500] pb-4 flex flex-col justify-between">
                 <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem] mt-0">
-                  PRESENTATION TITLE
+                  PRESENTATION DETAILS
                 </p>
                 <div className="w-[95%] m-auto mb-0 min-h-[calc(100%-(5.7rem))] _overflow-auto bg-[#FFFFF0] text-black">
                   <ul className="block w-full pt-4">
                     <li className="block w-full mb-4 px-4">
+                      <span>Presentation title</span>
+                      <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
+                      <p className="text-[0.9rem] italic mt-2">
+                        {values.title ? values.title : "No Title Set"}
+                      </p>
+                    </li>
+                    <li className="block w-full mb-4 px-4">
                       <span>Description</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                        sed diam nonumy eirmod tempor invidunt ut labore et
-                        dolore magna aliquyam erat, sed diam voluptua. At vero
-                        eos et accusam et justo duo dolores et ea rebum. Stet
-                        clita kasd gubergren, no sea takimata
+                        {values.description ? values.description : "No Description Set"}
                       </p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Privacy</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">Public</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.privacy ? values.privacy : "No Privacy Set"}</p>
                     </li>
-                    <li className="block w-full mb-4 px-4">
+                    {/* <li className="block w-full mb-4 px-4">
                       <span>Key Words</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        Cybersecurity, Cybercrimes, Cyber war, cyber protection,
+                        {values.key ? values.key.array.forEach(element => {
+                          return JSON.stringify([...element]);
+                        }) : ""}
+                        {/* Cybersecurity, Cybercrimes, Cyber war, cyber protection,
                         Hacking...
                       </p>
-                    </li>
+                    </li> */}
                     <li className="block w-full mb-4 px-4">
                       <span>Category</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">Educational</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.category ? values.category : "No Category Set"}</p>
                     </li>
                     <li className="block w-full mb-4 px-4">
-                      <span>Shareable</span>
+                      <span>Downloadable</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
-                      <p className="text-[0.9rem] italic mt-2">YES</p>
+                      <p className="text-[0.9rem] italic mt-2">{values.downloadable ? "Downloadable" : "Not downloadable"}</p>
                     </li>
                   </ul>
                   <p className="bg-[#ffa500] w-3/6 pl-4 py-2">SCHEDULE</p>
@@ -587,14 +568,14 @@ export default function NewUploadPage() {
                       <span>Date</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        21st January, 2024
+                        {values.date ? `Start Date: ${values.date}` : "No Date Set"}
                       </p>
                     </li>
                     <li className="block w-full mb-4 px-4">
                       <span>Time</span>
                       <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                       <p className="text-[0.9rem] italic mt-2">
-                        2 : 00 pm - 4: 00 pm
+                        {values.startTime ? `Start Time(${values.startTime}) ` : "No Start Time Set "}-{values.endTime ? ` End Time(${values.endTime})` : " No End Time Set"}
                       </p>
                     </li>
                   </ul>

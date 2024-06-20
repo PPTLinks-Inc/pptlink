@@ -6,12 +6,25 @@ const useForm = (callback, validate) => {
     file: null,
     downloadable: "true",
     privacy: "public",
-    date: "",
-    startTime: ''
+    date: new Date().toISOString(),
+    startTime: "",
+    endTime: ""
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const isInitialRender = useRef(true);
+
+  useEffect(() => {
+    if (!values.toggle && Object.keys(errors).length) {
+      setErrors((prev) => {
+        const temp = prev;
+        temp.errors2.date = "";
+        temp.errors2.startTime = "";
+        temp.errors2.endTime = "";
+        return temp;
+      });
+    }
+  }, [values.toggle]);
 
   useEffect(() => {
     if (isInitialRender.current) {
@@ -35,7 +48,6 @@ const useForm = (callback, validate) => {
 
     const validationErrors = validate(values);
     setErrors(validationErrors);
-    // this should be && not ||, only when no error in both shoulb form be submitted...
     if (
       Object.keys(validationErrors.errors).length === 0 ||
       Object.keys(validationErrors.errors2).length === 0
@@ -45,7 +57,6 @@ const useForm = (callback, validate) => {
   };
 
   const handleChange = (event) => {
-    // event.persist(); // what is this sapost to do...😒🤦‍♀️I don't tink it's a thing... it should be defined... it not yet so it's not a thing...
     const { name, value, files, checked } = event.target;
 
     setValues((prevValues) => ({
@@ -102,10 +113,11 @@ const useForm = (callback, validate) => {
     }
   };
 
-  console.log("Checks: ", values);
+  console.log("Checks values: ", values);
   return {
     handleChange,
     handleSubmit,
+    setValues,
     values,
     errors
   };
