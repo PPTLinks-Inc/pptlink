@@ -1,18 +1,72 @@
 import { useState, useEffect, useRef } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { SERVER_URL } from "../../constants/routes";
+import axios from "axios";
 
 const useForm = (callback, validate) => {
   const [values, setValues] = useState({
     toggle: false,
     file: null,
     downloadable: "true",
-    privacy: "public",
+    privacy: "PUBLIC",
     date: new Date().toISOString(),
     startTime: "",
     endTime: ""
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadProcessing, setUploadProcessing] = useState(false);
   const isInitialRender = useRef(true);
+
+  function onUploadProgress(progressEvent) {
+    const { loaded, total } = progressEvent;
+    let percent = Math.floor((loaded * 100) / total);
+    setUploadProgress(percent);
+  }
+
+  const uploadPresentation = useMutation({
+    mutationKey: ["upload-ppt"],
+    mutationFn: function (formData) {
+      return axios.post(`${SERVER_URL}/api/v1/ppt/upload`, formData, {
+        onUploadProgress
+      });
+    },
+    onSuccess: function () {
+      setUploadProcessing(true);
+    },
+    onError: function (error) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        errors: { ...prevErrors.errors, file: error.response?.data.message || error.response.message }
+      }));
+    }
+  });
+
+  const savePresentation = useMutation({
+    mutationKey: ["save-presentation"],
+    mutationFn: function (data) {
+      return axios.post(`${SERVER_URL}/api/v1/ppt/presentation`, data);
+    },
+    onSuccess: function ({data}) {
+      window.location.replace(`/${data.liveId}`);
+    },
+    onError: function (error) {
+      alert(error.response?.data.message || error.response.message);
+    }
+  });
+
+  useEffect(() => {
+    // if (values.file === null) {
+    //   setUploadProgress(0);
+
+    // }
+    if (!uploadPresentation.isPending && values.file) {
+      const formData = new FormData();
+      formData.append("ppt", values.file);
+      uploadPresentation.mutate(formData);
+    }
+  }, [values.file]);
 
   useEffect(() => {
     if (!values.toggle && Object.keys(errors).length) {
@@ -43,11 +97,33 @@ const useForm = (callback, validate) => {
     }
   }, [errors, callback, submitting]);
 
-  const handleSubmit = (event) => {
-    if (event) event.preventDefault();
-
+  const handleSubmit = (currentView) => {
     const validationErrors = validate(values);
     setErrors(validationErrors);
+
+    console.log("Errors", validationErrors);
+    if (currentView === 3 && Object.keys(validationErrors.errors).length === 0 && Object.keys(validationErrors.errors2).length === 0 && values?.tempFileId) {
+      console.log("Submitting", values);
+      const data = {
+        title: values.title,
+        description: values.description,
+        category: JSON.parse(values.category),
+        downloadable: values.downloadable === "true",
+        linkType: values.privacy,
+        tempFileId: values.tempFileId,
+        presenterName: values.name,
+        bio: values?.bio,
+        socialMediaLink: values?.social,
+        presentationDate: values.toggle ? values?.date : null,
+        presentationStartTime: values.toggle ? values?.startTime : null,
+        presentationEndTime: values.toggle ? values?.endTime : null
+      }
+      //remove null values
+      Object.keys(data).forEach(key => data[key] === null && delete data[key]);
+      savePresentation.mutate(data);
+      return;
+    }
+
     if (
       Object.keys(validationErrors.errors).length === 0 ||
       Object.keys(validationErrors.errors2).length === 0
@@ -70,6 +146,7 @@ const useForm = (callback, validate) => {
     if (name === "file" && files[0]) {
       const file = files[0];
       const mimeTypes = [
+        "application/wps-office.pptx",
         "application/vnd.ms-powerpoint",
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         "application/vnd.openxmlformats-officedocument.presentationml.template",
@@ -80,10 +157,10 @@ const useForm = (callback, validate) => {
         "application/vnd.ms-powerpoint.slideshow.macroEnabled.12"
       ];
 
-      if (file.size > 20 * 1024 * 1024) {
+      if (file.size > 10 * 1024 * 1024) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          errors: { ...prevErrors.errors, file: "The file is too large" }
+          errors: { ...prevErrors.errors, file: "File should not be more than 10MB" }
         }));
         return;
       }
@@ -101,7 +178,7 @@ const useForm = (callback, validate) => {
 
       setErrors((prevErrors) => ({
         ...prevErrors,
-        errors: { ...prevErrors.errors, file: "" }
+        errors: { ...prevErrors.errors, file: null }
       }));
     }
 
@@ -113,13 +190,15 @@ const useForm = (callback, validate) => {
     }
   };
 
-  console.log("Checks values: ", values);
   return {
     handleChange,
     handleSubmit,
     setValues,
+    savePresentation,
     values,
-    errors
+    errors,
+    uploadProgress,
+    uploadProcessing
   };
 };
 

@@ -2,10 +2,8 @@
 /* eslint-disable react/prop-types */
 import { Outlet } from "react-router";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { DASHBOARD, LOGIN, UPLOAD } from "../../constants/routes";
-import { useRef } from "react";
-import { useContext, useEffect } from "react";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import MovingEllipses from "../animation/MovingEllipes";
@@ -108,10 +106,11 @@ export default function Root() {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${color === "black"
-          ? " bg-black text-slate-200"
-          : "bg-slate-200 text-black"
-          }`}
+        className={`px-7 rounded-xl py-1 ${
+          color === "black"
+            ? " bg-black text-slate-200"
+            : "bg-slate-200 text-black"
+        }`}
         onClick={() => handleClick()}
       >
         Present
@@ -125,14 +124,15 @@ export default function Root() {
     >
       <Backmenu handleDropdown={handleDropdown} />
       <div
-        className={`h-fit bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
-          ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
-          : "transition-transform translate-y-0 ease-in-out top-0"
-          }`}
+        className={`h-fit bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
+          page.dropdown
+            ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
+            : "transition-transform translate-y-0 ease-in-out top-0"
+        }`}
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
-        <Outlet />
+          <Outlet />
         <MovingEllipses />
         <Footer />
       </div>
