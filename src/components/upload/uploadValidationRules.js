@@ -4,6 +4,7 @@ export default function validate(values) {
 
   // Upload file error checks
   const mimeTypes = [
+    "application/wps-office.pptx",
     "application/vnd.ms-powerpoint",
     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     "application/vnd.openxmlformats-officedocument.presentationml.template",
@@ -15,7 +16,7 @@ export default function validate(values) {
   ];
 
   if (values.file) {
-    if (values.file.size > 20 * 1024 * 1024) {
+    if (values.file.size > 10 * 1024 * 1024) {
       errors.file = "The file is too large";
     }
 
@@ -24,7 +25,7 @@ export default function validate(values) {
     }
   }
 
-  if (!values.file) {
+  if (!values.file && !values?.tempFileId) {
     errors.file = "Upload a presentation file";
   }
 
@@ -73,11 +74,11 @@ export default function validate(values) {
   // Social media link validation
   const socialMediaRegexes = [
     /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]{20,}$/,
-    /^(https?:\/\/)?(www\.)?(web\.)?facebook\.com\/[a-zA-Z0-9.\/_-]+$/,
+    /^(https?:\/\/)?(www\.)?(web\.)?facebook\.com\/[a-zA-Z0-9./_-]+$/,
     /^(https?:\/\/)?(www\.)?instagram\.com\/[a-zA-Z0-9._]{1,}/,
-    /^https:\/\/www\.tiktok\.com\/@[\w.-]+(\/video\/\d+)?(\?[^\/\s]*)?$/,
+    /^https:\/\/www\.tiktok\.com\/@[\w.-]+(\/video\/\d+)?(\?[^/\s]*)?$/,
     /^(https?:\/\/)?(www\.)?(x\.com|twitter\.com)\//,
-    /^(https?:\/\/)?(www\.)?(youtube\.com\/(@[\w.-]+|[\w.-]+)|youtu\.be\/[\w.-]+)(\?[^\/\s]*)?$/,
+    /^(https?:\/\/)?(www\.)?(youtube\.com\/(@[\w.-]+|[\w.-]+)|youtu\.be\/[\w.-]+)(\?[^/\s]*)?$/,
     /^(https?:\/\/)?(www\.)?(t\.me|telegram\.me)\/[a-zA-Z0-9_]{5,32}$/
   ];
 
