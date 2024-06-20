@@ -9,7 +9,7 @@ canvas {
     background-color: black;
 }
 
-progress[value] {
+#interface-loader[value] {
     --color: rgb(226 232 240);
     /* the progress color */
     --background: black;
@@ -26,17 +26,17 @@ progress[value] {
     background: var(--background);
 }
 
-progress[value]::-webkit-progress-bar {
+#interface-loader[value]::-webkit-progress-bar {
     border-radius: 10em;
     background: var(--background);
 }
 
-progress[value]::-webkit-progress-value {
+#interface-loader[value]::-webkit-progress-value {
     border-radius: 10em;
     background: var(--color);
 }
 
-progress[value]::-moz-progress-bar {
+#interface-loader[value]::-moz-progress-bar {
     border-radius: 10em;
     background: var(--color);
 }
