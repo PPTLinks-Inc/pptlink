@@ -28,7 +28,7 @@ export default function Uploadanimation({ cancelUpload, values, errors, uploadPr
                                     3500kbs
                                 </span>
                             </div>
-                            <div className={`w-full relative mt-4 p-[.15rem] rounded-full border-[2px] border-[#80808092] before:block before:w-[${uploadProgress}%] before:absolute before:top-0 before:left-0 before:bottom-0 before:bg-[#ffa500]`}></div>
+                            <progress id="upload-loader" className="w-full" max={100} value={uploadProgress}></progress>
                         </>)}
                     </div>
                     <button className="block border-none text-[#ffa500] text-[.8rem] shadow-md p-2 rounded ml-4" onClick={cancelUpload}>Cancel</button>
