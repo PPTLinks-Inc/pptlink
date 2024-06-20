@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import AgoraRTM from "agora-rtm-sdk";
+import { RTM } from "agora-rtm-sdk";
 import { AGORA_APP_ID, MIC_STATE } from "../../../constants/routes";
 import micRequest from "../assets/mic-request.mp3";
 import { toast } from "react-toastify";
@@ -143,7 +143,7 @@ export default function useSignalling(
           setError(false);
           setSuccess(false);
           setLoading(true);
-          rtm.current = new AgoraRTM.RTM(AGORA_APP_ID, tokens.rtcUid, {
+          rtm.current = new RTM(AGORA_APP_ID, tokens.rtcUid, {
             token: tokens.rtmToken,
             useStringUserId: true
           });

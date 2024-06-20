@@ -8,7 +8,6 @@ import Home from "./components/home/home";
 import NotFound from "./components/404/404";
 import Dashboard from "./components/profile/dashboard";
 import List from "./components/list/list";
-import Upload from "./components/upload/upload";
 import Interface from "./components/interface/Interface";
 import Root from "./components/root/root";
 import Institutions from "./components/institutions/institutions";
@@ -68,12 +67,10 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="institutions" element={<List />} />
             <Route path="institutions/:id" element={<Institutions />} />
-            <Route path="upload" element={<Upload />} />
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
-            <Route path="newupload" element={<NewUploadPage />} />
+            <Route path="upload" element={<NewUploadPage />} />
           </Route>
-          {/* <Route path="about-us" element={<About />} /> */}
           <Route
             path="/:id"
             element={
