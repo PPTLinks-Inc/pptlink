@@ -1,13 +1,30 @@
-// variables
+// /////////////////////variables//////////////////////////////
 $maxHeight: 100svh;
-
+$mediaWidth: 768px;
+// //////////////////////functions//////////////////////////////
+@mixin is_mediaQuery_MaxWidth_Yes($width, $isMaxWidth: true) {
+    @if $isMaxWidth and $width {
+        @media screen and (max-width: $width) {
+            @content;
+        }
+    } @else if $isMaxWidth {
+        @media screen and (max-width: $mediaWidth) {
+            @content;
+        }
+    } @else if not $isMaxWidth and $width {
+        @media screen and (min-width: $width) {
+            @content;
+        }
+    } @else {
+        @media screen and (min-width: $mediaWidth) {
+            @content;
+        }
+    }
+}
+// ///////////////////////styles////////////////////////////////
 * {
     box-sizing: border-box !important;
     transition: all 50ms ease-in-out !important;
-
-    // &::-webkit-scrollbar {
-    //     display: none !important;
-    // }
 }
 
 .container {
@@ -51,7 +68,7 @@ button,
             transform: rotateZ(-15deg) scaleX(3);
         }
 
-        @media screen and (max-width: 768px) {
+        @include is_mediaQuery_MaxWidth_Yes {
             &::after {
                 top: 20vh;
             }
@@ -102,7 +119,7 @@ button,
             }
         }
 
-        @media screen and (max-width: 768px) {
+        @include is_mediaQuery_MaxWidth_Yes {
             display: flex !important;
             flex-direction: row;
             overflow-y: hidden;
@@ -186,6 +203,9 @@ button,
         z-index: -2;
         transform-origin: right top;
     }
+
+    @include is_mediaQuery_MaxWidth_Yes {
+    }
 }
 
 .chokes {
@@ -217,7 +237,9 @@ button,
     }
 
     & .addshadow {
-        box-shadow: 0.1px 0.1px 8px rgba(128, 128, 128, 0.4), -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
+        box-shadow:
+            0.1px 0.1px 8px rgba(128, 128, 128, 0.4),
+            -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
     }
 }
 

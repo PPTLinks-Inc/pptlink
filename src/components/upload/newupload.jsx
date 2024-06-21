@@ -116,9 +116,9 @@ export default function NewUploadPage() {
       ref={scrollableRef}
     >
       <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent min-h-screen z-50">
-        <h1 className="text-[3rem] text-[#FFFFF0]">New Presentation</h1>
+        <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[1rem] maxScreenMobile:text-center">New Presentation</h1>
         <hr />
-        <div className="form_tracker_wrapper w-full flex justify-center mb-20">
+        <div className="form_tracker_wrapper w-full flex justify-center mb-20 maxScreenMobile:w-screen">
           {/* Note: true simply means all inputs for that view is 
                     met("not empty and valid") you can use required. first 
                     stage need not have, by default it is what it is 👀🥂 */}
@@ -129,7 +129,7 @@ export default function NewUploadPage() {
             <span className="!block w-full text-[.5rem] text-center text-white">
               Upload <br />
               Presentation
-            </span>
+            </span> 
           </span>
           <span
             className={`${(currentView === 2 || currentView === 3) & true ? "active" : ""} !block text-center w-[calc(100%/4)] relative`}
