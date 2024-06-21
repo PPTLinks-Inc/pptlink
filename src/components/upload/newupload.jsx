@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import "../../assets/styles/general_css.css";
 import img_feather from "/Icon-feather-upload-cloud.svg";
+import img_featherTwo from "/Group92.png";
 import img_plus from "/Icon-awesome-plus.png";
 import validate from "./uploadValidationRules";
 import useForm from "./useForm";
@@ -71,7 +72,7 @@ export default function NewUploadPage() {
           setValues((prev) => ({ ...prev, tempFileId: data.tempDataId, file: null }));
         }
         else if (data.event === "upload-error") {
-          setValues((prev) => ({ ...prev, file: null, tempFileId: null}));
+          setValues((prev) => ({ ...prev, file: null, tempFileId: null }));
         }
       };
     }
@@ -181,24 +182,24 @@ export default function NewUploadPage() {
       className="upload_svg_cover min-h-[100vh] relative bg-[#FFFFF0]"
       ref={scrollableRef}
     >
-      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent min-h-screen z-50">
+      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent min-h-screen z-50 maxScreenMobile:w-full">
         <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[1rem] maxScreenMobile:text-center">New Presentation</h1>
         <hr />
-        <div className="form_tracker_wrapper w-full flex justify-center mb-20 maxScreenMobile:w-screen">
+        <div className="form_tracker_wrapper w-full flex justify-center mb-20 maxScreenMobile:!mb-2">
           {/* Note: true simply means all inputs for that view is 
                     met("not empty and valid") you can use required. first 
                     stage need not have, by default it is what it is 👀🥂 */}
-          <span className="active !block text-center w-[calc(100%/4)] relative">
+          <span className="active !block text-center w-[calc(100%/4)] relative maxScreenMobile:w-[calc(100%/3)]">
             <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
               1
             </span>
             <span className="!block w-full text-[.5rem] text-center text-white">
               Upload <br />
               Presentation
-            </span> 
+            </span>
           </span>
           <span
-            className={`${(currentView === 2 || currentView === 3) & true ? "active" : ""} !block text-center w-[calc(100%/4)] relative`}
+            className={`${(currentView === 2 || currentView === 3) & true ? "active" : ""} !block text-center w-[calc(100%/4)] relative maxScreenMobile:w-[calc(100%/3)]`}
           >
             <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
               2
@@ -209,7 +210,7 @@ export default function NewUploadPage() {
             </span>
           </span>
           <span
-            className={`${(currentView === 3) & true ? "active" : ""} !block text-center w-[calc(100%/4)] relative`}
+            className={`${(currentView === 3) & true ? "active" : ""} !block text-center w-[calc(100%/4)] relative maxScreenMobile:w-[calc(100%/3)]`}
           >
             <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
               3
@@ -221,9 +222,9 @@ export default function NewUploadPage() {
         </div>
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="addshadow w-full min-h-screen bg-[#FFFFF0] _shadow-md relative py-20"
+          className="addshadow w-full min-h-screen bg-[#FFFFF0] _shadow-md relative py-20 maxScreenMobile:pt-0"
         >
-          <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium">
+          <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium maxScreenMobile:hidden">
             {currentView === 1
               ? "Upload File"
               : currentView === 2
@@ -239,7 +240,10 @@ export default function NewUploadPage() {
             {/* first stage 🐱‍👤😒 upload el onNext remove */}
             {/* <div className="w-[90%] h-[15rem] m-auto bg-black border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none"> */}
             <div
-              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} ${!errors.errors?.file && values.file && "hidden"} border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none`}
+              className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} ${!errors.errors?.file && values.file && "hidden"} 
+              border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0] 
+              before:absolute before:top-0 before:left-0 before:pointer-events-none maxScreenMobile:w-full maxScreenMobile:bg-[black]
+               maxScreenMobile:before:bg-black`}
             >
               {canUpload && <input
                 type="file"
@@ -250,12 +254,19 @@ export default function NewUploadPage() {
                 className="block w-full h-full bg-[red] cursor-pointer"
               />}
               <div
-                className={`flex flex-col gap-2 justify-center items-center w-full h-full ${values?.tempFileId ? "bg-green-400" : canUpload ? "bg-[rgba(255,165,0,0.3)]" : "bg-rose-400"} absolute top-0 left-0 pointer-events-none`}
+                className={`flex flex-col gap-2 justify-center items-center w-full h-full
+                   ${values?.tempFileId ? "bg-green-400" : canUpload ? "bg-[rgba(255,165,0,0.3)]" :
+                     "bg-rose-400"} absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
               >
                 <img
                   src={img_feather}
                   alt={img_feather}
-                  className="block w-16 aspect-square"
+                  className="block w-16 aspect-square maxScreenMobile:hidden"
+                />
+                <img
+                  src={img_featherTwo}
+                  alt={img_featherTwo}
+                  className="hidden w-16 aspect-square maxScreenMobile:block"
                 />
                 {
                   values?.tempFileId ? (
@@ -269,10 +280,10 @@ export default function NewUploadPage() {
                     </>
                   ) : (canUpload ? (
                     <>
-                      <span className="w-fit h-fit text-black">
+                      <span className="w-fit h-fit text- maxScreenMobile:text-white">
                         Drop your file in here
                       </span>
-                      <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full">
+                      <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full maxScreenMobile:bg-white">
                         Browse...
                       </span>
                     </>
@@ -382,7 +393,7 @@ export default function NewUploadPage() {
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
             <div className="flex justify-between w-[90%] m-auto">
-              <div className="w-[48%] mr-auto flex flex-col justify-center _items-center h-fit mt-6 text-lg text-black">
+              <div className="w-[48%] maxScreenMobile:w-full mr-auto flex flex-col justify-center _items-center h-fit mt-6 text-lg text-black">
                 <div className="w-full relative">
                   <label htmlFor="publicSelector" className="block mb-2">
                     <sup className="w-full text-xl font-bold">*</sup>Category
@@ -395,7 +406,7 @@ export default function NewUploadPage() {
                       title="category"
                       onChange={handleChange}
                       id="publicSelector"
-                      className="block w-[68%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
+                      className="block w-[68%] maxScreenMobile:text-[0.8rem] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
                       value={values?.category}
                       disabled={categories.isLoading}
                     >
@@ -420,7 +431,7 @@ export default function NewUploadPage() {
                     <button
                       type="button"
                       onClick={addCategory}
-                      className="max-w-[30%] flex gap-1 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
+                      className="max-w-[30%] maxScreenMobile:text-[0.8rem] flex gap-1 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
                     >
                       <img
                         src={img_plus}
@@ -554,7 +565,7 @@ export default function NewUploadPage() {
             </span>
             {/* time constants for presentaions */}
             {toggle && (
-              <div className="flex justify-between w-[90%] m-auto">
+              <div className="flex maxScreenMobile:flex-col justify-between w-[90%] m-auto">
                 {/* 1 */}
                 <DatePicker
                   handleChange={handleChange}
@@ -587,9 +598,9 @@ export default function NewUploadPage() {
             className={`w-full min-h-full ${currentView === 3 ? "flex" : "hidden"} justify-center items-center`}
           >
             {/* <h1 className='text-[3rem] font-black text-black'>Coming Soon pls🐱‍🏍</h1> */}
-            <div className="w-full h-fit flex justify-between items-start">
-              <div className="!w-[50%] min-h-screen mt-auto mb-0 flex flex-col justify-between bg-[#FFFFF0]">
-                <div className="flex justify-between items-center w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black"></div>
+            <div className="w-full h-fit flex justify-between items-start maxScreenMobile:flex-col">
+              <div className="!w-[50%] maxScreenMobile:!w-full min-h-screen mt-auto mb-0 flex flex-col justify-between bg-[#FFFFF0]">
+                <div className="maxScreenMobile:mt-4 flex justify-between items-center w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black"></div>
                 <div className="bg-[#ffa500] h-fit mt-16 pb-4">
                   <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]">
                     PRESENTER&apos;S INFORMATION
@@ -621,7 +632,7 @@ export default function NewUploadPage() {
                   </div>
                 </div>
               </div>
-              <div className="!w-[50%] _overflow-auto min-h-screen bg-[#ffa500] pb-4 flex flex-col justify-between">
+              <div className="!w-[50%] maxScreenMobile:!w-full _overflow-auto min-h-screen bg-[#ffa500] pb-4 flex flex-col justify-between">
                 <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem] mt-0">
                   PRESENTATION DETAILS
                 </p>
@@ -710,10 +721,10 @@ export default function NewUploadPage() {
             </div>
           </div>
         </form>
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
           <button
             type="button"
-            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed" : "border border-black pointer-events-auto"} text-black text-[1.5rem] p-2 rounded-full w-[25%]`}
+            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed" : "border border-black pointer-events-auto"} text-black text-[1.5rem] p-2 rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
             onClick={showPreviousStage}
             disabled={savePresentation.isPending}
           >
@@ -722,7 +733,7 @@ export default function NewUploadPage() {
 
           <button
             type="button"
-            className={`${savePresentation.isError ? "bg-[red]" : "bg-[black]"} pointer-events-auto text-white text-[1.5rem] p-2 border-none rounded-full w-[25%]`}
+            className={`${savePresentation.isError ? "bg-[red]" : "bg-[black]"} pointer-events-auto text-white text-[1.5rem] p-2 border-none rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
             onClick={(e) => {
               e.preventDefault();
               handleSubmit(currentView);

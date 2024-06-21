@@ -2,7 +2,7 @@
 $maxHeight: 100svh;
 $mediaWidth: 768px;
 // //////////////////////functions//////////////////////////////
-@mixin is_mediaQuery_MaxWidth_Yes($width, $isMaxWidth: true) {
+@mixin is_mediaQuery_MaxWidth_Yes($width: 768px, $isMaxWidth: true) {
     @if $isMaxWidth and $width {
         @media screen and (max-width: $width) {
             @content;
@@ -205,6 +205,14 @@ button,
     }
 
     @include is_mediaQuery_MaxWidth_Yes {
+        &::after {
+            display: none !important;
+        }
+
+        &::before {
+            width: 100%;
+            background: black !important;
+        }
     }
 }
 
@@ -430,7 +438,6 @@ label.toggle__label {
     /* the progress color */
     --background: white;
     /* the background color */
-
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -440,19 +447,19 @@ label.toggle__label {
     border-radius: 10em;
     border: 1px solid #ffa500;
     background: var(--background);
-}
 
-#upload-loader[value]::-webkit-progress-bar {
-    border-radius: 10em;
-    background: var(--background);
-}
+    &::-webkit-progress-bar {
+        border-radius: 10em;
+        background: var(--background);
+    }
 
-#upload-loader[value]::-webkit-progress-value {
-    border-radius: 10em;
-    background: var(--color);
-}
+    &::-webkit-progress-value {
+        border-radius: 10em;
+        background: var(--color);
+    }
 
-#upload-loader[value]::-moz-progress-bar {
-    border-radius: 10em;
-    background: var(--color);
+    &::-moz-progress-bar {
+        border-radius: 10em;
+        background: var(--color);
+    }
 }
