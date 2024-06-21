@@ -228,7 +228,7 @@ export default function Controls({ containerRef, actionsActive }) {
           )}
           {(presentation.data?.audio || presentation.data?.User === "HOST") && (
             <button
-              className={`${micStyle.style} rounded-full p-3 shadow`}
+              className={`${micStyle.style} rounded-full p-3 shadow ${audioLoading && "!cursor-not-allowed"}`}
               onClick={actionMicButton}
               disabled={audioLoading}
             >
