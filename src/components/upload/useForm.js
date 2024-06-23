@@ -69,7 +69,7 @@ const useForm = (callback, validate) => {
   }, [values.file]);
 
   useEffect(() => {
-    if (!values.toggle && Object.keys(errors).length) {
+    if (!values.toggle && Object.keys(errors.errors2 || {}).length) {
       setErrors((prev) => {
         const temp = prev;
         temp.errors2.date = "";
