@@ -372,7 +372,7 @@ export default function Controls({ containerRef, actionsActive }) {
               <>
                 <img
                   className="w-16"
-                  src={`https://api.dicebear.com/8.x/rings/svg?seed=${host?.id}`}
+                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${host?.id}`}
                   alt=""
                 />
                 <p className="text-sm">{host?.userName}</p>
@@ -404,10 +404,10 @@ export default function Controls({ containerRef, actionsActive }) {
             >
               <img
                 className="w-16"
-                src={`https://api.dicebear.com/8.x/rings/svg?seed=${user.id}`}
+                src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                 alt={`${user.userName} Image`}
               />
-              <p>{user.userName}</p>
+              <p title={user.userName} className="w-20 truncate ...">{user.userName}</p>
               <span
                 className={`rounded w-2 h-2 ${getUserMicStatusColor(user.status)}`}
               ></span>
