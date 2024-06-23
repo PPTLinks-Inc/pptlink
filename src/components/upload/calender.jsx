@@ -41,7 +41,7 @@ const DatePicker = ({ handleChange, setValues, values, errors }) => {
   }, [date, values.toggle]);
 
   return (
-    <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+    <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black">
       <div className="w-full relative">
         <label htmlFor="DateSelectionID" className="block mb-2">
           <span className="w-full text-xl font-bold">*</span>Date Selection
@@ -105,7 +105,7 @@ const StartTimePicker = ({ handleChange, setValues, values, errors }) => {
   };
 
   return (
-    <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+    <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black">
       <div className="w-full relative">
         <label htmlFor="StartTime" className="block mb-2">
           <span className="w-full text-xl font-bold">*</span>Start Time
@@ -171,7 +171,7 @@ const EndTimePicker = ({ handleChange, setValues, values, errors }) => {
   };
 
   return (
-    <div className="w-[30%] flex _justify-center items-center h-fit mt-6 text-lg text-black">
+    <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black">
       <div className="w-full relative">
         <label htmlFor="EndTime" className="block mb-2">
           <span className="w-full text-xl font-bold">*</span>End Time (Optional)

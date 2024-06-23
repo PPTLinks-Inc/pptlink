@@ -144,6 +144,15 @@ button,
   z-index: -2;
   transform-origin: right top;
 }
+@media screen and (max-width: 768px) {
+  .upload_svg_cover::after {
+    display: none !important;
+  }
+  .upload_svg_cover::before {
+    width: 100%;
+    background: black !important;
+  }
+}
 
 .chokes::before {
   content: "";
@@ -328,17 +337,14 @@ label.toggle__label:active:after {
   border: 1px solid #ffa500;
   background: var(--background);
 }
-
 #upload-loader[value]::-webkit-progress-bar {
   border-radius: 10em;
   background: var(--background);
 }
-
 #upload-loader[value]::-webkit-progress-value {
   border-radius: 10em;
   background: var(--color);
 }
-
 #upload-loader[value]::-moz-progress-bar {
   border-radius: 10em;
   background: var(--color);
