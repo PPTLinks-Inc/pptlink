@@ -65,7 +65,7 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
 
           if (mediaType == "audio") {
             audioTracks.current.remoteAudioTracks[user.uid] = [user.audioTrack];
-            user.audioTrack.play();
+            user.audioTrack?.play();
           }
         });
 
