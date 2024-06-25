@@ -23,9 +23,9 @@ export default function useSignalling(
   const [users, setUsers] = useState({});
   const numberOfUsers = useMemo(() => Object.keys(users).length, [users]);
   const statusPriority = {
-    CAN_SPK: 1,
-    MIC_MUTED: 2,
-    REQ_MIC: 3,
+    REQ_MIC: 1,
+    CAN_SPK: 2,
+    MIC_MUTED: 3,
     MIC_OFF: 4
   };
   const userArr = useMemo(() => {
