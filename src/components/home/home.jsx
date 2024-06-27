@@ -177,7 +177,7 @@ export default function NewHome() {
               variants={parentVarient}
               className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
             >
-              Host your classes and make easy presentation from anywhere at
+              Host your online classes and make presentation from anywhere at
               anytime. Even in a the middle of nowhere PPTLinks, was built to
               function effectively in all internet network conditions giving you
               confidence while teaching or learning.
