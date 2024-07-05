@@ -185,7 +185,7 @@ export default function NewUploadPage() {
       <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent min-h-screen z-50 maxScreenMobile:w-full">
         <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[1rem] maxScreenMobile:text-center">New Presentation</h1>
         <hr />
-        <div className="form_tracker_wrapper w-full flex justify-center mb-20 maxScreenMobile:!mb-2">
+        <div className="form_tracker_wrapper w-full flex justify-center mb-20 maxScreenMobile:!mb-4">
           {/* Note: true simply means all inputs for that view is 
                     met("not empty and valid") you can use required. first 
                     stage need not have, by default it is what it is 👀🥂 */}
@@ -256,7 +256,7 @@ export default function NewUploadPage() {
               <div
                 className={`flex flex-col gap-2 justify-center items-center w-full h-full
                    ${values?.tempFileId ? "bg-green-400" : canUpload ? "bg-[rgba(255,165,0,0.3)]" :
-                     "bg-rose-400"} absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
+                    "bg-rose-400"} absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
               >
                 <img
                   src={img_feather}
@@ -406,7 +406,7 @@ export default function NewUploadPage() {
                       title="category"
                       onChange={handleChange}
                       id="publicSelector"
-                      className="block w-[68%] maxScreenMobile:text-[0.8rem] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
+                      className="block w-[68%] text-lg maxScreenMobile:text-[0.8rem] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
                       value={values?.category}
                       disabled={categories.isLoading}
                     >
@@ -431,14 +431,16 @@ export default function NewUploadPage() {
                     <button
                       type="button"
                       onClick={addCategory}
-                      className="max-w-[30%] maxScreenMobile:text-[0.8rem] flex gap-1 justify-center items-center h-full p-2 bg-black border-none rounded-tl-md rounded-bl-md"
+                      className="max-w-[30%] maxScreenMobile:text-[0.8rem] 
+                      flex gap-1 justify-center items-center h-full p-2 
+                      bg-black border-none rounded-tl-md rounded-bl-md maxScreenMobile:p-4"
                     >
                       <img
                         src={img_plus}
                         alt={img_plus}
-                        className="block w-2 h-2 scale-150"
+                        className="block w-2 h-2 scale-150 maxScreenMobile:w-3 maxScreenMobile:h-3"
                       />
-                      <span className="text-white text-[0.9rem] block w-fit h-fit italic">
+                      <span className="text-white text-[0.9rem] block w-fit h-fit italic maxScreenMobile:hidden">
                         Create New
                       </span>
                     </button>
@@ -491,7 +493,7 @@ export default function NewUploadPage() {
             className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}
           >
             {/* first stage 🐱‍👤😒 onNext remove */}
-            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
+            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black maxScreenMobile:pt-6">
               <label htmlFor="name" className="block mb-2">
                 <sup className="w-full text-xl font-bold">*</sup>
                 Presenter&apos;s Name
@@ -545,7 +547,10 @@ export default function NewUploadPage() {
               )}
             </div>
             {/* time of presentation */}
-            <span className="bg-[#FFFFF0] text-[#ffa500] w-fit p-4 mt-8 border-[2px] border-black text-xl font-medium flex justify-between items-center">
+            <span className="bg-[#FFFFF0] text-[#ffa500] w-fit p-4 mt-8 
+            border-[2px] border-black text-xl font-medium flex 
+            justify-between items-center maxScreenMobile:text-white 
+            maxScreenMobile:bg-[#ffa500] maxScreenMobile:border-[#ffa500]">
               Time of Presentation
               <div className="ml-[20px] flex items-center justify-center">
                 <input
@@ -724,7 +729,9 @@ export default function NewUploadPage() {
         <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
           <button
             type="button"
-            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed" : "border border-black pointer-events-auto"} text-black text-[1.5rem] p-2 rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
+            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed" 
+              : "border border-black pointer-events-auto"} text-black text-[1.5rem] p-2 
+              rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
             onClick={showPreviousStage}
             disabled={savePresentation.isPending}
           >
@@ -733,7 +740,9 @@ export default function NewUploadPage() {
 
           <button
             type="button"
-            className={`${savePresentation.isError ? "bg-[red]" : "bg-[black]"} pointer-events-auto text-white text-[1.5rem] p-2 border-none rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
+            className={`${savePresentation.isError ? "bg-[red]" : "bg-[black]"} pointer-events-auto 
+            text-white text-[1.5rem] p-2 border-none rounded-full w-[25%] maxScreenMobile:text-[1.2rem] 
+            maxScreenMobile:w-full`}
             onClick={(e) => {
               e.preventDefault();
               handleSubmit(currentView);

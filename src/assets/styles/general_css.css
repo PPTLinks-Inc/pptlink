@@ -286,6 +286,11 @@ input.toggle:checked + label:after {
   left: calc(100% - 1px); /* 20% of 5px */
   transform: translateX(-100%);
 }
+@media screen and (max-width: 768px) {
+  input.toggle:checked + label {
+    background: black !important;
+  }
+}
 
 label.toggle__label {
   cursor: pointer;
@@ -310,6 +315,19 @@ label.toggle__label:after {
 }
 label.toggle__label:active:after {
   width: 26px; /* 20% of 130px */
+}
+@media screen and (max-width: 768px) {
+  label.toggle__label {
+    background: #ffa500;
+    border: 2px solid black;
+    height: 22px;
+  }
+  label.toggle__label::after {
+    background: #ffa500 !important;
+    border: 2px solid black;
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .NativeDatepicker {
