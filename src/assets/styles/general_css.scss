@@ -1,13 +1,30 @@
-// variables
+// /////////////////////variables//////////////////////////////
 $maxHeight: 100svh;
-
+$mediaWidth: 768px;
+// //////////////////////functions//////////////////////////////
+@mixin is_mediaQuery_MaxWidth_Yes($width: 768px, $isMaxWidth: true) {
+    @if $isMaxWidth and $width {
+        @media screen and (max-width: $width) {
+            @content;
+        }
+    } @else if $isMaxWidth {
+        @media screen and (max-width: $mediaWidth) {
+            @content;
+        }
+    } @else if not $isMaxWidth and $width {
+        @media screen and (min-width: $width) {
+            @content;
+        }
+    } @else {
+        @media screen and (min-width: $mediaWidth) {
+            @content;
+        }
+    }
+}
+// ///////////////////////styles////////////////////////////////
 * {
     box-sizing: border-box !important;
     transition: all 50ms ease-in-out !important;
-
-    // &::-webkit-scrollbar {
-    //     display: none !important;
-    // }
 }
 
 .container {
@@ -51,7 +68,7 @@ button,
             transform: rotateZ(-15deg) scaleX(3);
         }
 
-        @media screen and (max-width: 768px) {
+        @include is_mediaQuery_MaxWidth_Yes {
             &::after {
                 top: 20vh;
             }
@@ -102,7 +119,7 @@ button,
             }
         }
 
-        @media screen and (max-width: 768px) {
+        @include is_mediaQuery_MaxWidth_Yes {
             display: flex !important;
             flex-direction: row;
             overflow-y: hidden;
@@ -186,6 +203,17 @@ button,
         z-index: -2;
         transform-origin: right top;
     }
+
+    @include is_mediaQuery_MaxWidth_Yes {
+        &::after {
+            display: none !important;
+        }
+
+        &::before {
+            width: 100%;
+            background: black !important;
+        }
+    }
 }
 
 .chokes {
@@ -217,7 +245,9 @@ button,
     }
 
     & .addshadow {
-        box-shadow: 0.1px 0.1px 8px rgba(128, 128, 128, 0.4), -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
+        box-shadow:
+            0.1px 0.1px 8px rgba(128, 128, 128, 0.4),
+            -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
     }
 }
 
@@ -401,4 +431,35 @@ label.toggle__label {
     /* background: transparent
       url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJ2LTFoMnpNNCAxMnYxSDJ2LTFoMnptMyAwdjFINXYtMWgyem0zIDB2MUg4di0xaDJ6bTMgMHYxaC0ydi0xaDJ6bTMgMHYxaC0ydi0xaDJ6TTQgMTB2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0zIDB2MWgtMnYtMWgyem0zIDB2MWgtMnYtMWgyek03IDh2MUg1VjhoMnptMyAwdjFIOFY4aDJ6bTMgMHYxaC0yVjhoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==")
       no-repeat center center; */
+}
+
+#upload-loader[value] {
+    --color: #ffa500;
+    /* the progress color */
+    --background: white;
+    /* the background color */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    width: 100%;
+    margin: 0 10px;
+    border-radius: 10em;
+    border: 1px solid #ffa500;
+    background: var(--background);
+
+    &::-webkit-progress-bar {
+        border-radius: 10em;
+        background: var(--background);
+    }
+
+    &::-webkit-progress-value {
+        border-radius: 10em;
+        background: var(--color);
+    }
+
+    &::-moz-progress-bar {
+        border-radius: 10em;
+        background: var(--color);
+    }
 }

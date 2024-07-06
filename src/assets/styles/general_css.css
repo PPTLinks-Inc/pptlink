@@ -17,13 +17,12 @@ button,
 }
 
 .parent_page_wrapper::before {
-  height: 100vh;
+  height: 100svh;
 }
 .parent_page_wrapper .banner {
   overflow: hidden;
 }
-.parent_page_wrapper .banner::before,
-.parent_page_wrapper .banner::after {
+.parent_page_wrapper .banner::before, .parent_page_wrapper .banner::after {
   content: "";
   display: block;
   position: absolute;
@@ -48,8 +47,7 @@ button,
 .parent_page_wrapper .recent {
   overflow: hidden;
 }
-.parent_page_wrapper .recent::before,
-.parent_page_wrapper .recent::after {
+.parent_page_wrapper .recent::before, .parent_page_wrapper .recent::after {
   content: "";
   display: block;
   position: absolute;
@@ -146,6 +144,15 @@ button,
   z-index: -2;
   transform-origin: right top;
 }
+@media screen and (max-width: 768px) {
+  .upload_svg_cover::after {
+    display: none !important;
+  }
+  .upload_svg_cover::before {
+    width: 100%;
+    background: black !important;
+  }
+}
 
 .chokes::before {
   content: "";
@@ -172,9 +179,7 @@ button,
   z-index: -1;
 }
 .bottom_cover .addshadow {
-  box-shadow:
-    0.1px 0.1px 8px rgba(128, 128, 128, 0.4),
-    -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
+  box-shadow: 0.1px 0.1px 8px rgba(128, 128, 128, 0.4), -0.1px -0.1px 8px rgba(128, 128, 128, 0.4);
 }
 
 .form_tracker_wrapper > span {
@@ -234,8 +239,7 @@ button,
 .form_tracker_wrapper > span:nth-child(2).active > span:first-child {
   background-color: #ffa500 !important;
 }
-.form_tracker_wrapper > span:nth-child(2).active > span:first-child::before,
-.form_tracker_wrapper > span:nth-child(2).active > span:first-child::after {
+.form_tracker_wrapper > span:nth-child(2).active > span:first-child::before, .form_tracker_wrapper > span:nth-child(2).active > span:first-child::after {
   background-color: #ffa500 !important;
 }
 .form_tracker_wrapper > span:nth-child(2).active > span:last-child {
@@ -267,7 +271,7 @@ button,
 }
 
 /* toggle animation css */
-input.toggle[type="checkbox"] {
+input.toggle[type=checkbox] {
   height: 0;
   width: 0;
   visibility: hidden;
@@ -306,15 +310,42 @@ label.toggle__label:after {
 }
 label.toggle__label:active:after {
   width: 26px; /* 20% of 130px */
-} /*# sourceMappingURL=general_css.css.map */
+}
 
 .NativeDatepicker {
   width: 50%;
   height: 50%;
-  background: transparent url("/Icon-metro-calendar.svg") no-repeat
-    center/contain;
+  background: transparent url("/Icon-metro-calendar.svg") no-repeat center/contain;
   vertical-align: middle;
   /* background: transparent
     url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJ2LTFoMnpNNCAxMnYxSDJ2LTFoMnptMyAwdjFINXYtMWgyem0zIDB2MUg4di0xaDJ6bTMgMHYxaC0ydi0xaDJ6bTMgMHYxaC0ydi0xaDJ6TTQgMTB2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0zIDB2MWgtMnYtMWgyem0zIDB2MWgtMnYtMWgyek03IDh2MUg1VjhoMnptMyAwdjFIOFY4aDJ6bTMgMHYxaC0yVjhoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==")
     no-repeat center center; */
 }
+
+#upload-loader[value] {
+  --color: #ffa500;
+  /* the progress color */
+  --background: white;
+  /* the background color */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  width: 100%;
+  margin: 0 10px;
+  border-radius: 10em;
+  border: 1px solid #ffa500;
+  background: var(--background);
+}
+#upload-loader[value]::-webkit-progress-bar {
+  border-radius: 10em;
+  background: var(--background);
+}
+#upload-loader[value]::-webkit-progress-value {
+  border-radius: 10em;
+  background: var(--color);
+}
+#upload-loader[value]::-moz-progress-bar {
+  border-radius: 10em;
+  background: var(--color);
+}/*# sourceMappingURL=general_css.css.map */

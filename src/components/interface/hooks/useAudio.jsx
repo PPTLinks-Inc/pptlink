@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState, useMemo } from "react";
-import AgoraRTC from "agora-rtc-sdk-ng";
+import { createClient, createMicrophoneAudioTrack } from "agora-rtc-sdk-ng";
 import { AGORA_APP_ID } from "../../../constants/routes";
+
+const rtcClient = createClient({ mode: "rtc", codec: "vp8" });
 
 export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
   const [error, setError] = useState(false);
@@ -10,9 +12,9 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
     localAudioTrack: null,
     remoteAudioTracks: {}
   });
-  const rtcClient = useRef(
-    AgoraRTC.createClient({ mode: "rtc", codec: "vp8" })
-  );
+  // const rtcClient = useRef(
+  //   createClient({ mode: "rtc", codec: "vp8" })
+  // );
   const [networkScore, setNetworkScore] = useState(0);
 
   const networkStatus = useMemo(
@@ -45,8 +47,8 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
       if (audioTracks.current.localAudioTrack) {
         audioTracks.current.localAudioTrack.stop();
         audioTracks.current.localAudioTrack.close();
-        if (rtcClient.current.channelName) {
-          rtcClient.current.leave();
+        if (rtcClient.channelName) {
+          rtcClient.leave();
         }
       }
       return;
@@ -58,25 +60,24 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
         setSuccess(false);
         setLoading(true);
 
-        rtcClient.current.on("user-published", async (user, mediaType) => {
-          console.log("user-published", user, mediaType);
-          await rtcClient.current.subscribe(user, mediaType);
+        rtcClient.on("user-published", async (user, mediaType) => {
+          await rtcClient.subscribe(user, mediaType);
 
           if (mediaType == "audio") {
             audioTracks.current.remoteAudioTracks[user.uid] = [user.audioTrack];
-            user.audioTrack.play();
+            user.audioTrack?.play();
           }
         });
 
-        rtcClient.current.on("user-left", (user) => {
+        rtcClient.on("user-left", (user) => {
           delete audioTracks.current.remoteAudioTracks[user.uid];
         });
 
-        rtcClient.current.on("network-quality", function(quality) {
+        rtcClient.on("network-quality", function(quality) {
           setNetworkScore(quality);
         });
 
-        await rtcClient.current.join(
+        await rtcClient.join(
           AGORA_APP_ID,
           presentation.data.liveId,
           tokens.rtcToken,
@@ -84,10 +85,10 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
         );
 
         audioTracks.current.localAudioTrack =
-          await AgoraRTC.createMicrophoneAudioTrack({
+          await createMicrophoneAudioTrack({
             encoderConfig: "speech_low_quality"
           });
-          await rtcClient.current.publish(audioTracks.current.localAudioTrack);
+          await rtcClient.publish(audioTracks.current.localAudioTrack);
           audioTracks.current.localAudioTrack.setMuted(true);
 
         setSuccess(true);
@@ -105,8 +106,8 @@ export default function useAudio(isReady, presentation, tokens, setJoinAudio) {
       if (audioTracks.current.localAudioTrack) {
         audioTracks.current.localAudioTrack.stop();
         audioTracks.current.localAudioTrack.close();
-        if (rtcClient.current.channelName) {
-          rtcClient.current.leave();
+        if (rtcClient.channelName) {
+          rtcClient.leave();
         }
       }
     };

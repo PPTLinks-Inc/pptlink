@@ -8,7 +8,6 @@ import Home from "./components/home/home";
 import NotFound from "./components/404/404";
 import Dashboard from "./components/profile/dashboard";
 import List from "./components/list/list";
-import Upload from "./components/upload/upload";
 import Interface from "./components/interface/Interface";
 import Root from "./components/root/root";
 import Institutions from "./components/institutions/institutions";
@@ -22,6 +21,7 @@ import NewUploadPage from "./components/upload/newupload";
 import DateTest from "./components/upload/dateTest";
 import Documentation from "./components/document/Documentation";
 import "./assets/styles/general_css.css";
+import ErrorBoundary from "./ErrorBoundary";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -47,6 +47,8 @@ function App() {
 
   useQuery({
     queryKey: ["user"],
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data } = await axios.get("/api/v1/auth/user");
       setUser(data.user);
@@ -66,19 +68,19 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="institutions" element={<List />} />
             <Route path="institutions/:id" element={<Institutions />} />
-            <Route path="upload" element={<Upload />} />
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
             <Route path="documentation2.0/*" element={<Documentation />} />
-            <Route path="newupload" element={<NewUploadPage />} />
+            <Route path="upload" element={<NewUploadPage />} />
           </Route>
-          {/* <Route path="about-us" element={<About />} /> */}
           <Route
             path="/:id"
             element={
-              <PresentationContextProvider>
-                <Interface />
-              </PresentationContextProvider>
+              <ErrorBoundary>
+                <PresentationContextProvider>
+                  <Interface />
+                </PresentationContextProvider>
+              </ErrorBoundary>
             }
           />
           <Route path="signin" element={<SignPage />} />
