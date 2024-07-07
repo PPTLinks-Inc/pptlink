@@ -26,7 +26,7 @@ import useSignalling from "../components/interface/hooks/useSignalling";
 let state = {
   maxNext: 0,
   hostSlideIndex: 0,
-  sync: true
+  sync: true,
 };
 
 export const PresentationContext = createContext();
@@ -63,6 +63,7 @@ const PresentationContextProvider = (props) => {
   const [tokens, setTokens] = useState(null);
   const [userName, setUserName] = useState("");
   const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
+  const [hostJoined, setHostJoined] = useState(true); // temporary
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
       return /iPhone/i.test(navigator.userAgent);
@@ -161,6 +162,18 @@ const PresentationContextProvider = (props) => {
       });
     }
 
+    if (!socket.hasListeners("host-joined") && presentationQuery.isSuccess) {
+      socket.on("host-joined", () => {
+        setHostJoined(true);
+      });
+    }
+
+    if (!socket.hasListeners("host-left") && presentationQuery.isSuccess) {
+      socket.on("host-left", () => {
+        setHostJoined(false);
+      });
+    }
+
     // if (
     //   presentationQuery.data?.User === "HOST" &&
     //   presentationQuery.data?.audio
@@ -192,54 +205,59 @@ const PresentationContextProvider = (props) => {
               maxNext: response.maxSlide,
               hostSlideIndex: response.currentSlide
             };
+            setHostJoined(response.hostJoined);
           }
         }
       );
     }
   }, [socketConnected, presentationQuery.isSuccess]);
 
-  useQuery({
-    queryKey: ["swiper"],
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    enabled: swiperRef !== null,
-    queryFn: function () {
-      swiperRef.addEventListener("swiperslidechange", function () {
-        if (
-          presentationQuery.data.User === "HOST" &&
-          presentationQuery.data.live
-        ) {
-          socket.emit("change-slide", {
-            liveId: presentationQuery.data.liveId,
-            currentSlide: swiperRef.swiper.activeIndex
-          });
-        } else {
-          if (presentationQuery.data.live) {
-            if (swiperRef.swiper.activeIndex > state.maxNext) {
-              swiperRef.swiper.allowSlideNext = true;
-              swiperRef.swiper.slideTo(state.maxNext, 0, false);
-              swiperRef.swiper.allowSlideNext = false;
-              return;
-            }
-            if (swiperRef.swiper.activeIndex === state.hostSlideIndex) {
-              state.sync = true;
-              setSyncButton(true);
-            } else {
-              setSyncButton(false);
-              state.sync = false;
-            }
-            if (swiperRef.swiper.activeIndex === state.maxNext) {
-              swiperRef.swiper.allowSlideNext = false;
-              return;
-            }
+  useEffect(() => {
+    function slideHandler() {
+      if (
+        presentationQuery.data.User === "HOST" &&
+        presentationQuery.data.live
+      ) {
+        socket.emit("change-slide", {
+          liveId: presentationQuery.data.liveId,
+          currentSlide: swiperRef.swiper.activeIndex
+        });
+      } else {
+        // console.log(state);
+        if (presentationQuery.data.live) {
+          if (!hostJoined) {
+            swiperRef.swiper.allowSlideNext = true;
+            return;
+          }
+          if (swiperRef.swiper.activeIndex > state.maxNext) {
+            swiperRef.swiper.allowSlideNext = true;
+            swiperRef.swiper.slideTo(state.maxNext, 0, false);
+            swiperRef.swiper.allowSlideNext = false;
+            return;
+          }
+          if (swiperRef.swiper.activeIndex === state.hostSlideIndex) {
+            state.sync = true;
+            setSyncButton(true);
+          } else {
+            setSyncButton(false);
+            state.sync = false;
+          }
+          if (swiperRef.swiper.activeIndex === state.maxNext) {
+            swiperRef.swiper.allowSlideNext = false;
+            return;
+          }
 
-            if (!state.sync) {
-              swiperRef.swiper.allowSlideNext = true;
-            }
+          if (!state.sync) {
+            swiperRef.swiper.allowSlideNext = true;
           }
         }
-      });
+      }
+    }
+    if (swiperRef !== null) {
+      if (!hostJoined) {
+        swiperRef.swiper.allowSlideNext = true;
+      }
+      swiperRef.addEventListener("swiperslidechange", slideHandler);
 
       if (
         presentationQuery.data.live &&
@@ -252,9 +270,13 @@ const PresentationContextProvider = (props) => {
       if (!socket.hasListeners("change-slide")) {
         socket.on("change-slide", receiveSlideChange);
       }
-      return true;
+
+      return function () {
+        socket.off("change-slide", receiveSlideChange);
+        swiperRef.removeEventListener("swiperslidechange", slideHandler);
+      }
     }
-  });
+  }, [swiperRef, presentationQuery.data, hostJoined]);
 
   useQuery({
     refetchOnWindowFocus: false,
