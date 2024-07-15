@@ -59,13 +59,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft - scrollAmount,
-          behavior: "smooth"
-        })
+        left: scrollContainer.scrollLeft - scrollAmount,
+        behavior: "smooth"
+      })
       : scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft + scrollAmount,
-          behavior: "smooth"
-        });
+        left: scrollContainer.scrollLeft + scrollAmount,
+        behavior: "smooth"
+      });
   };
 
   // framer
@@ -175,7 +175,7 @@ export default function NewHome() {
             </motion.h1>
             <motion.p
               variants={parentVarient}
-              className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
+              className="w-3/5 text-[1.1rem] leading-[1.5rem] opacity-5 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
             >
               Host your online classes and make presentation from anywhere at
               anytime. Even in a the middle of nowhere PPTLinks, was built to
@@ -411,7 +411,7 @@ export default function NewHome() {
               >
                 Send a Message
               </motion.h5>
-              <motion.p variants={secondVarient} className="w-full mb-10">
+              <motion.p variants={secondVarient} className="w-full mb-10 text-[1.1rem]">
                 Your voice matters! Share your thought and feedback with us and
                 be part of our community.
               </motion.p>
@@ -561,8 +561,8 @@ export default function NewHome() {
               className="w-2/5 min-h-[30rem] maxScreenMobile:w-full"
             >
               <div className="w-full mb-10">
-                <h4 className="mb-3">Call Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Call Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   Have a question or need guidance? Call us now and lets discuss
                   how we can help you achieve your goal.
                 </p>
@@ -580,8 +580,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Visit Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Visit Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   We’d love to welcome you to our office. Visit us let’s discuss
                   your project.
                 </p>
@@ -600,8 +600,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Message Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Message Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   Write to us through text, on linkedin or any of our social
                   handles
                 </p>
@@ -652,7 +652,7 @@ export default function NewHome() {
                       Let of kings.
                     </h3>
 
-                    <p>
+                    <p className="text-[1.1rem]">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Quae iusto provident neque. Nulla molestiae quam rerum
                       velit fugiat labore, quia fugit obcaecati quo architecto

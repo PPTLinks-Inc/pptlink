@@ -391,6 +391,12 @@ input.toggle {
             left: calc(100% - 1px); /* 20% of 5px */
             transform: translateX(-100%);
         }
+
+        @include is_mediaQuery_MaxWidth_Yes {
+            & + label {
+                background: black !important;
+            }
+        }
     }
 }
 
@@ -419,6 +425,19 @@ label.toggle__label {
     &:active {
         &:after {
             width: 26px; /* 20% of 130px */
+        }
+    }
+
+    @include is_mediaQuery_MaxWidth_Yes {
+        background: #ffa500;
+        border: 2px solid black;
+        height: 22px;
+
+        &::after {
+            background: #ffa500 !important;
+            border: 2px solid black;
+            width: 16px;
+            height: 16px;
         }
     }
 }

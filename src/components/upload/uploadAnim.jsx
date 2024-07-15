@@ -6,12 +6,12 @@ export default function Uploadanimation({ cancelUpload, values, errors, uploadPr
     return (
         <>
             {values.file && !errors.errors.file && (
-                <div className="w-[70%] m-auto my-6 flex justify-between items-center">
+                <div className="w-[70%] m-auto my-6 flex justify-between items-center maxScreenMobile:w-[90%]">
                     <span className="block w-fit h-fit">
                         <img
                             src={upload_progress_svg}
                             alt={upload_progress_svg}
-                            className="block w-32 aspect-square contrast-200"
+                            className="block w-32 maxScreenMobile:w-16 aspect-square contrast-200"
                         />
                     </span>
                     <div className="w-[calc(100%-8rem)] ">
@@ -21,7 +21,7 @@ export default function Uploadanimation({ cancelUpload, values, errors, uploadPr
                             </div>
                         ) : (<>
                             <div className="text-center relative">
-                                <p className="text-[#ffa500] text-[1.2rem] font-light italic">
+                                <p className="text-[#ffa500] text-[1.2rem] font-light italic !maxScreenMobile:text-[0.6]">
                                     {`${values.file.name} Uploading...`}
                                 </p>
                                 <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
