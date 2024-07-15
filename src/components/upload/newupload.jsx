@@ -195,9 +195,8 @@ export default function NewUploadPage() {
             <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
               1
             </span>
-            <span className="!block w-full text-[.5rem] text-center text-white">
-              Upload <br />
-              Presentation
+            <span className="!block w-full text-[1.25rem] text-center text-white">
+              Upload
             </span>
           </span>
           <span
@@ -206,9 +205,8 @@ export default function NewUploadPage() {
             <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
               2
             </span>
-            <span className="!block w-full text-[.5rem] text-center text-white">
-              Presenter&apos;s Information <br />
-              and Time of Presentation
+            <span className="!block w-full text-[1.25rem] text-center text-white">
+              Information
             </span>
           </span>
           <span
@@ -217,7 +215,7 @@ export default function NewUploadPage() {
             <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
               3
             </span>
-            <span className="!block w-full text-[.5rem] text-center text-white">
+            <span className="!block w-full text-[1.25rem] text-center text-white">
               Preview
             </span>
           </span>
