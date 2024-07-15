@@ -48,7 +48,7 @@ const useForm = (callback, validate) => {
     mutationFn: function (data) {
       return axios.post(`${SERVER_URL}/api/v1/ppt/presentation`, data);
     },
-    onSuccess: function ({data}) {
+    onSuccess: function ({ data }) {
       window.location.replace(`/${data.liveId}`);
     },
     onError: function (error) {
