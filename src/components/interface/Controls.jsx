@@ -93,7 +93,7 @@ export default function Controls({ containerRef, actionsActive }) {
     } else if (micStatus === MIC_STATE.CAN_SPK) {
       return "bg-green-500";
     } else {
-      return "";
+      return "hidden";
     }
   }, []);
 
@@ -372,7 +372,7 @@ export default function Controls({ containerRef, actionsActive }) {
               <>
                 <img
                   className="w-16"
-                  src={`https://api.dicebear.com/8.x/rings/svg?seed=${host?.id}`}
+                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${host?.id}`}
                   alt=""
                 />
                 <p className="text-sm">{host?.userName}</p>
@@ -396,7 +396,7 @@ export default function Controls({ containerRef, actionsActive }) {
         </div>
 
         <div className="text-sm p-3 grid grid-cols-5 gap-y-5 overflow-y-auto">
-          {users.map((user) => (
+          {users.map((user, index) => (
             <button
               key={user.id}
               className="flex flex-col w-full justify-center items-center"
@@ -404,13 +404,16 @@ export default function Controls({ containerRef, actionsActive }) {
             >
               <img
                 className="w-16"
-                src={`https://api.dicebear.com/8.x/rings/svg?seed=${user.id}`}
+                src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                 alt={`${user.userName} Image`}
               />
-              <p>{user.userName}</p>
-              <span
-                className={`rounded w-2 h-2 ${getUserMicStatusColor(user.status)}`}
-              ></span>
+              <p title={user.userName} className="w-20 truncate ...">{user.userName}</p>
+              <div className="w-20 flex justify-center items-center gap-2">
+                {index === 0 && tokens.rtcUid === user.id && <span>(You)</span>}
+                <span
+                  className={`rounded w-2 h-2 ${getUserMicStatusColor(user.status)}`}
+                ></span>
+              </div>
             </button>
           ))}
         </div>

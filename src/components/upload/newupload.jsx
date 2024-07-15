@@ -11,6 +11,7 @@ import { DatePicker, EndTimePicker, StartTimePicker } from "./calender";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { SERVER_URL } from "../../constants/routes";
+import SlidePreview from "./SlidePreview";
 
 let eventSourse = null;
 
@@ -20,6 +21,7 @@ export default function NewUploadPage() {
   const [currentView, setCurrentView] = useState(1);
   const addcategoryref = useRef(null);
   const scrollableRef = useRef(null);
+  const previewRef = useRef(null);
   const [canUpload, setCanUpload] = useState(true);
   // const [categories, setCategories] = useState([
   //   ["Category One", false]
@@ -69,10 +71,10 @@ export default function NewUploadPage() {
         if (data.event === "connect") setCanUpload(true);
 
         if (data.event === "upload-done") {
-          setValues((prev) => ({ ...prev, tempFileId: data.tempDataId, file: null }));
+          setValues((prev) => ({ ...prev, tempFileId: data.tempDataId, pdfLink: data.pdfLink, file: null }));
         }
         else if (data.event === "upload-error") {
-          setValues((prev) => ({ ...prev, file: null, tempFileId: null }));
+          setValues((prev) => ({ ...prev, file: null, pdfLink: null, tempFileId: null }));
         }
       };
     }
@@ -280,7 +282,7 @@ export default function NewUploadPage() {
                     </>
                   ) : (canUpload ? (
                     <>
-                      <span className="w-fit h-fit text- maxScreenMobile:text-white">
+                      <span className="w-fit h-fit text-black maxScreenMobile:text-white">
                         Drop your file in here
                       </span>
                       <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full maxScreenMobile:bg-white">
@@ -486,6 +488,8 @@ export default function NewUploadPage() {
               cancelUpload={cancelUpload}
               values={values}
               errors={errors}
+              uploadProgress={uploadProgress}
+              uploadProcessing={uploadProcessing}
             />
           )}
           {/* Second stage show els 👀👀 */}
@@ -605,7 +609,10 @@ export default function NewUploadPage() {
             {/* <h1 className='text-[3rem] font-black text-black'>Coming Soon pls🐱‍🏍</h1> */}
             <div className="w-full h-fit flex justify-between items-start maxScreenMobile:flex-col">
               <div className="!w-[50%] maxScreenMobile:!w-full min-h-screen mt-auto mb-0 flex flex-col justify-between bg-[#FFFFF0]">
-                <div className="maxScreenMobile:mt-4 flex justify-between items-center w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black"></div>
+                {/* MARK: Preview */}
+                <div ref={previewRef} className="maxScreenMobile:mt-4 w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black">
+                  {values?.pdfLink && <SlidePreview currentView={currentView} url={values?.pdfLink} containerRef={previewRef} />}
+                </div>
                 <div className="bg-[#ffa500] h-fit mt-16 pb-4">
                   <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]">
                     PRESENTER&apos;S INFORMATION
@@ -749,7 +756,7 @@ export default function NewUploadPage() {
             }}
             disabled={savePresentation.isPending}
           >
-            {savePresentation.isError ? "Error" : savePresentation.isPending ? "Saving..." : currentView === 3 ? "Submit" : "Next"}
+            {savePresentation.isError ? "Error, Try again" : savePresentation.isPending ? "Saving..." : currentView === 3 ? "Submit" : "Next"}
           </button>
         </div>
       </div>

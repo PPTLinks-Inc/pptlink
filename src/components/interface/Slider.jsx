@@ -52,7 +52,6 @@ export default function Slider({
   const slideContainer = useRef(null);
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
-  const [isError, setIsError] = useState(false);
   const [maxWidth, setMaxWidth] = useState(0);
   const { isMobilePhone, presentation, setSwiperRef, fullScreenShow } = useContext(PresentationContext);
   const orientation = useOrientation();
@@ -105,16 +104,15 @@ export default function Slider({
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
     >
-      {isError && <LoadError />}
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
-        onLoadError={() => setIsError(true)}
         options={options}
         onLoadProgress={({ loaded, total }) =>
           setFileDownloadProgress((loaded / total) * 100)
         }
         loading={<FullScreenLoading progress={fileDownloadProgress} />}
+        error={<LoadError />}
       >
         <swiper-container
           ref={swiperRef}

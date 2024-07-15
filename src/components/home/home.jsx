@@ -177,11 +177,10 @@ export default function NewHome() {
               variants={parentVarient}
               className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
             >
-              PPTLinks is your leading platform for easy sharing and viewing of
-              presentations. It offers a smooth experience, allowing you to
-              effortlessly upload, share, and view presentations from anywhere.
-              Join PPTLinks to unlock a world of possibilities for sharing your
-              ideas with the community.
+              Host your online classes and make presentation from anywhere at
+              anytime. Even in a the middle of nowhere PPTLinks, was built to
+              function effectively in all internet network conditions giving you
+              confidence while teaching or learning.
             </motion.p>
             <motion.div
               variants={parentVarient}

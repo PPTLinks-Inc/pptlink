@@ -22,27 +22,55 @@ export default function useSignalling(
   const [host, setHost] = useState(null);
   const [users, setUsers] = useState({});
   const numberOfUsers = useMemo(() => Object.keys(users).length, [users]);
-  const userArr = useMemo(() => Object.values(users), [users]);
+  const statusPriority = {
+    REQ_MIC: 1,
+    CAN_SPK: 2,
+    MIC_MUTED: 3,
+    MIC_OFF: 4
+  };
+  const userArr = useMemo(() => {
+    return Object.values(users).sort((a, b) => {
+      // Check if either user is the current user
+      if (a.id === tokens.rtcUid) return -1;
+      if (b.id === tokens.rtcUid) return 1;
 
-  const changeMicState = useCallback(function (state) {
-    if (rtm.current) {
-      setUsers(function (prevUsers) {
-        if (prevUsers[tokens.rtcUid]) {
-          prevUsers[tokens.rtcUid].status = state;
+      // Compare based on status priority
+      return statusPriority[a.status] - statusPriority[b.status];
+    });
+  }, [users]);
+
+  const changeMicState = useCallback(
+    function (state) {
+      if (rtm.current) {
+        if (presentation.data.User === "HOST") {
+          setHost((prevHost) => {
+            if (prevHost) {
+              prevHost.status = state;
+            }
+            return prevHost;
+          });
+        } else {
+          setUsers(function (prevUsers) {
+            if (prevUsers[tokens.rtcUid]) {
+              prevUsers[tokens.rtcUid].status = state;
+            }
+            return prevUsers;
+          });
         }
-        return prevUsers;
-      });
-      rtm.current.presence.setState(
-        presentation.data.liveId,
-        "MESSAGE",
-        {
+        rtm.current.presence.setState(presentation.data.liveId, "MESSAGE", {
           status: state,
           userName: userName,
           user: presentation.data.User
-        }
-      );
-    }
-  }, [presentation.data?.User, presentation.data?.liveId, tokens?.rtcUid, userName]);
+        });
+      }
+    },
+    [
+      presentation.data?.User,
+      presentation.data?.liveId,
+      tokens?.rtcUid,
+      userName
+    ]
+  );
 
   const acceptMicRequest = useCallback(async function (userId, micState) {
     if (rtm.current) {
@@ -54,33 +82,49 @@ export default function useSignalling(
     }
   }, []);
 
-  const handleUserJoin = useCallback(function () {
-    let tempUsersEvent = [];
-    let timeout;
+  const handleUserJoin = useCallback(
+    function () {
+      let tempUsersEvent = [];
+      let timeout;
 
-    return function (userData) {
-      tempUsersEvent.push(userData);
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        const userDataChanged = tempUsersEvent
-          .filter((userEvent) => userEvent.eventType === "REMOTE_STATE_CHANGED" && userEvent.stateChanged.user !== "HOST")
-          .map((eventData) => ({
-            id: eventData.publisher,
-            ...eventData.stateChanged
-          }));
-          const usersLeft = tempUsersEvent.filter((userEvent) => userEvent.eventType === "REMOTE_LEAVE" && userEvent.publisher !== host?.id).map((eventData) => eventData.publisher);
+      return function (userData) {
+        tempUsersEvent.push(userData);
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          const userDataChanged = tempUsersEvent
+            .filter(
+              (userEvent) =>
+                userEvent.eventType === "REMOTE_STATE_CHANGED" &&
+                userEvent.stateChanged.user !== "HOST"
+            )
+            .map((eventData) => ({
+              id: eventData.publisher,
+              ...eventData.stateChanged
+            }));
+          const usersLeft = tempUsersEvent
+            .filter(
+              (userEvent) =>
+                userEvent.eventType === "REMOTE_LEAVE" &&
+                userEvent.publisher !== host?.id
+            )
+            .map((eventData) => eventData.publisher);
           // usersleft from newUsers and userDataChanged
-          
-          const usersLeftFromUserDataChanged = userDataChanged.filter((user) => !usersLeft.includes(user.id));
-          const micRequestCount = usersLeftFromUserDataChanged.reduce(function(acc, user) {
+
+          const usersLeftFromUserDataChanged = userDataChanged.filter(
+            (user) => !usersLeft.includes(user.id)
+          );
+          const micRequestCount = usersLeftFromUserDataChanged.reduce(function (
+            acc,
+            user
+          ) {
             if (user.status === MIC_STATE.REQ_MIC && !acc.includes(user.id)) {
               return acc.concat(user.id);
             }
             return acc;
           }, []).length;
-          setUsers(prevUsers => {
+          setUsers((prevUsers) => {
             const updatedUsers = {};
-            usersLeftFromUserDataChanged.forEach(user => {
+            usersLeftFromUserDataChanged.forEach((user) => {
               updatedUsers[user.id] = user;
             });
             for (const user of usersLeft) {
@@ -96,17 +140,24 @@ export default function useSignalling(
             micRequestAudio.current.play();
           }
 
-          const hostEvent = tempUsersEvent.find((userEvent) => userEvent.eventType === "REMOTE_STATE_CHANGED" && userEvent.stateChanged.user === "HOST");
-          const hostLeftEvent = tempUsersEvent.find((userEvent) => userEvent.eventType === "REMOTE_LEAVE" && userEvent.publisher === host?.id);
+          const hostEvent = tempUsersEvent.find(
+            (userEvent) =>
+              userEvent.eventType === "REMOTE_STATE_CHANGED" &&
+              userEvent.stateChanged.user === "HOST"
+          );
+          const hostLeftEvent = tempUsersEvent.find(
+            (userEvent) =>
+              userEvent.eventType === "REMOTE_LEAVE" &&
+              userEvent.publisher === host?.id
+          );
           // console.log("hostLeftEvent", hostLeftEvent);
           // console.log("tempUsersEvent", tempUsersEvent);
           // console.log("hostEvent", hostEvent);
-          console.log("_host", host);
+          // console.log("_host", host);
 
           if (hostLeftEvent) {
             setHost(null);
-          }
-          else {
+          } else {
             if (hostEvent) {
               setHost({
                 id: hostEvent.publisher,
@@ -115,14 +166,19 @@ export default function useSignalling(
             }
           }
 
-        tempUsersEvent = [];
-      }, 1000);
-    };
-  }, [host, presentation.data?.User]);
+          tempUsersEvent = [];
+        }, 1000);
+      };
+    },
+    [host, presentation.data?.User]
+  );
 
-  const leaveRtmChannel = useCallback(function() {
+  const leaveRtmChannel = useCallback(
+    function () {
       rtm.current?.logout();
-  }, [rtm]);
+    },
+    [rtm]
+  );
 
   useEffect(
     function () {
@@ -147,7 +203,11 @@ export default function useSignalling(
             token: tokens.rtmToken,
             useStringUserId: true
           });
-          setMicState(presentation.data.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF);
+          setMicState(
+            presentation.data.User === "HOST"
+              ? MIC_STATE.MIC_MUTED
+              : MIC_STATE.MIC_OFF
+          );
           await rtm.current.login();
           await rtm.current.subscribe(presentation.data.liveId, {
             withMessage: true,
@@ -170,26 +230,34 @@ export default function useSignalling(
             }
           );
 
-          const currentUsers = await rtm.current.presence.getOnlineUsers(presentation.data.liveId, "MESSAGE", {
-            includeUserId : true ,
-            includedState : true
-          });
+          const currentUsers = await rtm.current.presence.getOnlineUsers(
+            presentation.data.liveId,
+            "MESSAGE",
+            {
+              includeUserId: true,
+              includedState: true
+            }
+          );
 
-          setUsers(function(prevUsers) {
+          setUsers(function (prevUsers) {
             const updatedUsers = {};
-            currentUsers.occupants.filter(user => user.states.user !== "HOST").forEach(user => {
-              updatedUsers[user.userId] = {
-                id: user.userId,
-                ...user.states
-              };
-            });
+            currentUsers.occupants
+              .filter((user) => user.states.user !== "HOST")
+              .forEach((user) => {
+                updatedUsers[user.userId] = {
+                  id: user.userId,
+                  ...user.states
+                };
+              });
             return {
               ...prevUsers,
               ...updatedUsers
             };
           });
 
-          const hostUser = currentUsers.occupants.find(user => user.states.user === "HOST");
+          const hostUser = currentUsers.occupants.find(
+            (user) => user.states.user === "HOST"
+          );
           if (hostUser) {
             setHost({
               id: hostUser.userId,
@@ -205,7 +273,7 @@ export default function useSignalling(
             }
             setMute(true);
             setMicState(event.message);
-            setUsers(function(prevUsers) {
+            setUsers(function (prevUsers) {
               prevUsers[tokens.rtcUid].status = event.message;
               return {
                 ...prevUsers
@@ -246,5 +314,15 @@ export default function useSignalling(
     [isReady]
   );
 
-  return { error, loading, success, users: userArr, usersObj: users, numberOfUsers, host, changeMicState, acceptMicRequest };
+  return {
+    error,
+    loading,
+    success,
+    users: userArr,
+    usersObj: users,
+    numberOfUsers,
+    host,
+    changeMicState,
+    acceptMicRequest
+  };
 }
