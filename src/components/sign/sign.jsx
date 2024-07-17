@@ -441,7 +441,7 @@ export default function SignPage() {
           <img
             src={meetingsvg}
             alt={meetingsvg}
-            className="block w-[8rem] h-[9rem] pointer-events-none  absolute top-[10%] left-[50%] translate-x-[-50%]"
+            className="block w-[5rem] h-[6rem] pointer-events-none  absolute top-[5%] left-[25%] rotate-[25deg]"
           />
 
           <img
@@ -471,7 +471,7 @@ export default function SignPage() {
         <div className="w-[45%] text-white maxScreenMobile:hidden">
           <div className="min-h-[95vh] flex flex-col justify-evenly items-center text-[#FFFFF0]">
             <h1 className="block w-full text-right text-4xl">PPTLINKS</h1>
-            <p className="block w-full text-[.8rem] -mb-24 leading-6 text-left">
+            <p className="block w-full text-[1.1rem] leading-[2rem] -mb-24 text-left">
               PPTLinks is your ultimate solution for seamless presentations,
               designed to excel in challenging network environments, replace
               traditional projectors in classrooms, boardrooms, and seminars,
