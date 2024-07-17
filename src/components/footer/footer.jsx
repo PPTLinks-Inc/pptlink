@@ -65,13 +65,13 @@ export default function Footer() {
                 </NavLink>
                 <NavLink
                   to={"/signin"}
-                  className={`block ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
+                  className={`block !text-[1.1rem] ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign In
                 </NavLink>
                 <NavLink
                   to={SIGNUP}
-                  className={`block ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
+                  className={`block !text-[1.1rem] ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign Up
                 </NavLink>
@@ -122,7 +122,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <p className="py-5 text-center border-t-[1px] border-black border-solid text-[1.1rem]">
+        <p className={`py-5 text-center border-t-[1px] ${pathname === "/" ? "border-black" : "border-white"} border-solid text-[1.1rem]`}>
           &copy; PPTLinks {new Date().getFullYear()}. All rights reserved
         </p>
       </div>

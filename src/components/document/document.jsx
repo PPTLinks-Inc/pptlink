@@ -21,7 +21,7 @@ export default function Document() {
               className="block w-full h-full"
             />
           </div>
-          <p className="text-center w-[80%] text-[0.8rem] mb-10">
+          <p className="text-center w-[80%] text-[1.1rem] mb-10">
             Welcome to PPTLinks, your premier platform for easy sharing and
             viewing power point presentations. This section provides a
             comprehensive overview of what PPTLinks is, its purpose, and
@@ -153,7 +153,6 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-
           <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img src={others} alt={others} className="block w-full h-full" />
@@ -177,7 +176,6 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-
           <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img
@@ -205,7 +203,6 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-
           {/* )} */}
         </div>
       </section>
