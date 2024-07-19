@@ -167,12 +167,12 @@ const useForm = (callback, validate) => {
         "application/vnd.ms-powerpoint.slideshow.macroEnabled.12"
       ];
 
-      if (file.size > 25 * 1024 * 1024) {
+      if (file.size > 10 * 1024 * 1024) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           errors: {
             ...prevErrors.errors,
-            file: "File should not be more than 25MB"
+            file: "File should not be more than 10MB"
           }
         }));
         return;
