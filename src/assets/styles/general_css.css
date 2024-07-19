@@ -286,6 +286,11 @@ input.toggle:checked + label:after {
   left: calc(100% - 1px); /* 20% of 5px */
   transform: translateX(-100%);
 }
+@media screen and (max-width: 768px) {
+  input.toggle:checked + label {
+    background: black !important;
+  }
+}
 
 label.toggle__label {
   cursor: pointer;
@@ -310,6 +315,19 @@ label.toggle__label:after {
 }
 label.toggle__label:active:after {
   width: 26px; /* 20% of 130px */
+}
+@media screen and (max-width: 768px) {
+  label.toggle__label {
+    background: #ffa500;
+    border: 2px solid black;
+    height: 22px;
+  }
+  label.toggle__label::after {
+    background: #ffa500 !important;
+    border: 2px solid black;
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .NativeDatepicker {
@@ -348,4 +366,36 @@ label.toggle__label:active:after {
 #upload-loader[value]::-moz-progress-bar {
   border-radius: 10em;
   background: var(--color);
+}
+
+.library > div {
+  display: grid;
+  grid-template: auto/repeat(auto-fill, minmax(350px, 1fr));
+  grid-auto-flow: row;
+  gap: 1rem;
+}
+.library .after_effect, .library .before_effect {
+  position: relative;
+  overflow: hidden;
+}
+.library .after_effect > span, .library .before_effect > span {
+  z-index: 2;
+}
+.library .after_effect::before, .library .before_effect::before {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 8rem;
+  position: absolute;
+  top: 1%;
+  left: 55%;
+  border-radius: 10px;
+  transform: rotateZ(25deg);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+.library .before_effect::before {
+  top: 50%;
+  left: 5%;
 }/*# sourceMappingURL=general_css.css.map */

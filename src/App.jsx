@@ -19,6 +19,8 @@ import PresentationContextProvider from "./contexts/presentationContext";
 import SignPage from "./components/sign/sign";
 import NewUploadPage from "./components/upload/newupload";
 import DateTest from "./components/upload/dateTest";
+import Documentation from "./components/document/Documentation";
+import Library from "./components/library/library";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -69,6 +71,8 @@ function App() {
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
+            <Route path="documentation2.0/*" element={<Documentation />} />
+            <Route path="library" element={<Library />} />
             <Route path="upload" element={<NewUploadPage />} />
           </Route>
           <Route
