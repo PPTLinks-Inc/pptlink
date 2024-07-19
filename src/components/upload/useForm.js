@@ -38,7 +38,10 @@ const useForm = (callback, validate) => {
     onError: function (error) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        errors: { ...prevErrors.errors, file: error.response?.data.message || error.response.message }
+        errors: {
+          ...prevErrors.errors,
+          file: error.response?.data.message || error.response.message
+        }
       }));
     }
   });
@@ -102,7 +105,12 @@ const useForm = (callback, validate) => {
     setErrors(validationErrors);
 
     console.log("Errors", validationErrors);
-    if (currentView === 3 && Object.keys(validationErrors.errors).length === 0 && Object.keys(validationErrors.errors2).length === 0 && values?.tempFileId) {
+    if (
+      currentView === 3 &&
+      Object.keys(validationErrors.errors).length === 0 &&
+      Object.keys(validationErrors.errors2).length === 0 &&
+      values?.tempFileId
+    ) {
       console.log("Submitting", values);
       const data = {
         title: values.title,
@@ -117,9 +125,11 @@ const useForm = (callback, validate) => {
         presentationDate: values.toggle ? values?.date : null,
         presentationStartTime: values.toggle ? values?.startTime : null,
         presentationEndTime: values.toggle ? values?.endTime : null
-      }
+      };
       //remove null values
-      Object.keys(data).forEach(key => data[key] === null && delete data[key]);
+      Object.keys(data).forEach(
+        (key) => data[key] === null && delete data[key]
+      );
       savePresentation.mutate(data);
       return;
     }
@@ -160,7 +170,10 @@ const useForm = (callback, validate) => {
       if (file.size > 10 * 1024 * 1024) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          errors: { ...prevErrors.errors, file: "File should not be more than 10MB" }
+          errors: {
+            ...prevErrors.errors,
+            file: "File should not be more than 10MB"
+          }
         }));
         return;
       }
