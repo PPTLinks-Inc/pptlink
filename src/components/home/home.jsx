@@ -179,7 +179,7 @@ export default function NewHome() {
               className="w-[50%] text-[1.1rem] leading-[2rem] opacity-5 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
             >
               Host your online classes, seminars and presentations with ultra
-              low data consumtion.
+              low data consumption.
             </motion.p>
             <motion.div
               variants={parentVarient}
