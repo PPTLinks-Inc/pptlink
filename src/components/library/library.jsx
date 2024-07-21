@@ -51,8 +51,8 @@ export default function Library() {
                             <span className="block w-full my-4">Students Lecture Guide from 100 Level to 300 Level</span>
                         </div>
                         <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
-                            <span className="text-[1.005rem]">View Library</span>
-                            <span className="text-[1.005rem] block bg-orange-600 px-[2px] p-[1px]">Free</span>
+                            <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span>
+                            <span className="text-[1.005rem] block bg-[#FFA500] text-black px-[4px] p-[1px]">Free</span>
                         </div>
                     </NavLink>
                 )}

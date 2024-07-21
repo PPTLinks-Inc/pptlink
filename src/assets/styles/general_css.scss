@@ -25,7 +25,8 @@ $blur: blur(6px);
     }
 }
 
-@mixin BackdropFilterBg { // 👌 glassmophism
+@mixin BackdropFilterBg {
+    // 👌 glassmophism
     background: $blurbg;
     backdrop-filter: $blur;
 }
@@ -497,6 +498,10 @@ label.toggle__label {
         grid-template: auto / repeat(auto-fill, minmax(350px, 1fr)); // 👌
         grid-auto-flow: row;
         gap: 1rem;
+
+        @include is_mediaQuery_MaxWidth_Yes {
+            grid-template: auto / repeat(auto-fill, minmax(300px, 1fr)); // 👌
+        }
     }
 
     & .after_effect,
@@ -514,7 +519,8 @@ label.toggle__label {
             height: 8rem;
             position: absolute;
             top: 1%;
-            left: 55%;
+            left: auto;
+            right: 2rem;
             border-radius: 10px;
             transform: rotateZ(25deg);
             @include BackdropFilterBg;
@@ -524,7 +530,7 @@ label.toggle__label {
     & .before_effect {
         &::before {
             top: 50%;
-            left: 5%;
+            left: 0.5rem;
         }
     }
 }
