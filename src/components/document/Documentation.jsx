@@ -59,38 +59,7 @@ const [chapterInfo,SetChapterInfo] = useState([ {chapter:"chapter one", path:'/'
               handleDropdownID={handleDropdownID}  />
             })}
 
-            {/* chapter 2 */}
-            {/* <ChapterDropdown
-              chapter={"chapter two"}
-              key={2}
-              id={2}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            /> */}
-            {/* chapter 3 */}
-            {/* <ChapterDropdown
-              chapter={"chapter three"}
-              key={3}
-              id={3}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            /> */}
-            {/* chapter 4 */}
-            {/* <ChapterDropdown
-              chapter={"chapter four"}
-              key={4}
-              id={4}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            /> */}
-            {/* chapter 5 */}
-            {/* <ChapterDropdown
-              chapter={"chapter five"}
-              key={5}
-              id={5}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            /> */}
+          
           </ul>{" "}
         </aside>
         <section className="flex-[1.8] relative z-[51] bg-body text-black rounded-tl-xl pt-12 p-5 documentation ">
