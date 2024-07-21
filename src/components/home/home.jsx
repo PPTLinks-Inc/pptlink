@@ -17,7 +17,8 @@ import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { animate, motion, stagger, useInView, useAnimate } from "framer-motion";
+import { motion, stagger, useInView, useAnimate } from "framer-motion";
+import FAQ from "./data";
 
 export default function NewHome() {
   // context
@@ -59,13 +60,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft - scrollAmount,
-        behavior: "smooth"
-      })
+          left: scrollContainer.scrollLeft - scrollAmount,
+          behavior: "smooth"
+        })
       : scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft + scrollAmount,
-        behavior: "smooth"
-      });
+          left: scrollContainer.scrollLeft + scrollAmount,
+          behavior: "smooth"
+        });
   };
 
   // framer
@@ -177,7 +178,8 @@ export default function NewHome() {
               variants={parentVarient}
               className="w-[50%] text-[1.1rem] leading-[2rem] opacity-5 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
             >
-              Host your online classes, seminars and presentations with ultra low data consumtion.
+              Host your online classes, seminars and presentations with ultra
+              low data consumption.
             </motion.p>
             <motion.div
               variants={parentVarient}
@@ -408,7 +410,10 @@ export default function NewHome() {
               >
                 Send a Message
               </motion.h5>
-              <motion.p variants={secondVarient} className="w-full mb-10 text-[1.1rem]">
+              <motion.p
+                variants={secondVarient}
+                className="w-full mb-10 text-[1.1rem]"
+              >
                 Your voice matters! Share your thought and feedback with us and
                 be part of our community.
               </motion.p>
@@ -635,29 +640,21 @@ export default function NewHome() {
             className="accurdion w-3/5 min-h-[50vh] maxScreenMobile:w-full"
             ref={scope}
           >
-            {Array(4)
-              .fill(0)
-              .map((_, i) => ({ id: i }))
-              .map(({ id }) => (
-                <Accordion
-                  key={id}
-                  title="World of hives"
-                  className="transition-all duration-300"
-                >
-                  <div>
-                    <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
-                      Let of kings.
-                    </h3>
+            {FAQ.map((_, id) => (
+              <Accordion
+                key={id}
+                title={_.title}
+                className="transition-all duration-300"
+              >
+                <div>
+                  <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
+                    {_.h3}
+                  </h3>
 
-                    <p className="text-[1.1rem]">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quae iusto provident neque. Nulla molestiae quam rerum
-                      velit fugiat labore, quia fugit obcaecati quo architecto
-                      officiis sit consectetur! Omnis, deserunt consequatur.
-                    </p>
-                  </div>
-                </Accordion>
-              ))}
+                  <p className="text-[1.1rem]">{_.p}</p>
+                </div>
+              </Accordion>
+            ))}
           </div>
         </div>
       </div>
