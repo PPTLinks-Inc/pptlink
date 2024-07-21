@@ -1,18 +1,10 @@
+/* eslint-disable no-unused-vars */
 import box from "/imgs/Rectangle2.png";
 import box2 from "/imgs/Rectangle150.png";
+
 function ChapterOverview() {
   return (
     <>
-      {/* <button
-            className="bg-black p-4 rounded-md block text-white"
-            onClick={() => {
-              playRef.current.scrollIntoView({
-                behavior: "smooth"
-              });
-            }}
-          >
-            play
-          </button> */}
       <h3 className="text-2xl uppercase">Chapter Two</h3>
 
       <>

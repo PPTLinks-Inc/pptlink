@@ -94,7 +94,7 @@ input:checked.chapter ~ div .chapter-child {
 .isActive {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 2s ease-in-out;
+  transition: all 2s ease-in-out;
 }
 .isActive > div {
   overflow: hidden;

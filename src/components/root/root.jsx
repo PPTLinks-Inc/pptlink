@@ -25,7 +25,7 @@ export default function Root() {
 
     if (mainScrollRef.current) {
       mainScrollRef.current.scrollIntoView({ behavior: "smooth" });
-      console.log("mainScrollRef");
+      // console.log("mainScrollRef");
     }
   }, [location.pathname]);
 
@@ -132,7 +132,7 @@ export default function Root() {
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
-          <Outlet />
+        <Outlet />
         <MovingEllipses />
         <Footer />
       </div>
