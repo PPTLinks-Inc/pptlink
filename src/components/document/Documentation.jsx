@@ -9,60 +9,17 @@ import ChapterDropdown from "./ChapterDropdown";
 import { motion, AnimatePresence } from "framer-motion";
 import ChapterOverview from "./ChapterOverview";
 import ChapterOverView1 from "./ChapterOverView1";
+import Legacy from "./Legacy";
 import { FaChevronCircleRight, FaArrowRight } from "react-icons/fa";
 
-function Documentation() {
+function Documentation({ activeDropdown, handleDropdownID }) {
   const currentRef = useRef();
-  const documentWord = useRef();
-  const [active, setActive] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const documentWord = useRef();  
   const [nav, setNav] = useState(false);
+const [chapterInfo,SetChapterInfo] = useState([ {chapter:"chapter one", path:'/'},{chapter:"chapter two",path:'/privacy'},{chapter:"chapter three",path:'/legacy'},{chapter:"chapter four",path:'/'},{chapter:"chapter five",path:'/'}])
 
-  const [mainActive, setMainActive] = useState([
-    { id: 1, bool: false },
-    { id: 2, bool: false },
-    { id: 3, bool: false },
-    { id: 4, bool: false }
-  ]);
-  const handleDropdownID = (id) => {
-    setActiveDropdown((prevState) => (prevState === id ? null : id));
-  };
-  const handleDropdown = () => {
-    currentRef.current.style.height = !active ? `100%` : "0px";
-    setActive((prevState) => !prevState);
-    // console.log(e.target);
-  };
-  const onClick = (item, e) => {
-    e.stopPropagation();
-    setMainActive((prevState) => {
-      return prevState.map((newItem) => {
-        if (newItem.id === item.id) {
-          // console.log("hellllo");
-          return {
-            ...newItem,
-            bool: !newItem.bool
-          };
-        } else {
-          return {
-            ...newItem,
-            bool: false
-          };
-        }
-      });
-    });
-  };
-  // useEffect(() => {
-  //   let newItem = "";
-  //   documentWord.current.innerHTML.split("").forEach((item, index) => {
-  //     const listing = document.createElement("span");
-  //     listing.className = "doc";
-  //     listing.style.transitionDelay = `${index * 0.2}s`;
-  //     listing.appendChild(document.createTextNode(item));
-  //     newItem += listing.outerHTML;
-  //   });
-  //   // console.log(documentWord.current);
-  //   documentWord.current.innerHTML = newItem;
-  // }, []);
+ 
+ 
 
   return (
     <main className="bg-black md:relative">
@@ -96,78 +53,20 @@ function Documentation() {
               />
             </button>
             {/* chapter one */}
-            <li className="relative p-1 duration-1000 transition-all">
-              {/* label for checkbox */}
-              <label
-                htmlFor="chapter"
-                className="flex gap-2 md:gap-6 items-center pb-4_"
-                onClick={() => handleDropdown()}
-              >
-                <div className="relative">
-                  {/* <input
-                    type="radio"
-                    name="chapter1"
-                    id="chapter"
-                    className="absolute z-50 w-5 aspect-square left-1/2 -translate-x-1/2 opacity-0 peer chapter"
-                  /> */}
-                  <div className="w-5 h-5 bg-transparent border-2 border-black md:border-white rounded-full grid place-content-center ">
-                    <div
-                      className={`w-3 h-3 rounded-full border-2 border-black md:border-white peer-checked:bg-white chapter-child ${active && "bg-black md:bg-white"}`}
-                    ></div>
-                  </div>
-                </div>
-                <div className="uppercase text-sm whitespace-nowrap font-semibold md:text-2xl">
-                  {" "}
-                  Chapter one{" "}
-                </div>
-              </label>
-              <div ref={currentRef} className="overflow-hidden h-0">
-                {/* div for children */}
-                {mainActive.map((item, i) => (
-                  <>
-                    <DropDown item={item} key={i} onClick={onClick} i={i} />
-                  </>
-                ))}
-              </div>
-            </li>
-            {/* chapter 2 */}
-            <ChapterDropdown
-              chapter={"chapter two"}
-              key={2}
-              id={2}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            />
-            {/* chapter 3 */}
-            <ChapterDropdown
-              chapter={"chapter three"}
-              key={3}
-              id={3}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            />
-            {/* chapter 4 */}
-            <ChapterDropdown
-              chapter={"chapter four"}
-              key={4}
-              id={4}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            />
-            {/* chapter 5 */}
-            <ChapterDropdown
-              chapter={"chapter five"}
-              key={5}
-              id={5}
-              activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}
-            />
+            
+            {chapterInfo.map((data,i) =>{
+             return <ChapterDropdown key={i} data={data} id={i+1} activeDropdown={activeDropdown}
+              handleDropdownID={handleDropdownID}  />
+            })}
+
+          
           </ul>{" "}
         </aside>
         <section className="flex-[1.8] relative z-[51] bg-body text-black rounded-tl-xl pt-12 p-5 documentation ">
           <Routes>
             <Route path="/" element={<ChapterOverView1 />} />
             <Route path="/privacy" element={<ChapterOverview />} />
+            <Route path="/legacy" element={<Legacy />} />
           </Routes>
         </section>
       </div>
@@ -178,6 +77,7 @@ function Documentation() {
 export default Documentation;
 
 function DropDown({ item, onClick, i }) {
+  console.log(item)
   const list = [1, 2, 3, 4];
   return (
     <div
@@ -217,6 +117,7 @@ function DropDown({ item, onClick, i }) {
           const target = event.target;
           const id = target.getAttribute("href")?.replace("#", "");
           const element = document.getElementById(id);
+          console.log(id);
           element.scrollIntoView({
             behavior: "smooth"
           });

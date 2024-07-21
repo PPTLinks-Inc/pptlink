@@ -1,11 +1,19 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useRef } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
-function ChapterDropdown({ chapter, id, activeDropdown, handleDropdownID }) {
+function ChapterDropdown({
+  data,
+  id,
+  activeDropdown,
+  handleDropdownID,
+  link
+}) {
   const currentRef = useRef();
-  const [active, setActive] = useState(false);
+  
   const isActive = activeDropdown === id;
+  const navigate = useNavigate();
 
   const [mainActive, setMainActive] = useState([
     { id: 1, bool: false },
@@ -13,10 +21,7 @@ function ChapterDropdown({ chapter, id, activeDropdown, handleDropdownID }) {
     { id: 3, bool: false },
     { id: 4, bool: false }
   ]);
-  const handleDropdown = () => {
-    currentRef.current.style.height = !active ? `100%` : "0px";
-    setActive((prevState) => !prevState);
-  };
+ 
   const onClick = (item, e) => {
     e.stopPropagation();
     setMainActive((prevState) => {
@@ -35,6 +40,7 @@ function ChapterDropdown({ chapter, id, activeDropdown, handleDropdownID }) {
       });
     });
   };
+  // const {chapter,path} = data
   return (
     <div>
       <li className="relative p-1 duration-1000 transition-all">
@@ -58,17 +64,20 @@ function ChapterDropdown({ chapter, id, activeDropdown, handleDropdownID }) {
               ></div>
             </div>
           </div>
-          <div className="uppercase text-sm whitespace-nowrap font-semibold md:text-2xl">
+          <div
+            className="uppercase text-sm whitespace-nowrap font-semibold md:text-2xl"
+            onClick={() => navigate(`/documentation2.0${data.path}`)}
+          >
             {" "}
-            {chapter}
+            {data.chapter}
           </div>
         </label>
         <div className={`isActive ${isActive ? "active" : ""} `}>
-          <div ref={currentRef} className={`overflow-hidden hello2`}>
+          <div ref={currentRef} className={`overflow-hidden`}>
             {/* div for children */}
             {mainActive.map((item, i) => (
               <>
-                <DropDown item={item} key={i} onClick={onClick} />
+                <DropDown item={item} key={i} onClick={onClick} id={id} />
               </>
             ))}
           </div>
@@ -80,7 +89,9 @@ function ChapterDropdown({ chapter, id, activeDropdown, handleDropdownID }) {
 
 export default ChapterDropdown;
 
-function DropDown({ item, onClick }) {
+function DropDown({ item, onClick, id }) {
+  const list = [1, 2, 3, 4];
+  // console.log(id);
   return (
     <div
       key={item.id}
@@ -114,11 +125,32 @@ function DropDown({ item, onClick }) {
       </div>
       <ul
         className={`overflow-hidden ${item.bool ? "h-[115px]" : "h-0"} pl-6 ml-8 sub-heading relative transition-all duration-300 flex flex-col gap-2_ text-sm`}
+        onClick={(event) => {
+          event.preventDefault();
+          const target = event.target;
+          const id = target.getAttribute("href")?.replace("#", "");
+          const element = document.getElementById(id);
+          
+          element.scrollIntoView({
+            behavior: "smooth"
+          });
+        }}
       >
+        {/* <li id={id} className="mt-2">
+          sub chapter {item.id}.1.1
+        </li>
         <li className="mt-2">sub chapter {item.id}.1.1</li>
         <li className="mt-2">sub chapter {item.id}.1.1</li>
-        <li className="mt-2">sub chapter {item.id}.1.1</li>
-        <li className="mt-2">sub chapter {item.id}.1.1</li>
+        <li className="mt-2">sub chapter {item.id}.1.1</li> */}
+        {list.map((number) => {
+          return (
+            <li className="mt-2" key={number}>
+              <a href={`#${id}-${item.id}-1-${number}`}>
+                sub chapter {item.id}.1.{number}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
