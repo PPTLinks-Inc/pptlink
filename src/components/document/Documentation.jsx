@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ChapterOverview from "./ChapterOverview";
 import ChapterOverView1 from "./ChapterOverView1";
 import Legacy from "./Legacy";
-import { FaChevronCircleRight } from "react-icons/fa";
+import { FaChevronCircleRight, FaArrowRight } from "react-icons/fa";
 
 function Documentation({ activeDropdown, handleDropdownID }) {
   const currentRef = useRef();
@@ -39,9 +39,9 @@ const [chapterInfo,SetChapterInfo] = useState([ {chapter:"chapter one", path:'/'
           Documentation
         </h1>
       </div>
-      <div className="flex container mx-auto items-start gap-4 md:gap-6">
+      <div className="hide_scroll w-full h-screen relative flex container mx-auto items-start gap-4 md:gap-6">
         <aside
-          className={`absolute text-black h-screen py-6 px-3 bg-body backdrop-blur-lg bg-opacity-50 left-0 top-0 md:flex-[0.4] z-[100]   ${nav ? "-translate-x-full" : "translate-x-0"} transition-all duration-1000 md:text-white md:sticky md:h-auto md:p-0 md:bg-opacity-100 md:bg-transparent md:backdrop-blur-0   md:translate-x-0`}
+          className={`sticky_grid text-black h-screen py-6 px-3 bg-body backdrop-blur-lg bg-opacity-50 left-0 top-0 md:flex-[0.4] z-[100]   ${nav ? "-translate-x-full" : "translate-x-0"} transition-all duration-1000 md:text-white md:sticky md:h-auto md:p-0 md:bg-opacity-100 md:bg-transparent md:backdrop-blur-0   md:translate-x-0`}
         >
           <ul className=" flex flex-col gap-4 md:gap-0 relative md:static">
             <button
@@ -136,4 +136,5 @@ function DropDown({ item, onClick, i }) {
     </div>
   );
 }
+
 export { DropDown };

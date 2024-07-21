@@ -6,16 +6,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { userContext } from "../../contexts/userContext";
 import {
-  ABOUT,
   DASHBOARD,
-  HOME,
-  LEGAL,
-  SIGNUP,
   UPLOAD
 } from "../../constants/routes";
 import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
-import logo_orange from "/imgs/onemorecolor.png";
 import { motion } from "framer-motion";
 
 export default function Header({ isBackMenu, handleDropdown }) {

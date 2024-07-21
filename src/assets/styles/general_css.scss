@@ -1,6 +1,9 @@
 // /////////////////////variables//////////////////////////////
 $maxHeight: 100svh;
 $mediaWidth: 768px;
+// variables
+$blurbg: rgba(255, 255, 255, 0.1);
+$blur: blur(6px);
 // //////////////////////functions//////////////////////////////
 @mixin is_mediaQuery_MaxWidth_Yes($width: 768px, $isMaxWidth: true) {
     @if $isMaxWidth and $width {
@@ -20,6 +23,12 @@ $mediaWidth: 768px;
             @content;
         }
     }
+}
+
+@mixin BackdropFilterBg {
+    // 👌 glassmophism
+    background: $blurbg;
+    backdrop-filter: $blur;
 }
 // ///////////////////////styles////////////////////////////////
 * {
@@ -391,6 +400,12 @@ input.toggle {
             left: calc(100% - 1px); /* 20% of 5px */
             transform: translateX(-100%);
         }
+
+        @include is_mediaQuery_MaxWidth_Yes {
+            & + label {
+                background: black !important;
+            }
+        }
     }
 }
 
@@ -419,6 +434,19 @@ label.toggle__label {
     &:active {
         &:after {
             width: 26px; /* 20% of 130px */
+        }
+    }
+
+    @include is_mediaQuery_MaxWidth_Yes {
+        background: #ffa500;
+        border: 2px solid black;
+        height: 22px;
+
+        &::after {
+            background: #ffa500 !important;
+            border: 2px solid black;
+            width: 16px;
+            height: 16px;
         }
     }
 }
@@ -461,5 +489,57 @@ label.toggle__label {
     &::-moz-progress-bar {
         border-radius: 10em;
         background: var(--color);
+    }
+}
+
+.library {
+    & > div {
+        display: grid;
+        grid-template: auto / repeat(auto-fill, minmax(350px, 1fr)); // 👌
+        grid-auto-flow: row;
+        gap: 1rem;
+
+        @include is_mediaQuery_MaxWidth_Yes {
+            grid-template: auto / repeat(auto-fill, minmax(300px, 1fr)); // 👌
+        }
+    }
+
+    & .after_effect,
+    & .before_effect {
+        position: relative;
+        overflow: hidden;
+        & > span {
+            z-index: 2;
+        }
+
+        &::before {
+            content: "";
+            display: block;
+            width: 8rem;
+            height: 8rem;
+            position: absolute;
+            top: 1%;
+            left: auto;
+            right: 2rem;
+            border-radius: 10px;
+            transform: rotateZ(25deg);
+            @include BackdropFilterBg;
+        }
+    }
+
+    & .before_effect {
+        &::before {
+            top: 50%;
+            left: -1.5rem;
+        }
+    }
+}
+
+.hide_scroll {
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
     }
 }

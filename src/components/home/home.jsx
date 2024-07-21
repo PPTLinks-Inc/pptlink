@@ -17,7 +17,8 @@ import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { animate, motion, stagger, useInView, useAnimate } from "framer-motion";
+import { motion, stagger, useInView, useAnimate } from "framer-motion";
+import FAQ from "./data";
 
 export default function NewHome() {
   // context
@@ -175,12 +176,10 @@ export default function NewHome() {
             </motion.h1>
             <motion.p
               variants={parentVarient}
-              className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
+              className="w-[50%] text-[1.1rem] leading-[2rem] opacity-5 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
             >
-              Host your online classes and make presentation from anywhere at
-              anytime. Even in a the middle of nowhere PPTLinks, was built to
-              function effectively in all internet network conditions giving you
-              confidence while teaching or learning.
+              Host your online classes, seminars and presentations with ultra
+              low data consumption.
             </motion.p>
             <motion.div
               variants={parentVarient}
@@ -411,7 +410,10 @@ export default function NewHome() {
               >
                 Send a Message
               </motion.h5>
-              <motion.p variants={secondVarient} className="w-full mb-10">
+              <motion.p
+                variants={secondVarient}
+                className="w-full mb-10 text-[1.1rem]"
+              >
                 Your voice matters! Share your thought and feedback with us and
                 be part of our community.
               </motion.p>
@@ -561,8 +563,8 @@ export default function NewHome() {
               className="w-2/5 min-h-[30rem] maxScreenMobile:w-full"
             >
               <div className="w-full mb-10">
-                <h4 className="mb-3">Call Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Call Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   Have a question or need guidance? Call us now and lets discuss
                   how we can help you achieve your goal.
                 </p>
@@ -580,8 +582,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Visit Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Visit Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   We’d love to welcome you to our office. Visit us let’s discuss
                   your project.
                 </p>
@@ -600,8 +602,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Message Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Message Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   Write to us through text, on linkedin or any of our social
                   handles
                 </p>
@@ -638,29 +640,21 @@ export default function NewHome() {
             className="accurdion w-3/5 min-h-[50vh] maxScreenMobile:w-full"
             ref={scope}
           >
-            {Array(4)
-              .fill(0)
-              .map((_, i) => ({ id: i }))
-              .map(({ id }) => (
-                <Accordion
-                  key={id}
-                  title="World of hives"
-                  className="transition-all duration-300"
-                >
-                  <div>
-                    <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
-                      Let of kings.
-                    </h3>
+            {FAQ.map((_, id) => (
+              <Accordion
+                key={id}
+                title={_.title}
+                className="transition-all duration-300"
+              >
+                <div>
+                  <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
+                    {_.h3}
+                  </h3>
 
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quae iusto provident neque. Nulla molestiae quam rerum
-                      velit fugiat labore, quia fugit obcaecati quo architecto
-                      officiis sit consectetur! Omnis, deserunt consequatur.
-                    </p>
-                  </div>
-                </Accordion>
-              ))}
+                  <p className="text-[1.1rem]">{_.p}</p>
+                </div>
+              </Accordion>
+            ))}
           </div>
         </div>
       </div>
