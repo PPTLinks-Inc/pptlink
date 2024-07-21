@@ -16,7 +16,7 @@ const FAQ = [
   },
   {
     title: "Miss a live presentation",
-    h3: "Users that missed the presentation does it automatically save for user to access it later on?",
+    h3: "Users that missed a presentation: does it automatically save for them to access it later on?",
     p: "Files are saved on the site and can be easily and freely accessed as long as they remain 'Live'. However, voice recording can only be initiated by the presenter. Note: Temporary presentations will be deleted after 24 hours."
   },
   {

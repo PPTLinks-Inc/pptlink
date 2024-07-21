@@ -530,7 +530,16 @@ label.toggle__label {
     & .before_effect {
         &::before {
             top: 50%;
-            left: 0.5rem;
+            left: -1.5rem;
         }
+    }
+}
+
+.hide_scroll {
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
     }
 }

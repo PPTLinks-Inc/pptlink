@@ -403,5 +403,13 @@ label.toggle__label:active:after {
 }
 .library .before_effect::before {
   top: 50%;
-  left: 0.5rem;
+  left: -1.5rem;
+}
+
+.hide_scroll {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.hide_scroll::-webkit-scrollbar {
+  display: none;
 }/*# sourceMappingURL=general_css.css.map */

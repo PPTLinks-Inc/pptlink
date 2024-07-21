@@ -52,7 +52,7 @@ export default function Library() {
                         </div>
                         <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
                             <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span>
-                            <span className="text-[1.005rem] block bg-[#FFA500] text-black px-[4px] p-[1px]">Free</span>
+                            <span className="text-[0.8rem] block bg-[#FFA500] text-black px-[4px] p-[1px]">Free</span>
                         </div>
                     </NavLink>
                 )}
