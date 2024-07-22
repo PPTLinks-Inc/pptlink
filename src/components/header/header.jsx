@@ -26,6 +26,11 @@ export default function Header({ isBackMenu, handleDropdown }) {
   const getPathName = () => {
     return location.pathname === "/" ? true : false;
   };
+  const getPathNameDoc = () => {
+    return location.pathname.split("/")[1] === "documentation2.0"
+      ? true
+      : false;
+  };
 
   // context
   const { user, setUser } = useContext(userContext);
@@ -45,7 +50,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
   };
   const containertVarients = {
     hidden: {
-      opacity: 0
+      opacity: !getPathNameDoc() && 0
     },
     visible: {
       opacity: 1,
@@ -55,7 +60,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
       }
     },
     exit: {
-      x: "-100vw",
+      x: !getPathNameDoc() ? "-100vw" : "0vw",
       transition: {
         ease: "easeInOut"
       }

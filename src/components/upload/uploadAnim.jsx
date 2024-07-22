@@ -6,7 +6,7 @@ export default function Uploadanimation({ cancelUpload, values, errors, uploadPr
     return (
         <>
             {values.file && !errors.errors.file && (
-                <div className="w-[70%] m-auto my-6 flex justify-between items-center maxScreenMobile:w-[90%]">
+                <div className="w-[70%] m-auto my-6 pt-8 flex justify-between items-center maxScreenMobile:w-[90%]">
                     <span className="block w-fit h-fit">
                         <img
                             src={upload_progress_svg}
@@ -16,7 +16,7 @@ export default function Uploadanimation({ cancelUpload, values, errors, uploadPr
                     </span>
                     <div className="w-[calc(100%-8rem)] ">
                         {uploadProcessing ? (
-                            <div className="w-full h-[2rem] flex justify-center items-center">
+                            <div className="w-full h-[1rem] flex justify-center items-center">
                                 <LoadingAssetBig />
                             </div>
                         ) : (<>
@@ -25,7 +25,7 @@ export default function Uploadanimation({ cancelUpload, values, errors, uploadPr
                                     {`${values.file.name} Uploading...`}
                                 </p>
                                 <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
-                                    3500kbs
+                                    ? kbs
                                 </span>
                             </div>
                             <progress id="upload-loader" className="w-full" max={100} value={uploadProgress}></progress>
