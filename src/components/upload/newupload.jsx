@@ -406,7 +406,7 @@ export default function NewUploadPage() {
                       title="category"
                       onChange={handleChange}
                       id="publicSelector"
-                      className="block w-[68%] text-lg maxScreenMobile:text-[0.8rem] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
+                      className="block w-[65%] text-lg maxScreenMobile:w-[85%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
                       value={values?.category}
                       disabled={categories.isLoading}
                     >
@@ -431,17 +431,17 @@ export default function NewUploadPage() {
                     <button
                       type="button"
                       onClick={addCategory}
-                      className="max-w-[30%] maxScreenMobile:text-[0.8rem] 
-                      flex gap-1 justify-center items-center h-full p-2 
-                      bg-black border-none rounded-tl-md rounded-bl-md maxScreenMobile:p-4"
+                      className="w-[45%] maxScreenMobile:text-[0.8rem] 
+                      flex gap-1 justify-evenly items-center h-full p-2 
+                      bg-black border-none rounded-tl-md rounded-bl-md maxScreenMobile:w-fit maxScreenMobile:p-4"
                     >
                       <img
                         src={img_plus}
                         alt={img_plus}
-                        className="block w-2 h-2 scale-150 maxScreenMobile:w-3 maxScreenMobile:h-3"
+                        className="block w-3 h-3 scale-125 maxScreenMobile:scale-150"
                       />
-                      <span className="text-white text-[0.9rem] block w-fit h-fit italic maxScreenMobile:hidden">
-                        Create New
+                      <span className="text-white text-[1rem] block w-fit h-fit italic maxScreenMobile:hidden">
+                        ADD NEW
                       </span>
                     </button>
                   </div>
@@ -454,17 +454,17 @@ export default function NewUploadPage() {
                       id="title"
                       value={addedCategory}
                       onChange={(e) => setAddedCategory(e.target.value)}
-                      className="block w-[70%] p-2 indent-8 border-2 border-black border-r-0 rounded-tl-md rounded-bl-md"
+                      className="block w-[65%] p-2 indent-8 border-2 border-black border-r-0 rounded-tl-md rounded-bl-md"
                       placeholder="ADD CATEGORY"
                     />
 
                     <button
                       type="button"
-                      className="w-[30%] flex gap-1 justify-center items-center h-full p-2 bg-black border-2 border-black rounded-tr-md rounded-br-md cursor-pointer"
+                      className="w-[45%] flex gap-1 justify-center items-center h-full p-2 bg-black border-2 border-black rounded-tr-md rounded-br-md cursor-pointer"
                       onClick={newCategory}
                     >
-                      <span className="text-white text-[0.9rem] block w-fit h-fit italic">
-                        Create
+                      <span className="text-white text-[1rem] block w-fit h-fit italic">
+                        ADD
                       </span>
                     </button>
                   </div>
@@ -734,7 +734,7 @@ export default function NewUploadPage() {
         <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
           <button
             type="button"
-            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed" 
+            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed"
               : "border border-black pointer-events-auto"} text-black text-[1.5rem] p-2 
               rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
             onClick={showPreviousStage}
