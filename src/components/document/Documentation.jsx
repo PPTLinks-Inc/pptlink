@@ -7,16 +7,20 @@ import box2 from "/imgs/Rectangle150.png";
 import React, { useEffect, useRef, useState } from "react";
 import ChapterDropdown from "./ChapterDropdown";
 import { motion, AnimatePresence } from "framer-motion";
-import ChapterOverview from "./ChapterOverview";
-import ChapterOverView1 from "./ChapterOverView1";
-import Legacy from "./Legacy";
+import Pptlinks from "./Pptlinks";
+import Start from "./Start";
+import Legal from "./legal";
+import Others from "./Other";
+import Guidelines from "./Guidelines";
+import Upload from "./Upload_presentation";
 import { FaChevronCircleRight, FaArrowRight } from "react-icons/fa";
 
 function Documentation({ activeDropdown, handleDropdownID }) {
   const currentRef = useRef();
   const documentWord = useRef();  
   const [nav, setNav] = useState(false);
-const [chapterInfo,SetChapterInfo] = useState([ {chapter:"chapter one", path:'/'},{chapter:"chapter two",path:'/privacy'},{chapter:"chapter three",path:'/legacy'},{chapter:"chapter four",path:'/'},{chapter:"chapter five",path:'/'}])
+const [chapterInfo,SetChapterInfo] = useState([
+   {chapter:"what is pptLinks", path:'/what_is_pptLinks'},{chapter:"getting started",path:'/getting_started'},{chapter:"file upload",path:'/file_upload'},{chapter:"guidelines",path:'/guidelines'},{chapter:"others",path:'/others'},{chapter:"legal",path:'/legal'}])
 
  
  
@@ -64,9 +68,13 @@ const [chapterInfo,SetChapterInfo] = useState([ {chapter:"chapter one", path:'/'
         </aside>
         <section className="flex-[1.8] relative z-[51] bg-body text-black rounded-tl-xl pt-12 p-5 documentation ">
           <Routes>
-            <Route path="/" element={<ChapterOverView1 />} />
-            <Route path="/privacy" element={<ChapterOverview />} />
-            <Route path="/legacy" element={<Legacy />} />
+            <Route path="/what_is_pptLinks" element={<Pptlinks />} />
+            <Route path="/getting_started" element={<Start />} />
+            <Route path="/file_upload" element={<Upload />} />
+            <Route path="/guidelines" element={<Guidelines />} />
+            <Route path="/others" element={<Others />} />
+            <Route path="/legal" element={<Legal />} />
+
           </Routes>
         </section>
       </div>
