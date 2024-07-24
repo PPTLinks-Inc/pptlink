@@ -27,7 +27,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
     return location.pathname === "/" ? true : false;
   };
   const getPathNameDoc = () => {
-    return location.pathname.split("/")[1] === "documentation2.0"
+    return location.pathname.split("/")[1] === "documentation"
       ? true
       : false;
   };
