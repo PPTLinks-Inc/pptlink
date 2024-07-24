@@ -1,6 +1,6 @@
 import box from "/imgs/Rectangle2.png";
 import box2 from "/imgs/Rectangle150.png";
-function ChapterOverView1() {
+function Others() {
   return (
     <>
       {/* <button
@@ -13,7 +13,7 @@ function ChapterOverView1() {
     >
       play
     </button> */}
-      <h3 className="text-2xl uppercase">Chapter one</h3>
+      <h3 className="text-2xl uppercase">Others</h3>
 
       <div className=" py-4_ mx-auto_" id="play">
         <h4 className="text-xl pb-2" id="">
@@ -118,4 +118,4 @@ function ChapterOverView1() {
   );
 }
 
-export default ChapterOverView1;
+export default Others;

@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import box from "/imgs/Rectangle2.png";
 import box2 from "/imgs/Rectangle150.png";
-function Legacy() {
+
+function Start() {
   return (
     <>
-      <h3 className="text-2xl uppercase">Chapter Two</h3>
+      <h3 className="text-2xl uppercase">Getting Started</h3>
 
       <>
         <div className=" py-4_ mx-auto_" id="play">
@@ -19,7 +20,7 @@ function Legacy() {
           sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
           dolore magna aliquyam erat, sed diam.
         </div>
-        <div className=" py-4" id="3-1-1-1">
+        <div className=" py-4" id="1-1-1">
           <h4 className="text-xl pb-2">Sub chapter 1.1.1</h4>
           Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
           nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
@@ -29,7 +30,7 @@ function Legacy() {
           sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
           dolore magna aliquyam erat, sed diam.
         </div>
-        <div className=" py-4" id="3-1-1-2">
+        <div className=" py-4" id="1-1-2">
           <h4 className="text-xl pb-2">Sub chapter 1.1.2</h4>
           Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
           nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
@@ -39,7 +40,7 @@ function Legacy() {
           sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
           dolore magna aliquyam erat, sed diam.
         </div>
-        <div className=" py-4" id="3-1-1-3">
+        <div className=" py-4" id="1-1-3">
           <h4 className="text-xl pb-2">Sub chapter 1.1.3</h4>
           Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
           nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
@@ -69,7 +70,7 @@ function Legacy() {
             </div>
           </div>
         </div>
-        <div className=" py-4" id="3-1-1-4">
+        <div className=" py-4" id="1-1-4">
           <h4 className="text-xl pb-2">Sub chapter 1.1.4</h4>
           Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
           nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
@@ -111,4 +112,4 @@ function Legacy() {
   );
 }
 
-export default Legacy;
+export default Start;

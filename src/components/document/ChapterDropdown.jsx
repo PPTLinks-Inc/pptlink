@@ -66,7 +66,7 @@ function ChapterDropdown({
           </div>
           <div
             className="uppercase text-sm whitespace-nowrap font-semibold md:text-2xl"
-            onClick={() => navigate(`/documentation2.0${data.path}`)}
+            onClick={() => navigate(`/documentation${data.path}`)}
           >
             {" "}
             {data.chapter}

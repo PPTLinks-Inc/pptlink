@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AnimatePresence } from "framer-motion";
@@ -74,8 +75,9 @@ function App() {
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
+            <Route path="library" element={<Library />} />
             <Route
-              path="documentation2.0/*"
+              path="documentation/*"
               element={
                 <Documentation
                   activeDropdown={activeDropdown}
