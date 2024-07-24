@@ -55,7 +55,7 @@ export default function Document() {
             </div>
             <h3 className="text-xl mb-2">WHAT IS PPTLinks</h3>
             <div className="w-full">
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -63,7 +63,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -82,7 +82,7 @@ export default function Document() {
             </div>
             <h3 className="text-xl mb-2">GETTING STARTED</h3>
             <div className="w-full">
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -90,7 +90,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -109,7 +109,7 @@ export default function Document() {
             </div>
             <h3 className="text-xl mb-2">UPLOADING PRESENTATIONS</h3>
             <div className="w-full">
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -117,7 +117,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -136,7 +136,7 @@ export default function Document() {
             </div>
             <h3 className="text-xl mb-2">GUIDELINES AND RULES</h3>
             <div className="w-full">
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -144,7 +144,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -159,7 +159,7 @@ export default function Document() {
             </div>
             <h3 className="text-xl mb-2">OTHERS</h3>
             <div className="w-full">
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -167,7 +167,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
