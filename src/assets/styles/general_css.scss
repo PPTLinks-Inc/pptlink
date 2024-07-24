@@ -543,3 +543,15 @@ label.toggle__label {
         display: none;
     }
 }
+
+
+.documentatio_page {
+    display: grid;
+    grid-template: auto / repeat(auto-fill, minmax(350px, 1fr)); // 👌
+    grid-auto-flow: row;
+    gap: 1rem;
+
+    @include is_mediaQuery_MaxWidth_Yes {
+        grid-template: auto / repeat(auto-fill, minmax(300px, 1fr)); // 👌
+    }
+}

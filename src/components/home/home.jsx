@@ -60,13 +60,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft - scrollAmount,
-          behavior: "smooth"
-        })
+        left: scrollContainer.scrollLeft - scrollAmount,
+        behavior: "smooth"
+      })
       : scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft + scrollAmount,
-          behavior: "smooth"
-        });
+        left: scrollContainer.scrollLeft + scrollAmount,
+        behavior: "smooth"
+      });
   };
 
   // framer
@@ -115,6 +115,9 @@ export default function NewHome() {
       }
     }
   };
+
+  const goToLibrary = () => navigate('/library');
+
   const [scope, animate] = useAnimate();
   const isInView = useInView(scope, { once: true });
   useEffect(() => {
@@ -193,7 +196,7 @@ export default function NewHome() {
               >
                 Present
               </button>
-              <button className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
+              <button onClick={goToLibrary} className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
                 Libraries
               </button>
             </motion.div>
