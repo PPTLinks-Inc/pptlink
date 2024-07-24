@@ -74,6 +74,7 @@ function App() {
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
+            <Route path="library" element={<Library />} />
             <Route
               path="documentation2.0/*"
               element={
