@@ -412,4 +412,16 @@ label.toggle__label:active:after {
 }
 .hide_scroll::-webkit-scrollbar {
   display: none;
+}
+
+.documentatio_page {
+  display: grid;
+  grid-template: auto/repeat(auto-fill, minmax(350px, 1fr));
+  grid-auto-flow: row;
+  gap: 1rem;
+}
+@media screen and (max-width: 768px) {
+  .documentatio_page {
+    grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
+  }
 }/*# sourceMappingURL=general_css.css.map */

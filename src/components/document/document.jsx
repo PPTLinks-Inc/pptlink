@@ -42,10 +42,10 @@ export default function Document() {
           </div>
         </div>
       </section>
-      <section className="midJ container py-5 min-h-screen bg-[#FFFFF0]">
-        <div className="flex flex-wrap justify-between items-center gap-y-16 gap-x-8 w-full mt-20 mb-10">
+      <section className="container py-5 min-h-screen bg-[#FFFFF0]">
+        <div className="documentatio_page flex flex-wrap justify-between items-center gap-y-16 gap-x-8 w-full mt-20 mb-10">
           {/* {Array(6).fill(0).map((_, i) => ({ id: i })).map(({ id }) => */}
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+          <div className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img
                 src={initiative}
@@ -54,8 +54,8 @@ export default function Document() {
               />
             </div>
             <h3 className="text-xl mb-2">WHAT IS PPTLinks</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+            <div className="w-full">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -63,7 +63,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -72,7 +72,7 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+          <div className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img
                 src={planning}
@@ -81,8 +81,8 @@ export default function Document() {
               />
             </div>
             <h3 className="text-xl mb-2">GETTING STARTED</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+            <div className="w-full">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -90,7 +90,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -99,7 +99,7 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+          <div className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img
                 src={execution}
@@ -108,8 +108,8 @@ export default function Document() {
               />
             </div>
             <h3 className="text-xl mb-2">UPLOADING PRESENTATIONS</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+            <div className="w-full">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -117,7 +117,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -126,7 +126,7 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+          <div className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img
                 src={controlSystem}
@@ -135,8 +135,8 @@ export default function Document() {
               />
             </div>
             <h3 className="text-xl mb-2">GUIDELINES AND RULES</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+            <div className="w-full">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -144,7 +144,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -153,13 +153,13 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+          <div className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img src={others} alt={others} className="block w-full h-full" />
             </div>
             <h3 className="text-xl mb-2">OTHERS</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+            <div className="w-full">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -167,7 +167,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -176,7 +176,7 @@ export default function Document() {
               </NavLink>
             </div>
           </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
+          <div className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
             <div className="w-20 aspect-square mb-3">
               <img
                 src={conclusion}
@@ -185,8 +185,8 @@ export default function Document() {
               />
             </div>
             <h3 className="text-xl mb-2">LEGAL</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+            <div className="w-full">
+              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Proposal:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
@@ -194,7 +194,7 @@ export default function Document() {
                 </span>
               </NavLink>
 
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
+              <NavLink to="#" className="block w-full _h-4 overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]">
                 Project Charter:{" "}
                 <span className="text-[#FFA500] underline decoration-[#FFA500]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. At
