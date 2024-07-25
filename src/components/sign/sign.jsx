@@ -76,7 +76,7 @@ export default function SignPage() {
     if (!isSignupPage) {
       // handle validations for SIGNIN NOTE: shine your eye 👀✨
       if (values.email.length === 0) {
-        setEmailErr("Email value is empty!");
+        setEmailErr("Email cannot be empty!");
       } else if (
         !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
           values.email
@@ -88,7 +88,7 @@ export default function SignPage() {
       }
 
       if (values.password.length < 8) {
-        setPasswordErr("Password can'nt be empty!");
+        setPasswordErr("Password cannot be empty!");
       } else {
         setPasswordErr(null);
       }
@@ -105,13 +105,13 @@ export default function SignPage() {
     } else {
       // handle validations for SIGNUP NOTE: shine your eye 👀✨
       if (values.fullName.length === 0) {
-        setFullNameErr("Username value is empty!");
+        setFullNameErr("Username cannot be empty");
       } else {
         setFullNameErr(null);
       }
 
       if (values.email.length === 0) {
-        setEmailErr("Email value is empty!");
+        setEmailErr("Email cannot be empty");
       } else if (
         !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
           values.email
@@ -129,7 +129,7 @@ export default function SignPage() {
       }
 
       if (values.password !== values.confirmPassword) {
-        setConfirmPasswordErr("Password and confirm Password does'nt match!");
+        setConfirmPasswordErr("Password and confirm Password does not match!");
       } else {
         setConfirmPasswordErr(null);
       }
@@ -328,7 +328,7 @@ export default function SignPage() {
                   htmlFor="confirmpassword"
                   className="block w-full mb-2 pl-1"
                 >
-                  *confirmpassword
+                  *confirm password
                 </label>
                 <div className="relative w-full h-fit">
                   {values.showPassword ? (
