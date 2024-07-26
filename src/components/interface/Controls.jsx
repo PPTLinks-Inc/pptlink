@@ -8,7 +8,7 @@ import { MdCallEnd, MdError } from "react-icons/md";
 import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
 import { PiHandWaving } from "react-icons/pi";
 import { FiHome } from "react-icons/fi";
-import { BsThreeDots } from "react-icons/bs";
+import { BsThreeDots, BsLockFill } from "react-icons/bs";
 import { PresentationContext } from "../../contexts/presentationContext";
 import "./styles/style.css";
 import Modal from "./Modals/Modal";
@@ -209,9 +209,14 @@ export default function Controls({ containerRef, actionsActive }) {
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
           {audioSuccess && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <BsThreeDots size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow">
+                  <BsThreeDots size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
               <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
                 <FiHome size={24} />
               </a>
@@ -224,6 +229,9 @@ export default function Controls({ containerRef, actionsActive }) {
                   color={presentation.data.downloadable ? "black" : "gray"}
                 />
               </button>
+              <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                <BsLockFill color="black" size={13} />
+              </span>
             </>
           )}
           {(presentation.data?.audio || presentation.data?.User === "HOST") && (
@@ -258,9 +266,14 @@ export default function Controls({ containerRef, actionsActive }) {
                   {numberOfUsers}
                 </span>
               </div>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <LuMessagesSquare size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow">
+                  <LuMessagesSquare size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
               <button
                 onClick={endAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
@@ -274,9 +287,15 @@ export default function Controls({ containerRef, actionsActive }) {
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
           {audioSuccess && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <BsThreeDots size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow">
+                  <BsThreeDots size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
+
               <div className="relative">
                 <button
                   className="rounded-full p-3 bg-gray-300 shadow"
@@ -311,9 +330,14 @@ export default function Controls({ containerRef, actionsActive }) {
           )}
           {audioSuccess && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <LuMessagesSquare size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow">
+                  <LuMessagesSquare size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
               <button
                 onClick={endAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
@@ -332,16 +356,18 @@ export default function Controls({ containerRef, actionsActive }) {
               <IoSync color="white" size={32} />
             </button>
           )}
-          {document.fullscreenEnabled && <button
-            onClick={() => fullScreenToggle()}
-            className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
-          >
-            {isFullscreen ? (
-              <RxExitFullScreen color="white" size={32} />
-            ) : (
-              <RxEnterFullScreen color="white" size={32} />
-            )}
-          </button>}
+          {document.fullscreenEnabled && (
+            <button
+              onClick={() => fullScreenToggle()}
+              className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+            >
+              {isFullscreen ? (
+                <RxExitFullScreen color="white" size={32} />
+              ) : (
+                <RxEnterFullScreen color="white" size={32} />
+              )}
+            </button>
+          )}
         </div>
       </div>
       <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
@@ -407,7 +433,9 @@ export default function Controls({ containerRef, actionsActive }) {
                 src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                 alt={`${user.userName} Image`}
               />
-              <p title={user.userName} className="w-20 truncate ...">{user.userName}</p>
+              <p title={user.userName} className="w-20 truncate ...">
+                {user.userName}
+              </p>
               <div className="w-20 flex justify-center items-center gap-2">
                 {index === 0 && tokens.rtcUid === user.id && <span>(You)</span>}
                 <span
@@ -432,8 +460,7 @@ export default function Controls({ containerRef, actionsActive }) {
               e.preventDefault();
               if (!userName) return toast.error("Please enter your name");
               try {
-                if (!tokens)
-                  await fetchRtcToken.mutateAsync();
+                if (!tokens) await fetchRtcToken.mutateAsync();
                 setJoinAudio(true);
                 setEnterName(false);
               } catch (error) {
