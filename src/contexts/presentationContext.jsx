@@ -26,18 +26,18 @@ import useSignalling from "../components/interface/hooks/useSignalling";
 let state = {
   maxNext: 0,
   hostSlideIndex: 0,
-  sync: true,
+  sync: true
 };
 
 export const PresentationContext = createContext();
 
 function OrientationPrompt({ setShowPrompt }) {
   return (
-    <div className="bg-black absolute w-screen h-full z-50">
-      <button
-        onClick={() => setShowPrompt(false)}
-        className="absolute right-5 top-5"
-      >
+    <div
+      className="bg-black absolute w-screen h-full z-50"
+      onClick={() => setShowPrompt(false)}
+    >
+      <button className="absolute right-5 top-5">
         <IoCloseCircleOutline color="white" size={32} />
       </button>
       <div className="flex flex-col justify-center items-center h-full">
@@ -274,7 +274,7 @@ const PresentationContextProvider = (props) => {
       return function () {
         socket.off("change-slide", receiveSlideChange);
         swiperRef.removeEventListener("swiperslidechange", slideHandler);
-      }
+      };
     }
   }, [swiperRef, presentationQuery.data, hostJoined]);
 
