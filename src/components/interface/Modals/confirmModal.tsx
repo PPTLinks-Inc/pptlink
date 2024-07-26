@@ -2,11 +2,11 @@ import { LoadingAssetBig2 } from "../../../assets/assets";
 import Modal from "./Modal";
 
 // eslint-disable-next-line react/prop-types
-export default function ConfirmModal({open, onClose, onSubmit, isLoading, message, actionText}) {
+export default function ConfirmModal({open, onClose, onSubmit, isLoading, message, actionText}: {open: boolean; onClose: (() => void) | null; onSubmit: (e: React.FormEvent<HTMLFormElement>) => void; isLoading: boolean; message: string; actionText: string}) {
     return (
       <Modal
           open={open}
-          onClose={onClose}
+          onClose={onClose || (() => {})}
           color="bg-black"
         >
           <form
@@ -23,7 +23,7 @@ export default function ConfirmModal({open, onClose, onSubmit, isLoading, messag
             ) : (
               <div className="flex gap-3">
                 <button
-                  onClick={onClose}
+                  onClick={onClose || (() => {})}
                   className="bg-slate-200 p-2 w-full rounded"
                   type="button"
                 >

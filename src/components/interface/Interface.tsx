@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useRef, useState, useContext, useEffect } from "react";
@@ -8,28 +9,20 @@ import Slider from "./Slider";
 import Controls from "./Controls";
 import { PresentationContext } from "../../contexts/presentationContext";
 
-let wakeLock = null;
-let setTimerActive = null;
+let wakeLock: WakeLockSentinel | null = null;
+let setTimerActive: any = null;
 
 function Interface() {
   const ref = useRef(null);
   const [loaded, setIsLoaded] = useState(false);
   const [actionsActive, setActionsActive] = useState(true);
-  const { isMobilePhone } = useContext(PresentationContext);
+  const { isMobilePhone, rtmConnectionState } = useContext(PresentationContext);
   const orientation = useOrientation();
 
   const [status, setStatus] = useState({
     online: false,
     offline: false
   });
-
-  const updateOnlineStatus = () => {
-    setStatus((prevState) => ({
-      ...prevState,
-      online: navigator.onLine ? true : "null",
-      offline: !navigator.onLine ? true : "null"
-    }));
-  };
 
   useEffect(() => {
     if (status.online === true) {
@@ -42,21 +35,32 @@ function Interface() {
     }
   }, [status]);
 
-  useEffect(() => {
-    window.addEventListener("online", updateOnlineStatus);
-    window.addEventListener("offline", updateOnlineStatus);
-
-    return () => {
-      window.removeEventListener("online", updateOnlineStatus);
-      window.removeEventListener("offline", updateOnlineStatus);
-    };
-  }, []);
+  useEffect(
+    function () {
+      if (rtmConnectionState === "CONNECTED") {
+        setStatus({
+          online: true,
+          offline: false
+        });
+      } else if (
+        rtmConnectionState === "RECONNECTING" ||
+        rtmConnectionState === "DISCONNECTED" ||
+        rtmConnectionState === "FAILED"
+      ) {
+        setStatus({
+          online: false,
+          offline: true
+        });
+      }
+    },
+    [rtmConnectionState]
+  );
 
   useEffect(function () {
     function requireWakeLock() {
       try {
         if (wakeLock !== null && document.visibilityState === "visible") {
-          wakeLock = navigator.wakeLock.request("screen").then((lock) => {
+          navigator.wakeLock.request("screen").then((lock) => {
             wakeLock = lock;
           });
         }
@@ -98,7 +102,7 @@ function Interface() {
     }, 5000);
   }
 
-  function handleMouseClick(e) {
+  function handleMouseClick(e: any) {
     if (e.target.tagName !== "DIV") return;
     if (actionsActive) {
       setActionsActive(false);
@@ -133,7 +137,7 @@ function Interface() {
           <div
             className={`fixed bottom-0 text-center transition-all duration-500 z-50 text-white w-full bg-[#ff0000] font-bold px-2`}
           >
-            No internet connection
+            {rtmConnectionState}
           </div>
         )
       )}

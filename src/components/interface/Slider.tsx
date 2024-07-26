@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import { register } from "swiper/element/bundle";
@@ -21,7 +23,16 @@ const options = {
 
 register();
 
-function FullScreenLoading({ progress }) {
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "swiper-container": any;
+      "swiper-slide": any;
+    }
+  }
+}
+
+function FullScreenLoading({ progress }: { progress: number }) {
   return (
     <div className="w-full h-screen flex items-center justify-center z-50 absolute bg-black inset-0">
       <progress id="interface-loader" max={100} value={progress}></progress>
@@ -46,18 +57,22 @@ function LoadError() {
 export default function Slider({
   setIsLoaded,
   handleMouseClick,
-  handleMouseMove,
-}) {
-  const swiperRef = useRef(null);
-  const slideContainer = useRef(null);
+  handleMouseMove
+}: {setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>, handleMouseClick: (e: any) => void, handleMouseMove: () => void}) {
+  const swiperRef = useRef<any>(null);
+  const slideContainer = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [maxWidth, setMaxWidth] = useState(0);
-  const { isMobilePhone, presentation, setSwiperRef, fullScreenShow } = useContext(PresentationContext);
+  const { isMobilePhone, presentation, setSwiperRef, fullScreenShow } =
+    useContext(PresentationContext);
   const orientation = useOrientation();
-  const file = useMemo(function() {
-    return presentation.data.pdfLink
-  }, [presentation.data.pdfLink]);
+  const file = useMemo(
+    function () {
+      return presentation?.data?.pdfLink;
+    },
+    [presentation?.data?.pdfLink]
+  );
   const { height: windowHeight } = useWindowSize();
 
   useEffect(() => {
@@ -81,21 +96,42 @@ export default function Slider({
     setMaxWidth(calculatedWidth);
   }
 
-  function onDocumentLoadSuccess({ numPages: nextNumPages }) {
+  function onDocumentLoadSuccess({
+    numPages: nextNumPages
+  }: {
+    numPages: number;
+  }) {
     setNumPages(nextNumPages);
     setIsLoaded(true);
   }
 
-  useEffect(function() {
-    if (isMobilePhone && orientation.type.includes("portrait") && slideContainer && fullScreenShow) {
-      slideContainer.current.style.marginTop = Math.floor((windowHeight / 2) * 100 / windowHeight) + 10 + "%";
-    } else if (isMobilePhone && orientation.type.includes("portrait") && slideContainer) {
-      slideContainer.current.style.marginTop = Math.floor((windowHeight / 2) * 100 / windowHeight) + "%";
-    } else {
-      slideContainer.current.style.marginTop = "0";
-    }
-  }, [isMobilePhone, orientation.type, windowHeight, fullScreenShow]);
-
+  useEffect(
+    function () {
+      if (
+        isMobilePhone &&
+        orientation.type.includes("portrait") &&
+        slideContainer &&
+        fullScreenShow
+      ) {
+        if (slideContainer.current) {
+          slideContainer.current.style.marginTop =
+            Math.floor(((windowHeight / 2) * 100) / windowHeight) + 10 + "%";
+        }
+      } else if (
+        isMobilePhone &&
+        orientation.type.includes("portrait") &&
+        slideContainer
+      ) {
+        if (slideContainer.current)
+          slideContainer.current.style.marginTop =
+            Math.floor(((windowHeight / 2) * 100) / windowHeight) + "%";
+      } else {
+        if (slideContainer.current)
+          slideContainer.current.style.marginTop = "0";
+      }
+    },
+    [isMobilePhone, orientation.type, windowHeight, fullScreenShow]
+  );
 
   return (
     <div
@@ -120,7 +156,7 @@ export default function Slider({
           navigation={isMobilePhone ? false : true}
           keyboard="true"
         >
-          {Array.from(new Array(numPages), (el, index) => (
+          {Array.from(new Array(numPages), (_, index) => (
             <swiper-slide key={`page_${index + 1}`}>
               <Page pageNumber={index + 1} width={maxWidth} />
             </swiper-slide>

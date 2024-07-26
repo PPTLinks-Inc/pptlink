@@ -6,7 +6,7 @@ import { PresentationContext } from "../../contexts/presentationContext";
 import ShareAPI from "./Share";
 import { LoadingAssetSmall2 } from "../../assets/assets";
 
-export default function Header({ actionsActive }) {
+export default function Header({ actionsActive }: { actionsActive: boolean }) {
   const { fullScreenShow, isMobilePhone, makeLive, presentation } =
     useContext(PresentationContext);
   const orientation = useOrientation();
@@ -36,7 +36,7 @@ export default function Header({ actionsActive }) {
         (!isMobilePhone && !fullScreenShow)) && (
         <p className="text-white text-lg">PPTLINKS</p>
       )}
-      {presentation.data?.User === "HOST" ? <button
+      {presentation?.data?.User === "HOST" ? <button
         onClick={() => makeLive.mutate()}
         disabled={makeLive.isPending}
         className={`${presentation.data.live ? "bg-rose-500" : "bg-green-500"} w-[150px] h-[40px] !text-slate-200 !rounded-xl space-x-2 flex items-center justify-center gap-1`}
