@@ -49,7 +49,7 @@ export default function Library() {
                         <h2 className="block text-4xl w-full font-[400] my-4">GNS</h2>
                         <p className="block w-full my-1 text-[1.3rem] font-[500] overflow-x-hidden whitespace-nowrap text-ellipsis">Department of General Studies</p>
                         <p className="block w-full my-1 text-[1.1rem] overflow-x-hidden whitespace-nowrap text-ellipsis">The Federal Polytechnic Bauchi</p>
-                        <span className="block w-full my-4 overflow-x-hidden whitespace-nowrap text-ellipsis">Students Lecture Guide for FPTB GNS courses</span>
+                        <span className="block w-full my-4 overflow-x-hidden whitespace-nowrap text-ellipsis italic">Students Lecture Guide for FPTB GNS courses</span>
                     </div>
                     <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
                         {/* <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span> */}
@@ -72,7 +72,7 @@ export default function Library() {
                         <h2 className="block text-4xl w-full font-[400] my-4">Friday presentations</h2>
                         <p className="block w-full my-1 text-[1.3rem] font-[500] overflow-x-hidden whitespace-nowrap text-ellipsis">Soft Skills Class</p>
                         <p className="block w-full my-1 text-[1.1rem] overflow-x-hidden whitespace-nowrap text-ellipsis">Nasomsoft Embedded Hub</p>
-                        <span className="block w-full my-4 overflow-x-hidden whitespace-nowrap text-ellipsis">Notes on presentations every friday at Nasomsoft Embedded Hub</span>
+                        <span className="block w-full my-4 overflow-x-hidden whitespace-nowrap text-ellipsis italic">Notes on presentations every friday at Nasomsoft Embedded Hub</span>
                     </div>
                     <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
                         {/* <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span> */}
@@ -80,7 +80,7 @@ export default function Library() {
                         <span className="text-[0.8rem] block bg-[#FFA500] text-black px-[4px] p-[1px]">Free</span>
                     </div>
                 </NavLink>
-                
+
                 <NavLink to={'#'}
                     className="_min-w-[350px] bg-black
                  h-fit border-[.1px]
@@ -95,7 +95,7 @@ export default function Library() {
                         <h2 className="block text-4xl w-full font-[400] my-4">GNS</h2>
                         <p className="block w-full my-1 text-[1.3rem] font-[500] overflow-x-hidden whitespace-nowrap text-ellipsis">Department of General Studies</p>
                         <p className="block w-full my-1 text-[1.1rem] overflow-x-hidden whitespace-nowrap text-ellipsis">Abubakar Tafawa Balewa University Bauchi</p>
-                        <span className="block w-full my-4 overflow-x-hidden whitespace-nowrap text-ellipsis">Students Lecture Guide from 100 Level to 300 Level</span>
+                        <span className="block w-full my-4 overflow-x-hidden whitespace-nowrap text-ellipsis italic">Students Lecture Guide from 100 Level to 300 Level</span>
                     </div>
                     <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
                         {/* <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span> */}
