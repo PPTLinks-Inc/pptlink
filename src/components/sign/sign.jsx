@@ -196,7 +196,7 @@ export default function SignPage() {
       exit="exit"
     >
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
-        <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
+        <div className="formwrapper relative w-[38.75rem] bg-[#FFFFF0] max-h-[38.75rem] rounded-[0.9375rem] p-10 maxScreenMobile:px-[0.125rem] !text-[0.8rem] overflow-auto maxScreenMobile:w-full maxScreenMobile:max-h-[90vh]">
           <div className="_sticky top-0 maxScreen:z-50">
             <Link to="/" className="block text-md mb-3 font-[600]">
               <img

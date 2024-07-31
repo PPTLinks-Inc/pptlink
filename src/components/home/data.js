@@ -18,32 +18,32 @@ const FAQ = [
     title: "Miss a live presentation",
     h3: "Users that missed a presentation: does it automatically save for them to access it later on?",
     p: "Files are saved on the site and can be easily and freely accessed as long as they remain 'Live'. However, voice recording can only be initiated by the presenter. Note: Temporary presentations will be deleted after 24 hours."
-  },
-  {
-    title: "Series of related classes",
-    h3: "Can you organize one class from another for organizational additions?",
-    p: "Yes, you can do this by creating a library and placing all related files into it."
-  },
-  {
-    title: "Number of uploads",
-    h3: "Is there a maximum amount of uploads you can have?",
-    p: "You can upload as many files as you want; however, uploading into libraries is restricted to one per month unless you subscribe to a package."
-  },
-  {
-    title: "Same account, multiple devices",
-    h3: "Can the same users account be opened actively in two different devices?",
-    p: "This is restricted and highly prohibited"
-  },
-  {
-    title: "Offensive content",
-    h3: "What is the definition of 'offensive content'?",
-    p: "Offensive content in a content management system includes any inappropriate, harmful, or upsetting material such as hate speech, violent images, explicit sexual content, harassment, false information, or any content that breaks the law."
-  },
-  {
-    title: "Offensive temporary content",
-    h3: "If the content is temporary and a report is made can the support team still act upon it?",
-    p: "If reported, the content uploader account would be flagged. In the case of multiple reports, the content uploader account would be banned."
   }
+  // {
+  //   title: "Series of related classes",
+  //   h3: "Can you organize one class from another for organizational additions?",
+  //   p: "Yes, you can do this by creating a library and placing all related files into it."
+  // },
+  // {
+  //   title: "Number of uploads",
+  //   h3: "Is there a maximum amount of uploads you can have?",
+  //   p: "You can upload as many files as you want; however, uploading into libraries is restricted to one per month unless you subscribe to a package."
+  // },
+  // {
+  //   title: "Same account, multiple devices",
+  //   h3: "Can the same users account be opened actively in two different devices?",
+  //   p: "This is restricted and highly prohibited"
+  // },
+  // {
+  //   title: "Offensive content",
+  //   h3: "What is the definition of 'offensive content'?",
+  //   p: "Offensive content in a content management system includes any inappropriate, harmful, or upsetting material such as hate speech, violent images, explicit sexual content, harassment, false information, or any content that breaks the law."
+  // },
+  // {
+  //   title: "Offensive temporary content",
+  //   h3: "If the content is temporary and a report is made can the support team still act upon it?",
+  //   p: "If reported, the content uploader account would be flagged. In the case of multiple reports, the content uploader account would be banned."
+  // }
 ];
 
 export default FAQ;

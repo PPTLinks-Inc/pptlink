@@ -9,7 +9,7 @@ const Accordion = (props) => {
         className="accordion_head flex justify-between items-center py-5 bg-transparent cursor-pointer border-b-[1px] border-solid border-white"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h2 className="font-semibold text-[1.1rem]">{props.title}</h2>
+        <h2 className="font-semibold text-[1.2rem]">{props.title}</h2>
         <span className={isOpen ? "rotate-180" : "rotate-0"}>
           <svg
             data-accordion-icon

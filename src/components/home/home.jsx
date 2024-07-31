@@ -60,13 +60,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft - scrollAmount,
-        behavior: "smooth"
-      })
+          left: scrollContainer.scrollLeft - scrollAmount,
+          behavior: "smooth"
+        })
       : scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft + scrollAmount,
-        behavior: "smooth"
-      });
+          left: scrollContainer.scrollLeft + scrollAmount,
+          behavior: "smooth"
+        });
   };
 
   // framer
@@ -116,7 +116,7 @@ export default function NewHome() {
     }
   };
 
-  const goToLibrary = () => navigate('/library');
+  const goToLibrary = () => navigate("/library");
 
   const [scope, animate] = useAnimate();
   const isInView = useInView(scope, { once: true });
@@ -157,13 +157,13 @@ export default function NewHome() {
 
   return (
     <motion.section
-      className="parent_page_wrapper min-h-screen w-full"
+      className="parent_page_wrapper min-h-screen  w-full"
       variants={containertVarients}
       initial="hidden"
       animate="visible"
       exit="exit"
     >
-      <div className="banner relative w-full min-h-screen text-white">
+      <div className="banner relative w-full max-h-fit text-white">
         <div className="container h-full text-center">
           <motion.div
             variants={parentVarient}
@@ -196,7 +196,10 @@ export default function NewHome() {
               >
                 Present
               </button>
-              <button onClick={goToLibrary} className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
+              <button
+                onClick={goToLibrary}
+                className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
+              >
                 Libraries
               </button>
             </motion.div>
@@ -217,19 +220,25 @@ export default function NewHome() {
         </div>
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
-      <div className="recent relative w-full min-h-screen text-white text-justify md:pb-20">
+      <div className="recent relative w-full max-h-fit text-white text-justify md:pb-20">
         <div className="container relative pt-10">
           <div className="flex flex-col items-center text-black maxScreenMobile:pb-10">
-            <h2 className="text-[3rem]">RECENT</h2>
+            <h2 className="text-[2.2rem]">
+              Recent{" "}
+              <span className="inline-block maxScreenMobile:hidden">
+                Presentation
+              </span>
+            </h2>
           </div>
+
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
-            <button className="border border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCards(true)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
-            <button className="border border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretRight
                 onClick={() => scrollCards(false)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
@@ -388,7 +397,8 @@ export default function NewHome() {
           </motion.div>
         </div>
       </div>
-      <div className="get_intouch bg-black text-white py-10">
+
+      <div className="max-h-fit bg-black text-white py-10">
         <div className="container">
           <motion.h3
             variants={secondVarient}
@@ -558,6 +568,7 @@ export default function NewHome() {
                 </button>
               </motion.form>
             </motion.div>
+
             <motion.div
               variants={secondVarient}
               initial="initial"
@@ -625,9 +636,10 @@ export default function NewHome() {
             </motion.div>
           </div>
         </div>
+
         <div className="container flex justify-between align-top maxScreenMobile:flex-col">
           <motion.div
-            className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full"
+            className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full max-h-fit"
             variants={secondVarient}
             initial="initial"
             whileInView="inView"
@@ -639,10 +651,7 @@ export default function NewHome() {
             </h3>
           </motion.div>
 
-          <div
-            className="accurdion w-3/5 min-h-[50vh] maxScreenMobile:w-full"
-            ref={scope}
-          >
+          <div className="accurdion w-3/5 maxScreenMobile:w-full" ref={scope}>
             {FAQ.map((_, id) => (
               <Accordion
                 key={id}
