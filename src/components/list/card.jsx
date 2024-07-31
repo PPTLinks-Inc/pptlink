@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export default function Card({ presentation }) {
+  console.log(presentation);
   const containerVarient = {
     initial: {
       y: 50,
@@ -30,17 +31,18 @@ export default function Card({ presentation }) {
     <motion.div
       variants={containerVarient}
       // whileHover="hover"
-      className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2] border border-[rgba(255,166,0,0.53)] "
+      className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
     >
       <Link to={`/${presentation.liveId}`}>
         <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
           <img
             src={presentation.thumbnail}
             alt={`${presentation.name} presentation thumbnail`}
-            className="w-full h-[180px] rounded-2xl object-cover"
+            className="w-full aspect-video rounded-2xl object-cover"
             loading="lazy"
           />
         </div>
+
         <div className="card_body pb-5">
           <h3 className="title font-medium w-full text-xl text-ellipsis text-left pt-3">
             {presentation.name}

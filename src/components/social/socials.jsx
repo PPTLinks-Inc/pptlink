@@ -8,14 +8,6 @@ import www from "/team/pptlink_resources/Path 115.svg";
 export default function Socials() {
   return (
     <div className="footerIcons flex items-center maxScreenMobile:justify-between">
-      <NavLink to="#Socials">
-        <img
-          loading="lazy"
-          src={facebook}
-          alt={facebook}
-          className="block w-4 aspect-square mr-10 maxScreenMobile:mr-0 hover:relative hover:z-10 hover:scale-[1.5] rounded shadow-md"
-        />
-      </NavLink>
       <NavLink to="https://x.com/pptlinks">
         <img
           loading="lazy"
