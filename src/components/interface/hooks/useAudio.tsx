@@ -28,7 +28,6 @@ export default function useAudio(
     localAudioTrack: null,
     remoteAudioTracks: {}
   });
-  const [users, setUsers] = useState<string[]>([]);
 
   const [networkScore, setNetworkScore] = useState<NetworkQuality>();
 
@@ -54,18 +53,27 @@ export default function useAudio(
     }
   }
 
+  function endAudio() {
+    setJoinAudio(false);
+    setSuccess(false);
+    setError(false);
+    setLoading(false);
+    if (audioTracks.current.localAudioTrack) {
+      audioTracks.current.localAudioTrack.stop();
+      audioTracks.current.localAudioTrack.close();
+    }
+    if (rtcClient?.channelName) {
+      rtcClient.leave();
+    }
+  }
+
   useEffect(() => {
     if (!isReady) {
+      console.log("kill");
       setSuccess(false);
       setError(false);
       setLoading(false);
-      if (audioTracks.current.localAudioTrack) {
-        audioTracks.current.localAudioTrack.stop();
-        audioTracks.current.localAudioTrack.close();
-      }
-      if (rtcClient?.channelName) {
-        rtcClient.leave();
-      }
+      endAudio();
       return;
     }
 
@@ -85,22 +93,18 @@ export default function useAudio(
           if (mediaType == "audio") {
             if (!user.audioTrack) return;
             console.log("User Published", user.uid);
-            setUsers((users) => [...users, user.uid as string]);
             audioTracks.current.remoteAudioTracks[user.uid] = user.audioTrack;
             user.audioTrack?.play();
           }
         });
 
         rtcClient.on("user-left", (user) => {
-          setUsers((users) => users.filter((u) => u !== user.uid));
           delete audioTracks.current.remoteAudioTracks[user.uid];
         });
 
         rtcClient.on("network-quality", function (quality) {
           setNetworkScore(quality);
         });
-
-        setUsers(rtcClient.remoteUsers.map((user) => user.uid as string));
 
         if (!rtcToken || !tokens || !presentation) {
           throw new Error("RTC Missing required data");
@@ -158,8 +162,8 @@ export default function useAudio(
     loading,
     success,
     error,
-    joinedAudio: users,
     setMute,
+    endAudio,
     networkStatus
   };
 }

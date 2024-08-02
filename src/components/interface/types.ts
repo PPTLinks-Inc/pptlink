@@ -51,7 +51,17 @@ export interface PresentationContextI {
     }, Error, void, unknown>;
     synced: boolean;
     syncSlide: () => void;
-    rtmConnectionState: RTMEvents.RTMConnectionStatusChangeEvent["state"]
+    rtmConnectionState: RTMEvents.RTMConnectionStatusChangeEvent["state"],
+    usersData: {
+        success: boolean;
+        error: boolean;
+        loading: boolean;
+        users: {
+            id: string;
+            userName: string;
+            micState: typeof MIC_STATE;
+        }[];
+    }
 }
 export interface rtmTokenI {
     rtmToken: string;

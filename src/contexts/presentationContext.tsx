@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
 
-import { createContext, useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useContext
+} from "react";
 import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
@@ -11,6 +18,7 @@ import rotateImage from "../components/interface/assets/rotate.gif";
 import { Spinner, SpinnerIos } from "../components/interface/spinner/Spinner";
 import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
+import { userContext } from "./userContext";
 import { MIC_STATE } from "../constants/routes";
 import useAudio from "../components/interface/hooks/useAudio";
 import { toast } from "react-toastify";
@@ -77,6 +85,7 @@ function OrientationPrompt({
 const PresentationContextProvider = (props: { children: any }) => {
   const [swiperRef, setSwiperRef] = useState<any>();
 
+  const { user } = useContext(userContext);
   const params = useParams();
   const [start, setStart] = useState(false);
   const [showPrompt, setShowPrompt] = useState(true);
@@ -87,7 +96,7 @@ const PresentationContextProvider = (props: { children: any }) => {
   const [userUid, setUserUid] = useLocalStorage<string>("userUid");
   const [tokens, setTokens] = useState<rtmTokenI>();
   const [rtcToken, setRtcToken] = useState<string | null>(null);
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState(user?.username || "");
   const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
@@ -128,7 +137,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         presentationQuery.data?.audio &&
         presentationQuery.data?.live &&
         presentationQuery.data?.User === "HOST" &&
-        rtcToken
+        rtcToken !== null
       ) {
         setJoinAudio(true);
       } else {
@@ -168,17 +177,45 @@ const PresentationContextProvider = (props: { children: any }) => {
     }
   }, [start, orientation, presentationQuery.data?.live]);
 
-  function endAudio() {
-    setJoinAudio(false);
-    setRtcToken(null);
-  }
+  const endAudio = useCallback(
+    async (hostEnd: boolean) => {
+      console.log("End Audio");
+      if (showPrompt) {
+        setShowPrompt(false);
+      }
+      setJoinAudio(false);
+      setRtcToken(null);
+      audioData.endAudio();
+      if (presentationQuery.data?.User === "GUEST") {
 
-  const isAudioReady =
-    joinAudio && tokens !== null && presentationQuery.data?.audio && rtcToken
+        usersData.removeUser();
+        console.log("Removed", presentationQuery.data?.liveId);
+      }
+      if (hostEnd) {
+        queryClient.setQueryData<presentationData>(
+          ["presentation", presentationQuery.data?.liveId],
+          (prev) => {
+            if (prev) {
+              return {
+                ...prev,
+                audio: false
+              };
+            }
+          }
+        );
+      }
+    },
+    [presentationQuery.data?.liveId, queryClient, showPrompt]
+  );
+
+  const isAudioReady = useMemo(() => {
+    return joinAudio &&
+      tokens !== null &&
+      presentationQuery.data?.audio &&
+      rtcToken
       ? true
       : false;
-  
-    console.log("isAudioReady", tokens, presentationQuery.data?.audio, rtcToken);
+  }, [joinAudio, tokens, presentationQuery.data?.audio, rtcToken]);
 
   const audioData = useAudio(
     isAudioReady,
@@ -187,7 +224,12 @@ const PresentationContextProvider = (props: { children: any }) => {
     tokens,
     presentationQuery.data
   );
-  const signalling = useRTM(endAudio, setStartPrompt, tokens, presentationQuery.data);
+  const signalling = useRTM(
+    endAudio,
+    setStartPrompt,
+    tokens,
+    presentationQuery.data,
+  );
   const slides = useSlide(
     signalling.success && presentationQuery.isSuccess,
     signalling.rtm,
@@ -195,11 +237,10 @@ const PresentationContextProvider = (props: { children: any }) => {
     presentationQuery.data
   );
 
-  useAudioUsers(signalling.rtm, audioData.joinedAudio);
+  const usersData = useAudioUsers(audioData.success, signalling.rtm, userName, tokens, presentationQuery.data);
 
   const isIphone = isMobile({ iphone: true });
   const isMobilePhone = isMobile({ iphone: false });
-
 
   const makeLive = useMutation({
     mutationFn: async function () {
@@ -207,7 +248,10 @@ const PresentationContextProvider = (props: { children: any }) => {
       const { data } = await axios.put<never>(
         `/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`
       );
-      await signalling.rtm?.publish(presentationQuery.data?.liveId ||"", "LIVE");
+      await signalling.rtm?.publish(
+        presentationQuery.data?.liveId || "",
+        "LIVE"
+      );
       return data;
     },
     onSuccess: function () {
@@ -232,7 +276,7 @@ const PresentationContextProvider = (props: { children: any }) => {
     },
     onError: function (err) {
       toast.error(err.message || "An error occurred");
-    }
+    },
   });
 
   const startAudio = useMutation({
@@ -254,25 +298,29 @@ const PresentationContextProvider = (props: { children: any }) => {
         {},
         { params: { userUid } }
       );
-      await signalling.rtm?.publish(presentationQuery.data?.liveId || "", "AUDIO");
+      await signalling.rtm?.publish(
+        presentationQuery.data?.liveId || "",
+        "AUDIO"
+      );
       return data;
     },
     onSuccess: function (data) {
-      queryClient.setQueryData<presentationData>(
-        ["presentation", params.id],
-        (prev) => {
-          if (!prev) return undefined;
-          return {
-            ...prev,
-            audio: !prev.audio
-          };
-        }
-      );
+      if (presentationQuery.data?.User === "HOST") {
+        queryClient.setQueryData<presentationData>(
+          ["presentation", params.id],
+          (prev) => {
+            if (!prev) return undefined;
+            return {
+              ...prev,
+              audio: !prev.audio
+            };
+          }
+        );
+      }
       if (data) {
         setRtcToken(data.rtcToken);
       } else {
-        setJoinAudio(false);
-        setRtcToken(null);
+        endAudio(false);
       }
     },
     onError: function (err) {
@@ -327,7 +375,8 @@ const PresentationContextProvider = (props: { children: any }) => {
         fetchRtcToken,
         synced: slides.synced,
         syncSlide: slides.syncSlide,
-        rtmConnectionState: signalling.rtmConnectionState
+        rtmConnectionState: signalling.rtmConnectionState,
+        usersData
       }}
     >
       {presentationQuery.isLoading ? (

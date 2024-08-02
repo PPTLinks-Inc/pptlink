@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AGORA_APP_ID } from "../../../constants/routes";
 import { presentationData } from "../types";
 
-export default function useRTM(endAudio: ()=>void, setStartPrompt: React.Dispatch<React.SetStateAction<boolean>>, tokens?: { rtcUid: string; rtmToken: string }, presentation?: presentationData) {
+export default function useRTM(endAudio: (hostEnd: boolean)=>void, setStartPrompt: React.Dispatch<React.SetStateAction<boolean>>, tokens?: { rtcUid: string; rtmToken: string }, presentation?: presentationData) {
   const queryClient = useQueryClient();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ export default function useRTM(endAudio: ()=>void, setStartPrompt: React.Dispatc
               if (messageData.message === "LIVE") {
                 let audio = presentation.audio;
                 if (presentation.audio && presentation.live) {
-                  endAudio();
+                  endAudio(true);
                   audio = false;
                 }
 
@@ -70,22 +70,22 @@ export default function useRTM(endAudio: ()=>void, setStartPrompt: React.Dispatc
               }
               else if (messageData.message === "AUDIO") {
                 if (presentation.audio) {
-                  endAudio();
-                  setStartPrompt(false);
-                } else {
+                  endAudio(true);
+                }
+                else {
+                  queryClient.setQueryData<presentationData>(
+                    ["presentation", presentation.liveId],
+                    (prev) => {
+                      if (prev) {
+                        return {
+                          ...prev,
+                          audio: true
+                        };
+                      }
+                    }
+                  );
                   setStartPrompt(true);
                 }
-                queryClient.setQueryData<presentationData>(
-                  ["presentation", presentation.liveId],
-                  (prev) => {
-                    if (prev) {
-                      return {
-                        ...prev,
-                        audio: !prev.audio
-                      };
-                    }
-                  }
-                );
               }
             });
           }

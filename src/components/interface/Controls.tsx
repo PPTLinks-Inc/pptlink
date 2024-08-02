@@ -45,6 +45,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     startAudio,
     syncSlide,
     synced,
+    usersData
   } = useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
@@ -247,7 +248,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {/* {numberOfUsers} */}
+                  {usersData.users.length}
                 </span>
               </div>
               <button className="rounded-full p-3 bg-gray-300 shadow">
@@ -277,7 +278,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {/* {numberOfUsers} */}
+                  {usersData.users.length}
                 </span>
               </div>
             </>
