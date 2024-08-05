@@ -7,7 +7,7 @@ import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
 export default function Library() {
     return (<>
         <section className="bg-black">
-            <div className="container min-h-fit py-10 flex flex-col justify-between items-center">
+            <div className="container h-fit py-10 flex flex-col justify-between items-center">
                 <h1 className="text-5xl font-[400] uppercase mb-5">LIBRARY</h1>
                 <div className="w-[150px] aspect-square mb-5">
                     <img
@@ -32,8 +32,8 @@ export default function Library() {
             </div>
         </section>
 
-        <section className="library container py-5 min-h-screen bg-[#FFFFF0]">
-            <div className="w-full mt-20 mb-10">
+        <section className="library container py-5 h-fit bg-[#FFFFF0]">
+            <div className="w-full my-20">
                 {/* {Array(3).fill(0).map((_, i) => ({ id: i })).map(({ id }) => */}
                 <NavLink to={'#'}
                     className="_min-w-[350px] bg-black
