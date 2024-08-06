@@ -119,7 +119,7 @@ export default function Root() {
 
   return (
     <div
-      className={`w-full min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
+      className={`w-full max-h-fit _min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
     >
       <Backmenu handleDropdown={handleDropdown} />
       <div

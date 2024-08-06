@@ -60,13 +60,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft - scrollAmount,
-          behavior: "smooth"
-        })
+        left: scrollContainer.scrollLeft - scrollAmount,
+        behavior: "smooth"
+      })
       : scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft + scrollAmount,
-          behavior: "smooth"
-        });
+        left: scrollContainer.scrollLeft + scrollAmount,
+        behavior: "smooth"
+      });
   };
 
   // framer

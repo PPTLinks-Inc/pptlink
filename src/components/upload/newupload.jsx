@@ -190,10 +190,10 @@ export default function NewUploadPage() {
   // form validation functions
   return (
     <section
-      className="upload_svg_cover min-h-[100vh] relative bg-[#FFFFF0]"
+      className="upload_svg_cover h-fit relative bg-[#FFFFF0]"
       ref={scrollableRef}
     >
-      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent min-h-screen z-50 maxScreenMobile:w-full">
+      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
         <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[1rem] maxScreenMobile:text-center">
           New Presentation
         </h1>
@@ -268,13 +268,12 @@ export default function NewUploadPage() {
               )}
               <div
                 className={`flex flex-col gap-2 justify-center items-center w-full h-full
-                   ${
-                     values?.tempFileId
-                       ? "bg-green-400"
-                       : canUpload
-                         ? "bg-[rgba(255,165,0,0.3)]"
-                         : "bg-rose-400"
-                   } absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
+                   ${values?.tempFileId
+                    ? "bg-green-400"
+                    : canUpload
+                      ? "bg-[rgba(255,165,0,0.3)]"
+                      : "bg-rose-400"
+                  } absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
               >
                 <img
                   src={img_feather}
@@ -763,11 +762,10 @@ export default function NewUploadPage() {
         <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
           <button
             type="button"
-            className={`${
-              currentView === 1
-                ? "bg-[#3d3535bf] text-white !cursor-not-allowed"
-                : "border border-black pointer-events-auto"
-            } text-black text-[1.5rem] p-2 
+            className={`${currentView === 1
+              ? "bg-[#3d3535bf] text-white !cursor-not-allowed"
+              : "border border-black pointer-events-auto"
+              } text-black text-[1.5rem] p-2 
               rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
             onClick={showPreviousStage}
             disabled={savePresentation.isPending}

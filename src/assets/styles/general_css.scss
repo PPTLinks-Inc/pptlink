@@ -544,7 +544,6 @@ label.toggle__label {
     }
 }
 
-
 .documentatio_page {
     display: grid;
     grid-template: auto / repeat(auto-fill, minmax(350px, 1fr)); // 👌
@@ -554,4 +553,9 @@ label.toggle__label {
     @include is_mediaQuery_MaxWidth_Yes {
         grid-template: auto / repeat(auto-fill, minmax(300px, 1fr)); // 👌
     }
+}
+
+.testSVG {
+    -webkit-clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
+    clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
 }
