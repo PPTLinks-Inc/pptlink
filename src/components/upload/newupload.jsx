@@ -71,10 +71,19 @@ export default function NewUploadPage() {
         if (data.event === "connect") setCanUpload(true);
 
         if (data.event === "upload-done") {
-          setValues((prev) => ({ ...prev, tempFileId: data.tempDataId, pdfLink: data.pdfLink, file: null }));
-        }
-        else if (data.event === "upload-error") {
-          setValues((prev) => ({ ...prev, file: null, pdfLink: null, tempFileId: null }));
+          setValues((prev) => ({
+            ...prev,
+            tempFileId: data.tempDataId,
+            pdfLink: data.pdfLink,
+            file: null
+          }));
+        } else if (data.event === "upload-error") {
+          setValues((prev) => ({
+            ...prev,
+            file: null,
+            pdfLink: null,
+            tempFileId: null
+          }));
         }
       };
     }
@@ -181,11 +190,13 @@ export default function NewUploadPage() {
   // form validation functions
   return (
     <section
-      className="upload_svg_cover min-h-[100vh] relative bg-[#FFFFF0]"
+      className="upload_svg_cover h-fit relative bg-[#FFFFF0]"
       ref={scrollableRef}
     >
-      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent min-h-screen z-50 maxScreenMobile:w-full">
-        <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[1rem] maxScreenMobile:text-center">New Presentation</h1>
+      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
+        <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[1rem] maxScreenMobile:text-center">
+          New Presentation
+        </h1>
         <hr />
         <div className="form_tracker_wrapper w-full flex justify-center mb-20 maxScreenMobile:!mb-4">
           {/* Note: true simply means all inputs for that view is 
@@ -245,18 +256,24 @@ export default function NewUploadPage() {
               before:absolute before:top-0 before:left-0 before:pointer-events-none maxScreenMobile:w-full maxScreenMobile:bg-[black]
                maxScreenMobile:before:bg-black`}
             >
-              {canUpload && <input
-                type="file"
-                name="file"
-                onChange={handleChange}
-                accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
-                multiple={false}
-                className="block w-full h-full bg-[red] cursor-pointer"
-              />}
+              {canUpload && (
+                <input
+                  type="file"
+                  name="file"
+                  onChange={handleChange}
+                  accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
+                  multiple={false}
+                  className="block w-full h-full bg-[red] cursor-pointer"
+                />
+              )}
               <div
                 className={`flex flex-col gap-2 justify-center items-center w-full h-full
-                   ${values?.tempFileId ? "bg-green-400" : canUpload ? "bg-[rgba(255,165,0,0.3)]" :
-                    "bg-rose-400"} absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
+                   ${values?.tempFileId
+                    ? "bg-green-400"
+                    : canUpload
+                      ? "bg-[rgba(255,165,0,0.3)]"
+                      : "bg-rose-400"
+                  } absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
               >
                 <img
                   src={img_feather}
@@ -268,40 +285,38 @@ export default function NewUploadPage() {
                   alt={img_featherTwo}
                   className="hidden w-16 aspect-square maxScreenMobile:block"
                 />
-                {
-                  values?.tempFileId ? (
-                    <>
-                      <span className="w-fit h-fit text-black">
-                        File Upload successfully
-                      </span>
-                      <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full">
-                        Change File...
-                      </span>
-                    </>
-                  ) : (canUpload ? (
-                    <>
-                      <span className="w-fit h-fit text-black maxScreenMobile:text-white">
-                        Drop your file in here
-                      </span>
-                      <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full maxScreenMobile:bg-white">
-                        Browse...
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="w-fit h-fit text-black">
-                        Error you can&apos;t upload right now
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => window.location.reload()}
-                        className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full"
-                      >
-                        Reload
-                      </button>
-                    </>
-                  ))
-                }
+                {values?.tempFileId ? (
+                  <>
+                    <span className="w-fit h-fit text-black">
+                      File Upload successfully
+                    </span>
+                    <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full">
+                      Change File...
+                    </span>
+                  </>
+                ) : canUpload ? (
+                  <>
+                    <span className="w-fit h-fit text-black maxScreenMobile:text-white">
+                      Drop your file in here
+                    </span>
+                    <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full maxScreenMobile:bg-white">
+                      Browse...
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-fit h-fit text-black">
+                      Error you can&apos;t upload right now
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => window.location.reload()}
+                      className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full"
+                    >
+                      Reload
+                    </button>
+                  </>
+                )}
               </div>
               {errors.errors?.file && (
                 <p className="text-[red]">{errors.errors?.file}</p>
@@ -457,7 +472,6 @@ export default function NewUploadPage() {
                       className="block w-[65%] p-2 indent-8 border-2 border-black border-r-0 rounded-tl-md rounded-bl-md"
                       placeholder="ADD CATEGORY"
                     />
-
                     <button
                       type="button"
                       className="w-[45%] flex gap-1 justify-center items-center h-full p-2 bg-black border-2 border-black rounded-tr-md rounded-br-md cursor-pointer"
@@ -549,10 +563,12 @@ export default function NewUploadPage() {
               )}
             </div>
             {/* time of presentation */}
-            <span className="bg-[#FFFFF0] text-[#ffa500] w-fit p-4 mt-8 
+            <span
+              className="bg-[#FFFFF0] text-[#ffa500] w-fit p-4 mt-8 
             border-[2px] border-black text-xl font-medium flex 
             justify-between items-center maxScreenMobile:text-white 
-            maxScreenMobile:bg-[#ffa500] maxScreenMobile:border-[#ffa500]">
+            maxScreenMobile:bg-[#ffa500] maxScreenMobile:border-[#ffa500]"
+            >
               Time of Presentation
               <div className="ml-[20px] flex items-center justify-center">
                 <input
@@ -606,12 +622,21 @@ export default function NewUploadPage() {
           >
             {/* <h1 className='text-[3rem] font-black text-black'>Coming Soon pls🐱‍🏍</h1> */}
             <div className="w-full h-fit flex justify-between items-start maxScreenMobile:flex-col">
-              <div className="!w-[50%] maxScreenMobile:!w-full min-h-screen mt-auto mb-0 flex flex-col justify-between bg-[#FFFFF0]">
+              <div className="!w-[50%] maxScreenMobile:!w-full max-h-auto mt-auto mb-0 flex flex-col justify-between bg-[#FFFFF0]">
                 {/* MARK: Preview */}
-                <div ref={previewRef} className="maxScreenMobile:mt-4 w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black">
-                  {values?.pdfLink && <SlidePreview currentView={currentView} url={values?.pdfLink} containerRef={previewRef} />}
+                <div
+                  ref={previewRef}
+                  className="maxScreenMobile:mt-4 w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black"
+                >
+                  {values?.pdfLink && (
+                    <SlidePreview
+                      currentView={currentView}
+                      url={values?.pdfLink}
+                      containerRef={previewRef}
+                    />
+                  )}
                 </div>
-                <div className="bg-[#ffa500] h-fit mt-16 pb-4">
+                <div className="bg-black h-fit mt-16 pb-4">
                   <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]">
                     PRESENTER&apos;S INFORMATION
                   </p>
@@ -642,7 +667,7 @@ export default function NewUploadPage() {
                   </div>
                 </div>
               </div>
-              <div className="!w-[50%] maxScreenMobile:!w-full _overflow-auto min-h-screen bg-[#ffa500] pb-4 flex flex-col justify-between">
+              <div className="!w-[50%] maxScreenMobile:!w-full _overflow-auto max-h-auto bg-black pb-4 flex flex-col justify-between">
                 <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem] mt-0">
                   PRESENTATION DETAILS
                 </p>
@@ -701,7 +726,9 @@ export default function NewUploadPage() {
                       </p>
                     </li>
                   </ul>
-                  <p className="bg-[#ffa500] w-3/6 pl-4 py-2">SCHEDULE</p>
+                  <p className="bg-black text-slate-200 w-3/6 pl-4 py-2">
+                    SCHEDULE
+                  </p>
                   <ul className="block w-full pb-4">
                     <li className="block w-full mb-4 px-4">
                       <span>Date</span>
@@ -734,8 +761,10 @@ export default function NewUploadPage() {
         <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
           <button
             type="button"
-            className={`${currentView === 1 ? "bg-[#3d3535bf] text-white !cursor-not-allowed"
-              : "border border-black pointer-events-auto"} text-black text-[1.5rem] p-2 
+            className={`${currentView === 1
+              ? "bg-[#3d3535bf] text-white !cursor-not-allowed"
+              : "border border-black pointer-events-auto"
+              } text-black text-[1.5rem] p-2 
               rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
             onClick={showPreviousStage}
             disabled={savePresentation.isPending}
@@ -754,7 +783,15 @@ export default function NewUploadPage() {
             }}
             disabled={savePresentation.isPending}
           >
-            {savePresentation.isError ? "Error, Try again" : savePresentation.isPending ? "Saving..." : currentView === 3 ? "Submit" : "Next"}
+            {savePresentation.isError ? (
+              "Error, Try again"
+            ) : savePresentation.isPending ? (
+              <LoadingAssetSmall2 />
+            ) : currentView === 3 ? (
+              "Submit"
+            ) : (
+              "Next"
+            )}
           </button>
         </div>
       </div>

@@ -424,4 +424,9 @@ label.toggle__label:active:after {
   .documentatio_page {
     grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
   }
+}
+
+.testSVG {
+  -webkit-clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
+  clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
 }/*# sourceMappingURL=general_css.css.map */
