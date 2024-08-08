@@ -472,7 +472,6 @@ export default function NewUploadPage() {
                       className="block w-[65%] p-2 indent-8 border-2 border-black border-r-0 rounded-tl-md rounded-bl-md"
                       placeholder="ADD CATEGORY"
                     />
-
                     <button
                       type="button"
                       className="w-[45%] flex gap-1 justify-center items-center h-full p-2 bg-black border-2 border-black rounded-tr-md rounded-br-md cursor-pointer"
