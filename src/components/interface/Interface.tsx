@@ -99,18 +99,19 @@ function Interface() {
 
     setTimerActive = setTimeout(() => {
       setActionsActive(false);
-    }, 5000);
+    }, 4000);
   }
 
   function handleMouseClick(e: any) {
-    if (e.target.tagName !== "DIV") return;
-    if (actionsActive) {
-      setActionsActive(false);
-      if (setTimerActive) {
-        clearTimeout(setTimerActive);
+    if (e.target.tagName === "DIV" || e.target.tagName === "SPAN") {
+      if (actionsActive) {
+        setActionsActive(false);
+        if (setTimerActive) {
+          clearTimeout(setTimerActive);
+        }
+      } else {
+        handleMouseMove();
       }
-    } else {
-      handleMouseMove();
     }
   }
 

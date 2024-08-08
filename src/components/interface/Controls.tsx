@@ -2,7 +2,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
-import { IoIosMic, IoIosMicOff } from "react-icons/io";
+import { IoIosMic } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdCallEnd, MdError } from "react-icons/md";
@@ -23,29 +23,28 @@ import { MIC_STATE } from "../../constants/routes";
 export default function Controls({ containerRef, actionsActive }: {containerRef: React.MutableRefObject<any>, actionsActive: boolean}) {
   const orientation = useOrientation();
   const {
-    fullScreenToggle,
     fullScreenShow,
     isMobilePhone,
     presentation,
     micState,
-    setMicState,
-    audioSuccess,
     startPrompt,
-    setStartPrompt,
-    audioError,
-    audioLoading,
-    setMute,
-    joinAudio,
-    setJoinAudio,
+    audioData,
     userName,
-    setUserName,
-    rtcToken,
     networkStatus,
-    fetchRtcToken,
     startAudio,
-    syncSlide,
+    endAudio,
     synced,
-    usersData
+    users,
+    host,
+    rtm,
+    changeMicState,
+    acceptMicRequest,
+    fullScreenToggle,
+    setMicState,
+    setStartPrompt,
+    setMute,
+    setUserName,
+    syncSlide
   } = useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
@@ -58,10 +57,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
 
   const micStyle = useMemo(
     function () {
-      if (micState === MIC_STATE.MIC_OFF && !audioSuccess) {
+      if (micState === MIC_STATE.MIC_OFF || !audioData.success) {
         return { style: "bg-gray-300", icon: <IoIosMic size={60} /> };
-      } else if (micState === MIC_STATE.MIC_OFF) {
-        return { style: "bg-[#ff0000]", icon: <IoIosMicOff size={60} /> };
       } else if (micState === MIC_STATE.REQ_MIC) {
         return { style: "bg-orange-500", icon: <PiHandWaving size={60} /> };
       } else if (micState === MIC_STATE.MIC_MUTED) {
@@ -70,17 +67,18 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         return { style: "bg-green-500", icon: <IoIosMic size={60} /> };
       }
     },
-    [micState, audioSuccess]
+    [micState, audioData.success]
   );
 
-  // useEffect(
-  //   function () {
-  //     if (audioSuccess) {
-  //       changeMicState(micState);
-  //     }
-  //   },
-  //   [audioSuccess, micState]
-  // );
+  useEffect(
+    function () {
+      if (audioData.success) {
+        if (!presentation?.data) return;
+        changeMicState(micState, rtm);
+      }
+    },
+    [audioData.success, micState, presentation?.data, rtm]
+  );
 
   const getUserMicStatusColor = useCallback(function (micStatus: MIC_STATE) {
     if (micStatus === MIC_STATE.MIC_MUTED) {
@@ -94,18 +92,19 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     }
   }, []);
 
-  // const handleAcceptMicRequest = useCallback(
-  //   function (user: { status: MIC_STATE; id: string; }) {
-  //     if (presentation.data?.User !== "HOST") return;
+  const handleAcceptMicRequest = useCallback(
+    function (user: { status: MIC_STATE; id: string; }) {
+      if (!presentation?.data) return;
+      if (presentation.data.User !== "HOST") return;
 
-  //     if (user.status === MIC_STATE.REQ_MIC) {
-  //       acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
-  //     } else if (user.status === MIC_STATE.CAN_SPK) {
-  //       acceptMicRequest(user.id, MIC_STATE.MIC_OFF);
-  //     }
-  //   },
-  //   [acceptMicRequest, presentation.data?.User]
-  // );
+      if (user.status === MIC_STATE.REQ_MIC) {
+        acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
+      } else if (user.status === MIC_STATE.CAN_SPK) {
+        acceptMicRequest(user.id, MIC_STATE.MIC_OFF);
+      }
+    },
+    [presentation]
+  );
 
   const styles = useMemo(() => {
     if (
@@ -113,11 +112,11 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       actionsActive ||
       enterName ||
       startPrompt ||
-      audioLoading ||
+      audioData.loading ||
       endAudioPrompt ||
       !hideControls ||
       showUsersList ||
-      audioError
+      audioData.error
     ) {
       return "opacity-100";
     }
@@ -128,53 +127,57 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     enterName,
     startPrompt,
     isMobilePhone,
-    audioLoading,
+    audioData.loading,
     endAudioPrompt,
     hideControls,
     showUsersList,
-    audioError
+    audioData.error
   ]);
 
   function actionMicButton() {
-    if (!joinAudio) {
+    if (!audioData.success) {
       setStartPrompt(true);
       return;
     }
 
-    if (audioSuccess) {
-      if (presentation?.data?.User === "HOST") {
-        if (micState === MIC_STATE.CAN_SPK) {
-          setMicState(MIC_STATE.MIC_MUTED);
-          setMute(true);
-        } else {
-          setMicState(MIC_STATE.CAN_SPK);
-          setMute(false);
-        }
+    if (presentation?.data?.User === "HOST") {
+      if (micState === MIC_STATE.CAN_SPK) {
+        setMicState(MIC_STATE.MIC_MUTED);
+        setMute(true);
       } else {
-        if (micState === MIC_STATE.MIC_OFF) {
-          setMicState(MIC_STATE.REQ_MIC);
-          setMute(true);
-        } else if (micState === MIC_STATE.REQ_MIC) {
-          setMicState(MIC_STATE.MIC_OFF);
-          setMute(true);
-        } else if (micState === MIC_STATE.CAN_SPK) {
-          setMicState(MIC_STATE.MIC_MUTED);
-          setMute(true);
-        } else if (micState === MIC_STATE.MIC_MUTED) {
-          setMicState(MIC_STATE.CAN_SPK);
-          setMute(false);
-        }
+        setMicState(MIC_STATE.CAN_SPK);
+        setMute(false);
+      }
+    } else {
+      if (micState === MIC_STATE.MIC_OFF) {
+        setMicState(MIC_STATE.REQ_MIC);
+        setMute(true);
+      } else if (micState === MIC_STATE.REQ_MIC) {
+        setMicState(MIC_STATE.MIC_OFF);
+        setMute(true);
+      } else if (micState === MIC_STATE.CAN_SPK) {
+        setMicState(MIC_STATE.MIC_MUTED);
+        setMute(true);
+      } else if (micState === MIC_STATE.MIC_MUTED) {
+        setMicState(MIC_STATE.CAN_SPK);
+        setMute(false);
       }
     }
   }
 
-  async function endAudio() {
+  async function endUserAudio() {
     if (!endAudioPrompt) {
       setEndAudioPrompt(true);
       return;
     }
+    if (!presentation?.data) return;
     try {
-      await startAudio.mutateAsync();
+      await endAudio.mutateAsync({
+        liveId: presentation.data.liveId,
+        presentationId: presentation.data.id,
+        User: presentation.data.User,
+        hostEnd: false
+      });
       setEndAudioPrompt(false);
       setMicState(MIC_STATE.MIC_OFF);
     } catch (error) {
@@ -188,7 +191,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       onMouseEnter={() => setHideControls(false)}
       onMouseLeave={() => setHideControls(true)}
     >
-      {audioSuccess && (
+      {audioData.success && (
         <div
           className={`absolute sm:bottom-5 bottom-24 left-5 network__bar ${networkStatus}`}
         >
@@ -200,7 +203,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       <div className="flex flex-row gap-20 items-center justify-center relative w-full">
         {/* Desktop controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <button className="rounded-full p-3 bg-gray-300 shadow">
                 <BsThreeDots size={24} />
@@ -221,15 +224,15 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           )}
           {(presentation?.data?.audio || presentation?.data?.User === "HOST") && (
             <button
-              className={`${micStyle?.style} rounded-full p-3 shadow ${audioLoading && "!cursor-not-allowed"}`}
+              className={`${micStyle?.style} rounded-full p-3 shadow ${audioData.loading && "!cursor-not-allowed"}`}
               onClick={actionMicButton}
-              disabled={audioLoading}
+              disabled={audioData.loading}
             >
-              {audioLoading ? (
+              {audioData.loading ? (
                 <LoadingAssetBig2 />
               ) : (
                 <>
-                  {(audioSuccess || !audioSuccess) && !audioError ? (
+                  {(audioData.success || !audioData.success) && !audioData.error ? (
                     micStyle?.icon
                   ) : (
                     <MdError size={60} />
@@ -238,7 +241,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               )}
             </button>
           )}
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <div className="relative">
                 <button
@@ -248,14 +251,14 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {usersData.users.length}
+                  {users.length}
                 </span>
               </div>
               <button className="rounded-full p-3 bg-gray-300 shadow">
                 <LuMessagesSquare size={24} />
               </button>
               <button
-                onClick={endAudio}
+                onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
               >
                 <MdCallEnd size={24} />
@@ -265,7 +268,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         </div>
         {/* mobile controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <button className="rounded-full p-3 bg-gray-300 shadow">
                 <BsThreeDots size={24} />
@@ -278,7 +281,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {usersData.users.length}
+                  {users.length}
                 </span>
               </div>
             </>
@@ -287,13 +290,13 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             <button
               className={`${micStyle?.style} rounded-full p-3 shadow`}
               onClick={actionMicButton}
-              disabled={audioLoading}
+              disabled={audioData.loading}
             >
-              {audioLoading ? (
+              {audioData.loading ? (
                 <LoadingAssetBig2 />
               ) : (
                 <>
-                  {(audioSuccess || !audioSuccess) && !audioError ? (
+                  {(audioData.success || !audioData.success) && !audioData.error ? (
                     micStyle?.icon
                   ) : (
                     <MdError color="white" size={60} />
@@ -302,13 +305,13 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               )}
             </button>
           )}
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <button className="rounded-full p-3 bg-gray-300 shadow">
                 <LuMessagesSquare size={24} />
               </button>
               <button
-                onClick={endAudio}
+                onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
               >
                 <MdCallEnd size={24} />
@@ -337,7 +340,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           </button>}
         </div>
       </div>
-      {/* <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
+      <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
         <div className="rounded-t-xl p-5 flex items-center justify-between border-b-2 border-[#BFBFA4] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
             <h4 className="text-2xl text-center text-black font-bold">
@@ -348,7 +351,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                 <FaRegUser size={18} />
               </div>
               <span className="absolute -top-2 -right-2 bg-white rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                {numberOfUsers}
+                {users.length}
               </span>
             </div>
           </div>
@@ -365,13 +368,12 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               <>
                 <img
                   className="w-16"
-                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${host?.id}`}
+                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=host.id`}
                   alt=""
                 />
-                <p className="text-sm">{host?.userName}</p>
                 <div className="flex justify-center items-center gap-1">
                   <span
-                    className={`rounded w-2 h-2 ${getUserMicStatusColor(host.status)}`}
+                    className={`rounded w-2 h-2 ${getUserMicStatusColor(host.micState)}`}
                   ></span>
                   <p className="text-sm">Host</p>
                 </div>
@@ -388,46 +390,54 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           </div>
         </div>
 
-        <div className="text-sm p-3 grid grid-cols-5 gap-y-5 overflow-y-auto">
+        <div className="text-sm p-3 grid grid-cols-5 sm:grid-cols-4 gap-y-5 overflow-y-auto">
           {users.map((user, index) => (
             <button
               key={user.id}
-              className="flex flex-col w-full justify-center items-center"
-              onClick={() => handleAcceptMicRequest(user)}
+              className="flex flex-col w-full justify-start items-center"
+              onClick={() => handleAcceptMicRequest({
+                id: user.id,
+                status: user.micState
+              })}
             >
               <img
                 className="w-16"
                 src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                 alt={`${user.userName} Image`}
               />
-              <p title={user.userName} className="w-20 truncate ...">{user.userName}</p>
+              <p title={user.userName} className="w-16 truncate ...">{user.userName}</p>
               <div className="w-20 flex justify-center items-center gap-2">
-                {index === 0 && tokens.rtcUid === user.id && <span>(You)</span>}
+                {index === 0 && presentation?.data?.rtc.rtcUid === user.id && <span>(You)</span>}
                 <span
-                  className={`rounded w-2 h-2 ${getUserMicStatusColor(user.status)}`}
+                  className={`rounded w-2 h-2 ${getUserMicStatusColor(user.micState)}`}
                 ></span>
               </div>
             </button>
           ))}
         </div>
-      </Menu> */}
+      </Menu>
       <Modal
         open={enterName}
-        onClose={fetchRtcToken.isPending ? null : () => setEnterName(false)}
+        onClose={startAudio.isPending ? null : () => setEnterName(false)}
         color="bg-black"
       >
-        {fetchRtcToken.isPending ? (
+        {startAudio.isPending ? (
           <LoadingAssetBig2 />
         ) : (
           <form
             className="flex flex-col gap-5"
             onSubmit={async (e) => {
               e.preventDefault();
-              if (!userName) return toast.error("Please enter your name");
+              if (!userName.trim() || userName.toLowerCase().includes("host")) return toast.error("Please enter your name");
+              if (!presentation?.data) return;
               try {
-                if (!rtcToken)
-                  await fetchRtcToken.mutateAsync();
-                setJoinAudio(true);
+                await startAudio.mutateAsync({
+                  live: presentation.data.live,
+                  liveId: presentation.data.liveId,
+                  presentationId: presentation.data.id,
+                  User: presentation.data.User,
+                  tokens: presentation.data.rtc
+                });
                 setEnterName(false);
               } catch (error) {
                 toast.error("Could'nt join conversation");
@@ -454,7 +464,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                 Cancel
               </button>
               <button className="bg-slate-200 p-2 w-full rounded" type="submit">
-                Join Conversation
+                Join
               </button>
             </div>
           </form>
@@ -466,9 +476,16 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         onClose={startAudio.isPending ? null : () => setStartPrompt(false)}
         onSubmit={async (e) => {
           e.preventDefault();
-          if (presentation?.data?.User === "HOST") {
+          if (!presentation?.data) return;
+          if (presentation.data.User === "HOST") {
             try {
-              await startAudio.mutateAsync();
+              await startAudio.mutateAsync({
+                live: presentation.data.live,
+                liveId: presentation.data.liveId,
+                presentationId: presentation.data.id,
+                User: presentation.data.User,
+                tokens: presentation.data.rtc
+              });
             } catch (error) {
               toast.error("Could'nt start conversation");
               return;
@@ -477,12 +494,12 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           setStartPrompt(false);
         }}
         isLoading={startAudio.isPending}
-        message={
+        message={ 
           presentation?.data?.User === "HOST"
-            ? "Start Conversation"
-            : "Join Conversation"
+            ? (presentation?.data?.audio ? "Rejoin" : "Start")
+            : "Join"
         }
-        actionText={presentation?.data?.User === "HOST" ? "Start" : "Join"}
+        actionText={presentation?.data?.User === "HOST" ? (presentation?.data?.audio ? "Rejoin" : "Start") : "Join"}
       />
 
       <ConfirmModal
@@ -490,9 +507,9 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         onClose={startAudio.isPending ? null : () => setEndAudioPrompt(false)}
         onSubmit={(e) => {
           e.preventDefault();
-          endAudio();
+          endUserAudio();
         }}
-        isLoading={startAudio.isPending}
+        isLoading={endAudio.isPending}
         message={
           presentation?.data?.User === "HOST" ? "End Audio" : "Leave Audio"
         }

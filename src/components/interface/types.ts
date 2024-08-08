@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { MIC_STATE } from "../../constants/routes";
-import { RTMEvents } from "agora-rtm-sdk";
+import { RTMClient, RTMEvents } from "agora-rtm-sdk";
+import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 
 export interface presentationData {
     id: string;
@@ -27,41 +28,59 @@ export interface PresentationContextI {
     isIphone: boolean;
     isMobilePhone: boolean;
     presentation: UseQueryResult<presentationData, Error> | null;
-    makeLive: UseMutationResult<never, Error, void, unknown>;
-    setSwiperRef: React.Dispatch<any>;
+    makeLive: UseMutationResult<never, Error, {
+        liveId: string;
+        live: boolean;
+    }, unknown>;
     micState: MIC_STATE;
-    setMicState: React.Dispatch<React.SetStateAction<MIC_STATE>>;
-    audioSuccess: boolean;
     startPrompt: boolean;
-    setStartPrompt: React.Dispatch<React.SetStateAction<boolean>>;
-    audioLoading: boolean;
-    audioError: boolean;
-    setMute: (mute: boolean) => void;
-    joinAudio: boolean;
-    setJoinAudio: React.Dispatch<React.SetStateAction<boolean>>;
     userName: string;
-    setUserName: React.Dispatch<React.SetStateAction<string>>;
-    rtcToken: string | null;
     networkStatus: string;
     startAudio: UseMutationResult<{
-        rtcToken: string;
-    } | undefined, Error, void, unknown>;
-    fetchRtcToken: UseMutationResult<{
-        rtcToken: string;
-    }, Error, void, unknown>;
+        tokens: string;
+    } | undefined, Error, {
+        liveId: string;
+        live: boolean;
+        User: "HOST" | "GUEST";
+        presentationId: string;
+        tokens: presentationData["rtc"];
+    }, unknown>;
+    endAudio: UseMutationResult<void, Error, {
+        User: "HOST" | "GUEST";
+        liveId: string;
+        presentationId: string;
+        hostEnd: boolean;
+    }, unknown>;
     synced: boolean;
-    syncSlide: () => void;
     rtmConnectionState: RTMEvents.RTMConnectionStatusChangeEvent["state"],
-    usersData: {
+    users: {
+        id: string;
+        userName: string;
+        micState: MIC_STATE;
+    }[],
+    host: {
+        id: string;
+        userName: string;
+        micState: MIC_STATE;
+    } | null,
+    audioData: {
+        loading: boolean;
         success: boolean;
         error: boolean;
-        loading: boolean;
-        users: {
-            id: string;
-            userName: string;
-            micState: typeof MIC_STATE;
-        }[];
-    }
+        networkStatus: string;
+        setMute: (mute: boolean) => void;
+        endAudio: (error?: boolean) => void;
+        startAudio: (liveId: string, rtcToken: string, rtcUid: string, removeUsers: (uid: IAgoraRTCRemoteUser["uid"]) => void) => Promise<void>;
+    },
+    rtm: RTMClient | null;
+    changeMicState(state: MIC_STATE, rtm: RTMClient | null): void;
+    acceptMicRequest: (userId: string, micState: MIC_STATE) => Promise<void>;
+    setSwiperRef: React.Dispatch<any>;
+    setMicState: React.Dispatch<React.SetStateAction<MIC_STATE>>;
+    setStartPrompt: React.Dispatch<React.SetStateAction<boolean>>;
+    setMute: (mute: boolean) => void;
+    setUserName: React.Dispatch<React.SetStateAction<string>>;
+    syncSlide: () => void;
 }
 export interface rtmTokenI {
     rtmToken: string;
