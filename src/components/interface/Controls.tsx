@@ -236,9 +236,6 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   color={presentation?.data?.downloadable ? "black" : "bg-gray-400"}
                 />
               </button>
-              <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
-                <BsLockFill color="black" size={13} />
-              </span>
             </>
           )}
           {(presentation?.data?.audio || presentation?.data?.User === "HOST") && (
