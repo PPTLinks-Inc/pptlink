@@ -87,7 +87,6 @@ export default function useSlide(
   }
 
   const changeMicState = useCallback(async function(userName: string, state: MIC_STATE, rtm: RTMClient) {
-    console.log("Changing mic state", userName, state, rtm);
     if (!presentation) throw new Error("Presentation not initialized");
     if (!uid) throw new Error("UID not initialized");
     if (userName === "HOST") {
@@ -119,7 +118,6 @@ export default function useSlide(
 
   async function acceptMicRequest(userId: string, micState: MIC_STATE) {
     if (rtm) {
-      console.log("Accepting mic request", userId, micState);
       await rtm.publish(userId, micState, {
         channelType: "USER"
       });
@@ -131,7 +129,6 @@ export default function useSlide(
       const newSlideData = JSON.parse(
         event.data.metadata.slideData.value
       ) as typeof slideData;
-      console.log(newSlideData);
       slideData.hostSlide = newSlideData.hostSlide;
       slideData.maxSlides = newSlideData.maxSlides;
       slideData.prevHostSlide = newSlideData.prevHostSlide;
@@ -181,14 +178,12 @@ export default function useSlide(
       setHostPresent(false);
       freeSlide = true;
     } else if (data.eventType === "REMOTE_LEAVE" || data.eventType === "REMOTE_TIMEOUT") {
-      console.log("Hello", data);
       if (data.publisher.startsWith("HOST")) {
         setHost(null);
         return;
       }
       setUsers((prev) => {
         const temp = { ...prev };
-        console.log("user left", temp[data.publisher]);
         if (temp[data.publisher])
           delete temp[data.publisher];
         return temp;
@@ -236,7 +231,6 @@ export default function useSlide(
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           let playAudio = false;
-          console.log("Presence events", presenceEvents);
           for (const event of presenceEvents) {
             if (event.stateChanged.micState === String(MIC_STATE.REQ_MIC)) {
               playAudio = true;
@@ -294,7 +288,6 @@ export default function useSlide(
     const data = await rtm.presence.getOnlineUsers(liveId, "MESSAGE", {
       includedState: true
     });
-    console.log(data);
 
     const tempUsrs: any = {};
     for (let i = 0; i < data.occupants.length; i++) {

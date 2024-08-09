@@ -77,7 +77,6 @@ export default function useAudio() {
 
         if (mediaType == "audio") {
           if (!user.audioTrack) return;
-          console.log("User Published", user.uid);
           audioTracks.current.remoteAudioTracks[user.uid] = user.audioTrack;
           user.audioTrack?.play();
         }

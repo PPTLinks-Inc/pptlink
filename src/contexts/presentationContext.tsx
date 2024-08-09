@@ -67,9 +67,8 @@ function OrientationPrompt({
   setShowPrompt: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
-    <div className="bg-black absolute w-screen h-full z-50">
+    <div className="bg-black absolute w-screen h-full z-50" onClick={() => setShowPrompt(false)}>
       <button
-        onClick={() => setShowPrompt(false)}
         className="absolute right-5 top-5"
       >
         <IoCloseCircleOutline color="white" size={32} />
@@ -162,12 +161,11 @@ const PresentationContextProvider = (props: { children: any }) => {
       presentationId: string;
       hostEnd: boolean;
     }) {
-      const res = await signalling.rtm?.presence.setState(liveId, "MESSAGE", {
+      await signalling.rtm?.presence.setState(liveId, "MESSAGE", {
         id: "null",
         userName: "null",
         micState: "null"
       });
-      console.log("state removed", res);
       if (User === "HOST") {
         await signalling.rtm?.publish(liveId, "END_AUDIO");
         await axios.put(
@@ -215,13 +213,11 @@ const PresentationContextProvider = (props: { children: any }) => {
   );
 
   function changeMicState(state: MIC_STATE, rtm: RTMClient | null) {
-    console.log(rtm);
     if (!rtm) return;
     const user = queryClient.getQueryData<presentationData>([
       "presentation",
       params.id
     ]);
-    console.log(user);
     if (!user) return;
     slides.changeMicState(user.User === "HOST" ? "HOST" : userName, state, rtm)
     .then(function() {

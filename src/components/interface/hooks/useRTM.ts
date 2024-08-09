@@ -21,14 +21,23 @@ export default function useRTM(
   const [rtmConnectionState, setRtmConnectionState] =
     useState<RTMEvents.RTMConnectionStatusChangeEvent["state"]>("DISCONNECTED");
 
-  async function leaveRtmChannel() {
-    rtm.current?.logout().then(() => {
+  async function leaveRtmChannel(e?: BeforeUnloadEvent) {
+    if (!e) {
+      await rtm.current?.logout();
       rtm.current = null;
-    });
+      return; // No need to show confirmation message
+    }
+    e.preventDefault();
+    const confirmationMessage =
+      "You are about to leave the presentation. Are you sure?";
+    if (window.confirm(confirmationMessage)) {
+      await rtm.current?.logout();
+      rtm.current = null;
+    }
+    return confirmationMessage;
   }
 
   async function messageListerner(rtm: RTMClient | null, messageData: RTMEvents.MessageEvent) {
-    console.log("Message received", messageData);
     if (!presentation) return;
     if (messageData.message === "LIVE") {
       let audio = presentation?.audio;

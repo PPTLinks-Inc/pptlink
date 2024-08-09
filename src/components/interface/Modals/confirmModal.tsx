@@ -21,15 +21,15 @@ export default function ConfirmModal({open, onClose, onSubmit, isLoading, messag
                 <LoadingAssetBig2 />
               </div>
             ) : (
-              <div className="flex gap-3">
+              <div className="flex gap-3 w-[200px]">
                 <button
                   onClick={onClose || (() => {})}
-                  className="bg-slate-200 p-2 w-full rounded"
+                  className="bg-slate-200 p-2 w-[calc(100%/2)] rounded"
                   type="button"
                 >
                   Cancel
                 </button>
-                <button className="bg-slate-200 p-2 w-full rounded" type="submit">
+                <button className="bg-slate-200 p-2 w-[calc(100%/2)] rounded" type="submit">
                   {actionText}
                 </button>
               </div>

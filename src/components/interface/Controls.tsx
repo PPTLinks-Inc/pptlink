@@ -9,7 +9,7 @@ import { MdCallEnd, MdError } from "react-icons/md";
 import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
 import { PiHandWaving } from "react-icons/pi";
 import { FiHome } from "react-icons/fi";
-import { BsThreeDots } from "react-icons/bs";
+import { BsThreeDots, BsLockFill } from "react-icons/bs";
 import { PresentationContext } from "../../contexts/presentationContext";
 import "./styles/style.css";
 import Modal from "./Modals/Modal";
@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
 import { MIC_STATE } from "../../constants/routes";
+import axios from "axios";
+import download from "./download";
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({ containerRef, actionsActive }: {containerRef: React.MutableRefObject<any>, actionsActive: boolean}) {
@@ -185,6 +187,14 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     }
   }
 
+  function downloadFile(url: string, filename: string) {
+    axios.get(url, {
+      responseType: 'blob',
+    }).then(res => {
+      download(res.data, filename);
+    });
+  }
+
   return (
     <div
       className={`fixed z-10 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
@@ -205,19 +215,25 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
           {audioData.success && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <BsThreeDots size={24} />
-              </button>
+              <div className="relative">
+                <button disabled className="rounded-full p-3 bg-gray-300 shadow !cursor-not-allowed">
+                  <BsThreeDots size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
               <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
                 <FiHome size={24} />
               </a>
               <button
                 disabled={!presentation?.data?.downloadable}
-                className="rounded-full p-3 bg-gray-300 shadow"
+                className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.data?.downloadable && "!cursor-not-allowed"}`}
+                onClick={() => downloadFile(presentation?.data?.pdfLink || "", `${presentation?.data?.name}.pdf` || "")}
               >
                 <IoCloudDownloadOutline
                   size={24}
-                  color={presentation?.data?.downloadable ? "black" : "gray"}
+                  color={presentation?.data?.downloadable ? "black" : "bg-gray-400"}
                 />
               </button>
             </>
