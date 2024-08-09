@@ -1,6 +1,6 @@
 
 // eslint-disable-next-line react/prop-types
-export default function Menu({ open, onClose, children, color }) {
+export default function Menu({ open, onClose, children, color }: { open: boolean; onClose: () => void; children: React.ReactNode; color?: string }) {
     return (
       <div
         onClick={onClose}

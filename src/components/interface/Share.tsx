@@ -14,8 +14,7 @@ function ShareAPI() {
   function shareLink() {
     navigator
       .share(shareData)
-      .then(() => console.log("Successful share"))
-      .catch((error) => console.log("Error sharing", error));
+      .catch(() => toast.error("Error sharing the link"));
   }
 
   function copyLink() {
