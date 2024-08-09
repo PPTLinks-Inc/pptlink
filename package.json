@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^5.16.6",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-query-devtools": "^5.17.21",
     "@testing-library/jest-dom": "^5.17.0",
@@ -20,6 +23,7 @@
     "antd": "^5.18.0",
     "axios": "^1.5.0",
     "framer-motion": "^10.16.16",
+    "pdfjs-dist": "^4.5.136",
     "primereact": "^10.6.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,7 +47,7 @@
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.15",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.1.0",

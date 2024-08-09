@@ -17,7 +17,8 @@ import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { animate, motion, stagger, useInView, useAnimate } from "framer-motion";
+import { motion, stagger, useInView, useAnimate } from "framer-motion";
+import FAQ from "./data";
 
 export default function NewHome() {
   // context
@@ -59,13 +60,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft - scrollAmount,
-          behavior: "smooth"
-        })
+        left: scrollContainer.scrollLeft - scrollAmount,
+        behavior: "smooth"
+      })
       : scrollContainer.scrollTo({
-          left: scrollContainer.scrollLeft + scrollAmount,
-          behavior: "smooth"
-        });
+        left: scrollContainer.scrollLeft + scrollAmount,
+        behavior: "smooth"
+      });
   };
 
   // framer
@@ -114,6 +115,9 @@ export default function NewHome() {
       }
     }
   };
+
+  const goToLibrary = () => navigate("/library");
+
   const [scope, animate] = useAnimate();
   const isInView = useInView(scope, { once: true });
   useEffect(() => {
@@ -153,13 +157,13 @@ export default function NewHome() {
 
   return (
     <motion.section
-      className="parent_page_wrapper min-h-screen w-full"
+      className="parent_page_wrapper min-h-screen  w-full"
       variants={containertVarients}
       initial="hidden"
       animate="visible"
       exit="exit"
     >
-      <div className="banner relative w-full min-h-screen text-white">
+      <div className="banner relative w-full max-h-fit text-white">
         <div className="container h-full text-center">
           <motion.div
             variants={parentVarient}
@@ -175,13 +179,10 @@ export default function NewHome() {
             </motion.h1>
             <motion.p
               variants={parentVarient}
-              className="w-3/5 text-sm leading-6 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
+              className="w-[50%] text-[1.1rem] leading-[2rem] opacity-5 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
             >
-              PPTLinks is your leading platform for easy sharing and viewing of
-              presentations. It offers a smooth experience, allowing you to
-              effortlessly upload, share, and view presentations from anywhere.
-              Join PPTLinks to unlock a world of possibilities for sharing your
-              ideas with the community.
+              Host your online classes, seminars and presentations with ultra
+              low data consumption.
             </motion.p>
             <motion.div
               variants={parentVarient}
@@ -195,7 +196,10 @@ export default function NewHome() {
               >
                 Present
               </button>
-              <button className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3">
+              <button
+                onClick={goToLibrary}
+                className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
+              >
                 Libraries
               </button>
             </motion.div>
@@ -216,19 +220,25 @@ export default function NewHome() {
         </div>
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
-      <div className="recent relative w-full min-h-screen text-white text-justify md:pb-20">
+      <div className="recent relative w-full max-h-fit text-white text-justify md:pb-20">
         <div className="container relative pt-10">
           <div className="flex flex-col items-center text-black maxScreenMobile:pb-10">
-            <h2 className="text-[3rem]">RECENT</h2>
+            <h2 className="text-[2.2rem]">
+              Recent{" "}
+              <span className="inline-block maxScreenMobile:hidden">
+                Presentation
+              </span>
+            </h2>
           </div>
+
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
-            <button className="border border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCards(true)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
-            <button className="border border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretRight
                 onClick={() => scrollCards(false)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
@@ -387,7 +397,8 @@ export default function NewHome() {
           </motion.div>
         </div>
       </div>
-      <div className="get_intouch bg-black text-white py-10">
+
+      <div className="max-h-fit bg-black text-white py-10">
         <div className="container">
           <motion.h3
             variants={secondVarient}
@@ -412,7 +423,10 @@ export default function NewHome() {
               >
                 Send a Message
               </motion.h5>
-              <motion.p variants={secondVarient} className="w-full mb-10">
+              <motion.p
+                variants={secondVarient}
+                className="w-full mb-10 text-[1.1rem]"
+              >
                 Your voice matters! Share your thought and feedback with us and
                 be part of our community.
               </motion.p>
@@ -554,6 +568,7 @@ export default function NewHome() {
                 </button>
               </motion.form>
             </motion.div>
+
             <motion.div
               variants={secondVarient}
               initial="initial"
@@ -562,8 +577,8 @@ export default function NewHome() {
               className="w-2/5 min-h-[30rem] maxScreenMobile:w-full"
             >
               <div className="w-full mb-10">
-                <h4 className="mb-3">Call Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Call Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   Have a question or need guidance? Call us now and lets discuss
                   how we can help you achieve your goal.
                 </p>
@@ -581,8 +596,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Visit Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Visit Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   We’d love to welcome you to our office. Visit us let’s discuss
                   your project.
                 </p>
@@ -601,8 +616,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3">Message Us</h4>
-                <p className="text-[0.8rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem]">Message Us</h4>
+                <p className="text-[1.1rem] mb-3">
                   Write to us through text, on linkedin or any of our social
                   handles
                 </p>
@@ -621,9 +636,10 @@ export default function NewHome() {
             </motion.div>
           </div>
         </div>
+
         <div className="container flex justify-between align-top maxScreenMobile:flex-col">
           <motion.div
-            className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full"
+            className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full max-h-fit"
             variants={secondVarient}
             initial="initial"
             whileInView="inView"
@@ -635,33 +651,22 @@ export default function NewHome() {
             </h3>
           </motion.div>
 
-          <div
-            className="accurdion w-3/5 min-h-[50vh] maxScreenMobile:w-full"
-            ref={scope}
-          >
-            {Array(4)
-              .fill(0)
-              .map((_, i) => ({ id: i }))
-              .map(({ id }) => (
-                <Accordion
-                  key={id}
-                  title="World of hives"
-                  className="transition-all duration-300"
-                >
-                  <div>
-                    <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
-                      Let of kings.
-                    </h3>
+          <div className="accurdion w-3/5 maxScreenMobile:w-full" ref={scope}>
+            {FAQ.map((_, id) => (
+              <Accordion
+                key={id}
+                title={_.title}
+                className="transition-all duration-300"
+              >
+                <div>
+                  <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
+                    {_.h3}
+                  </h3>
 
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quae iusto provident neque. Nulla molestiae quam rerum
-                      velit fugiat labore, quia fugit obcaecati quo architecto
-                      officiis sit consectetur! Omnis, deserunt consequatur.
-                    </p>
-                  </div>
-                </Accordion>
-              ))}
+                  <p className="text-[1.1rem]">{_.p}</p>
+                </div>
+              </Accordion>
+            ))}
           </div>
         </div>
       </div>

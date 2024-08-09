@@ -8,6 +8,100 @@ import controlSystem from "/team/pptlink_resources/control-system.png";
 import conclusion from "/team/pptlink_resources/conclusion.png";
 import others from "/team/pptlink_resources/other.png";
 
+const sections = [
+  {
+    img: initiative,
+    title: "WHAT IS PPTLinks",
+    links: [
+      {
+        text: "What is PPTLinks: ",
+        desc: "PPTLinks is an online platform designed to facilitate the sharing, exploration, and collaboration around presentations of all types."
+      },
+      {
+        text: "Purpose of PPTLinks: ",
+        desc: "PPTLinks serves as a central repository for presentations on a wide range of topics."
+      },
+      {
+        text: "Key Features and Benefits: ",
+        desc: "Easy upload, audience engagement, privacy and security."
+      }
+    ]
+  },
+  {
+    img: planning,
+    title: "GETTING STARTED",
+    links: [
+      {
+        text: "Creating an account: ",
+        desc: "To begin using PPTLinks and sharing your presentations with your audience, you need to create an account. Follow these steps to sign up"
+      },
+      {
+        text: "Signing in: ",
+        desc: "If you've already created an account, signing in is easy"
+      },
+      {
+        text: "Navigating the Dashboard: ",
+        desc: "Once you're logged in, you'll be taken to your user dashboard. Here, you can:"
+      }
+    ]
+  },
+  {
+    img: execution,
+    title: "UPLOADING PRESENTATIONS",
+    links: [
+      {
+        text: "Supported File Formats: ",
+        desc: "Before you begin, it's essential to ensure that your presentation is in a supported file format. PPTLinks currently supports the following file formats:"
+      },
+      {
+        text: "Access Your Account: ",
+        desc: "Sign In: If you're not already signed in to your PPTLinks account, visit https://www.pptlinks.com and click 'Sign In' in the top-right corner. Enter your sign in detail to access your account."
+      },
+      {
+        text: "Begin the Upload Process: ",
+        desc: "Navigate to Upload: Once you're logged in, click on the 'Present' button. This button is typically located in the top navigation menu or “Upload” button on your user dashboard."
+      }
+    ]
+  },
+  {
+    img: controlSystem,
+    title: "GUIDELINES AND RULES",
+    links: [
+      {
+        text: "Purpose and Community Values: ",
+        desc: "At PPTLinks, we are committed to fostering a positive and collaborative community. To maintain a safe and respectful environment, we ask all users to adhere to the following guidelines and rules:"
+      },
+      {
+        text: "Posting Guidelines: ",
+        desc: "Effective and respectful posting is essential to maintaining a vibrant and engaging community on PPTLinks. The following guide lines are to ensure premium experience for users."
+      }
+    ]
+  },
+  {
+    img: others,
+    title: "OTHERS",
+    links: [
+      {
+        text: "Common Issues and Solutions: ",
+        desc: "Sign in problems, presentation upload errors, account security concerns, contacting support"
+      },
+      {
+        text: "Troubleshooting: ",
+        desc: "In this section, you'll find guidance on identifying and resolving common issues that may arise while using PPTLinks. If you encounter any problems, please consult the following resources for assistance."
+      },
+      {
+        text: "Frequently Asked Questions (FAQs): ",
+        desc: "Presentation download, Sharing presentations, Miss a live presentation"
+      }
+    ]
+  },
+  {
+    img: conclusion,
+    title: "LEGAL",
+    links: []
+  }
+];
+
 export default function Document() {
   return (
     <>
@@ -17,11 +111,11 @@ export default function Document() {
           <div className="w-[150px] aspect-square mb-5">
             <img
               src={documentImg}
-              alt={documentImg}
+              alt="Documentation"
               className="block w-full h-full"
             />
           </div>
-          <p className="text-center w-[80%] text-[0.8rem] mb-10">
+          <p className="text-center w-[80%] text-[1.1rem] mb-10">
             Welcome to PPTLinks, your premier platform for easy sharing and
             viewing power point presentations. This section provides a
             comprehensive overview of what PPTLinks is, its purpose, and
@@ -36,177 +130,43 @@ export default function Document() {
             />
             <img
               src={searchImg}
-              alt={searchImg}
+              alt="Search"
               className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
             />
           </div>
         </div>
       </section>
-      <section className="midJ container py-5 min-h-screen bg-[#FFFFF0]">
-        <div className="flex flex-wrap justify-between items-center gap-y-16 gap-x-8 w-full mt-20 mb-10">
-          {/* {Array(6).fill(0).map((_, i) => ({ id: i })).map(({ id }) => */}
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
-            <div className="w-20 aspect-square mb-3">
-              <img
-                src={initiative}
-                alt={initiative}
-                className="block w-full h-full"
-              />
+      <section className="container py-5 min-h-screen bg-[#FFFFF0]">
+        <div className="documentatio_page flex flex-wrap justify-between items-center gap-y-16 gap-x-8 w-full mt-20 mb-10">
+          {sections.map((section, index) => (
+            <div
+              key={index}
+              className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 text-center text-[.8rem] flex flex-col justify-between items-center"
+            >
+              <div className="w-20 aspect-square mb-3">
+                <img
+                  src={section.img}
+                  alt={section.title}
+                  className="block w-full h-full"
+                />
+              </div>
+              <h3 className="text-xl mb-2">{section.title}</h3>
+              <div className="w-full">
+                {section.links.map((link, i) => (
+                  <NavLink
+                    key={i}
+                    to="#"
+                    className="block w-full overflow-x-hidden whitespace-nowrap text-ellipsis mb-3 text-justify text-[.7rem]"
+                  >
+                    {link.text}
+                    <span className="text-[#FFA500] underline decoration-[#FFA500]">
+                      {link.desc}
+                    </span>
+                  </NavLink>
+                ))}
+              </div>
             </div>
-            <h3 className="text-xl mb-2">WHAT IS PPTLinks</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Proposal:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Charter:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-            </div>
-          </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
-            <div className="w-20 aspect-square mb-3">
-              <img
-                src={planning}
-                alt={planning}
-                className="block w-full h-full"
-              />
-            </div>
-            <h3 className="text-xl mb-2">GETTING STARTED</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Proposal:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Charter:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-            </div>
-          </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
-            <div className="w-20 aspect-square mb-3">
-              <img
-                src={execution}
-                alt={execution}
-                className="block w-full h-full"
-              />
-            </div>
-            <h3 className="text-xl mb-2">UPLOADING PRESENTATIONS</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Proposal:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Charter:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-            </div>
-          </div>
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
-            <div className="w-20 aspect-square mb-3">
-              <img
-                src={controlSystem}
-                alt={controlSystem}
-                className="block w-full h-full"
-              />
-            </div>
-            <h3 className="text-xl mb-2">GUIDELINES AND RULES</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Proposal:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Charter:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-            </div>
-          </div>
-
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
-            <div className="w-20 aspect-square mb-3">
-              <img src={others} alt={others} className="block w-full h-full" />
-            </div>
-            <h3 className="text-xl mb-2">OTHERS</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Proposal:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Charter:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-            </div>
-          </div>
-
-          <div className="basis-[300px] grow-[1] min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 _text-center text-[.8rem] flex flex-col justify-between items-center">
-            <div className="w-20 aspect-square mb-3">
-              <img
-                src={conclusion}
-                alt={conclusion}
-                className="block w-full h-full"
-              />
-            </div>
-            <h3 className="text-xl mb-2">LEGAL</h3>
-            <div className="">
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Proposal:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-
-              <NavLink to="#" className="block mb-3 text-justify text-[.7rem]">
-                Project Charter:{" "}
-                <span className="text-[#FFA500] underline decoration-[#FFA500]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  dolorum adipisci eligendi pariatur neque quas!
-                </span>
-              </NavLink>
-            </div>
-          </div>
-
-          {/* )} */}
+          ))}
         </div>
       </section>
     </>

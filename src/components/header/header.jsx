@@ -6,16 +6,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { userContext } from "../../contexts/userContext";
 import {
-  ABOUT,
   DASHBOARD,
-  HOME,
-  LEGAL,
-  SIGNUP,
   UPLOAD
 } from "../../constants/routes";
 import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
-import logo_orange from "/imgs/onemorecolor.png";
 import { motion } from "framer-motion";
 
 export default function Header({ isBackMenu, handleDropdown }) {
@@ -30,6 +25,11 @@ export default function Header({ isBackMenu, handleDropdown }) {
 
   const getPathName = () => {
     return location.pathname === "/" ? true : false;
+  };
+  const getPathNameDoc = () => {
+    return location.pathname.split("/")[1] === "documentation"
+      ? true
+      : false;
   };
 
   // context
@@ -50,7 +50,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
   };
   const containertVarients = {
     hidden: {
-      opacity: 0
+      opacity: !getPathNameDoc() && 0
     },
     visible: {
       opacity: 1,
@@ -60,7 +60,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
       }
     },
     exit: {
-      x: "-100vw",
+      x: !getPathNameDoc() ? "-100vw" : "0vw",
       transition: {
         ease: "easeInOut"
       }

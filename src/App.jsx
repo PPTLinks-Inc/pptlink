@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -19,6 +20,8 @@ import PresentationContextProvider from "./contexts/presentationContext";
 import SignPage from "./components/sign/sign";
 import NewUploadPage from "./components/upload/newupload";
 import DateTest from "./components/upload/dateTest";
+import Documentation from "./components/document/Documentation";
+import Library from "./components/library/library";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -43,7 +46,10 @@ axios.interceptors.response.use(function (response) {
 
 function App() {
   const { setUser } = useContext(userContext);
-
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const handleDropdownID = (id) => {
+    setActiveDropdown((prevState) => (prevState === id ? null : id));
+  };
   useQuery({
     queryKey: ["user"],
     refetchOnReconnect: false,
@@ -69,6 +75,16 @@ function App() {
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
+            <Route path="library" element={<Library />} />
+            <Route
+              path="documentation/*"
+              element={
+                <Documentation
+                  activeDropdown={activeDropdown}
+                  handleDropdownID={handleDropdownID}
+                />
+              }
+            />
             <Route path="upload" element={<NewUploadPage />} />
           </Route>
           <Route

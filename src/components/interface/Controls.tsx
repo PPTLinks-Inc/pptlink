@@ -236,6 +236,9 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   color={presentation?.data?.downloadable ? "black" : "bg-gray-400"}
                 />
               </button>
+              <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                <BsLockFill color="black" size={13} />
+              </span>
             </>
           )}
           {(presentation?.data?.audio || presentation?.data?.User === "HOST") && (
@@ -270,9 +273,14 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   {users.length}
                 </span>
               </div>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <LuMessagesSquare size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow">
+                  <LuMessagesSquare size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
               <button
                 onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
@@ -286,9 +294,15 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
           {audioData.success && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <BsThreeDots size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow">
+                  <BsThreeDots size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
+
               <div className="relative">
                 <button
                   className="rounded-full p-3 bg-gray-300 shadow"
@@ -323,9 +337,14 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           )}
           {audioData.success && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
-                <LuMessagesSquare size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow">
+                  <LuMessagesSquare size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
+                  <BsLockFill color="black" size={13} />
+                </span>
+              </div>
               <button
                 onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
@@ -344,16 +363,18 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               <IoSync color="white" size={32} />
             </button>
           )}
-          {document.fullscreenEnabled && <button
-            onClick={() => fullScreenToggle()}
-            className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
-          >
-            {isFullscreen ? (
-              <RxExitFullScreen color="white" size={32} />
-            ) : (
-              <RxEnterFullScreen color="white" size={32} />
-            )}
-          </button>}
+          {document.fullscreenEnabled && (
+            <button
+              onClick={() => fullScreenToggle()}
+              className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+            >
+              {isFullscreen ? (
+                <RxExitFullScreen color="white" size={32} />
+              ) : (
+                <RxEnterFullScreen color="white" size={32} />
+              )}
+            </button>
+          )}
         </div>
       </div>
       <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>

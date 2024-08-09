@@ -25,7 +25,7 @@ export default function Root() {
 
     if (mainScrollRef.current) {
       mainScrollRef.current.scrollIntoView({ behavior: "smooth" });
-      console.log("mainScrollRef");
+      // console.log("mainScrollRef");
     }
   }, [location.pathname]);
 
@@ -106,11 +106,10 @@ export default function Root() {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${
-          color === "black"
-            ? " bg-black text-slate-200"
-            : "bg-slate-200 text-black"
-        }`}
+        className={`px-7 rounded-xl py-1 ${color === "black"
+          ? " bg-black text-slate-200"
+          : "bg-slate-200 text-black"
+          }`}
         onClick={() => handleClick()}
       >
         Present
@@ -120,19 +119,20 @@ export default function Root() {
 
   return (
     <div
-      className={`w-full min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
+      className={`w-full max-h-fit _min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
     >
       <Backmenu handleDropdown={handleDropdown} />
       <div
-        className={`h-fit bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
-          page.dropdown
-            ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
-            : "transition-transform translate-y-0 ease-in-out top-0"
-        }`}
+        className={`min-h-screen flex flex-col justify-between bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
+          ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
+          : "transition-transform translate-y-0 ease-in-out top-0"
+          }`}
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
+        <div className="min-h-screen">
           <Outlet />
+        </div>
         <MovingEllipses />
         <Footer />
       </div>

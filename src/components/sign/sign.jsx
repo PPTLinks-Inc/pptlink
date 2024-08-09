@@ -76,7 +76,7 @@ export default function SignPage() {
     if (!isSignupPage) {
       // handle validations for SIGNIN NOTE: shine your eye 👀✨
       if (values.email.length === 0) {
-        setEmailErr("Email value is empty!");
+        setEmailErr("Email cannot be empty!");
       } else if (
         !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
           values.email
@@ -88,7 +88,7 @@ export default function SignPage() {
       }
 
       if (values.password.length < 8) {
-        setPasswordErr("Password can'nt be empty!");
+        setPasswordErr("Password cannot be empty!");
       } else {
         setPasswordErr(null);
       }
@@ -105,13 +105,13 @@ export default function SignPage() {
     } else {
       // handle validations for SIGNUP NOTE: shine your eye 👀✨
       if (values.fullName.length === 0) {
-        setFullNameErr("Username value is empty!");
+        setFullNameErr("Username cannot be empty");
       } else {
         setFullNameErr(null);
       }
 
       if (values.email.length === 0) {
-        setEmailErr("Email value is empty!");
+        setEmailErr("Email cannot be empty");
       } else if (
         !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
           values.email
@@ -129,7 +129,7 @@ export default function SignPage() {
       }
 
       if (values.password !== values.confirmPassword) {
-        setConfirmPasswordErr("Password and confirm Password does'nt match!");
+        setConfirmPasswordErr("Password and confirm Password does not match!");
       } else {
         setConfirmPasswordErr(null);
       }
@@ -196,7 +196,7 @@ export default function SignPage() {
       exit="exit"
     >
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
-        <div className="formwrapper relative w-[55%] bg-[#FFFFF0] h-[95vh] rounded-[15px] p-10 maxScreenMobile:px-2 !text-[.8rem] overflow-auto maxScreenMobile:w-full">
+        <div className="formwrapper relative w-[38.75rem] bg-[#FFFFF0] max-h-[38.75rem] rounded-[0.9375rem] p-10 maxScreenMobile:px-[0.125rem] !text-[0.8rem] overflow-auto maxScreenMobile:w-full maxScreenMobile:max-h-[90vh]">
           <div className="_sticky top-0 maxScreen:z-50">
             <Link to="/" className="block text-md mb-3 font-[600]">
               <img
@@ -328,7 +328,7 @@ export default function SignPage() {
                   htmlFor="confirmpassword"
                   className="block w-full mb-2 pl-1"
                 >
-                  *confirmpassword
+                  *confirm password
                 </label>
                 <div className="relative w-full h-fit">
                   {values.showPassword ? (
@@ -441,7 +441,7 @@ export default function SignPage() {
           <img
             src={meetingsvg}
             alt={meetingsvg}
-            className="block w-[8rem] h-[9rem] pointer-events-none  absolute top-[10%] left-[50%] translate-x-[-50%]"
+            className="block w-[5rem] h-[6rem] pointer-events-none  absolute top-[5%] left-[25%] rotate-[25deg]"
           />
 
           <img
@@ -471,7 +471,7 @@ export default function SignPage() {
         <div className="w-[45%] text-white maxScreenMobile:hidden">
           <div className="min-h-[95vh] flex flex-col justify-evenly items-center text-[#FFFFF0]">
             <h1 className="block w-full text-right text-4xl">PPTLINKS</h1>
-            <p className="block w-full text-[.8rem] -mb-24 leading-6 text-left">
+            <p className="block w-full text-[1.1rem] leading-[2rem] -mb-24 text-left">
               PPTLinks is your ultimate solution for seamless presentations,
               designed to excel in challenging network environments, replace
               traditional projectors in classrooms, boardrooms, and seminars,

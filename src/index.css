@@ -54,3 +54,62 @@ input:focus {
 img {
   -webkit-user-drag: none;
 }
+
+input:checked.chapter ~ div .chapter-child {
+  @apply bg-white;
+}
+
+/*beginning of documentation page  */
+
+.sub-heading > li {
+  position: relative;
+}
+
+.sub-heading > li:after {
+  width: 5px;
+  position: absolute;
+  content: "";
+  background-color: transparent;
+  /* border: 1px solid white; */
+  height: 5px;
+  border-radius: 50%;
+  z-index: 50;
+  left: -11px;
+  top: 50%;
+  transform: translateY(-50%);
+  @apply border border-black md:border-white;
+}
+
+.sub-heading::after {
+  content: "";
+  position: absolute;
+  height: 85%;
+  width: 0.5px;
+  left: 15px;
+  top: 15px;
+  background-color: white;
+  @apply bg-black md:bg-white
+  /* z-index: 20; */;
+}
+.isActive {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: all 2s ease-in-out;
+}
+.isActive > div {
+  overflow: hidden;
+}
+.isActive.active {
+  grid-template-rows: 1fr;
+}
+.sticky-heading {
+  position: sticky;
+  top: 0rem;
+}
+.documentation::after {
+  content: "";
+  width: 100.7%;
+  height: 100.5%;
+  @apply border-2 border-body absolute -top-[.5%] bottom-0 -left-[.7%] rounded-tl-md;
+}
+/* end of documentation page */
