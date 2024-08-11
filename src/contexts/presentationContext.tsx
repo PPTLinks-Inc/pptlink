@@ -67,10 +67,11 @@ function OrientationPrompt({
   setShowPrompt: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
-    <div className="bg-black absolute w-screen h-full z-50" onClick={() => setShowPrompt(false)}>
-      <button
-        className="absolute right-5 top-5"
-      >
+    <div
+      className="bg-black absolute w-screen h-full z-50"
+      onClick={() => setShowPrompt(false)}
+    >
+      <button className="absolute right-5 top-5">
         <IoCloseCircleOutline color="white" size={32} />
       </button>
       <div className="flex flex-col justify-center items-center h-full">
@@ -147,7 +148,6 @@ const PresentationContextProvider = (props: { children: any }) => {
     }
   }, [start, orientation, presentationQuery.data?.live]);
 
-
   const endAudio = useMutation({
     mutationFn: async function ({
       User,
@@ -176,7 +176,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       }
       audioData.endAudio();
     },
-    onSuccess: function(_, {hostEnd, User}) {
+    onSuccess: function (_, { hostEnd, User }) {
       if (User === "HOST" || hostEnd) {
         queryClient.setQueryData<presentationData>(
           ["presentation", params.id],
@@ -195,7 +195,6 @@ const PresentationContextProvider = (props: { children: any }) => {
     }
   });
 
-
   const audioData = useAudio();
   const signalling = useRTM(
     endAudio,
@@ -208,6 +207,7 @@ const PresentationContextProvider = (props: { children: any }) => {
     signalling.success && presentationQuery.isSuccess,
     signalling.rtm,
     swiperRef,
+    audioData.audioConnectionState,
     tokens?.rtcUid,
     presentationQuery.data
   );
@@ -219,20 +219,20 @@ const PresentationContextProvider = (props: { children: any }) => {
       params.id
     ]);
     if (!user) return;
-    slides.changeMicState(user.User === "HOST" ? "HOST" : userName, state, rtm)
-    .then(function() {
-      if (state === MIC_STATE.MIC_MUTED || state === MIC_STATE.MIC_OFF) {
-        audioData.setMute(true);
-      }
-      
-      setMicState(state);
-    })
-    .catch(function(err: any) {
-      console.error(err);
-      toast.error("An error occurred");
-    });
-  }
+    slides
+      .changeMicState(user.User === "HOST" ? "HOST" : userName, state, rtm)
+      .then(function () {
+        if (state === MIC_STATE.MIC_MUTED || state === MIC_STATE.MIC_OFF) {
+          audioData.setMute(true);
+        }
 
+        setMicState(state);
+      })
+      .catch(function (err: any) {
+        console.error(err);
+        toast.error("An error occurred");
+      });
+  }
 
   const isIphone = isMobile({ iphone: true });
   const isMobilePhone = isMobile({ iphone: false });
@@ -314,7 +314,12 @@ const PresentationContextProvider = (props: { children: any }) => {
         throw new Error("Presentation is not live");
       }
       if (tokens.rtcToken) {
-        await audioData.startAudio(liveId, tokens.rtcToken, tokens.rtcUid, slides.removeUsers);
+        await audioData.startAudio(
+          liveId,
+          tokens.rtcToken,
+          tokens.rtcUid,
+          slides.removeUsers
+        );
         await slides.setUsersInfo({
           id: tokens.rtcUid,
           userName: userName,
@@ -339,7 +344,12 @@ const PresentationContextProvider = (props: { children: any }) => {
           tempToken = data;
         }
 
-        await audioData.startAudio(liveId, tempToken.rtcToken, tokens.rtcUid, slides.removeUsers);
+        await audioData.startAudio(
+          liveId,
+          tempToken.rtcToken,
+          tokens.rtcUid,
+          slides.removeUsers
+        );
         await slides.setUsersInfo({
           id: tokens.rtcUid,
           userName: userName,
@@ -352,7 +362,8 @@ const PresentationContextProvider = (props: { children: any }) => {
     onSuccess: async function (data, { liveId }) {
       try {
         const d = queryClient.getQueryData<presentationData>([
-          "presentation", params.id
+          "presentation",
+          params.id
         ]);
         if (presentationQuery.data?.User === "HOST" && !d?.audio) {
           await signalling.rtm?.publish(liveId, "START_AUDIO");
@@ -400,6 +411,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         host: slides.host,
         audioData,
         rtm: signalling.rtm,
+        audioConnectionState: audioData.audioConnectionState,
         changeMicState,
         acceptMicRequest: slides.acceptMicRequest,
         fullScreenToggle,
@@ -430,7 +442,15 @@ const PresentationContextProvider = (props: { children: any }) => {
               <Spinner />
             )
           ) : (
-            <>{props.children}</>
+            <>
+              {audioData.audioConnectionState === "RECONNECTING" && (
+                <div className="flex flex-col justify-center items-center h-screen w-full bg-black">
+                  <LoadingAssetBig2 />
+                  <p className="text-white text-xl">Reconnecting Audio</p>
+                </div>
+              )}
+              {props.children}
+            </>
           )}
         </>
       )}
