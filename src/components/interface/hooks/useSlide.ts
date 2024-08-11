@@ -3,8 +3,7 @@ import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { RTMClient, RTMEvents } from "agora-rtm-sdk/agora-rtm";
 import { presentationData } from "../types";
 import { MIC_STATE } from "../../../constants/routes";
-import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
-import useNotificationSound from "./useNotificationSound";
+import { ConnectionState, IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import micRequest from "../assets/mic-request.mp3";
 import { toast } from "react-toastify";
 
@@ -27,6 +26,7 @@ export default function useSlide(
   start: boolean,
   rtm: RTMClient | null,
   swiperRef: any,
+  audioConnectionState: ConnectionState | null,
   uid?: string,
   presentation?: presentationData
 ) {
@@ -38,6 +38,19 @@ export default function useSlide(
 
   // const playNotification = useNotificationSound();
   const audio = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(function() {
+    if (audioConnectionState === "CONNECTED" && rtm && presentation) {
+      rtm.presence.setState(presentation.liveId, "MESSAGE", {reconnect: Date.now().toString()})
+      .then(function() {
+        toast.info("Connected to the server");
+      })
+      .catch(function() {
+        toast.error("Error reconnecting to the server");
+        location.reload();
+      });
+    }
+  }, [audioConnectionState, presentation, rtm]);
 
   const [host, setHost] = useState<{
     id: string;

@@ -39,6 +39,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     users,
     host,
     rtm,
+    audioConnectionState,
     changeMicState,
     acceptMicRequest,
     fullScreenToggle,
@@ -109,6 +110,9 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
   );
 
   const styles = useMemo(() => {
+    if (audioConnectionState === "RECONNECTING") {
+      return "opacity-0";
+    }
     if (
       (isMobilePhone && orientation.type.includes("portrait")) ||
       actionsActive ||
@@ -133,7 +137,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     endAudioPrompt,
     hideControls,
     showUsersList,
-    audioData.error
+    audioData.error,
+    audioConnectionState
   ]);
 
   function actionMicButton() {

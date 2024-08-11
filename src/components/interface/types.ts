@@ -2,7 +2,7 @@
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { MIC_STATE } from "../../constants/routes";
 import { RTMClient, RTMEvents } from "agora-rtm-sdk";
-import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
+import { ConnectionState, IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 
 export interface presentationData {
     id: string;
@@ -73,6 +73,7 @@ export interface PresentationContextI {
         startAudio: (liveId: string, rtcToken: string, rtcUid: string, removeUsers: (uid: IAgoraRTCRemoteUser["uid"]) => void) => Promise<void>;
     },
     rtm: RTMClient | null;
+    audioConnectionState: ConnectionState | null;
     changeMicState(state: MIC_STATE, rtm: RTMClient | null): void;
     acceptMicRequest: (userId: string, micState: MIC_STATE) => Promise<void>;
     setSwiperRef: React.Dispatch<any>;

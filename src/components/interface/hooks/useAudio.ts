@@ -5,7 +5,8 @@ import RTC, {
   NetworkQuality,
   IRemoteAudioTrack,
   ILocalAudioTrack,
-  IAgoraRTCRemoteUser
+  IAgoraRTCRemoteUser,
+  ConnectionState
 } from "agora-rtc-sdk-ng";
 import { AGORA_APP_ID } from "../../../constants/routes";
 
@@ -15,6 +16,7 @@ export default function useAudio() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [audioConnectionState, setAudioConnectionState] = useState<ConnectionState | null>(null);
   const audioTracks = useRef<{
     localAudioTrack: ILocalAudioTrack | null;
     remoteAudioTracks: { [key: string]: IRemoteAudioTrack };
@@ -72,6 +74,9 @@ export default function useAudio() {
 
       rtcClient = RTC.createClient({ mode: "rtc", codec: "vp8" });
 
+      rtcClient.on("connection-state-change",function(state) {
+        setAudioConnectionState(state);
+      });
       rtcClient.on("user-published", async (user, mediaType) => {
         await rtcClient?.subscribe(user, mediaType);
 
@@ -113,6 +118,7 @@ export default function useAudio() {
     success,
     error,
     networkStatus,
+    audioConnectionState,
     setMute,
     endAudio,
     startAudio
