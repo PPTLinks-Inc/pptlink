@@ -11,6 +11,7 @@ import Header from "../header/header";
 import Footer from "../footer/footer";
 import Backmenu from "../backmenu/backmenu";
 export default function Root() {
+  const [getlocation] = useState(useLocation().pathname.includes("publicPresentation") ? true : false);
   const controller = new AbortController();
   // context
   const { user } = useContext(userContext);
@@ -123,7 +124,7 @@ export default function Root() {
     >
       <Backmenu handleDropdown={handleDropdown} />
       <div
-        className={`min-h-screen flex flex-col justify-between bg-[#FFFFF0] w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
+        className={`min-h-screen flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
           ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
           : "transition-transform translate-y-0 ease-in-out top-0"
           }`}
@@ -134,7 +135,7 @@ export default function Root() {
           <Outlet />
         </div>
         <MovingEllipses />
-        <Footer />
+        {!getlocation && <Footer />}
       </div>
     </div>
   );
