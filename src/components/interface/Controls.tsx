@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
-import { IoIosMic, IoIosMicOff } from "react-icons/io";
+import { IoIosMic } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdCallEnd, MdError } from "react-icons/md";
@@ -17,38 +18,36 @@ import { toast } from "react-toastify";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
 import { MIC_STATE } from "../../constants/routes";
+import axios from "axios";
+import download from "./download";
 
 // eslint-disable-next-line react/prop-types
-export default function Controls({ containerRef, actionsActive }) {
+export default function Controls({ containerRef, actionsActive }: {containerRef: React.MutableRefObject<any>, actionsActive: boolean}) {
   const orientation = useOrientation();
   const {
-    fullScreenToggle,
     fullScreenShow,
     isMobilePhone,
     presentation,
-    joinAudio,
-    setJoinAudio,
-    syncButton,
-    syncSlide,
-    startAudio,
+    micState,
     startPrompt,
-    setStartPrompt,
-    fetchRtcToken,
+    audioData,
     userName,
-    setUserName,
-    setMute,
-    audioLoading,
-    audioSuccess,
-    audioError,
+    networkStatus,
+    startAudio,
+    endAudio,
+    synced,
     users,
-    numberOfUsers,
     host,
+    rtm,
+    audioConnectionState,
     changeMicState,
     acceptMicRequest,
-    micState,
+    fullScreenToggle,
     setMicState,
-    networkStatus,
-    tokens
+    setStartPrompt,
+    setMute,
+    setUserName,
+    syncSlide
   } = useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
@@ -61,10 +60,8 @@ export default function Controls({ containerRef, actionsActive }) {
 
   const micStyle = useMemo(
     function () {
-      if (micState === MIC_STATE.MIC_OFF && !audioSuccess) {
+      if (micState === MIC_STATE.MIC_OFF || !audioData.success) {
         return { style: "bg-gray-300", icon: <IoIosMic size={60} /> };
-      } else if (micState === MIC_STATE.MIC_OFF) {
-        return { style: "bg-[#ff0000]", icon: <IoIosMicOff size={60} /> };
       } else if (micState === MIC_STATE.REQ_MIC) {
         return { style: "bg-orange-500", icon: <PiHandWaving size={60} /> };
       } else if (micState === MIC_STATE.MIC_MUTED) {
@@ -73,19 +70,20 @@ export default function Controls({ containerRef, actionsActive }) {
         return { style: "bg-green-500", icon: <IoIosMic size={60} /> };
       }
     },
-    [micState, audioSuccess]
+    [micState, audioData.success]
   );
 
   useEffect(
     function () {
-      if (audioSuccess) {
-        changeMicState(micState);
+      if (audioData.success) {
+        if (!presentation?.data) return;
+        changeMicState(micState, rtm);
       }
     },
-    [audioSuccess, micState]
+    [audioData.success, micState, presentation?.data, rtm]
   );
 
-  const getUserMicStatusColor = useCallback(function (micStatus) {
+  const getUserMicStatusColor = useCallback(function (micStatus: MIC_STATE) {
     if (micStatus === MIC_STATE.MIC_MUTED) {
       return "bg-[#ff0000]";
     } else if (micStatus === MIC_STATE.REQ_MIC) {
@@ -98,8 +96,9 @@ export default function Controls({ containerRef, actionsActive }) {
   }, []);
 
   const handleAcceptMicRequest = useCallback(
-    function (user) {
-      if (presentation.data?.User !== "HOST") return;
+    function (user: { status: MIC_STATE; id: string; }) {
+      if (!presentation?.data) return;
+      if (presentation.data.User !== "HOST") return;
 
       if (user.status === MIC_STATE.REQ_MIC) {
         acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
@@ -107,20 +106,23 @@ export default function Controls({ containerRef, actionsActive }) {
         acceptMicRequest(user.id, MIC_STATE.MIC_OFF);
       }
     },
-    [acceptMicRequest, presentation.data?.User]
+    [presentation]
   );
 
   const styles = useMemo(() => {
+    if (audioConnectionState === "RECONNECTING") {
+      return "opacity-0";
+    }
     if (
       (isMobilePhone && orientation.type.includes("portrait")) ||
       actionsActive ||
       enterName ||
       startPrompt ||
-      audioLoading ||
+      audioData.loading ||
       endAudioPrompt ||
       !hideControls ||
       showUsersList ||
-      audioError
+      audioData.error
     ) {
       return "opacity-100";
     }
@@ -131,62 +133,71 @@ export default function Controls({ containerRef, actionsActive }) {
     enterName,
     startPrompt,
     isMobilePhone,
-    audioLoading,
+    audioData.loading,
     endAudioPrompt,
     hideControls,
     showUsersList,
-    audioError
+    audioData.error,
+    audioConnectionState
   ]);
 
   function actionMicButton() {
-    if (!joinAudio) {
+    if (!audioData.success) {
       setStartPrompt(true);
       return;
     }
 
-    if (audioSuccess) {
-      if (presentation.data?.User === "HOST") {
-        if (micState === MIC_STATE.CAN_SPK) {
-          setMicState(MIC_STATE.MIC_MUTED);
-          setMute(true);
-        } else {
-          setMicState(MIC_STATE.CAN_SPK);
-          setMute(false);
-        }
+    if (presentation?.data?.User === "HOST") {
+      if (micState === MIC_STATE.CAN_SPK) {
+        setMicState(MIC_STATE.MIC_MUTED);
+        setMute(true);
       } else {
-        if (micState === MIC_STATE.MIC_OFF) {
-          setMicState(MIC_STATE.REQ_MIC);
-          setMute(true);
-        } else if (micState === MIC_STATE.REQ_MIC) {
-          setMicState(MIC_STATE.MIC_OFF);
-          setMute(true);
-        } else if (micState === MIC_STATE.CAN_SPK) {
-          setMicState(MIC_STATE.MIC_MUTED);
-          setMute(true);
-        } else if (micState === MIC_STATE.MIC_MUTED) {
-          setMicState(MIC_STATE.CAN_SPK);
-          setMute(false);
-        }
+        setMicState(MIC_STATE.CAN_SPK);
+        setMute(false);
+      }
+    } else {
+      if (micState === MIC_STATE.MIC_OFF) {
+        setMicState(MIC_STATE.REQ_MIC);
+        setMute(true);
+      } else if (micState === MIC_STATE.REQ_MIC) {
+        setMicState(MIC_STATE.MIC_OFF);
+        setMute(true);
+      } else if (micState === MIC_STATE.CAN_SPK) {
+        setMicState(MIC_STATE.MIC_MUTED);
+        setMute(true);
+      } else if (micState === MIC_STATE.MIC_MUTED) {
+        setMicState(MIC_STATE.CAN_SPK);
+        setMute(false);
       }
     }
   }
 
-  async function endAudio() {
+  async function endUserAudio() {
     if (!endAudioPrompt) {
       setEndAudioPrompt(true);
       return;
     }
+    if (!presentation?.data) return;
     try {
-      if (presentation.data?.User === "HOST") {
-        await startAudio.mutateAsync();
-      } else {
-        setJoinAudio(false);
-      }
+      await endAudio.mutateAsync({
+        liveId: presentation.data.liveId,
+        presentationId: presentation.data.id,
+        User: presentation.data.User,
+        hostEnd: false
+      });
       setEndAudioPrompt(false);
       setMicState(MIC_STATE.MIC_OFF);
     } catch (error) {
       toast.error("Error ending audio");
     }
+  }
+
+  function downloadFile(url: string, filename: string) {
+    axios.get(url, {
+      responseType: 'blob',
+    }).then(res => {
+      download(res.data, filename);
+    });
   }
 
   return (
@@ -195,7 +206,7 @@ export default function Controls({ containerRef, actionsActive }) {
       onMouseEnter={() => setHideControls(false)}
       onMouseLeave={() => setHideControls(true)}
     >
-      {audioSuccess && (
+      {audioData.success && (
         <div
           className={`absolute sm:bottom-5 bottom-24 left-5 network__bar ${networkStatus}`}
         >
@@ -207,10 +218,10 @@ export default function Controls({ containerRef, actionsActive }) {
       <div className="flex flex-row gap-20 items-center justify-center relative w-full">
         {/* Desktop controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <div className="relative">
-                <button className="rounded-full p-3 bg-gray-300 shadow">
+                <button disabled className="rounded-full p-3 bg-gray-300 shadow !cursor-not-allowed">
                   <BsThreeDots size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
@@ -221,31 +232,29 @@ export default function Controls({ containerRef, actionsActive }) {
                 <FiHome size={24} />
               </a>
               <button
-                disabled={!presentation.data.downloadable}
-                className="rounded-full p-3 bg-gray-300 shadow"
+                disabled={!presentation?.data?.downloadable}
+                className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.data?.downloadable && "!cursor-not-allowed"}`}
+                onClick={() => downloadFile(presentation?.data?.pdfLink || "", `${presentation?.data?.name}.pdf` || "")}
               >
                 <IoCloudDownloadOutline
                   size={24}
-                  color={presentation.data.downloadable ? "black" : "gray"}
+                  color={presentation?.data?.downloadable ? "black" : "bg-gray-400"}
                 />
               </button>
-              <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
-                <BsLockFill color="black" size={13} />
-              </span>
             </>
           )}
-          {(presentation.data?.audio || presentation.data?.User === "HOST") && (
+          {(presentation?.data?.audio || presentation?.data?.User === "HOST") && (
             <button
-              className={`${micStyle.style} rounded-full p-3 shadow ${audioLoading && "!cursor-not-allowed"}`}
+              className={`${micStyle?.style} rounded-full p-3 shadow ${audioData.loading && "!cursor-not-allowed"}`}
               onClick={actionMicButton}
-              disabled={audioLoading}
+              disabled={audioData.loading}
             >
-              {audioLoading ? (
+              {audioData.loading ? (
                 <LoadingAssetBig2 />
               ) : (
                 <>
-                  {(audioSuccess || !audioSuccess) && !audioError ? (
-                    micStyle.icon
+                  {(audioData.success || !audioData.success) && !audioData.error ? (
+                    micStyle?.icon
                   ) : (
                     <MdError size={60} />
                   )}
@@ -253,7 +262,7 @@ export default function Controls({ containerRef, actionsActive }) {
               )}
             </button>
           )}
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <div className="relative">
                 <button
@@ -263,7 +272,7 @@ export default function Controls({ containerRef, actionsActive }) {
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {numberOfUsers}
+                  {users.length}
                 </span>
               </div>
               <div className="relative">
@@ -275,7 +284,7 @@ export default function Controls({ containerRef, actionsActive }) {
                 </span>
               </div>
               <button
-                onClick={endAudio}
+                onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
               >
                 <MdCallEnd size={24} />
@@ -285,7 +294,7 @@ export default function Controls({ containerRef, actionsActive }) {
         </div>
         {/* mobile controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <div className="relative">
                 <button className="rounded-full p-3 bg-gray-300 shadow">
@@ -304,23 +313,23 @@ export default function Controls({ containerRef, actionsActive }) {
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {numberOfUsers}
+                  {users.length}
                 </span>
               </div>
             </>
           )}
-          {(presentation.data?.audio || presentation.data?.User === "HOST") && (
+          {(presentation?.data?.audio || presentation?.data?.User === "HOST") && (
             <button
-              className={`${micStyle.style} rounded-full p-3 shadow`}
+              className={`${micStyle?.style} rounded-full p-3 shadow`}
               onClick={actionMicButton}
-              disabled={audioLoading}
+              disabled={audioData.loading}
             >
-              {audioLoading ? (
+              {audioData.loading ? (
                 <LoadingAssetBig2 />
               ) : (
                 <>
-                  {(audioSuccess || !audioSuccess) && !audioError ? (
-                    micStyle.icon
+                  {(audioData.success || !audioData.success) && !audioData.error ? (
+                    micStyle?.icon
                   ) : (
                     <MdError color="white" size={60} />
                   )}
@@ -328,7 +337,7 @@ export default function Controls({ containerRef, actionsActive }) {
               )}
             </button>
           )}
-          {audioSuccess && (
+          {audioData.success && (
             <>
               <div className="relative">
                 <button className="rounded-full p-3 bg-gray-300 shadow">
@@ -339,7 +348,7 @@ export default function Controls({ containerRef, actionsActive }) {
                 </span>
               </div>
               <button
-                onClick={endAudio}
+                onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
               >
                 <MdCallEnd size={24} />
@@ -348,7 +357,7 @@ export default function Controls({ containerRef, actionsActive }) {
           )}
         </div>
         <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
-          {!syncButton && (
+          {!synced && presentation?.data?.User !== "HOST" && (
             <button
               onClick={syncSlide}
               className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
@@ -381,7 +390,7 @@ export default function Controls({ containerRef, actionsActive }) {
                 <FaRegUser size={18} />
               </div>
               <span className="absolute -top-2 -right-2 bg-white rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                {numberOfUsers}
+                {users.length}
               </span>
             </div>
           </div>
@@ -398,13 +407,12 @@ export default function Controls({ containerRef, actionsActive }) {
               <>
                 <img
                   className="w-16"
-                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${host?.id}`}
+                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=host.id`}
                   alt=""
                 />
-                <p className="text-sm">{host?.userName}</p>
                 <div className="flex justify-center items-center gap-1">
                   <span
-                    className={`rounded w-2 h-2 ${getUserMicStatusColor(host.status)}`}
+                    className={`rounded w-2 h-2 ${getUserMicStatusColor(host.micState)}`}
                   ></span>
                   <p className="text-sm">Host</p>
                 </div>
@@ -414,32 +422,33 @@ export default function Controls({ containerRef, actionsActive }) {
             )}
           </div>
           <div className="flex flex-col justify-between w-full border-2 border-[#BFBFA4] p-3 rounded-2xl">
-            <p className="font-bold text-sm">{presentation.data.name}</p>
-            {presentation.data?.presenter && (
-              <p className="text-sm">By {presentation.data.presenter}</p>
+            <p className="font-bold text-sm">{presentation?.data?.name}</p>
+            {presentation?.data?.presenter && (
+              <p className="text-sm">By {presentation?.data.presenter}</p>
             )}
           </div>
         </div>
 
-        <div className="text-sm p-3 grid grid-cols-5 gap-y-5 overflow-y-auto">
+        <div className="text-sm p-3 grid grid-cols-5 sm:grid-cols-4 gap-y-5 overflow-y-auto">
           {users.map((user, index) => (
             <button
               key={user.id}
-              className="flex flex-col w-full justify-center items-center"
-              onClick={() => handleAcceptMicRequest(user)}
+              className="flex flex-col w-full justify-start items-center"
+              onClick={() => handleAcceptMicRequest({
+                id: user.id,
+                status: user.micState
+              })}
             >
               <img
                 className="w-16"
                 src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                 alt={`${user.userName} Image`}
               />
-              <p title={user.userName} className="w-20 truncate ...">
-                {user.userName}
-              </p>
+              <p title={user.userName} className="w-16 truncate ...">{user.userName}</p>
               <div className="w-20 flex justify-center items-center gap-2">
-                {index === 0 && tokens.rtcUid === user.id && <span>(You)</span>}
+                {index === 0 && presentation?.data?.rtc.rtcUid === user.id && <span>(You)</span>}
                 <span
-                  className={`rounded w-2 h-2 ${getUserMicStatusColor(user.status)}`}
+                  className={`rounded w-2 h-2 ${getUserMicStatusColor(user.micState)}`}
                 ></span>
               </div>
             </button>
@@ -448,20 +457,26 @@ export default function Controls({ containerRef, actionsActive }) {
       </Menu>
       <Modal
         open={enterName}
-        onClose={fetchRtcToken.isPending ? null : () => setEnterName(false)}
+        onClose={startAudio.isPending ? null : () => setEnterName(false)}
         color="bg-black"
       >
-        {fetchRtcToken.isPending ? (
+        {startAudio.isPending ? (
           <LoadingAssetBig2 />
         ) : (
           <form
             className="flex flex-col gap-5"
             onSubmit={async (e) => {
               e.preventDefault();
-              if (!userName) return toast.error("Please enter your name");
+              if (!userName.trim() || userName.toLowerCase().includes("host")) return toast.error("Please enter your name");
+              if (!presentation?.data) return;
               try {
-                if (!tokens) await fetchRtcToken.mutateAsync();
-                setJoinAudio(true);
+                await startAudio.mutateAsync({
+                  live: presentation.data.live,
+                  liveId: presentation.data.liveId,
+                  presentationId: presentation.data.id,
+                  User: presentation.data.User,
+                  tokens: presentation.data.rtc
+                });
                 setEnterName(false);
               } catch (error) {
                 toast.error("Could'nt join conversation");
@@ -488,7 +503,7 @@ export default function Controls({ containerRef, actionsActive }) {
                 Cancel
               </button>
               <button className="bg-slate-200 p-2 w-full rounded" type="submit">
-                Join Conversation
+                Join
               </button>
             </div>
           </form>
@@ -500,9 +515,16 @@ export default function Controls({ containerRef, actionsActive }) {
         onClose={startAudio.isPending ? null : () => setStartPrompt(false)}
         onSubmit={async (e) => {
           e.preventDefault();
-          if (presentation.data?.User === "HOST") {
+          if (!presentation?.data) return;
+          if (presentation.data.User === "HOST") {
             try {
-              await startAudio.mutateAsync();
+              await startAudio.mutateAsync({
+                live: presentation.data.live,
+                liveId: presentation.data.liveId,
+                presentationId: presentation.data.id,
+                User: presentation.data.User,
+                tokens: presentation.data.rtc
+              });
             } catch (error) {
               toast.error("Could'nt start conversation");
               return;
@@ -511,12 +533,12 @@ export default function Controls({ containerRef, actionsActive }) {
           setStartPrompt(false);
         }}
         isLoading={startAudio.isPending}
-        message={
-          presentation.data?.User === "HOST"
-            ? "Start Conversation"
-            : "Join Conversation"
+        message={ 
+          presentation?.data?.User === "HOST"
+            ? (presentation?.data?.audio ? "Rejoin" : "Start")
+            : "Join"
         }
-        actionText={presentation.data?.User === "HOST" ? "Start" : "Join"}
+        actionText={presentation?.data?.User === "HOST" ? (presentation?.data?.audio ? "Rejoin" : "Start") : "Join"}
       />
 
       <ConfirmModal
@@ -524,13 +546,13 @@ export default function Controls({ containerRef, actionsActive }) {
         onClose={startAudio.isPending ? null : () => setEndAudioPrompt(false)}
         onSubmit={(e) => {
           e.preventDefault();
-          endAudio();
+          endUserAudio();
         }}
-        isLoading={startAudio.isPending}
+        isLoading={endAudio.isPending}
         message={
-          presentation.data?.User === "HOST" ? "End Audio" : "Leave Audio"
+          presentation?.data?.User === "HOST" ? "End Audio" : "Leave Audio"
         }
-        actionText={presentation.data?.User === "HOST" ? "End" : "Leave"}
+        actionText={presentation?.data?.User === "HOST" ? "End" : "Leave"}
       />
     </div>
   );

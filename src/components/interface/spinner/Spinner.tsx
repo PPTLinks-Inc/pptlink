@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import "./spinner.css";
 import "./spinner2.css";
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 const Spinner = () => {
   return (
@@ -97,7 +97,7 @@ const SpinnerIos = () => {
   const [activeDevice, setActiveDevice] = useState("iphone");
   const [active, setActive] = useState(0);
 
-  const handleButtonClick = (direction) => {
+  const handleButtonClick = (direction: number) => {
     if (direction < 0) {
       direction = 0;
     }
