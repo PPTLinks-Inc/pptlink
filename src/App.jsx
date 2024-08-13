@@ -22,6 +22,7 @@ import NewUploadPage from "./components/upload/newupload";
 import DateTest from "./components/upload/dateTest";
 import Documentation from "./components/document/Documentation";
 import Library from "./components/library/library";
+import PublicPresentation from "./components/see_more_presentation/seeMorePresentation";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -76,6 +77,7 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
             <Route path="library" element={<Library />} />
+            <Route path="publicPresentation" element={<PublicPresentation />} />
             <Route
               path="documentation/*"
               element={
