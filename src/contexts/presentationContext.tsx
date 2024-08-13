@@ -443,12 +443,6 @@ const PresentationContextProvider = (props: { children: any }) => {
             )
           ) : (
             <>
-              {audioData.audioConnectionState === "RECONNECTING" && (
-                <div className="flex flex-col justify-center items-center h-screen w-full bg-black">
-                  <LoadingAssetBig2 />
-                  <p className="text-white text-xl">Reconnecting Audio</p>
-                </div>
-              )}
               {props.children}
             </>
           )}

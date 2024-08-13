@@ -55,7 +55,6 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
 
   const [endAudioPrompt, setEndAudioPrompt] = useState(false);
   const [enterName, setEnterName] = useState(false);
-  const [hideControls, setHideControls] = useState(true);
   const [showUsersList, setShowUsersList] = useState(false);
 
   const micStyle = useMemo(
@@ -120,7 +119,6 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       startPrompt ||
       audioData.loading ||
       endAudioPrompt ||
-      !hideControls ||
       showUsersList ||
       audioData.error
     ) {
@@ -135,7 +133,6 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     isMobilePhone,
     audioData.loading,
     endAudioPrompt,
-    hideControls,
     showUsersList,
     audioData.error,
     audioConnectionState
@@ -203,8 +200,6 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
   return (
     <div
       className={`fixed z-10 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
-      onMouseEnter={() => setHideControls(false)}
-      onMouseLeave={() => setHideControls(true)}
     >
       {audioData.success && (
         <div
