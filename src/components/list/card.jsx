@@ -65,7 +65,7 @@ export default function Card({ presentation }) {
           />
         </div>
 
-        <div className={`card_body pb-5 ${"!text-white"}`}>
+        <div className={`card_body pb-5 text-white`}>
           <h3 className="title font-medium w-full text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
             {presentation.name}
           </h3>
