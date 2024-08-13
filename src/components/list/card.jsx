@@ -10,8 +10,13 @@ import { FaRegEdit } from "react-icons/fa";
 import { FiDelete } from "react-icons/fi";
 import { FaRegBookmark } from "react-icons/fa6";
 import { MdOutlineReportProblem } from "react-icons/md";
+import { useLocation } from "react-router-dom";
 
 export default function Card({ presentation }) {
+  const [getlocation] = React.useState(
+    useLocation().pathname === "/publicPresentation"
+      ? true : false
+  );
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -60,7 +65,7 @@ export default function Card({ presentation }) {
           />
         </div>
 
-        <div className="card_body pb-5">
+        <div className={`card_body pb-5 ${"!text-white"}`}>
           <h3 className="title font-medium w-full text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
             {presentation.name}
           </h3>
