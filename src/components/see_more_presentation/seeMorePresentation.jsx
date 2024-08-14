@@ -38,7 +38,7 @@ export default function PublicPresentation() {
     return (<>
         <section className="bg-black">
             <div className="container h-fit py-10 flex flex-col justify-between items-center">
-                <h1 className="text-5xl font-[400] uppercase mb-5">PUBLIC PRESENTATIONS</h1>
+                <h1 className="text-5xl font-[400] uppercase mb-5 maxScreenMobile:text-3xl maxScreenMobile:text-center">PUBLIC PRESENTATIONS</h1>
                 <div className="w-[150px] aspect-square mb-5">
                     <img
                         src={documentImg}
@@ -69,7 +69,7 @@ export default function PublicPresentation() {
                     initial="initial"
                     whileInView="inView"
                     viewport={{ once: true }}
-                    className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+                    className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
                     ref={scrollRef}
                 >
                     {presentationQuery.data.data.presentations.map((presentation) => (
