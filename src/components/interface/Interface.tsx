@@ -8,6 +8,7 @@ import Header from "./Header";
 import Slider from "./Slider";
 import Controls from "./Controls";
 import { PresentationContext } from "../../contexts/presentationContext";
+import { LoadingAssetBig2 } from "../../assets/assets";
 
 let wakeLock: WakeLockSentinel | null = null;
 let setTimerActive: any = null;
@@ -16,7 +17,7 @@ function Interface() {
   const ref = useRef(null);
   const [loaded, setIsLoaded] = useState(false);
   const [actionsActive, setActionsActive] = useState(true);
-  const { isMobilePhone, rtmConnectionState } = useContext(PresentationContext);
+  const { isMobilePhone, rtmConnectionState, audioConnectionState } = useContext(PresentationContext);
   const orientation = useOrientation();
 
   const [status, setStatus] = useState({
@@ -120,6 +121,12 @@ function Interface() {
       className={`bg-black w-full ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
       ref={ref}
     >
+      {audioConnectionState === "RECONNECTING" && (
+        <div className="flex flex-col justify-center items-center h-screen w-full bg-black">
+          <LoadingAssetBig2 />
+          <p className="text-white text-xl">Reconnecting Audio</p>
+        </div>
+      )}
       <Header actionsActive={actionsActive} />
       <Slider
         setIsLoaded={setIsLoaded}
