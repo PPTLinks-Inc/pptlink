@@ -66,14 +66,14 @@ export default function Card({ presentation }) {
         </div>
 
         <div className={`card_body pb-5 text-white`}>
-          <h3 className="title font-medium w-full text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
+          <h3 className="title font-medium w-full text-xl maxScreenMobile:text-3xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
             {presentation.name}
           </h3>
-          <p className="w-full text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+          <p className="w-full text-[.8rem] maxScreenMobile:text-xl pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
             <strong>Presenter: </strong>
             <em>{presentation.User.username}</em>
           </p>
-          <p className="w-full text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+          <p className="w-full text-[.8rem] maxScreenMobile:text-xl pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
             <strong>Cartegory: </strong>
             <em>edge computing</em>
           </p>
