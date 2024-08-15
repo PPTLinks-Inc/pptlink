@@ -77,7 +77,7 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
             <Route path="library" element={<Library />} />
-            <Route path="publicPresentation" element={<PublicPresentation />} />
+            <Route path="public_presentation" element={<PublicPresentation />} />
             <Route
               path="documentation/*"
               element={
