@@ -46,7 +46,7 @@ export default function PublicPresentation() {
                         className="block w-full h-full"
                     />
                 </div>
-                <div className="w-[300px] h-fit rounded-[.5rem] border border-white relative mb-5">
+                <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
                     <input
                         type="text"
                         name="searcher"
