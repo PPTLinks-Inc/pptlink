@@ -260,7 +260,7 @@ export default function NewHome() {
             </motion.div>
           )}
           <NavLink
-            to="/publicPresentation"
+            to="/public_presentation"
             className="block text-center text-[#FFA500] underline"
           >
             See more
