@@ -422,7 +422,15 @@ label.toggle__label:active:after {
 }
 @media screen and (max-width: 768px) {
   .public_presentations .cards_wrapper {
-    grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
+    grid-template: auto/repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+}
+@media screen and (max-width: 468px) {
+  .public_presentations .cards_wrapper {
+    width: 90%;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 

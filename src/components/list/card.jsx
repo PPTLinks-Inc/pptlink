@@ -53,27 +53,27 @@ export default function Card({ presentation }) {
     <motion.div
       variants={containerVarient}
       // whileHover="hover"
-      className="card rounded-2xl p-5 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
+      className="card rounded-2xl p-5 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
     >
       <Link to={`/${presentation.liveId}`}>
         <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
           <img
             src={presentation.thumbnail}
             alt={`${presentation.name} presentation thumbnail`}
-            className="w-full aspect-video rounded-2xl object-cover"
+            className="w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-2xl object-cover"
             loading="lazy"
           />
         </div>
 
-        <div className={`card_body pb-5 text-white`}>
-          <h3 className="title font-medium w-full text-xl maxScreenMobile:text-3xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
+        <div className={`card_body pb-5 maxScreenMobile:pb-0 text-white`}>
+          <h3 className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
             {presentation.name}
           </h3>
-          <p className="w-full text-[.8rem] maxScreenMobile:text-xl pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+          <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
             <strong>Presenter: </strong>
             <em>{presentation.User.username}</em>
           </p>
-          <p className="w-full text-[.8rem] maxScreenMobile:text-xl pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+          <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
             <strong>Cartegory: </strong>
             <em>edge computing</em>
           </p>
