@@ -11,7 +11,7 @@ import Header from "../header/header";
 import Footer from "../footer/footer";
 import Backmenu from "../backmenu/backmenu";
 export default function Root() {
-  const [getlocation] = useState(useLocation().pathname.includes("publicPresentation") ? true : false);
+  const [getlocation] = useState(useLocation().pathname.includes("public_presentation") ? true : false);
   const controller = new AbortController();
   // context
   const { user } = useContext(userContext);

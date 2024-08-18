@@ -554,7 +554,14 @@ label.toggle__label {
         }
 
         @include is_mediaQuery_MaxWidth_Yes {
-            grid-template: auto / repeat(auto-fill, minmax(300px, 1fr)); // 👌
+            grid-template: auto / repeat(auto-fill, minmax(200px, 1fr)); // 👌
+            gap: 1rem;
+        }
+
+        @include is_mediaQuery_MaxWidth_Yes(468px, true) {
+            width: 90%;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
     }
 }

@@ -58,7 +58,8 @@ module.exports = {
       // => @media (min-width: 1536px) { ... }
       tall: { min: "2000px" },
       maxScreen: { max: "1050px" },
-      maxScreenMobile: { max: "768px" }
+      maxScreenMobile: { max: "768px" },
+      maxSmallMobile: { max: "468px" }
     },
     plugins: []
   }
