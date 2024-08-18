@@ -92,8 +92,10 @@ const PresentationContextProvider = (props: { children: any }) => {
   const [startPrompt, setStartPrompt] = useState(false);
   const orientation = useOrientation();
   const [userUid, setUserUid] = useLocalStorage<string>("userUid");
+  const [prevUsername] = useLocalStorage<string>("userName");
+  console.log("prevUsername", prevUsername);
   const [tokens, setTokens] = useState<rtmTokenI>();
-  const [userName, setUserName] = useState(user?.username || "");
+  const [userName, setUserName] = useState(prevUsername || user?.username || "");
   const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
@@ -112,7 +114,9 @@ const PresentationContextProvider = (props: { children: any }) => {
       const { data } = await axios.get<{
         sucess: boolean;
         presentation: presentationData;
-      }>(`/api/v1/ppt/presentations/present/${params.id}`);
+      }>(`/api/v1/ppt/presentations/present/${params.id}`, {
+        params: { userUid }
+      });
       setTokens({
         rtmToken: data.presentation.rtc.rtmToken,
         rtcUid: data.presentation.rtc.rtcUid

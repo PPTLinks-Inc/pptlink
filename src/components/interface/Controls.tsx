@@ -463,6 +463,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             onSubmit={async (e) => {
               e.preventDefault();
               if (!userName.trim() || userName.toLowerCase().includes("host")) return toast.error("Please enter your name");
+              localStorage.setItem("userName", `"${userName}"`);
               if (!presentation?.data) return;
               try {
                 await startAudio.mutateAsync({
