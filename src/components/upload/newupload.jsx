@@ -12,6 +12,7 @@ import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { SERVER_URL } from "../../constants/routes";
 import SlidePreview from "./SlidePreview";
+import { LoadingAssetSmall2 } from "../../assets/assets";
 
 let eventSourse = null;
 
