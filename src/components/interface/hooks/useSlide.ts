@@ -374,41 +374,41 @@ export default function useSlide(
     [start]
   );
 
-  useEffect(() => {
-    function slideHandler() {
-      if (presentation?.User === "HOST" && presentation?.live) {
-        slideData = {
-          maxSlides:
-            swiperRef.swiper.activeIndex >= slideData.maxSlides
-              ? swiperRef.swiper.activeIndex
-              : slideData.maxSlides,
-          hostSlide: swiperRef.swiper.activeIndex,
-          prevHostSlide: slideData.hostSlide
-        };
-        rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
-          {
-            key: "slideData",
-            value: JSON.stringify(slideData),
-            revision: -1
-          }
-        ]);
+  function slideHandler() {
+    if (presentation?.User === "HOST" && presentation?.live) {
+      slideData = {
+        maxSlides:
+          swiperRef.swiper.activeIndex >= slideData.maxSlides
+            ? swiperRef.swiper.activeIndex
+            : slideData.maxSlides,
+        hostSlide: swiperRef.swiper.activeIndex,
+        prevHostSlide: slideData.hostSlide
+      };
+      rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
+        {
+          key: "slideData",
+          value: JSON.stringify(slideData),
+          revision: -1
+        }
+      ]);
+    } else {
+      if (freeSlide) {
+        return;
+      }
+      if (!slideData.maxSlides) {
+        swiperRef.swiper.allowSlideNext = true;
+        swiperRef.swiper.slideTo(0, 0, false);
+        swiperRef.swiper.allowSlideNext = false;
+      }
+      if (swiperRef.swiper.activeIndex < slideData.maxSlides) {
+        swiperRef.swiper.allowSlideNext = true;
+        setSynced(false);
       } else {
-        if (freeSlide) {
-          return;
-        }
-        if (!slideData.maxSlides) {
-          swiperRef.swiper.allowSlideNext = true;
-          swiperRef.swiper.slideTo(0, 0, false);
-          swiperRef.swiper.allowSlideNext = false;
-        }
-        if (swiperRef.swiper.activeIndex < slideData.maxSlides) {
-          swiperRef.swiper.allowSlideNext = true;
-          setSynced(false);
-        } else {
-          swiperRef.swiper.allowSlideNext = false;
-        }
+        swiperRef.swiper.allowSlideNext = false;
       }
     }
+  }
+  useEffect(() => {
     if (swiperRef) {
       swiperRef.addEventListener("swiperslidechange", slideHandler);
 
