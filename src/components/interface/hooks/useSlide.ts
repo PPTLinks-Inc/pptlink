@@ -12,8 +12,8 @@ let slideData = {
   hostSlide: 0,
   prevHostSlide: 0
 };
+
 let firstTime = true;
-let freeSlide = false;
 
 const statusPriority: { [key: string]: number } = {
   REQ_MIC: 1,
@@ -34,21 +34,23 @@ export default function useSlide(
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [synced, setSynced] = useState(false);
+  const syncRef = useRef(false);
   const [hostPresent, setHostPresent] = useState(false);
+  const hostPresentRef = useRef(false);
 
   // const playNotification = useNotificationSound();
   const audio = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(function() {
+  useEffect(function () {
     if (audioConnectionState === "CONNECTED" && rtm && presentation) {
-      rtm.presence.setState(presentation.liveId, "MESSAGE", {reconnect: Date.now().toString()})
-      .then(function() {
-        toast.info("Connected to the server");
-      })
-      .catch(function() {
-        toast.error("Error reconnecting to the server");
-        location.reload();
-      });
+      rtm.presence.setState(presentation.liveId, "MESSAGE", { reconnect: Date.now().toString() })
+        .then(function () {
+          toast.info("Connected to the server");
+        })
+        .catch(function () {
+          toast.error("Error reconnecting to the server");
+          location.reload();
+        });
     }
   }, [audioConnectionState, presentation, rtm]);
 
@@ -73,14 +75,17 @@ export default function useSlide(
     });
   }, [uid, users]);
 
+
   function syncSlide() {
+    if (!hostPresentRef.current) return;
     swiperRef.swiper.allowSlideNext = true;
     swiperRef.swiper.slideTo(slideData.hostSlide, 1000, true);
     setSynced(true);
+    syncRef.current = true;
     if (swiperRef.swiper.activeIndex >= slideData.maxSlides) {
       swiperRef.swiper.allowSlideNext = false;
     }
-  }
+  };
 
   function removeUsers(uid: IAgoraRTCRemoteUser["uid"]) {
     setHost((prev) => {
@@ -99,7 +104,7 @@ export default function useSlide(
     });
   }
 
-  const changeMicState = useCallback(async function(userName: string, state: MIC_STATE, rtm: RTMClient) {
+  const changeMicState = useCallback(async function (userName: string, state: MIC_STATE, rtm: RTMClient) {
     if (!presentation) throw new Error("Presentation not initialized");
     if (!uid) throw new Error("UID not initialized");
     if (userName === "HOST") {
@@ -142,18 +147,19 @@ export default function useSlide(
       const newSlideData = JSON.parse(
         event.data.metadata.slideData.value
       ) as typeof slideData;
-      slideData.hostSlide = newSlideData.hostSlide;
-      slideData.maxSlides = newSlideData.maxSlides;
-      slideData.prevHostSlide = newSlideData.prevHostSlide;
+      slideData.hostSlide = newSlideData.hostSlide || 0;
+      slideData.maxSlides = newSlideData.maxSlides || 0;
+      slideData.prevHostSlide = newSlideData.prevHostSlide || 0;
+
+      if (firstTime) {
+        firstTime = false;
+        syncSlide();
+      }
 
       if (
-        swiperRef.swiper.activeIndex === newSlideData.prevHostSlide ||
-        firstTime
-      ) {
-        firstTime = false;
+        swiperRef.swiper.activeIndex === newSlideData.prevHostSlide && syncRef.current) {
         swiperRef.swiper.allowSlideNext = true;
         swiperRef.swiper.slideTo(newSlideData.hostSlide, 1000, true);
-        setSynced(true);
         if (swiperRef.swiper.activeIndex >= slideData.maxSlides) {
           swiperRef.swiper.allowSlideNext = false;
         }
@@ -162,26 +168,12 @@ export default function useSlide(
   }
 
   function presencesEvent(data: RTMEvents.PresenceEvent) {
-    if (data.eventType === "SNAPSHOT" && data.snapshot) {
-      let foundHost = false;
-      for (const member of data.snapshot) {
-        if (member.userId.startsWith("HOST")) {
-          foundHost = true;
-          break;
-        }
-      }
-
-      if (!foundHost) {
-        setHostPresent(false);
-        freeSlide = true;
-        swiperRef.swiper.allowSlideNext = true;
-      }
-    } else if (
+    if (
       data.eventType === "REMOTE_JOIN" &&
       data.publisher.startsWith("HOST")
     ) {
       setHostPresent(true);
-      freeSlide = false;
+      hostPresentRef.current = true;
       syncSlide();
       swiperRef.swiper.allowSlideNext = false;
     } else if (
@@ -189,7 +181,7 @@ export default function useSlide(
       data.publisher.startsWith("HOST")
     ) {
       setHostPresent(false);
-      freeSlide = true;
+      hostPresentRef.current = false;
     } else if (data.eventType === "REMOTE_LEAVE" || data.eventType === "REMOTE_TIMEOUT") {
       if (data.publisher.startsWith("HOST")) {
         setHost(null);
@@ -248,7 +240,7 @@ export default function useSlide(
             if (event.stateChanged.micState === String(MIC_STATE.REQ_MIC)) {
               playAudio = true;
             }
-              
+
             presencesEvent(event);
           }
           if (playAudio) {
@@ -259,7 +251,7 @@ export default function useSlide(
           }
           presenceEvents = [];
         }
-        , 1000);
+          , 1000);
       }
     }
     , []
@@ -280,7 +272,7 @@ export default function useSlide(
   }) {
     if (!rtm) throw new Error("RTM not initialized");
     if (User === "HOST") {
-      rtm.addEventListener("presence", function(data: RTMEvents.PresenceEvent) {
+      rtm.addEventListener("presence", function (data: RTMEvents.PresenceEvent) {
         if (data.eventType === "REMOTE_STATE_CHANGED") {
           userDataChange(data);
           return;
@@ -391,19 +383,15 @@ export default function useSlide(
           revision: -1
         }
       ]);
-    } else {
-      if (freeSlide) {
+    } else if (presentation?.User === "GUEST") {
+      if (!hostPresentRef.current) {
         return;
       }
-      if (!slideData.maxSlides) {
-        swiperRef.swiper.allowSlideNext = true;
-        swiperRef.swiper.slideTo(0, 0, false);
-        swiperRef.swiper.allowSlideNext = false;
-      }
-      if (swiperRef.swiper.activeIndex < slideData.maxSlides) {
+      if (swiperRef.swiper.activeIndex != slideData.hostSlide) {
         swiperRef.swiper.allowSlideNext = true;
         setSynced(false);
-      } else {
+        syncRef.current = false;
+      } else if (swiperRef.swiper.activeIndex == slideData.maxSlides) {
         swiperRef.swiper.allowSlideNext = false;
       }
     }
@@ -412,10 +400,35 @@ export default function useSlide(
     if (swiperRef) {
       swiperRef.addEventListener("swiperslidechange", slideHandler);
 
-      if (presentation?.User !== "HOST" && rtm) {
+      if (presentation?.User === "GUEST" && rtm) {
         rtm.addEventListener("presence", presencesEvent);
         rtm.addEventListener("storage", slidesEvent);
-        swiperRef.swiper.allowSlideNext = false;
+        rtm.presence.getOnlineUsers(presentation.liveId, "MESSAGE").then(function (data) {
+          let foundHost = false;
+          for (const member of data.occupants) {
+            if (member.userId.startsWith("HOST")) {
+              foundHost = true;
+              break;
+            }
+          }
+
+          if (!foundHost) {
+            setHostPresent(false);
+            hostPresentRef.current = false;
+            swiperRef.swiper.allowSlideNext = true;
+          } else {
+            swiperRef.swiper.allowSlideNext = false;
+            setHostPresent(true);
+            hostPresentRef.current = true;
+            rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE").then(function (data) {
+              slidesEvent({
+                data: {
+                  metadata: data.metadata
+                }
+              } as RTMEvents.StorageEvent);
+            }).catch(function (error) { console.error("Error getting metadata", error) });
+          }
+        }).catch(function (error) { console.error("Error getting online users", error) });
       }
 
       return function () {

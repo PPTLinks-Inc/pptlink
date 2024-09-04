@@ -93,7 +93,6 @@ const PresentationContextProvider = (props: { children: any }) => {
   const orientation = useOrientation();
   const [userUid, setUserUid] = useLocalStorage<string>("userUid");
   const [prevUsername] = useLocalStorage<string>("userName");
-  console.log("prevUsername", prevUsername);
   const [tokens, setTokens] = useState<rtmTokenI>();
   const [userName, setUserName] = useState(prevUsername || user?.username || "");
   const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
