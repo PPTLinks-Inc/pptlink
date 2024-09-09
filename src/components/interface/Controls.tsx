@@ -17,6 +17,7 @@ import ConfirmModal from "./Modals/confirmModal";
 import { toast } from "react-toastify";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
+import MessageMenu from "./Modals/MessageMenu";
 import { MIC_STATE } from "../../constants/routes";
 import axios from "axios";
 import download from "./download";
@@ -56,6 +57,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
   const [endAudioPrompt, setEndAudioPrompt] = useState(false);
   const [enterName, setEnterName] = useState(false);
   const [showUsersList, setShowUsersList] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
   const micStyle = useMemo(
     function () {
@@ -120,6 +122,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       audioData.loading ||
       endAudioPrompt ||
       showUsersList ||
+      showMessage ||
       audioData.error
     ) {
       return "opacity-100";
@@ -134,6 +137,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     audioData.loading,
     endAudioPrompt,
     showUsersList,
+    showMessage,
     audioData.error,
     audioConnectionState
   ]);
@@ -270,14 +274,9 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   {users.length}
                 </span>
               </div>
-              <div className="relative">
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <LuMessagesSquare size={24} />
-                </button>
-                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
-                  <BsLockFill color="black" size={13} />
-                </span>
-              </div>
+              <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
+                <LuMessagesSquare size={24} />
+              </button>
               <button
                 onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
@@ -334,14 +333,9 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           )}
           {audioData.success && (
             <>
-              <div className="relative">
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <LuMessagesSquare size={24} />
-                </button>
-                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
-                  <BsLockFill color="black" size={13} />
-                </span>
-              </div>
+              <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
+                <LuMessagesSquare size={24} />
+              </button>
               <button
                 onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
@@ -374,6 +368,9 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           )}
         </div>
       </div>
+        
+      <MessageMenu open={showMessage} onClose={() => setShowMessage(false)} />
+          
       <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
         <div className="rounded-t-xl p-5 flex items-center justify-between border-b-2 border-[#BFBFA4] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
@@ -401,7 +398,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             {host ? (
               <>
                 <img
-                  className="w-16"
+                  className="w-16 rounded-full"
                   src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=host.id`}
                   alt=""
                 />
@@ -435,7 +432,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               })}
             >
               <img
-                className="w-16"
+                className="w-16 rounded-full"
                 src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                 alt={`${user.userName} Image`}
               />
@@ -450,6 +447,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           ))}
         </div>
       </Menu>
+
       <Modal
         open={enterName}
         onClose={startAudio.isPending ? null : () => setEnterName(false)}
