@@ -404,6 +404,7 @@ export default function useSlide(
         rtm.addEventListener("presence", presencesEvent);
         rtm.addEventListener("storage", slidesEvent);
         rtm.presence.getOnlineUsers(presentation.liveId, "MESSAGE").then(function (data) {
+          console.log(data);
           let foundHost = false;
           for (const member of data.occupants) {
             if (member.userId.startsWith("HOST")) {

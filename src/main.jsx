@@ -18,7 +18,7 @@ root.render(
             <App />
           </Router>
       </UserContextProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </React.StrictMode>
 );
