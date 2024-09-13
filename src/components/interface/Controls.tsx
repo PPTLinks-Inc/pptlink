@@ -372,7 +372,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       <MessageMenu open={showMessage} onClose={() => setShowMessage(false)} />
           
       <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
-        <div className="rounded-t-xl p-5 flex items-center justify-between border-b-2 border-[#BFBFA4] fixed w-full bg-[#FFFFDB]">
+        <div className="rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
             <h4 className="text-2xl text-center text-black font-bold">
               Live Audience
@@ -394,7 +394,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         </div>
 
         <div className="p-3 flex justify-start gap-2 mt-20">
-          <div className="flex flex-col justify-center items-center w-fit border-2 border-[#BFBFA4] p-3 rounded-2xl">
+          <div className="flex flex-col justify-center items-center w-fit border-[1px] border-[#FF8B1C] p-3 rounded-2xl">
             {host ? (
               <>
                 <img
@@ -413,7 +413,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               <p className="text-sm">No Host</p>
             )}
           </div>
-          <div className="flex flex-col justify-between w-full border-2 border-[#BFBFA4] p-3 rounded-2xl">
+          <div className="flex flex-col justify-between w-full border-[1px] border-[#FF8B1C] p-3 rounded-2xl">
             <p className="font-bold text-sm">{presentation?.data?.name}</p>
             {presentation?.data?.presenter && (
               <p className="text-sm">By {presentation?.data.presenter}</p>
