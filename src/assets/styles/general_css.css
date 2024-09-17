@@ -457,4 +457,10 @@ label.toggle__label:active:after {
 .testSVG {
   -webkit-clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
   clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
+}
+
+.backdrop_el {
+  background-color: rgba(255, 255, 255, 0.069);
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
 }/*# sourceMappingURL=general_css.css.map */
