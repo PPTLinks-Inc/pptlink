@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AGORA_APP_ID, MIC_STATE } from "../../../constants/routes";
 import { PresentationContextI, presentationData } from "../types";
 import { toast } from "react-toastify";
+import { Message, useMessageStore } from "./messageStore";
 
 export default function useRTM(
   endAudio: PresentationContextI["endAudio"],
@@ -20,6 +21,8 @@ export default function useRTM(
   const rtm = useRef<RTMClient | null>(null);
   const [rtmConnectionState, setRtmConnectionState] =
     useState<RTMEvents.RTMConnectionStatusChangeEvent["state"]>("DISCONNECTED");
+
+  const addMessage = useMessageStore((state) => state.addMessage);
 
   async function leaveRtmChannel(e?: BeforeUnloadEvent) {
     if (!e) {
@@ -81,6 +84,9 @@ export default function useRTM(
         toast.info("Your microphone is muted by the host");
       }
       changeMicState(messageData.message, rtm);
+    } else if (typeof messageData.message === "string") {
+      const message = JSON.parse(messageData.message) as Message;
+      addMessage(message);
     }
   }
 
@@ -121,11 +127,11 @@ export default function useRTM(
 
           if (!rtm.current) throw new Error("RTM not initialized");
 
-          if (presentation.User === "GUEST") {
-            rtm.current.addEventListener("message", function(message: RTMEvents.MessageEvent) {
-              messageListerner(rtm.current, message);
-            });
-          }
+          // if (presentation.User === "GUEST") {
+          rtm.current.addEventListener("message", function(message: RTMEvents.MessageEvent) {
+            messageListerner(rtm.current, message);
+          });
+          // }
 
           await rtm.current.login();
 

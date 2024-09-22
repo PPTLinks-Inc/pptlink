@@ -18,11 +18,14 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "agora-chat": "^1.2.2-3",
     "agora-rtc-sdk-ng": "^4.20.2",
     "agora-rtm-sdk": "^2.1.9",
     "antd": "^5.18.0",
     "axios": "^1.5.0",
     "framer-motion": "^10.16.16",
+    "install": "^0.13.0",
+    "npm": "^10.8.3",
     "primereact": "^10.6.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -35,7 +38,8 @@
     "react-toastify": "^10.0.4",
     "react-use": "^17.4.0",
     "socket.io-client": "^4.7.2",
-    "swiper": "^11.1.1"
+    "swiper": "^11.1.1",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
