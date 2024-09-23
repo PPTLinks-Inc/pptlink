@@ -35,8 +35,6 @@ export default function useSlide(
   const [success, setSuccess] = useState(false);
   const [synced, setSynced] = useState(false);
   const syncRef = useRef(false);
-  const [hostPresent, setHostPresent] = useState(false);
-  const hostPresentRef = useRef(false);
 
   // const playNotification = useNotificationSound();
   const audio = useRef<HTMLAudioElement | null>(null);
@@ -77,7 +75,7 @@ export default function useSlide(
 
 
   function syncSlide() {
-    if (!hostPresentRef.current) return;
+    if (!presentation?.live) return;
     swiperRef.swiper.allowSlideNext = true;
     swiperRef.swiper.slideTo(slideData.hostSlide, 1000, true);
     setSynced(true);
@@ -168,21 +166,7 @@ export default function useSlide(
   }
 
   function presencesEvent(data: RTMEvents.PresenceEvent) {
-    if (
-      data.eventType === "REMOTE_JOIN" &&
-      data.publisher.startsWith("HOST")
-    ) {
-      setHostPresent(true);
-      hostPresentRef.current = true;
-      syncSlide();
-      swiperRef.swiper.allowSlideNext = false;
-    } else if (
-      data.eventType === "REMOTE_LEAVE" &&
-      data.publisher.startsWith("HOST")
-    ) {
-      setHostPresent(false);
-      hostPresentRef.current = false;
-    } else if (data.eventType === "REMOTE_LEAVE" || data.eventType === "REMOTE_TIMEOUT") {
+    if (data.eventType === "REMOTE_LEAVE" || data.eventType === "REMOTE_TIMEOUT") {
       if (data.publisher.startsWith("HOST")) {
         setHost(null);
         return;
@@ -384,7 +368,7 @@ export default function useSlide(
         }
       ]);
     } else if (presentation?.User === "GUEST") {
-      if (!hostPresentRef.current) {
+      if (!presentation.live) {
         return;
       }
       if (swiperRef.swiper.activeIndex != slideData.hostSlide) {
@@ -403,33 +387,6 @@ export default function useSlide(
       if (presentation?.User === "GUEST" && rtm) {
         rtm.addEventListener("presence", presencesEvent);
         rtm.addEventListener("storage", slidesEvent);
-        rtm.presence.getOnlineUsers(presentation.liveId, "MESSAGE").then(function (data) {
-          console.log(data);
-          let foundHost = false;
-          for (const member of data.occupants) {
-            if (member.userId.startsWith("HOST")) {
-              foundHost = true;
-              break;
-            }
-          }
-
-          if (!foundHost) {
-            setHostPresent(false);
-            hostPresentRef.current = false;
-            swiperRef.swiper.allowSlideNext = true;
-          } else {
-            swiperRef.swiper.allowSlideNext = false;
-            setHostPresent(true);
-            hostPresentRef.current = true;
-            rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE").then(function (data) {
-              slidesEvent({
-                data: {
-                  metadata: data.metadata
-                }
-              } as RTMEvents.StorageEvent);
-            }).catch(function (error) { console.error("Error getting metadata", error) });
-          }
-        }).catch(function (error) { console.error("Error getting online users", error) });
       }
 
       return function () {
@@ -443,7 +400,6 @@ export default function useSlide(
     error,
     success,
     synced,
-    hostPresent,
     user: userArr,
     host,
     changeMicState,
