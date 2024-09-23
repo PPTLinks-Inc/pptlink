@@ -4,7 +4,6 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { normalizePath, defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import basicSsl from "@vitejs/plugin-basic-ssl";
 
 const require = createRequire(import.meta.url);
 const cMapsDir = normalizePath(
@@ -32,8 +31,7 @@ const plugins = [
         dest: ""
       }
     ]
-  }),
-  basicSsl()
+  })
 ];
 export default defineConfig({
   plugins: plugins,
