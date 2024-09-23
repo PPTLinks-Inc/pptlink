@@ -74,6 +74,7 @@ export interface PresentationContextI {
     },
     rtm: RTMClient | null;
     audioConnectionState: ConnectionState | null;
+    tokens?: rtmTokenI;
     changeMicState(state: MIC_STATE, rtm: RTMClient | null): void;
     acceptMicRequest: (userId: string, micState: MIC_STATE) => Promise<void>;
     setSwiperRef: React.Dispatch<any>;

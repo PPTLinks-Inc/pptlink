@@ -14,7 +14,6 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import rotateImage from "../components/interface/assets/rotate.gif";
-import { Spinner, SpinnerIos } from "../components/interface/spinner/Spinner";
 import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import { userContext } from "./userContext";
@@ -86,7 +85,6 @@ const PresentationContextProvider = (props: { children: any }) => {
 
   const { user } = useContext(userContext);
   const params = useParams();
-  const [start, setStart] = useState(false);
   const [showPrompt, setShowPrompt] = useState(true);
   const [fullScreenShow, fullScreenToggle] = useToggle(false);
   const [startPrompt, setStartPrompt] = useState(false);
@@ -94,7 +92,9 @@ const PresentationContextProvider = (props: { children: any }) => {
   const [userUid, setUserUid] = useLocalStorage<string>("userUid");
   const [prevUsername] = useLocalStorage<string>("userName");
   const [tokens, setTokens] = useState<rtmTokenI>();
-  const [userName, setUserName] = useState(prevUsername || user?.username || "");
+  const [userName, setUserName] = useState(
+    prevUsername || user?.username || ""
+  );
   const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
@@ -133,30 +133,25 @@ const PresentationContextProvider = (props: { children: any }) => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    queryKey: ["orientation"],
+    queryKey: ["orientation-prompt"],
+    enabled: presentationQuery.data?.live,
     queryFn: function () {
-      setStart(true);
+      if (
+        (orientation.type.includes("landscape") &&
+          presentationQuery.data?.live) ||
+        !("orientation" in screen)
+      ) {
+        setShowPrompt(false);
+      }
       return true;
     }
   });
-
-  useEffect(() => {
-    if (
-      (orientation.type.includes("landscape") &&
-        start &&
-        presentationQuery.data?.live) ||
-      !("orientation" in screen)
-    ) {
-      setShowPrompt(false);
-    }
-  }, [start, orientation, presentationQuery.data?.live]);
 
   const endAudio = useMutation({
     mutationFn: async function ({
       User,
       liveId,
       presentationId,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       hostEnd
     }: {
       User: "HOST" | "GUEST";
@@ -174,7 +169,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         await axios.put(
           `/api/v1/ppt/presentations/make-audio/${presentationId}`,
           {},
-          { params: { endOrStart: "end" } }
+          { params: { endOrStart: "end", userUid } }
         );
       }
       audioData.endAudio();
@@ -415,6 +410,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         audioData,
         rtm: signalling.rtm,
         audioConnectionState: audioData.audioConnectionState,
+        tokens,
         changeMicState,
         acceptMicRequest: slides.acceptMicRequest,
         fullScreenToggle,
@@ -437,18 +433,7 @@ const PresentationContextProvider = (props: { children: any }) => {
           {isMobilePhone && showPrompt && presentationQuery.data?.live && (
             <OrientationPrompt setShowPrompt={setShowPrompt} />
           )}
-          {!presentationQuery.data?.live &&
-          presentationQuery.data?.User !== "HOST" ? (
-            isIphone ? (
-              <SpinnerIos />
-            ) : (
-              <Spinner />
-            )
-          ) : (
-            <>
-              {props.children}
-            </>
-          )}
+          {props.children}
         </>
       )}
     </PresentationContext.Provider>
