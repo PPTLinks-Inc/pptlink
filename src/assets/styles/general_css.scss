@@ -590,3 +590,8 @@ label.toggle__label {
     -webkit-clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
     clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
 }
+
+.backdrop_el {
+    background-color: rgba(255, 255, 255, 0.069);
+    backdrop-filter: blur(2px);
+}

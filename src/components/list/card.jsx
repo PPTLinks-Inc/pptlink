@@ -13,6 +13,7 @@ import { MdOutlineReportProblem } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 
 export default function Card({ presentation }) {
+  const [deleteCard, setDeleteCard] = React.useState(false);
   const [getlocation] = React.useState(
     useLocation().pathname === "/publicPresentation"
       ? true : false
@@ -24,6 +25,14 @@ export default function Card({ presentation }) {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleDelete = (e) => {
+    console.log(e.target.dataset.delete);
+    setDeleteCard(true);
+  };
+  const handleQuation = (e) => {
+    console.log(e.target.dataset.quation == "yes" ? "yes delete" : "no dont delete");
+    setDeleteCard(false);
   };
 
   console.log(presentation);
@@ -50,92 +59,103 @@ export default function Card({ presentation }) {
   };
 
   return (
-    <motion.div
-      variants={containerVarient}
-      // whileHover="hover"
-      className="card rounded-2xl p-5 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
-    >
-      <Link to={`/${presentation.liveId}`}>
-        <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
-          <img
-            src={presentation.thumbnail}
-            alt={`${presentation.name} presentation thumbnail`}
-            className="w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-2xl object-cover"
-            loading="lazy"
-          />
-        </div>
+    <>
+      <motion.div
+        variants={containerVarient}
+        // whileHover="hover"
+        className="card rounded-2xl p-5 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
+      >
+        <Link to={`/${presentation.liveId}`}>
+          <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
+            <img
+              src={presentation.thumbnail}
+              alt={`${presentation.name} presentation thumbnail`}
+              className="w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-2xl object-cover"
+              loading="lazy"
+            />
+          </div>
 
-        <div className={`card_body pb-5 maxScreenMobile:pb-0 text-white`}>
-          <h3 className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
-            {presentation.name}
-          </h3>
-          <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
-            <strong>Presenter: </strong>
-            <em>{presentation.User.username}</em>
-          </p>
-          <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
-            <strong>Cartegory: </strong>
-            <em>edge computing</em>
-          </p>
-          <span className="block w-fit mt-2 ml-[-1.2rem]" onClick={(e) => e.preventDefault()}>
-            <Button
-              id="basic-button"
-              aria-controls={open ? 'basic-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
-            >
-              <FaEllipsisV className="text-xl text-[#FFA500] cursor-pointer rotate-90" />
-            </Button>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-              PaperProps={{
-                style: {
-                  backgroundColor: '#252525',
-                  color: 'white',
-                },
-              }}
-            >
-              <div className='w-full h-full _bg-black _text-white'>
-                <MenuItem onClick={handleClose} sx={{
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#FFA500',
-                    fontWeight: 'bolder'
+          <div className={`card_body pb-5 maxScreenMobile:pb-0 text-white`}>
+            <h3 className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
+              {presentation.name}
+            </h3>
+            <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+              <strong>Presenter: </strong>
+              <em>{presentation.User.username}</em>
+            </p>
+            <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+              <strong>Cartegory: </strong>
+              <em>edge computing</em>
+            </p>
+            <span className="block w-fit mt-2 ml-[-1.2rem]" onClick={(e) => e.preventDefault()}>
+              <Button
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+              >
+                <FaEllipsisV className="text-xl text-[#FFA500] cursor-pointer rotate-90" />
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+                PaperProps={{
+                  style: {
+                    backgroundColor: '#252525',
+                    color: 'white',
                   },
-                }}><span className='block w-32 text-[.9rem]'>Edit</span><FaRegEdit /></MenuItem>
-                <MenuItem onClick={handleClose} sx={{
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#FFA500',
-                    fontWeight: 'bolder'
-                  },
-                }}><span className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
-                <MenuItem onClick={handleClose} sx={{
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#FFA500',
-                    fontWeight: 'bolder'
-                  },
-                }}><span className='block w-32 text-[.9rem]'>Bookmark</span><FaRegBookmark /></MenuItem>
-                <MenuItem onClick={handleClose} sx={{
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#FFA500',
-                    fontWeight: 'bolder'
-                  },
-                }}><span className='block w-32 text-[.9rem]'>Report</span><MdOutlineReportProblem /></MenuItem>
-              </div>
-            </Menu>
-          </span>
+                }}
+              >
+                <div className='w-full h-full _bg-black _text-white'>
+                  <MenuItem onClick={handleClose} sx={{
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#FFA500',
+                      fontWeight: 'bolder'
+                    },
+                  }}><span className='block w-32 text-[.9rem]'>Edit</span><FaRegEdit /></MenuItem>
+                  <MenuItem onClick={handleClose} sx={{
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#FFA500',
+                      fontWeight: 'bolder'
+                    },
+                  }}><span data-delete="delete_card" onClick={handleDelete} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
+                  <MenuItem onClick={handleClose} sx={{
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#FFA500',
+                      fontWeight: 'bolder'
+                    },
+                  }}><span className='block w-32 text-[.9rem]'>Bookmark</span><FaRegBookmark /></MenuItem>
+                  <MenuItem onClick={handleClose} sx={{
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#FFA500',
+                      fontWeight: 'bolder'
+                    },
+                  }}><span className='block w-32 text-[.9rem]'>Report</span><MdOutlineReportProblem /></MenuItem>
+                </div>
+              </Menu>
+            </span>
+          </div>
+        </Link>
+      </motion.div>
+      <div className={`${deleteCard ? "card_model backdrop_el flex justify-center items-center fixed top-0 left-0 right-0 bottom-0 z-50" : "hidden"}`}>
+        <div className='w-fit h-fit flex flex-col justify-center items-center bg-[#00000076] p-2 rounded-md'>
+        <h1>Are you sure you want to delete this card?</h1>
+        <div className='flex justify-between items-center gap-4 w-fit mt-4'>
+          <button onClick={handleQuation} className="block border rounded-md bg-[#FFA500] font-bold w-[4rem] py-2 px-1 text-white" data-quation="yes">Yes</button>
+          <button onClick={handleQuation} className="block border rounded-md bg-[#FFA500] font-bold w-[4rem] py-2 px-1 text-white" data-quation="no">No</button>
         </div>
-      </Link>
-    </motion.div>
+        </div>
+      </div>
+    </>
   );
 }

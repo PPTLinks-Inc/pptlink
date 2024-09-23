@@ -23,6 +23,7 @@ import DateTest from "./components/upload/dateTest";
 import Documentation from "./components/document/Documentation";
 import Library from "./components/library/library";
 import PublicPresentation from "./components/see_more_presentation/seeMorePresentation";
+import NewDashboard from "./components/profile/newDashboard";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -71,7 +72,8 @@ function App() {
           <Route path="/" element={<Root />}>
             <Route exact path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="dashboard" element={<Dashboard />} />
+            {/* <Route path="dashboard" element={<Dashboard />} /> */}
+            <Route path="dashboard" element={<NewDashboard />} />
             <Route path="institutions" element={<List />} />
             <Route path="institutions/:id" element={<Institutions />} />
             <Route path="about" element={<About />} />
@@ -104,7 +106,6 @@ function App() {
           <Route path="datetest" element={<DateTest />} />
         </Routes>
       </AnimatePresence>
-
       {/* <ToastContainer stacked /> */}
     </>
   );
