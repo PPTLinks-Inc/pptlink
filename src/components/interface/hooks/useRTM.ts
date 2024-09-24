@@ -112,11 +112,7 @@ export default function useRTM(
             AGORA_APP_ID,
             presentation.User === "HOST"
               ? `HOST${tokens.rtcUid}`
-              : tokens.rtcUid,
-            {
-              token: tokens.rtmToken,
-              useStringUserId: true
-            }
+              : tokens.rtcUid
           );
 
           rtm.current.addEventListener("status", function (data) {
@@ -128,12 +124,14 @@ export default function useRTM(
           if (!rtm.current) throw new Error("RTM not initialized");
 
           // if (presentation.User === "GUEST") {
-          rtm.current.addEventListener("message", function(message: RTMEvents.MessageEvent) {
+          rtm.current.addEventListener("message", function (message: RTMEvents.MessageEvent) {
             messageListerner(rtm.current, message);
           });
           // }
 
-          await rtm.current.login();
+          await rtm.current.login({
+            token: tokens.rtmToken,
+          });
 
           if (!presentation) {
             throw new Error("Presentation data not found");
