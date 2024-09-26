@@ -3,7 +3,7 @@ import { IoReturnUpBackOutline } from "react-icons/io5";
 import { IoSendOutline } from "react-icons/io5";
 import { BsArrowDown } from "react-icons/bs";
 import Menu from "./Menu";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { PresentationContext } from "../../../contexts/presentationContext";
 import { Message, useMessageStore } from "../hooks/messageStore";
 
@@ -22,6 +22,10 @@ export default function MessageMenu({
   const [userText, setUserText] = useState("");
   const messageContainer = useRef<HTMLDivElement>(null);
 
+  useEffect(function() {
+    scrollToBottom();
+  }, [messages]);
+
   function scrollToBottom() {
     messageContainer.current?.scrollTo({
       top: messageContainer.current.scrollHeight,
@@ -37,12 +41,12 @@ export default function MessageMenu({
       type: "text",
       content: userText,
       sender: presentation.data.User === "HOST" ? "HOST" : userName,
-      senderId: presentation.data.User === "HOST" ? "host.id" : tokens?.rtcUid || ""
+      senderId: presentation.data.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
+      time: ""
     };
 
     await sendMessage(messageData, rtm, presentation.data.liveId);
     setUserText("");
-    scrollToBottom();
   }
 
   return (
@@ -67,24 +71,28 @@ export default function MessageMenu({
       <div className="flex flex-col items-center justify-end h-full relative">
         <div ref={messageContainer} className="w-full p-3 pt-24 flex flex-col gap-5 overflow-y-auto h-full sm">
           {messages.map((message) => (
-            <div key={message.content} className="w-full flex items-center gap-3">
-              <div className="flex justify-center items-center gap-1">
-                <img
-                  className="w-8 rounded-full"
-                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${message.senderId}`}
-                  alt={`user Image`}
-                />
-
-                <p
-                  className="text-sm w-24 truncate ..."
-                  title={message.sender}
-                >
-                  {message.sender}
+            <div key={message.content} className="w-full flex gap-3 justify-start items-start">
+              <img
+                className="w-8 rounded-full"
+                src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${message.senderId}`}
+                alt={`user Image`}
+              />
+              <div className="flex gap-3 flex-col w-full">
+                <div className="flex gap-3">
+                  <p
+                    className="text-sm font-light"
+                    title={message.sender}
+                  >
+                    {message.sender}
+                  </p>
+                  <p className="text-sm font-light">
+                    {message.time}
+                  </p>
+                </div>
+                <p className="font-bold text-sm">
+                  {message.content}
                 </p>
               </div>
-              <p className="font-bold text-sm">
-                {message.content}
-              </p>
             </div>
           ))}
         </div>
