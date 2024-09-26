@@ -30,7 +30,7 @@ export const useMessageStore = create<MessageStore>(function(set) {
         addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
         sendMessage: async (message, rtm, liveId) => {
             // Send message to server
-            set((state) => ({ messages: [...state.messages, message] }));
+            // set((state) => ({ messages: [...state.messages, message] }));
             await rtm.publish(liveId, JSON.stringify(message));
         }
     }

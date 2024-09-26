@@ -4,6 +4,7 @@ import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoIosMic } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdCallEnd, MdError } from "react-icons/md";
 import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
@@ -59,6 +60,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
   const [showUsersList, setShowUsersList] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
 
+  const [loadingStatus, setLoadingStatus] = useState<any>({});
+
   const micStyle = useMemo(
     function () {
       if (micState === MIC_STATE.MIC_OFF || !audioData.success) {
@@ -86,25 +89,25 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
 
   const getUserMicStatusColor = useCallback(function (micStatus: MIC_STATE) {
     if (micStatus === MIC_STATE.MIC_MUTED) {
-      return "bg-[#ff0000]";
+      return "border-[#ff0000]";
     } else if (micStatus === MIC_STATE.REQ_MIC) {
-      return "bg-orange-500";
+      return "border-orange-500";
     } else if (micStatus === MIC_STATE.CAN_SPK) {
-      return "bg-green-500";
+      return "border-green-500";
     } else {
-      return "hidden";
+      return "border-transparent";
     }
   }, []);
 
   const handleAcceptMicRequest = useCallback(
-    function (user: { status: MIC_STATE; id: string; }) {
+    async function (user: { status: MIC_STATE; id: string; }) {
       if (!presentation?.data) return;
       if (presentation.data.User !== "HOST") return;
 
       if (user.status === MIC_STATE.REQ_MIC) {
-        acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
+        await acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
       } else if (user.status === MIC_STATE.CAN_SPK) {
-        acceptMicRequest(user.id, MIC_STATE.MIC_OFF);
+        await acceptMicRequest(user.id, MIC_STATE.MIC_OFF);
       }
     },
     [presentation]
@@ -388,9 +391,10 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           </div>
 
           <button
-            className="h-2 w-6 bg-black"
             onClick={() => setShowUsersList(false)}
-          ></button>
+          >
+            <IoReturnUpBackOutline size="32" />
+          </button>
         </div>
 
         <div className="p-3 flex justify-start gap-2 mt-20">
@@ -398,14 +402,11 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             {host ? (
               <>
                 <img
-                  className="w-16 rounded-full"
+                  className={`w-16 rounded-full p-[0.10rem] border-[3px] ${getUserMicStatusColor(host.micState)}`}
                   src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=host.id`}
                   alt=""
                 />
                 <div className="flex justify-center items-center gap-1">
-                  <span
-                    className={`rounded w-2 h-2 ${getUserMicStatusColor(host.micState)}`}
-                  ></span>
                   <p className="text-sm">Host</p>
                 </div>
               </>
@@ -426,22 +427,24 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             <button
               key={user.id}
               className="flex flex-col w-full justify-start items-center"
-              onClick={() => handleAcceptMicRequest({
-                id: user.id,
-                status: user.micState
-              })}
+              onClick={async () => {
+                setLoadingStatus((prev: any) => ({ ...prev, [user.id]: true }));
+                await handleAcceptMicRequest({
+                  id: user.id,
+                  status: user.micState
+                })
+                setLoadingStatus((prev: any) => ({ ...prev, [user.id]: false }));
+              }}
+              disabled={loadingStatus[user.id]}
             >
               <img
-                className="w-16 rounded-full"
+                className={`w-16 rounded-full border-[3px] p-[0.10rem] ${getUserMicStatusColor(user.micState)}`}
                 src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                 alt={`${user.userName} Image`}
               />
-              <p title={user.userName} className="w-16 truncate ...">{user.userName}</p>
+              {loadingStatus[user.id] ? <p>Loading...</p> : <p title={user.userName} className="w-16 truncate ...">{user.userName}</p>}
               <div className="w-20 flex justify-center items-center gap-2">
                 {index === 0 && presentation?.data?.rtc.rtcUid === user.id && <span>(You)</span>}
-                <span
-                  className={`rounded w-2 h-2 ${getUserMicStatusColor(user.micState)}`}
-                ></span>
               </div>
             </button>
           ))}
