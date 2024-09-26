@@ -6,6 +6,7 @@ export interface Message {
     content: string;
     sender: string;
     senderId: string;
+    time: string;
 }
 
 interface MessageStore {
