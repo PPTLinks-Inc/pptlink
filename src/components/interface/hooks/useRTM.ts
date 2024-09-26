@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AGORA_APP_ID, MIC_STATE } from "../../../constants/routes";
 import { PresentationContextI, presentationData } from "../types";
 import { toast } from "react-toastify";
+import { Message, useMessageStore } from "./messageStore";
 
 export default function useRTM(
   endAudio: PresentationContextI["endAudio"],
@@ -20,6 +21,8 @@ export default function useRTM(
   const rtm = useRef<RTMClient | null>(null);
   const [rtmConnectionState, setRtmConnectionState] =
     useState<RTMEvents.RTMConnectionStatusChangeEvent["state"]>("DISCONNECTED");
+
+  const addMessage = useMessageStore((state) => state.addMessage);
 
   async function leaveRtmChannel(e?: BeforeUnloadEvent) {
     if (!e) {
@@ -40,39 +43,45 @@ export default function useRTM(
   async function messageListerner(rtm: RTMClient | null, messageData: RTMEvents.MessageEvent) {
     if (!presentation) return;
     if (messageData.message === "LIVE") {
-      let audio = presentation?.audio;
-      if (audio && presentation.live) {
-        await endAudio.mutateAsync({
+      if (presentation.User === "GUEST") {
+        let audio = presentation?.audio;
+        if (audio && presentation.live) {
+          await endAudio.mutateAsync({
+            liveId: presentation.liveId,
+            presentationId: presentation.id,
+            User: presentation.User,
+            hostEnd: true
+          });
+          audio = false;
+        }
+
+        queryClient.setQueryData<presentationData>(
+          ["presentation", presentation.liveId],
+          (prev) => {
+            if (prev) {
+              return {
+                ...prev,
+                live: !prev.live,
+                audio
+              };
+            }
+          }
+        );
+      }
+    } else if (messageData.message === "START_AUDIO") {
+      if (presentation.User === "GUEST") {
+        setStartPrompt(true);
+      }
+    } else if (messageData.message === "END_AUDIO") {
+      if (presentation.User === "GUEST") {
+        setStartPrompt(false);
+        endAudio.mutate({
           liveId: presentation.liveId,
           presentationId: presentation.id,
           User: presentation.User,
           hostEnd: true
         });
-        audio = false;
       }
-
-      queryClient.setQueryData<presentationData>(
-        ["presentation", presentation.liveId],
-        (prev) => {
-          if (prev) {
-            return {
-              ...prev,
-              live: false,
-              audio
-            };
-          }
-        }
-      );
-    } else if (messageData.message === "START_AUDIO") {
-      setStartPrompt(true);
-    } else if (messageData.message === "END_AUDIO") {
-      setStartPrompt(false);
-      endAudio.mutate({
-        liveId: presentation.liveId,
-        presentationId: presentation.id,
-        User: presentation.User,
-        hostEnd: true
-      });
     } else if (messageData.message === MIC_STATE.MIC_MUTED || messageData.message === MIC_STATE.MIC_OFF) {
       if (messageData.message === MIC_STATE.MIC_MUTED) {
         toast.info("Unmute your mic to speak");
@@ -81,6 +90,9 @@ export default function useRTM(
         toast.info("Your microphone is muted by the host");
       }
       changeMicState(messageData.message, rtm);
+    } else if (typeof messageData.message === "string") {
+      const message = JSON.parse(messageData.message) as Message;
+      addMessage(message);
     }
   }
 
@@ -106,11 +118,7 @@ export default function useRTM(
             AGORA_APP_ID,
             presentation.User === "HOST"
               ? `HOST${tokens.rtcUid}`
-              : tokens.rtcUid,
-            {
-              token: tokens.rtmToken,
-              useStringUserId: true
-            }
+              : tokens.rtcUid
           );
 
           rtm.current.addEventListener("status", function (data) {
@@ -121,13 +129,15 @@ export default function useRTM(
 
           if (!rtm.current) throw new Error("RTM not initialized");
 
-          if (presentation.User === "GUEST") {
-            rtm.current.addEventListener("message", function(message: RTMEvents.MessageEvent) {
-              messageListerner(rtm.current, message);
-            });
-          }
+          // if (presentation.User === "GUEST") {
+          rtm.current.addEventListener("message", function (message: RTMEvents.MessageEvent) {
+            messageListerner(rtm.current, message);
+          });
+          // }
 
-          await rtm.current.login();
+          await rtm.current.login({
+            token: tokens.rtmToken,
+          });
 
           if (!presentation) {
             throw new Error("Presentation data not found");
