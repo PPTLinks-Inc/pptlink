@@ -92,6 +92,11 @@ export default function useRTM(
       changeMicState(messageData.message, rtm);
     } else if (typeof messageData.message === "string") {
       const message = JSON.parse(messageData.message) as Message;
+      message.time = new Date().toLocaleTimeString("en-UK", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      });
       addMessage(message);
     }
   }
