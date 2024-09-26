@@ -40,8 +40,11 @@ export default function NewDashboard() {
         }
     };
     // delete model handler
-    const handleCardDelete = (data_) => {
-            setDeleteCard(data_);
+    const handleCardDelete = () => {
+            setDeleteCard(true);
+    };
+    const handleCloseCardDelete = () => {
+            setDeleteCard(false);
     };
 
     const handleView = (e) => {
@@ -165,8 +168,8 @@ export default function NewDashboard() {
         </section>
         <ConfirmModal
                 open={deleteCard}
-                onClose={() => handleCardDelete(false)}
-                onSubmit={() => handleCardDelete(true)} // Confirm deletion
+                onClose={() => handleCloseCardDelete()}
+                onSubmit={() => {}} // Confirm deletion
                 isLoading={false} // Set to true if the deletion is in progress
                 message="Are you sure you want to delete this card?"
                 actionText="Delete"

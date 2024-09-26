@@ -13,7 +13,7 @@ export default function ConfirmModal({open, onClose, onSubmit, isLoading, messag
             className="flex flex-col justify-evenly items-center gap-3"
             onSubmit={onSubmit}
           >
-            <h4 className="text-xl text-white text-center">
+            <h4 className="text-xl text-white text-center mb-2">
               {message}
             </h4>
             {isLoading ? (
@@ -24,12 +24,12 @@ export default function ConfirmModal({open, onClose, onSubmit, isLoading, messag
               <div className="flex gap-4 w-[200px]">
                 <button
                   onClick={onClose || (() => {})}
-                  className="bg-slate-200 p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-black hover:bg-black hover:text-slate-200 hover:border-2 hover:border-slate-200"
+                  className="bg-slate-200 p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-black hover:bg-black hover:text-[#FFA500] hover:border-2 hover:border-[#FFA500]"
                   type="button"
                 >
                   Cancel
                 </button>
-                <button className="bg-slate-200 p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-black hover:bg-black hover:text-slate-200 hover:border-2 hover:border-slate-200" type="submit">
+                <button className="bg-slate-200 p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-black hover:bg-black hover:text-[#FFA500] hover:border-2 hover:border-[#FFA500]" type="submit">
                   {actionText}
                 </button>
               </div>
