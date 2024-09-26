@@ -149,7 +149,7 @@ function Interface() {
           </div>
         )
       )}
-      <ToastContainer />
+      <ToastContainer stacked />
     </div>
   );
 }
