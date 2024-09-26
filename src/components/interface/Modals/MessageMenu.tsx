@@ -1,4 +1,5 @@
 import { LuMessagesSquare } from "react-icons/lu";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 import { IoSendOutline } from "react-icons/io5";
 import { BsArrowDown } from "react-icons/bs";
 import Menu from "./Menu";
@@ -14,7 +15,7 @@ export default function MessageMenu({
   onClose: () => void;
 }) {
 
-  const { rtm, userName, presentation } = useContext(PresentationContext);
+  const { rtm, userName, presentation, tokens } = useContext(PresentationContext);
   const messages = useMessageStore((state) => state.messages);
   const sendMessage = useMessageStore((state) => state.sendMessage);
 
@@ -36,7 +37,7 @@ export default function MessageMenu({
       type: "text",
       content: userText,
       sender: presentation.data.User === "HOST" ? "HOST" : userName,
-      senderId: rtm.userId
+      senderId: presentation.data.User === "HOST" ? "host.id" : tokens?.rtcUid || ""
     };
 
     await sendMessage(messageData, rtm, presentation.data.liveId);
@@ -58,7 +59,9 @@ export default function MessageMenu({
           </div>
         </div>
 
-        <button className="h-2 w-6 bg-black" onClick={onClose}></button>
+        <button onClick={onClose}>
+          <IoReturnUpBackOutline size="32" />
+        </button>
       </div>
 
       <div className="flex flex-col items-center justify-end h-full relative">

@@ -43,39 +43,45 @@ export default function useRTM(
   async function messageListerner(rtm: RTMClient | null, messageData: RTMEvents.MessageEvent) {
     if (!presentation) return;
     if (messageData.message === "LIVE") {
-      let audio = presentation?.audio;
-      if (audio && presentation.live) {
-        await endAudio.mutateAsync({
+      if (presentation.User === "GUEST") {
+        let audio = presentation?.audio;
+        if (audio && presentation.live) {
+          await endAudio.mutateAsync({
+            liveId: presentation.liveId,
+            presentationId: presentation.id,
+            User: presentation.User,
+            hostEnd: true
+          });
+          audio = false;
+        }
+
+        queryClient.setQueryData<presentationData>(
+          ["presentation", presentation.liveId],
+          (prev) => {
+            if (prev) {
+              return {
+                ...prev,
+                live: !prev.live,
+                audio
+              };
+            }
+          }
+        );
+      }
+    } else if (messageData.message === "START_AUDIO") {
+      if (presentation.User === "GUEST") {
+        setStartPrompt(true);
+      }
+    } else if (messageData.message === "END_AUDIO") {
+      if (presentation.User === "GUEST") {
+        setStartPrompt(false);
+        endAudio.mutate({
           liveId: presentation.liveId,
           presentationId: presentation.id,
           User: presentation.User,
           hostEnd: true
         });
-        audio = false;
       }
-
-      queryClient.setQueryData<presentationData>(
-        ["presentation", presentation.liveId],
-        (prev) => {
-          if (prev) {
-            return {
-              ...prev,
-              live: false,
-              audio
-            };
-          }
-        }
-      );
-    } else if (messageData.message === "START_AUDIO") {
-      setStartPrompt(true);
-    } else if (messageData.message === "END_AUDIO") {
-      setStartPrompt(false);
-      endAudio.mutate({
-        liveId: presentation.liveId,
-        presentationId: presentation.id,
-        User: presentation.User,
-        hostEnd: true
-      });
     } else if (messageData.message === MIC_STATE.MIC_MUTED || messageData.message === MIC_STATE.MIC_OFF) {
       if (messageData.message === MIC_STATE.MIC_MUTED) {
         toast.info("Unmute your mic to speak");
