@@ -116,7 +116,7 @@ export default function Card({ presentation, handleCardDelete }) {
                     backgroundColor: '#FFA500',
                     fontWeight: 'bolder'
                   },
-                }}><span data-deletecard="delete_card" onClick={handleCardDelete(true)} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
+                }}><span data-deletecard="delete_card" onClick={() => handleCardDelete()} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {
