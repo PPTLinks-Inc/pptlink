@@ -7,8 +7,10 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { CiSettings } from "react-icons/ci";
-
+import ConfirmModal from "../interface/Modals/confirmModal";
+// ev: 67000, mo: 38000.... form: 8500
 export default function NewDashboard() {
+    const [deleteCard, setDeleteCard] = useState(false);
     const scrollRef = useRef();
     const [currentView, setCurrentView] = useState(1);
     const pageNo = 1;
@@ -37,18 +39,22 @@ export default function NewDashboard() {
             }
         }
     };
+    // delete model handler
+    const handleCardDelete = (data_) => {
+            setDeleteCard(data_);
+    };
 
     const handleView = (e) => {
         setCurrentView(parseInt(e.target.dataset.view));
     }
 
-    return (<>
+    return (<div className="w-full !h-screen overflow-y-auto">
         <section className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-black" : "bg-black"}`}>
             <div className={`w-full h-fit pt-20`}>
                 <div className={`container relative h-fit py-10 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}>
                     <span className={`absolute top-8 right-8 text-2xl font-bold ${currentView !== 3 ? "text-[#FFA500]" : ""}`}><CiSettings /></span>
                     <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 text-[0.9rem]">My Profile</span>
-                    <div className="w-[150px] aspect-square bg-[red] rounded-[50%]">
+                    <div className="w-[150px] aspect-square _bg-[red] rounded-[50%]">
                         <img
                             src={Ellipse}
                             alt={Ellipse}
@@ -109,7 +115,7 @@ export default function NewDashboard() {
                                 ref={scrollRef}
                             >
                                 {presentationQuery.data.data.presentations.map((presentation) => (
-                                    <Card key={presentation.id} presentation={presentation} />
+                                    <Card key={presentation.id} presentation={presentation} handleCardDelete={handleCardDelete} />
                                 ))}
                             </motion.div>
                         )}
@@ -157,5 +163,13 @@ export default function NewDashboard() {
                 </div>
             </div>
         </section>
-    </>)
+        <ConfirmModal
+                open={deleteCard}
+                onClose={() => handleCardDelete(false)}
+                onSubmit={() => handleCardDelete(true)} // Confirm deletion
+                isLoading={false} // Set to true if the deletion is in progress
+                message="Are you sure you want to delete this card?"
+                actionText="Delete"
+            />
+    </div>)
 }
