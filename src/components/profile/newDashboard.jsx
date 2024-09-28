@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
+// import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Ellipse from "/team/pptlink_resources/Ellipse23.png";
 import Card from "../list/card";
@@ -7,13 +7,12 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { CiSettings } from "react-icons/ci";
-import ConfirmModal from "../interface/Modals/confirmModal";
+import PopUpModal from "../Models/dashboardModel";
 // ev: 67000, mo: 38000.... form: 8500
 export default function NewDashboard() {
-    const [deleteCard, setDeleteCard] = useState(false);
+    const [model, setmodel] = useState({ isTriggered: false, message: "", actionText: "" });
     const scrollRef = useRef();
     const [currentView, setCurrentView] = useState(1);
-    const pageNo = 1;
 
     const presentationQuery = useQuery({
         queryKey: ["public-presentations"],
@@ -40,18 +39,32 @@ export default function NewDashboard() {
         }
     };
     // delete model handler
-    const handleCardDelete = () => {
-            setDeleteCard(true);
+    const handleCardModel = (data) => {
+        setmodel(prev => ({
+            ...prev,
+            isTriggered: !prev.isTriggered,
+            message: data === "delete"
+                ? "Are you sure you want to delete this card?"
+                : data === "bookmark"
+                    ? "Are you sure you want to bookmark this card?"
+                    : "",
+            actionText: data === "delete"
+                ? "Delete"
+                : data === "bookmark"
+                    ? "Bookmark"
+                    : ""
+        }));
     };
-    const handleCloseCardDelete = () => {
-            setDeleteCard(false);
-    };
+    const modelFunc = () => {
+        setmodel({ isTriggered: false });
+        console.log(`${model.actionText == "Delete" ? "Deleting" : model.actionText === "Bookmark" ? "Bookmarked" : ""}`);
+    }
 
     const handleView = (e) => {
         setCurrentView(parseInt(e.target.dataset.view));
     }
 
-    return (<div className="w-full !h-screen overflow-y-auto">
+    return (<div className="w-full relative !h-screen overflow-y-auto">
         <section className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-black" : "bg-black"}`}>
             <div className={`w-full h-fit pt-20`}>
                 <div className={`container relative h-fit py-10 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}>
@@ -118,7 +131,7 @@ export default function NewDashboard() {
                                 ref={scrollRef}
                             >
                                 {presentationQuery.data.data.presentations.map((presentation) => (
-                                    <Card key={presentation.id} presentation={presentation} handleCardDelete={handleCardDelete} />
+                                    <Card key={presentation.id} presentation={presentation} handleCardModel={handleCardModel} />
                                 ))}
                             </motion.div>
                         )}
@@ -166,13 +179,19 @@ export default function NewDashboard() {
                 </div>
             </div>
         </section>
-        <ConfirmModal
-                open={deleteCard}
-                onClose={() => handleCloseCardDelete()}
-                onSubmit={() => {}} // Confirm deletion
-                isLoading={false} // Set to true if the deletion is in progress
-                message="Are you sure you want to delete this card?"
-                actionText="Delete"
-            />
+        <PopUpModal
+            open={model.isTriggered}
+            // open={true}
+            onClose={() => setmodel({ isTriggered: false })}
+            onSubmit={(e) => {
+                e.preventDefault();
+                modelFunc();
+            }} // Confirm deletion
+            isLoading={false} // Set to true if the deletion is in progress
+            message={model.message}
+            // message={"Are you sure you want to delete the card? "}
+            actionText={model.actionText}
+        // actionText={"Delete"}
+        />
     </div>)
 }

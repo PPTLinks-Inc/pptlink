@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="69.634" height="69.634" viewBox="0 0 69.634 69.634">
+  <defs>
+    <filter id="Icon_metro-notification" x="0" y="0" width="69.634" height="69.634" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feFlood flood-opacity="0.129"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Icon_metro-notification)">
+    <path id="Icon_metro-notification-2" data-name="Icon metro-notification" d="M25.111,6.154a18.314,18.314,0,1,0,12.95,5.364A18.194,18.194,0,0,0,25.111,6.154Zm0-4.226A22.541,22.541,0,1,1,2.571,24.469,22.54,22.54,0,0,1,25.111,1.928ZM22.294,32.921h5.635v5.635H22.294Zm0-22.541h5.635V27.286H22.294Z" transform="matrix(0.89, 0.45, -0.45, 0.89, 23.55, -1.38)" fill="orange"/>
+  </g>
+</svg>

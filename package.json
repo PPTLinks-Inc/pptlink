@@ -24,6 +24,7 @@
     "antd": "^5.18.0",
     "axios": "^1.5.0",
     "framer-motion": "^10.16.16",
+    "pdfjs-dist": "^4.6.82",
     "primereact": "^10.6.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
