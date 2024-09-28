@@ -109,7 +109,9 @@ export default function Card({ presentation, handleCardModel }) {
                     backgroundColor: '#FFA500',
                     fontWeight: 'bolder'
                   },
-                }}><span className='block w-32 text-[.9rem]'>Edit</span><FaRegEdit /></MenuItem>
+                }}><span data-getaction="edit" onClick={(e) => {
+                  handleCardModel(e.target.dataset.getaction);
+                }} className='block w-32 text-[.9rem]'>Edit</span><FaRegEdit /></MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {
@@ -134,7 +136,9 @@ export default function Card({ presentation, handleCardModel }) {
                     backgroundColor: '#FFA500',
                     fontWeight: 'bolder'
                   },
-                }}><span className='block w-32 text-[.9rem]'>Report</span><MdOutlineReportProblem /></MenuItem>
+                }}><span data-getaction="report" onClick={(e) => {
+                  handleCardModel(e.target.dataset.getaction);
+                }} className='block w-32 text-[.9rem]'>Report</span><MdOutlineReportProblem /></MenuItem>
               </div>
             </Menu>
           </span>

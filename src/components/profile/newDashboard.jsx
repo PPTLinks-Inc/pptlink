@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 // import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Ellipse from "/team/pptlink_resources/Ellipse23.png";
@@ -10,7 +11,8 @@ import { CiSettings } from "react-icons/ci";
 import PopUpModal from "../Models/dashboardModel";
 // ev: 67000, mo: 38000.... form: 8500
 export default function NewDashboard() {
-    const [model, setmodel] = useState({ isTriggered: false, message: "", actionText: "" });
+    const navigate = useNavigate();
+    const [model, setmodel] = useState({ isTriggered: false, message: "", actionText: "", cardId: "" });
     const scrollRef = useRef();
     const [currentView, setCurrentView] = useState(1);
 
@@ -47,17 +49,23 @@ export default function NewDashboard() {
                 ? "Are you sure you want to delete this card?"
                 : data === "bookmark"
                     ? "Are you sure you want to bookmark this card?"
-                    : "",
+                    : data === "report" ? "Are you sure you want to report this card?"
+                        : data === "edit" ? "Are you sure you want to edit this card?" : "",
             actionText: data === "delete"
                 ? "Delete"
                 : data === "bookmark"
                     ? "Bookmark"
-                    : ""
+                    : data === "report" ? "Report"
+                        : data === "edit" ? "Edit" : ""
         }));
     };
     const modelFunc = () => {
         setmodel({ isTriggered: false });
-        console.log(`${model.actionText == "Delete" ? "Deleting" : model.actionText === "Bookmark" ? "Bookmarked" : ""}`);
+        if (model.actionText == "Edit") {
+            navigate(`/upload/${model.cardId}`);
+        } else {
+            console.log(`${model.actionText == "Delete" ? "Deleting" : model.actionText === "Bookmark" ? "Bookmarked" : ""}`);
+        }
     }
 
     const handleView = (e) => {
