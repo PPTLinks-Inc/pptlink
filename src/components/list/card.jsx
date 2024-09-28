@@ -12,7 +12,7 @@ import { FaRegBookmark } from "react-icons/fa6";
 import { MdOutlineReportProblem } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 // handleCardDelete passed to Card to handle delete model or any other model
-export default function Card({ presentation, handleCardDelete }) {
+export default function Card({ presentation, handleCardModel }) {
   const [getlocation] = React.useState(
     useLocation().pathname === "/publicPresentation"
       ? true : false
@@ -116,14 +116,18 @@ export default function Card({ presentation, handleCardDelete }) {
                     backgroundColor: '#FFA500',
                     fontWeight: 'bolder'
                   },
-                }}><span data-deletecard="delete_card" onClick={() => handleCardDelete()} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
+                }}><span data-getaction="delete" onClick={(e) => {
+                  handleCardModel(e.target.dataset.getaction);
+                }} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {
                     backgroundColor: '#FFA500',
                     fontWeight: 'bolder'
                   },
-                }}><span className='block w-32 text-[.9rem]'>Bookmark</span><FaRegBookmark /></MenuItem>
+                }}><span className='block w-32 text-[.9rem]' data-getaction="bookmark" onClick={(e) => {
+                  handleCardModel(e.target.dataset.getaction);
+                }}>Bookmark</span><FaRegBookmark /></MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {

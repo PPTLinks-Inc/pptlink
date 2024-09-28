@@ -1,9 +1,9 @@
 import react from "@vitejs/plugin-react";
 import tailwindcss from "tailwindcss";
 import path from "node:path";
-import { createRequire } from "node:module";
 import { normalizePath, defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const cMapsDir = normalizePath(
