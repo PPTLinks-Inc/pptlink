@@ -27,7 +27,7 @@ export default function PopUpModal({
         <p className="w-2/3 mx-auto text-md text-black text-center mb-2">{message}</p>
         {isLoading ? (
           <div className="flex justify-center items-center">
-            <LoadingAssetBig2 />
+             <LoadingAssetBig2 />
           </div>
         ) : (
           <div className="flex border-t-[2px] border-black w-full">
