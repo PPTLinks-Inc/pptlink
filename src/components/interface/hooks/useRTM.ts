@@ -22,7 +22,7 @@ export default function useRTM(
   const [rtmConnectionState, setRtmConnectionState] =
     useState<RTMEvents.RTMConnectionStatusChangeEvent["state"]>("DISCONNECTED");
 
-  const addMessage = useMessageStore((state) => state.addMessage);
+  const addMessage = useMessageStore((state) => state.addUnreadMessage);
 
   async function leaveRtmChannel(e?: BeforeUnloadEvent) {
     if (!e) {
