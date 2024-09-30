@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="400" viewBox="0 0 500 400">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_165" data-name="Rectangle 165" width="500" height="400" transform="translate(1144 29)" fill="ivory" stroke="#000" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="Mask_Group_2" data-name="Mask Group 2" transform="translate(-1144 -29)" clip-path="url(#clip-path)">
+    <path id="FontAwsome_exclamation_" data-name="FontAwsome (exclamation)" d="M72.018,151.248a28.009,28.009,0,1,1-28.009-28.009A28.041,28.041,0,0,1,72.018,151.248ZM19.242,8.822,24,104.053a8.4,8.4,0,0,0,8.392,7.983H55.622a8.4,8.4,0,0,0,8.392-7.983l4.762-95.23A8.4,8.4,0,0,0,60.384,0H27.634A8.4,8.4,0,0,0,19.242,8.822Z" transform="translate(1586.175 106.5)" fill="none" stroke="#000" stroke-width="1"/>
+  </g>
+</svg>

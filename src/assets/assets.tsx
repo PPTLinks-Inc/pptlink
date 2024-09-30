@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import './assets.css';
 
 const LoadingAssetBig = () => {
@@ -13,9 +14,9 @@ const LoadingAssetBig = () => {
   );
 };
 
-const LoadingAssetBig2 = () => {
+const LoadingAssetBig2 = ({ isBlackBg = false }) => {
   return (
-    <div className='logo__container big two'>
+    <div className={`logo__container big ${isBlackBg ? 'two active' : 'two'}`}>
       <div className='logo'>
         <div>
           <div className='logo__content1'></div>
