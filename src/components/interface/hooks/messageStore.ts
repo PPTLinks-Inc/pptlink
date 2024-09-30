@@ -10,8 +10,10 @@ export interface Message {
 }
 
 interface MessageStore {
-    messages: Message[];
-    addMessage: (message: Message) => void;
+    readMessages: Message[];
+    unReadMessages: Message[];
+    addReadMessage: (messages: Message[]) => void;
+    addUnreadMessage: (message: Message) => void;
     sendMessage: ({
         type,
         content,
@@ -27,8 +29,10 @@ interface MessageStore {
 
 export const useMessageStore = create<MessageStore>(function(set) {
     return {
-        messages: [],
-        addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
+        readMessages: [],
+        unReadMessages: [],
+        addReadMessage: (messages) => set((state) => ({ readMessages: [...state.readMessages, ...messages] })),
+        addUnreadMessage: (message) => set((state) => ({ unReadMessages: [...state.unReadMessages, message] })),
         sendMessage: async (message, rtm, liveId) => {
             // Send message to server
             // set((state) => ({ messages: [...state.messages, message] }));
