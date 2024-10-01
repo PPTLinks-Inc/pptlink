@@ -14,6 +14,7 @@ import sms from "/team/pptlink_resources/Group 33.png";
 import Accordion from "../accordion/accordion";
 import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
+import { ModalContext } from "../../contexts/modalContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
@@ -24,6 +25,8 @@ export default function NewHome() {
   // context
   const scrollRef = useRef();
   const { user } = useContext(userContext);
+  const { openModal } = useContext(ModalContext);
+
 
   const navigate = useNavigate();
 
@@ -155,9 +158,51 @@ export default function NewHome() {
     }
   };
 
+  // Modal handler
+  const handleCardModel = (Id, data) => {
+    // if (data === "edit") {
+    //     openModal({
+    //         isTriggered: false,
+    //         cardId: Id,
+    //         message: "",
+    //         actionText: ""
+    //     });
+    //     // navigate(`/upload/${modal.cardId}`);
+    //     navigate(`/upload`);
+    // } else {
+    openModal({
+      cardId: Id,
+      message:
+        data === "delete"
+          ? "Are you sure you want to delete this card?"
+          : data === "bookmark"
+            ? "Are you sure you want to bookmark this card?"
+            : data === "report"
+              ? "Are you sure you want to report this card?"
+              : data === "edit"
+                ? "Are you sure you want to edit this card?"
+                : data === "share"
+                  ? "Are you sure you want to share this card?"
+                  : "",
+      actionText:
+        data === "delete"
+          ? "Delete"
+          : data === "bookmark"
+            ? "Bookmark"
+            : data === "report"
+              ? "Report"
+              : data === "edit"
+                ? "Edit"
+                : data === "share"
+                  ? "Share"
+                  : "",
+    });
+    // }
+  };
+
   return (
     <motion.section
-      className="parent_page_wrapper min-h-screen  w-full"
+      className="parent_page_wrapper !h-screen overflow-y-auto  w-full"
       variants={containertVarients}
       initial="hidden"
       animate="visible"
@@ -255,7 +300,7 @@ export default function NewHome() {
               ref={scrollRef}
             >
               {presentationQuery.data.data.presentations.map((presentation) => (
-                <Card key={presentation.id} presentation={presentation} />
+                <Card key={presentation.id} presentation={presentation} handleCardModel={handleCardModel} />
               ))}
             </motion.div>
           )}

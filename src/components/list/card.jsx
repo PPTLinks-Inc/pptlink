@@ -9,14 +9,15 @@ import { motion } from "framer-motion";
 import { FaRegEdit } from "react-icons/fa";
 import { FiDelete } from "react-icons/fi";
 import { FaRegBookmark } from "react-icons/fa6";
+import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineReportProblem } from "react-icons/md";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 // handleCardDelete passed to Card to handle delete model or any other model
 export default function Card({ presentation, handleCardModel }) {
-  const [getlocation] = React.useState(
-    useLocation().pathname === "/publicPresentation"
-      ? true : false
-  );
+  // const [getlocation] = React.useState(
+  //   useLocation().pathname === "/publicPresentation"
+  //     ? true : false
+  // );
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -110,7 +111,7 @@ export default function Card({ presentation, handleCardModel }) {
                     fontWeight: 'bolder'
                   },
                 }}><span data-getaction="edit" onClick={(e) => {
-                  handleCardModel(e.target.dataset.getaction);
+                  handleCardModel(presentation.id, e.target.dataset.getaction);
                 }} className='block w-32 text-[.9rem]'>Edit</span><FaRegEdit /></MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
@@ -119,7 +120,7 @@ export default function Card({ presentation, handleCardModel }) {
                     fontWeight: 'bolder'
                   },
                 }}><span data-getaction="delete" onClick={(e) => {
-                  handleCardModel(e.target.dataset.getaction);
+                  handleCardModel(presentation.id, e.target.dataset.getaction);
                 }} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
@@ -128,7 +129,7 @@ export default function Card({ presentation, handleCardModel }) {
                     fontWeight: 'bolder'
                   },
                 }}><span className='block w-32 text-[.9rem]' data-getaction="bookmark" onClick={(e) => {
-                  handleCardModel(e.target.dataset.getaction);
+                  handleCardModel(presentation.id, e.target.dataset.getaction);
                 }}>Bookmark</span><FaRegBookmark /></MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
@@ -136,8 +137,17 @@ export default function Card({ presentation, handleCardModel }) {
                     backgroundColor: '#FFA500',
                     fontWeight: 'bolder'
                   },
+                }}><span className='block w-32 text-[.9rem]' data-getaction="share" onClick={(e) => {
+                  handleCardModel(presentation.id, e.target.dataset.getaction);
+                }}>Share</span><IoShareSocialOutline /></MenuItem>
+                <MenuItem onClick={handleClose} sx={{
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: '#FFA500',
+                    fontWeight: 'bolder'
+                  },
                 }}><span data-getaction="report" onClick={(e) => {
-                  handleCardModel(e.target.dataset.getaction);
+                  handleCardModel(presentation.id, e.target.dataset.getaction);
                 }} className='block w-32 text-[.9rem]'>Report</span><MdOutlineReportProblem /></MenuItem>
               </div>
             </Menu>
