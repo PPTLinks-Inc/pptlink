@@ -22,6 +22,7 @@ import MessageMenu from "./Modals/MessageMenu";
 import { MIC_STATE } from "../../constants/routes";
 import axios from "axios";
 import download from "./download";
+import { useMessageStore } from "./hooks/messageStore";
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({ containerRef, actionsActive }: {containerRef: React.MutableRefObject<any>, actionsActive: boolean}) {
@@ -62,6 +63,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
 
   const [loadingStatus, setLoadingStatus] = useState<any>({});
 
+  const unReadMessagesCount = useMessageStore((state) => state.unReadMessages.length);
+
   const micStyle = useMemo(
     function () {
       if (micState === MIC_STATE.MIC_OFF || !audioData.success) {
@@ -91,7 +94,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     if (micStatus === MIC_STATE.MIC_MUTED) {
       return "border-[#ff0000]";
     } else if (micStatus === MIC_STATE.REQ_MIC) {
-      return "border-orange-500";
+      return "border-orange-500 animate-ping";
     } else if (micStatus === MIC_STATE.CAN_SPK) {
       return "border-green-500";
     } else {
@@ -277,9 +280,14 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   {users.length}
                 </span>
               </div>
-              <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
-                <LuMessagesSquare size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
+                  <LuMessagesSquare size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
+                  {unReadMessagesCount}
+                </span>
+              </div>
               <button
                 onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
@@ -437,11 +445,14 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               }}
               disabled={loadingStatus[user.id]}
             >
-              <img
-                className={`w-16 rounded-full border-[3px] p-[0.10rem] ${getUserMicStatusColor(user.micState)}`}
-                src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
-                alt={`${user.userName} Image`}
-              />
+              <div className="relative p-1 rounded-full">
+                <img
+                  className="w-16 rounded-full"
+                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
+                  alt={`${user.userName} Image`}
+                />
+                <span className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}></span>
+              </div>
               {loadingStatus[user.id] ? <p>Loading...</p> : <p title={user.userName} className="w-16 truncate ...">{user.userName}</p>}
               <div className="w-20 flex justify-center items-center gap-2">
                 {index === 0 && presentation?.data?.rtc.rtcUid === user.id && <span>(You)</span>}
