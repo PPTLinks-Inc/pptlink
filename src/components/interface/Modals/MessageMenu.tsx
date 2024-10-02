@@ -27,7 +27,7 @@ export default function MessageMenu({
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
     root: messageContainer.current,
-    rootMargin: '300px',
+    rootMargin: '50px',
     threshold: 1
   });
 
@@ -121,7 +121,7 @@ export default function MessageMenu({
             </div>
           ))}
           {/*eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-          <div ref={intersectionRef as any} className="bg-green-500 h-10 w-full flex gap-3 justify-start items-start"></div>
+          <div ref={intersectionRef as any} className="h-10 w-full flex gap-3 justify-start items-start"></div>
         </div>
         <form
           onSubmit={sendUserMessage}
