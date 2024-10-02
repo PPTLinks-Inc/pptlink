@@ -469,7 +469,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       </Menu>
 
       <Menu right={false} open={showOptions} onClose={() => setShowOptions(false)}>
-
+          <h1>Option</h1>
       </Menu>
 
       <Modal
