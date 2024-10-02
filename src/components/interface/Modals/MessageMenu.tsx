@@ -76,7 +76,7 @@ export default function MessageMenu({
   }
 
   return (
-    <Menu open={open} onClose={onClose}>
+    <Menu right={true} open={open} onClose={onClose}>
       <div className="z-50 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[#FF8B1C] border-[1px] fixed w-full bg-[#FFFFDB]">
         <div className="flex items-center">
           <h4 className="text-2xl text-center text-black font-bold">

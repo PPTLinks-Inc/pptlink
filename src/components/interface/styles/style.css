@@ -9,6 +9,16 @@ canvas {
     background-color: black;
 }
 
+@keyframes pinging {
+    75%, 100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+.animate-pinging {
+    animation: pinging 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 #interface-loader[value] {
     --color: rgb(226 232 240);
     /* the progress color */
