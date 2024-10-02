@@ -344,9 +344,14 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           )}
           {audioData.success && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
-                <LuMessagesSquare size={24} />
-              </button>
+              <div className="relative">
+                <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
+                  <LuMessagesSquare size={24} />
+                </button>
+                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
+                  {unReadMessagesCount}
+                </span>
+              </div>
               <button
                 onClick={endUserAudio}
                 className="rounded-full p-3 bg-[#ff0000]"
