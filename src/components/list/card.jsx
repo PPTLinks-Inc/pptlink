@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { FaRegEdit } from "react-icons/fa";
 import { FiDelete } from "react-icons/fi";
 import { FaRegBookmark } from "react-icons/fa6";
+import { FaBookmark } from "react-icons/fa6";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdOutlineReportProblem } from "react-icons/md";
 // import { useLocation } from "react-router-dom";
@@ -130,7 +131,7 @@ export default function Card({ presentation, handleCardModel }) {
                   },
                 }}><span className='block w-32 text-[.9rem]' data-getaction="bookmark" onClick={(e) => {
                   handleCardModel(presentation.id, e.target.dataset.getaction);
-                }}>Bookmark</span><FaRegBookmark /></MenuItem>
+                }}>Bookmark</span>{false ? <FaRegBookmark /> : (<span className='text-[#FFA500]'><FaBookmark /></span>)}</MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {

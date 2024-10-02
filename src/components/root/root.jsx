@@ -126,20 +126,18 @@ export default function Root() {
 
   return (
     <div
-      className={`w-full h-screen overflow-y-auto _max-h-fit _min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
+      className={`w-full min-h-screen bg-[#FFFFF0] relative flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "overflow-y-hidden" : "overflow-y-auto"}`}
     >
       <Backmenu handleDropdown={handleDropdown} />
       <div
-        className={`min-h-screen flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
+        className={`h-fit flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
           ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
           : "transition-transform translate-y-0 ease-in-out top-0"
           }`}
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
-        <div className="min-h-screen">
-          <Outlet />
-        </div>
+        <Outlet />
         <MovingEllipses />
         {!getlocation && <Footer />}
       </div>
