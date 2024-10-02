@@ -27,7 +27,7 @@ export default function MessageMenu({
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
     root: messageContainer.current,
-    rootMargin: '300px',
+    rootMargin: '50px',
     threshold: 1
   });
 
