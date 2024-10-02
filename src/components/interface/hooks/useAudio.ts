@@ -8,7 +8,9 @@ import RTC, {
   IAgoraRTCRemoteUser,
   ConnectionState
 } from "agora-rtc-sdk-ng";
+import { AIDenoiserExtension } from "agora-extension-ai-denoiser";
 import { AGORA_APP_ID } from "../../../constants/routes";
+import AgoraRTC from "agora-rtc-sdk-ng";
 
 let rtcClient: IAgoraRTCClient | null = null;
 
@@ -74,7 +76,7 @@ export default function useAudio() {
 
       rtcClient = RTC.createClient({ mode: "rtc", codec: "vp8" });
 
-      rtcClient.on("connection-state-change",function(state) {
+      rtcClient.on("connection-state-change", function (state) {
         setAudioConnectionState(state);
       });
       rtcClient.on("user-published", async (user, mediaType) => {
@@ -104,6 +106,30 @@ export default function useAudio() {
         });
       await rtcClient.publish(audioTracks.current.localAudioTrack);
       audioTracks.current.localAudioTrack.setMuted(true);
+
+      const wasmPath = new URL(
+        "./external",
+        import.meta.url
+      ).toString();
+
+      const denoiser = new AIDenoiserExtension({ assetsPath: wasmPath });
+
+      if (!denoiser.checkCompatibility()) {
+        console.error("Does not support AI Denoiser!");
+      }
+      AgoraRTC.registerExtensions([denoiser]);
+      
+      const processor = denoiser.createProcessor();
+      processor.on("loaderror", function(e: any) {
+        console.log(e);
+      });
+
+      processor.on("overload", async function() {
+        await processor.disable();
+      });
+
+      audioTracks.current.localAudioTrack.pipe(processor).pipe(audioTracks.current.localAudioTrack.processorDestination);
+      await processor.enable();
 
       setSuccess(true);
     } catch (err) {
