@@ -6,6 +6,7 @@ import Menu from "./Menu";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PresentationContext } from "../../../contexts/presentationContext";
 import { Message, useMessageStore } from "../hooks/messageStore";
+import { useIntersection } from "react-use";
 
 export default function MessageMenu({
   open,
@@ -14,17 +15,39 @@ export default function MessageMenu({
   open: boolean;
   onClose: () => void;
 }) {
-
-  const { rtm, userName, presentation, tokens } = useContext(PresentationContext);
-  const messages = useMessageStore((state) => state.messages);
+  const { rtm, userName, presentation, tokens } =
+    useContext(PresentationContext);
+  const messages = useMessageStore((state) => state.readMessages);
   const sendMessage = useMessageStore((state) => state.sendMessage);
+  const unreadMessages = useMessageStore((state) => state.unReadMessages);
 
   const [userText, setUserText] = useState("");
   const messageContainer = useRef<HTMLDivElement>(null);
 
-  useEffect(function() {
-    scrollToBottom();
-  }, [messages]);
+  const intersectionRef = useRef(null);
+  const intersection = useIntersection(intersectionRef, {
+    root: messageContainer.current,
+    rootMargin: '300px',
+    threshold: 1
+  });
+
+  useEffect(
+    function () {
+      if (unreadMessages.length > 0 && open) {
+        useMessageStore.getState().addReadMessage(unreadMessages);
+
+        useMessageStore.getState().unReadMessages = [];
+      }
+    },
+    [unreadMessages, open]
+  );
+
+  useEffect(
+    function () {
+      scrollToBottom();
+    },
+    [messages]
+  );
 
   function scrollToBottom() {
     messageContainer.current?.scrollTo({
@@ -37,11 +60,14 @@ export default function MessageMenu({
     e.preventDefault();
     if (!rtm || !presentation?.data) return;
 
+    if (userText.trim() === "") return;
+
     const messageData: Message = {
       type: "text",
-      content: userText,
+      content: userText.trim(),
       sender: presentation.data.User === "HOST" ? "HOST" : userName,
-      senderId: presentation.data.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
+      senderId:
+        presentation.data.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
       time: ""
     };
 
@@ -69,9 +95,15 @@ export default function MessageMenu({
       </div>
 
       <div className="flex flex-col items-center justify-end h-full relative">
-        <div ref={messageContainer} className="w-full p-3 pt-24 flex flex-col gap-5 overflow-y-auto h-full sm">
+        <div
+          ref={messageContainer}
+          className="w-full p-3 pt-24 flex flex-col gap-5 overflow-y-auto h-full sm"
+        >
           {messages.map((message) => (
-            <div key={message.content} className="w-full flex gap-3 justify-start items-start">
+            <div
+              key={message.content}
+              className="w-full flex gap-3 justify-start items-start"
+            >
               <img
                 className="w-8 rounded-full"
                 src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${message.senderId}`}
@@ -79,24 +111,22 @@ export default function MessageMenu({
               />
               <div className="flex gap-3 flex-col w-full">
                 <div className="flex gap-3">
-                  <p
-                    className="text-sm font-light"
-                    title={message.sender}
-                  >
+                  <p className="text-sm font-light" title={message.sender}>
                     {message.sender}
                   </p>
-                  <p className="text-sm font-light">
-                    {message.time}
-                  </p>
+                  <p className="text-sm font-light">{message.time}</p>
                 </div>
-                <p className="font-bold text-sm">
-                  {message.content}
-                </p>
+                <p className="font-bold text-sm">{message.content}</p>
               </div>
             </div>
           ))}
+          {/*eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
+          <div ref={intersectionRef as any} className="h-10 w-full flex gap-3 justify-start items-start"></div>
         </div>
-        <form onSubmit={sendUserMessage} className="w-full flex p-3 gap-2 border-t-[1px] border-[#FF8B1C]">
+        <form
+          onSubmit={sendUserMessage}
+          className="w-full flex p-3 gap-2 border-t-[1px] border-[#FF8B1C]"
+        >
           <input
             type="text"
             className="bg-transparent w-full flex-grow p-4 border-[1px] border-[#FF8B1C] rounded-lg"
@@ -104,14 +134,20 @@ export default function MessageMenu({
             value={userText}
             onChange={(e) => setUserText(e.target.value)}
           />
-          <button type="submit" className="bg-[#1F1F1A] flex-grow-[2] w-20 rounded-lg text-center flex justify-center items-center">
+          <button
+            type="submit"
+            className="bg-[#1F1F1A] flex-grow-[2] w-20 rounded-lg text-center flex justify-center items-center"
+          >
             <IoSendOutline color="#F1F1F1" size="24" />
           </button>
         </form>
 
-        <button onClick={scrollToBottom} className="bg-[#FF8B1C] w-10 h-10 rounded-full absolute bottom-24 flex justify-center items-center shadow-2xl">
+        {intersection && intersection.intersectionRatio < 1 && <button
+          onClick={scrollToBottom}
+          className="bg-[#FF8B1C] w-10 h-10 rounded-full absolute bottom-24 flex justify-center items-center shadow-2xl"
+        >
           <BsArrowDown color="#fff" size="20" />
-        </button>
+        </button>}
       </div>
     </Menu>
   );
