@@ -60,6 +60,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
   const [enterName, setEnterName] = useState(false);
   const [showUsersList, setShowUsersList] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
 
   const [loadingStatus, setLoadingStatus] = useState<any>({});
 
@@ -94,7 +95,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     if (micStatus === MIC_STATE.MIC_MUTED) {
       return "border-[#ff0000]";
     } else if (micStatus === MIC_STATE.REQ_MIC) {
-      return "border-orange-500 animate-ping";
+      return "border-orange-500 animate-pinging";
     } else if (micStatus === MIC_STATE.CAN_SPK) {
       return "border-green-500";
     } else {
@@ -226,7 +227,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           {audioData.success && (
             <>
               <div className="relative">
-                <button disabled className="rounded-full p-3 bg-gray-300 shadow !cursor-not-allowed">
+                <button onClick={() => setShowOptions(true)} className="rounded-full p-3 bg-gray-300 shadow !cursor-not-allowed">
                   <BsThreeDots size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
@@ -387,7 +388,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         
       <MessageMenu open={showMessage} onClose={() => setShowMessage(false)} />
           
-      <Menu open={showUsersList} onClose={() => setShowUsersList(false)}>
+      <Menu right={true} open={showUsersList} onClose={() => setShowUsersList(false)}>
         <div className="rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
             <h4 className="text-2xl text-center text-black font-bold">
@@ -465,6 +466,10 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             </button>
           ))}
         </div>
+      </Menu>
+
+      <Menu right={false} open={showOptions} onClose={() => setShowOptions(false)}>
+          <h1>Option</h1>
       </Menu>
 
       <Modal
