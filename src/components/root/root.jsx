@@ -10,20 +10,23 @@ import MovingEllipses from "../animation/MovingEllipes";
 import Header from "../header/header";
 import Footer from "../footer/footer";
 import Backmenu from "../backmenu/backmenu";
-export default function Root() {
-  // const [getlocation] = useState(useLocation().pathname.includes("public_presentation") ? true : false);
-  const keywords = ["public_presentation", "dashboard"];
-  const [getlocation] = useState(keywords.some(keyword => useLocation().pathname.includes(keyword)) ? true : false);
+import PopUpModal from "../Models/dashboardModel";
+import { ModalContext } from "../../contexts/modalContext";
+// import { MdModelTraining } from "react-icons/md";
 
+export default function Root() {
+  const { modal, closeModal } = useContext(ModalContext);
   const controller = new AbortController();
   // context
   const { user } = useContext(userContext);
   // hooks
   const location = useLocation();
   const navigate = useNavigate();
-
   // scroll to the top on route change
   const mainScrollRef = useRef(null);
+  // const [getlocation] = useState(useLocation().pathname.includes("public_presentation") ? true : false);
+  const keywords = ["public_presentation", "dashboard"];
+  const [getlocation] = useState(keywords.some(keyword => location.pathname.includes(keyword)) ? true : false);
   useEffect(() => {
     setPage({ ...page, dropdown: false });
 
@@ -123,23 +126,40 @@ export default function Root() {
 
   return (
     <div
-      className={`w-full max-h-fit _min-h-[100vh] bg-[#FFFFF0] relative flex-wrap flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "!overflow-y-hidden" : "!overflow-y-auto"}`}
+      className={`w-full min-h-screen bg-[#FFFFF0] relative flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "overflow-y-hidden" : "overflow-y-auto"}`}
     >
       <Backmenu handleDropdown={handleDropdown} />
       <div
-        className={`min-h-screen flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
+        className={`h-fit flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
           ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
           : "transition-transform translate-y-0 ease-in-out top-0"
           }`}
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
-        <div className="min-h-screen">
-          <Outlet />
-        </div>
+        <Outlet />
         <MovingEllipses />
         {!getlocation && <Footer />}
       </div>
+      {modal.isTriggered && (
+        <PopUpModal
+          open={modal.isTriggered}
+          onClose={closeModal}
+          onSubmit={(e) => {
+            e.preventDefault();
+            closeModal();
+            if (modal.actionText === "Edit") {
+              // navigate(`/upload/${modal.cardId}`);
+              navigate(`/upload`);
+            } else {
+              console.log(`${modal.actionText} action performed on ID: ${modal.cardId} Done`);
+            }
+          }}
+          isLoading={false}
+          message={modal.message}
+          actionText={modal.actionText}
+        />
+      )}
     </div>
   );
 }
