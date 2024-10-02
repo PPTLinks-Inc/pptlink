@@ -26,7 +26,7 @@ export default function Backmenu({ handleDropdown }) {
   };
 
   return (
-    <div className="w-full h-screen maxScreenMobile:overflow-auto pt-[5.5rem]">
+    <div className="w-full h-screen absolute maxScreenMobile:overflow-auto _pt-[5.5rem]">
       <Header isBackMenu={true} handleDropdown={handleDropdown} />
 
       <div className="w-full h-[90vh]">

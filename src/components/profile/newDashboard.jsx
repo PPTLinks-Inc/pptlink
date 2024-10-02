@@ -11,7 +11,7 @@ import { CiSettings } from "react-icons/ci";
 import { ModalContext } from "../../contexts/modalContext";
 
 export default function NewDashboard() {
-    const { openModal } = useContext(ModalContext);
+    const { modal, openModal } = useContext(ModalContext);
     const scrollRef = useRef();
     const [currentView, setCurrentView] = useState(1);
     // const navigate = useNavigate();
@@ -86,7 +86,7 @@ export default function NewDashboard() {
         // }
     };
 
-    return (<div className="w-full relative !h-screen overflow-y-auto">
+    return (<div className="w-full relative h-fit">
         <section className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-black" : "bg-black"}`}>
             <div className={`w-full h-fit pt-20`}>
                 <div className={`container relative h-fit py-10 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}>
@@ -153,7 +153,7 @@ export default function NewDashboard() {
                                 ref={scrollRef}
                             >
                                 {presentationQuery.data.data.presentations.map((presentation) => (
-                                    <Card key={presentation.id} presentation={presentation} handleCardModel={handleCardModel} />
+                                    <Card key={presentation.id} presentation={presentation} isBookmarked={modal.isTriggered} handleCardModel={handleCardModel} />
                                 ))}
                             </motion.div>
                         )}

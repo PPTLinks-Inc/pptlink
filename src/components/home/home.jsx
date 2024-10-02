@@ -25,7 +25,7 @@ export default function NewHome() {
   // context
   const scrollRef = useRef();
   const { user } = useContext(userContext);
-  const { openModal } = useContext(ModalContext);
+  const { modal, openModal } = useContext(ModalContext);
 
 
   const navigate = useNavigate();
@@ -202,13 +202,13 @@ export default function NewHome() {
 
   return (
     <motion.section
-      className="parent_page_wrapper !h-screen overflow-y-auto  w-full"
+      className={`parent_page_wrapper h-fit  w-full ${modal.isTriggered && "!overflow-y-hidden"}`}
       variants={containertVarients}
       initial="hidden"
       animate="visible"
       exit="exit"
     >
-      <div className="banner relative w-full max-h-fit text-white">
+      <div className="banner relative w-full h-fit text-white">
         <div className="container h-full text-center">
           <motion.div
             variants={parentVarient}
