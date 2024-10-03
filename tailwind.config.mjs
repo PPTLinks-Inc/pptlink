@@ -34,13 +34,19 @@ module.exports = {
           ping: {
             "75%, 100%": {
               content: "",
-              transform: "scale(2)",
+              transform: "scale(1)",
               opacity: 0
             }
+          },
+          pinging: {
+            '0%': { transform: 'scale(1)', opacity: '1' },
+            '50%': { transform: 'scale(1.2)', opacity: '0.6' },
+            '100%': { transform: 'scale(1.5)', opacity: '0' },
           }
         },
         animation: {
-          "ping-200": " ping 1s 200ms cubic-bezier(0, 0, 0.2, 1) infinite"
+          "ping-200": "ping 1s 200ms cubic-bezier(0, 0, 0.2, 1) infinite",
+          "pinging": 'pinging 1s infinite'
         }
       }
     },
