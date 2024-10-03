@@ -7,7 +7,6 @@ import axios from "axios";
 import { userContext } from "./contexts/userContext";
 import Home from "./components/home/home";
 import NotFound from "./components/404/404";
-import Dashboard from "./components/profile/dashboard";
 import List from "./components/list/list";
 import Interface from "./components/interface/Interface";
 import Root from "./components/root/root";
@@ -26,6 +25,7 @@ import PublicPresentation from "./components/see_more_presentation/seeMorePresen
 import NewDashboard from "./components/profile/newDashboard";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
+import { ToastContainer } from "react-toastify";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -106,7 +106,7 @@ function App() {
           <Route path="datetest" element={<DateTest />} />
         </Routes>
       </AnimatePresence>
-      {/* <ToastContainer stacked /> */}
+      <ToastContainer stacked />
     </>
   );
 }

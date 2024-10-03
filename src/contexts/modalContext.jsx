@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState } from "react";
+import { toast } from "react-toastify";
 
 // Create the ModalContext
 export const ModalContext = createContext();
@@ -10,7 +11,7 @@ export const ModalProvider = ({ children }) => {
     isTriggered: false,
     message: "",
     actionText: "",
-    cardId: "",
+    cardId: ""
   });
 
   // Function to open the modal
@@ -19,7 +20,7 @@ export const ModalProvider = ({ children }) => {
       isTriggered: data.isTriggered || true,
       message: data.message,
       actionText: data.actionText,
-      cardId: data.cardId || "",
+      cardId: data.cardId || ""
     });
   };
 
@@ -29,12 +30,59 @@ export const ModalProvider = ({ children }) => {
       ...prev,
       isTriggered: false,
       message: "",
-      actionText: "",
+      actionText: ""
     }));
   };
 
+  function shareLink(link) {
+    navigator
+      .share({
+        title: "PPTLinks",
+        text: "Join the presentation",
+        url: link
+      })
+      .catch(() => toast.error("Error sharing the link"));
+  }
+
+  function copyLink(link) {
+    navigator.clipboard && navigator.clipboard.writeText(link);
+    toast.success("Link Copied successfully");
+  }
+  // Modal handler
+  const handleCardModel = (Id, data) => {
+    if (data === "share") {
+      const link = `https://pptlinks/${Id}`;
+      navigator?.share ? shareLink(link) : copyLink(link);
+      return;
+    }
+    openModal({
+      cardId: Id,
+      message:
+        data === "delete"
+          ? "Are you sure you want to delete this card?"
+          : data === "bookmark"
+            ? "Are you sure you want to bookmark this card?"
+            : data === "report"
+              ? "Are you sure you want to report this card?"
+              : data === "edit"
+                ? "Are you sure you want to edit this card?"
+                : "",
+      actionText:
+        data === "delete"
+          ? "Delete"
+          : data === "bookmark"
+            ? "Bookmark"
+            : data === "report"
+              ? "Report"
+              : data === "edit"
+                ? "Edit"
+                : ""
+    });
+    // }
+  };
+
   return (
-    <ModalContext.Provider value={{ modal, openModal, closeModal }}>
+    <ModalContext.Provider value={{ modal, handleCardModel, closeModal }}>
       {children}
     </ModalContext.Provider>
   );

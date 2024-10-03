@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import * as React from 'react';
+import { useContext, useState } from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,8 +10,9 @@ import { FaRegEdit } from "react-icons/fa";
 import { FiDelete } from "react-icons/fi";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa6";
-import { IoShareSocialOutline } from "react-icons/io5";
+import { IoShareSocialOutline, IoCopyOutline } from "react-icons/io5";
 import { MdOutlineReportProblem } from "react-icons/md";
+import {userContext} from "../../contexts/userContext"
 // import { useLocation } from "react-router-dom";
 // handleCardDelete passed to Card to handle delete model or any other model
 export default function Card({ presentation, handleCardModel }) {
@@ -19,8 +20,9 @@ export default function Card({ presentation, handleCardModel }) {
   //   useLocation().pathname === "/publicPresentation"
   //     ? true : false
   // );
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [isBookMarked] = React.useState(true);
+  const { user } = useContext(userContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isBookMarked] = useState(true);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,7 +31,6 @@ export default function Card({ presentation, handleCardModel }) {
     setAnchorEl(null);
   };
 
-  console.log(presentation);
   const containerVarient = {
     initial: {
       y: 50,
@@ -102,37 +103,41 @@ export default function Card({ presentation, handleCardModel }) {
                 style: {
                   backgroundColor: '#252525',
                   color: 'white',
-                },
+                }
               }}
             >
               <div className='w-full h-full _bg-black _text-white'>
-                <MenuItem onClick={handleClose} sx={{
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#FFA500',
-                    fontWeight: 'bolder'
-                  },
-                }}><span data-getaction="edit" onClick={(e) => {
-                  handleCardModel(presentation.id, e.target.dataset.getaction);
-                }} className='block w-32 text-[.9rem]'>Edit</span><FaRegEdit /></MenuItem>
-                <MenuItem onClick={handleClose} sx={{
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#FFA500',
-                    fontWeight: 'bolder'
-                  },
-                }}><span data-getaction="delete" onClick={(e) => {
-                  handleCardModel(presentation.id, e.target.dataset.getaction);
-                }} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
-                <MenuItem onClick={handleClose} sx={{
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#FFA500',
-                    fontWeight: 'bolder'
-                  },
-                }}><span className='block w-32 text-[.9rem]' data-getaction="bookmark" onClick={(e) => {
-                  handleCardModel(presentation.id, e.target.dataset.getaction);
-                }}>Bookmark</span>{isBookMarked ? (<span className='text-[#FFA500]'><FaBookmark /></span>) : <FaRegBookmark />}</MenuItem>
+                {user && user.id === presentation.User.id && 
+                <>
+                  <MenuItem onClick={handleClose} sx={{
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#FFA500',
+                      fontWeight: 'bolder'
+                    },
+                  }}><span data-getaction="edit" onClick={(e) => {
+                    handleCardModel(presentation.id, e.target.dataset.getaction);
+                  }} className='block w-32 text-[.9rem]'>Edit</span><FaRegEdit /></MenuItem>
+                  <MenuItem onClick={handleClose} sx={{
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#FFA500',
+                      fontWeight: 'bolder'
+                    },
+                  }}><span data-getaction="delete" onClick={(e) => {
+                    handleCardModel(presentation.id, e.target.dataset.getaction);
+                  }} className='block w-32 text-[.9rem]'>Delete</span><FiDelete /></MenuItem>
+                  <MenuItem onClick={handleClose} sx={{
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#FFA500',
+                      fontWeight: 'bolder'
+                    },
+                  }}><span className='block w-32 text-[.9rem]' data-getaction="bookmark" onClick={(e) => {
+                    handleCardModel(presentation.id, e.target.dataset.getaction);
+                  }}>Bookmark</span>{isBookMarked ? (<span className='text-[#FFA500]'><FaBookmark /></span>) : <FaRegBookmark />}</MenuItem>
+                </>
+                }
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {
@@ -140,8 +145,8 @@ export default function Card({ presentation, handleCardModel }) {
                     fontWeight: 'bolder'
                   },
                 }}><span className='block w-32 text-[.9rem]' data-getaction="share" onClick={(e) => {
-                  handleCardModel(presentation.id, e.target.dataset.getaction);
-                }}>Share</span><IoShareSocialOutline /></MenuItem>
+                  handleCardModel(presentation.liveId, e.target.dataset.getaction);
+                }}>{navigator?.share ? "Share" : "Copy Link"}</span> {  navigator?.share ? <IoShareSocialOutline /> : <IoCopyOutline />}</MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {
