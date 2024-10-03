@@ -25,7 +25,7 @@ export default function NewHome() {
   // context
   const scrollRef = useRef();
   const { user } = useContext(userContext);
-  const { modal, openModal } = useContext(ModalContext);
+  const { modal, handleCardModel } = useContext(ModalContext);
 
 
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function NewHome() {
     queryKey: ["public-presentations"],
     queryFn: () => {
       return axios.get(
-        "/api/v1/ppt/presentations?noPerPage=10&pageNo=1&public=true"
+        "/api/v1/ppt/presentations?noPerPage=12&pageNo=1&public=true"
       );
     }
   });
@@ -156,48 +156,6 @@ export default function NewHome() {
         ease: "easeInOut"
       }
     }
-  };
-
-  // Modal handler
-  const handleCardModel = (Id, data) => {
-    // if (data === "edit") {
-    //     openModal({
-    //         isTriggered: false,
-    //         cardId: Id,
-    //         message: "",
-    //         actionText: ""
-    //     });
-    //     // navigate(`/upload/${modal.cardId}`);
-    //     navigate(`/upload`);
-    // } else {
-    openModal({
-      cardId: Id,
-      message:
-        data === "delete"
-          ? "Are you sure you want to delete this card?"
-          : data === "bookmark"
-            ? "Are you sure you want to bookmark this card?"
-            : data === "report"
-              ? "Are you sure you want to report this card?"
-              : data === "edit"
-                ? "Are you sure you want to edit this card?"
-                : data === "share"
-                  ? "Are you sure you want to share this card?"
-                  : "",
-      actionText:
-        data === "delete"
-          ? "Delete"
-          : data === "bookmark"
-            ? "Bookmark"
-            : data === "report"
-              ? "Report"
-              : data === "edit"
-                ? "Edit"
-                : data === "share"
-                  ? "Share"
-                  : "",
-    });
-    // }
   };
 
   return (

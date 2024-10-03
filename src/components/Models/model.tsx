@@ -1,5 +1,4 @@
 // eslint-disable-next-line react/prop-types
-import icon1 from "/team/pptlink_resources/Icon_metro-notification.svg";
 
 export default function Modal({
   open,
@@ -21,7 +20,7 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
         className={`${color} rounded-md shadow relative transition-all  border-2 border-black ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}`}
       >
-        <img src={icon1} alt={icon1} className="absolute !top-0 !left-0 scale-[0.7]" />
+        <img src="/team/pptlink_resources/Icon_metro-notification.svg" alt={"icon"} className="absolute !top-0 !left-0 scale-[0.7]" />
         {children}
       </div>
     </div>
