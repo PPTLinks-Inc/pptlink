@@ -1,12 +1,14 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Card from "../list/card";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { ModalContext } from "../../contexts/modalContext";
 
 export default function PublicPresentation() {
+    const { modal, openModal } = useContext(ModalContext);
     const scrollRef = useRef();
 
     const presentationQuery = useQuery({
@@ -33,6 +35,48 @@ export default function PublicPresentation() {
                 stiffness: 120
             }
         }
+    };
+
+    // Modal handler
+    const handleCardModel = (Id, data) => {
+        // if (data === "edit") {
+        //     openModal({
+        //         isTriggered: false,
+        //         cardId: Id,
+        //         message: "",
+        //         actionText: ""
+        //     });
+        //     // navigate(`/upload/${modal.cardId}`);
+        //     navigate(`/upload`);
+        // } else {
+        openModal({
+            cardId: Id,
+            message:
+                data === "delete"
+                    ? "Are you sure you want to delete this card?"
+                    : data === "bookmark"
+                        ? "Are you sure you want to bookmark this card?"
+                        : data === "report"
+                            ? "Are you sure you want to report this card?"
+                            : data === "edit"
+                                ? "Are you sure you want to edit this card?"
+                                : data === "share"
+                                    ? "Are you sure you want to share this card?"
+                                    : "",
+            actionText:
+                data === "delete"
+                    ? "Delete"
+                    : data === "bookmark"
+                        ? "Bookmark"
+                        : data === "report"
+                            ? "Report"
+                            : data === "edit"
+                                ? "Edit"
+                                : data === "share"
+                                    ? "Share"
+                                    : "",
+        });
+        // }
     };
 
     return (<>
@@ -73,7 +117,7 @@ export default function PublicPresentation() {
                     ref={scrollRef}
                 >
                     {presentationQuery.data.data.presentations.map((presentation) => (
-                        <Card key={presentation.id} presentation={presentation} />
+                        <Card key={presentation.id} presentation={presentation} isBookmarked={modal.isTriggered} handleCardModel={handleCardModel} />
                     ))}
                 </motion.div>
             )}

@@ -20,6 +20,7 @@ export default function Card({ presentation, handleCardModel }) {
   //     ? true : false
   // );
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [isBookMarked] = React.useState(true);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -131,7 +132,7 @@ export default function Card({ presentation, handleCardModel }) {
                   },
                 }}><span className='block w-32 text-[.9rem]' data-getaction="bookmark" onClick={(e) => {
                   handleCardModel(presentation.id, e.target.dataset.getaction);
-                }}>Bookmark</span>{false ? <FaRegBookmark /> : (<span className='text-[#FFA500]'><FaBookmark /></span>)}</MenuItem>
+                }}>Bookmark</span>{isBookMarked ? (<span className='text-[#FFA500]'><FaBookmark /></span>) : <FaRegBookmark />}</MenuItem>
                 <MenuItem onClick={handleClose} sx={{
                   color: 'white',
                   '&:hover': {
