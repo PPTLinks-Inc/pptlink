@@ -41,12 +41,13 @@ export const ModalProvider = ({ children }) => {
         text: "Join the presentation",
         url: link
       })
-      .catch(() => toast.error("Error sharing the link"));
+      .catch(() => {});
   }
 
   function copyLink(link) {
-    navigator.clipboard && navigator.clipboard.writeText(link);
-    toast.success("Link Copied successfully");
+    navigator.clipboard && navigator.clipboard.writeText(link).then(() => {
+      toast.success("Link Copied successfully");
+    }).catch(() => {});
   }
   // Modal handler
   const handleCardModel = (Id, data) => {
