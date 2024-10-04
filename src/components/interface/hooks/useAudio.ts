@@ -107,7 +107,7 @@ export default function useAudio() {
       await rtcClient.publish(audioTracks.current.localAudioTrack);
       audioTracks.current.localAudioTrack.setMuted(true);
 
-      const wasmPath = new URL(
+      /*const wasmPath = new URL(
         "./external",
         import.meta.url
       ).toString();
@@ -129,7 +129,7 @@ export default function useAudio() {
       });
 
       audioTracks.current.localAudioTrack.pipe(processor).pipe(audioTracks.current.localAudioTrack.processorDestination);
-      await processor.enable();
+      await processor.enable();*/
 
       setSuccess(true);
     } catch (err) {
