@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { ModalContext } from "../../contexts/modalContext";
 
 export default function PublicPresentation() {
-    const { modal, handleCardModel } = useContext(ModalContext);
+    const { handleCardModel } = useContext(ModalContext);
     const scrollRef = useRef();
 
     const presentationQuery = useQuery({
@@ -75,7 +75,7 @@ export default function PublicPresentation() {
                     ref={scrollRef}
                 >
                     {presentationQuery.data.data.presentations.map((presentation) => (
-                        <Card key={presentation.id} presentation={presentation} isBookmarked={modal.isTriggered} handleCardModel={handleCardModel} />
+                        <Card key={presentation.id} presentation={presentation} handleCardModel={handleCardModel} />
                     ))}
                 </motion.div>
             )}
