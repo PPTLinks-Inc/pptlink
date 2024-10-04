@@ -13,7 +13,7 @@ import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 
 export default function NewDashboard() {
-  const { modal, handleCardModel } = useContext(ModalContext);
+  const { handleCardModel } = useContext(ModalContext);
   const [currentView, setCurrentView] = useState(1);
   // const navigate = useNavigate();
 
@@ -199,7 +199,6 @@ export default function NewDashboard() {
                         <Card
                           key={presentation.id}
                           presentation={presentation}
-                          isBookmarked={modal.isTriggered}
                           handleCardModel={handleCardModel}
                         />
                       ))}
