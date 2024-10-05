@@ -766,7 +766,7 @@ export default function NewUploadPage() {
               ? "bg-[#3d3535bf] text-white !cursor-not-allowed"
               : "border border-black pointer-events-auto"
               } text-black text-[1.5rem] p-2 
-              rounded-full w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
+              rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
             onClick={showPreviousStage}
             disabled={savePresentation.isPending}
           >
@@ -776,7 +776,7 @@ export default function NewUploadPage() {
           <button
             type="button"
             className={`${savePresentation.isError ? "bg-[red]" : "bg-[black]"} pointer-events-auto 
-            text-white text-[1.5rem] p-2 border-none rounded-full w-[25%] maxScreenMobile:text-[1.2rem] 
+            text-white text-[1.5rem] p-2 border-none rounded-md w-[25%] maxScreenMobile:text-[1.2rem] 
             maxScreenMobile:w-full`}
             onClick={(e) => {
               e.preventDefault();

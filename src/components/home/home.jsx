@@ -249,7 +249,7 @@ export default function NewHome() {
               initial="initial"
               whileInView="inView"
               viewport={{ once: true }}
-              className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+              className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
               ref={scrollRef}
             >
               {presentationQuery.data.data.presentations.map((presentation) => (
@@ -560,7 +560,7 @@ export default function NewHome() {
                 </div>
                 <button
                   type="submit"
-                  className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-[2rem] maxScreenMobile:w-full"
+                  className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-md maxScreenMobile:w-full"
                 >
                   {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                 </button>
