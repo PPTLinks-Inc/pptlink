@@ -1,14 +1,12 @@
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Card from "../list/card";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ModalContext } from "../../contexts/modalContext";
 
 export default function PublicPresentation() {
-    const { handleCardModel } = useContext(ModalContext);
     const scrollRef = useRef();
 
     const presentationQuery = useQuery({
@@ -75,7 +73,7 @@ export default function PublicPresentation() {
                     ref={scrollRef}
                 >
                     {presentationQuery.data.data.presentations.map((presentation) => (
-                        <Card key={presentation.id} presentation={presentation} handleCardModel={handleCardModel} />
+                        <Card key={presentation.id} presentation={presentation} refresh={presentationQuery.refetch} />
                     ))}
                 </motion.div>
             )}

@@ -1,4 +1,4 @@
-import { LoadingAssetBig2 } from "../../assets/assets";
+import { LoadingAssetBig } from "../../assets/assets";
 import Modal from "./model";
 
 // eslint-disable-next-line react/prop-types
@@ -26,8 +26,8 @@ export default function PopUpModal({
         <h3 className="mx-auto font-light text-black pt-3">NOTIFICATION</h3>
         <p className="w-2/3 mx-auto text-md text-black text-center mb-2">{message}</p>
         {isLoading ? (
-          <div className="flex justify-center items-center">
-             <LoadingAssetBig2 />
+          <div className="flex justify-center items-center mb-4">
+             <LoadingAssetBig />
           </div>
         ) : (
           <div className="flex border-t-[2px] border-black w-full">

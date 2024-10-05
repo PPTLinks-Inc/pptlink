@@ -14,7 +14,6 @@ import sms from "/team/pptlink_resources/Group 33.png";
 import Accordion from "../accordion/accordion";
 import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
-import { ModalContext } from "../../contexts/modalContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +24,6 @@ export default function NewHome() {
   // context
   const scrollRef = useRef();
   const { user } = useContext(userContext);
-  const { modal, handleCardModel } = useContext(ModalContext);
 
 
   const navigate = useNavigate();
@@ -160,7 +158,7 @@ export default function NewHome() {
 
   return (
     <motion.section
-      className={`parent_page_wrapper h-fit  w-full ${modal.isTriggered && "!overflow-y-hidden"}`}
+      className={`parent_page_wrapper h-fit  w-full`}
       variants={containertVarients}
       initial="hidden"
       animate="visible"
@@ -258,7 +256,7 @@ export default function NewHome() {
               ref={scrollRef}
             >
               {presentationQuery.data.data.presentations.map((presentation) => (
-                <Card key={presentation.id} presentation={presentation} handleCardModel={handleCardModel} />
+                <Card key={presentation.id} presentation={presentation} refresh={presentationQuery.refetch()} />
               ))}
             </motion.div>
           )}

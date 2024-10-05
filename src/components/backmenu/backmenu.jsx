@@ -4,16 +4,19 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../header/header";
 import { ABOUT, LEGAL, UPLOAD } from "../../constants/routes";
 import { userContext } from "../../contexts/userContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 // eslint-disable-next-line react/prop-types
 export default function Backmenu({ handleDropdown }) {
   const { user, setUser } = useContext(userContext);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const handlePresentationBtn = (e) => {
+  const handlePresentationBtn = () => {
     if (!user) return navigate('/signin');
 
     if (user) {
+      queryClient.clear();
       localStorage.removeItem("accessToken");
       setUser(null);
       return navigate('/signin');
