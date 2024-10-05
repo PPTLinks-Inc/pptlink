@@ -1,20 +1,17 @@
 import { useContext, useState, useRef, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Ellipse from "/team/pptlink_resources/Ellipse23.png";
 import Card from "../list/card";
 import axios from "axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
 import { CiSettings } from "react-icons/ci";
-import { ModalContext } from "../../contexts/modalContext";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
+import { userContext } from "../../contexts/userContext";
 
 export default function NewDashboard() {
-  const { handleCardModel } = useContext(ModalContext);
   const [currentView, setCurrentView] = useState(1);
+  const { user } = useContext(userContext);
   // const navigate = useNavigate();
 
   const handleView = (e) => {
@@ -39,7 +36,7 @@ export default function NewDashboard() {
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length === 0) {
+      if (lastPage.length !== 20) {
         return undefined;
       }
       return allPages.length + 1;
@@ -53,23 +50,6 @@ export default function NewDashboard() {
     },
     [intersection, intersection?.isIntersecting, presentationQuery]
   );
-
-  const containerVarient = {
-    initial: {
-      y: 50,
-      opacity: 0
-    },
-    inView: {
-      y: 0,
-      opacity: 100,
-      transition: {
-        duration: 1,
-        staggerChildren: 0.2,
-        type: "spring",
-        stiffness: 120
-      }
-    }
-  };
 
   return (
     <div className="w-full relative h-fit">
@@ -96,16 +76,18 @@ export default function NewDashboard() {
               />
             </div>
             <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 text-[0.9rem] text-center">
-              <h1 className="text-2xl mt-2">Blanda Shany</h1>
+              <h1 className="text-2xl mt-2">{user ? user.username : "--"}</h1>
               <p>Legacy Paradigm Executive</p>
               <div className="flex justify-between items-center gap-4">
                 <span className="flax flex-col justify-between items-center">
-                  <span className="block w-fit mx-auto">22</span>
-                  <span className="block w-fit mx-auto">Courses</span>
+                  <span className="block w-fit mx-auto">
+                    {user ? user.presentations : "--"}
+                  </span>
+                  <span className="block w-fit mx-auto">Presentations</span>
                 </span>
                 <span className="text-2xl">|</span>
                 <span className="flax flex-col justify-between items-center">
-                  <span className="block w-fit mx-auto">22</span>
+                  <span className="block w-fit mx-auto">0</span>
                   <span className="block w-fit mx-auto">Courses</span>
                 </span>
               </div>
@@ -185,24 +167,13 @@ export default function NewDashboard() {
               className={`w-full min-h-[100vh] flex justify-center items-center _bg-[purple]`}
             >
               {presentationQuery?.data && (
-                <div className="w-full">
-                  {presentationQuery.data.pages.map((page, index) => (
-                    <motion.div
-                      key={page[index]}
-                      variants={containerVarient}
-                      initial="initial"
-                      whileInView="inView"
-                      viewport={{ once: true }}
-                      className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
-                    >
-                      {page.map((presentation) => (
-                        <Card
-                          key={presentation.id}
-                          presentation={presentation}
-                          handleCardModel={handleCardModel}
-                        />
-                      ))}
-                    </motion.div>
+                <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
+                  {presentationQuery.data.pages.flat().map((presentation) => (
+                    <Card
+                      key={presentation.id}
+                      presentation={presentation}
+                      refresh={presentationQuery.refetch}
+                    />
                   ))}
                 </div>
               )}

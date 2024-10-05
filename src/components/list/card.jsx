@@ -16,23 +16,45 @@ import { userContext } from "../../contexts/userContext";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-toastify";
-// import { useLocation } from "react-router-dom";
-// handleCardDelete passed to Card to handle delete model or any other model
-export default function Card({ presentation, handleCardModel }) {
-  // const [getlocation] = React.useState(
-  //   useLocation().pathname === "/publicPresentation"
-  //     ? true : false
-  // );
+import PopUpModal from "../Models/dashboardModel";
+
+export default function Card({ presentation, refresh }) {
+
   const { user } = useContext(userContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [bookmarked, setBookmarked] = useState(presentation?.Bookmark[0]?.userId === user.id);
+  const [bookmarked, setBookmarked] = useState(
+    presentation?.Bookmark[0]?.userId === user?.id
+  );
+  const [modal, setModal] = useState({
+    isTriggered: false,
+    message: "",
+    actionText: "",
+    cardId: "",
+  });
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const deletePresentation = useMutation({
+    mutationFn: async function (id) {
+      const { data } = await axios.delete(`/api/v1/ppt/presentations/${id}`);
+      console.log(data);
+      return data;
+    },
+    onSuccess: function () {
+      closeModal();
+      refresh();
+      toast.success("Presentation deleted successfully");
+    },
+    onError: function () {
+      toast.error("An error occured while deleting presentation");
+    }
+  });
 
   const bookmarkPresentation = useMutation({
     mutationFn: async function (id) {
@@ -54,6 +76,81 @@ export default function Card({ presentation, handleCardModel }) {
       toast.error("An error occured while bookmarking presentation");
     }
   });
+
+  // Function to open the modal
+  const openModal = (data) => {
+    setModal({
+      isTriggered: data.isTriggered || true,
+      message: data.message,
+      actionText: data.actionText,
+      cardId: data.cardId || ""
+    });
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setModal((prev) => ({
+      ...prev,
+      isTriggered: false,
+      message: "",
+      actionText: "",
+      cardId: ""
+    }));
+  };
+
+  function shareLink(link) {
+    navigator
+      .share({
+        title: "PPTLinks",
+        text: "Join the presentation",
+        url: link
+      })
+      .catch(() => {});
+  }
+
+  function copyLink(link) {
+    navigator.clipboard &&
+      navigator.clipboard
+        .writeText(link)
+        .then(() => {
+          toast.success("Link Copied successfully");
+        })
+        .catch(() => {});
+  }
+  // Modal handler
+  const handleCardModel = (Id, data) => {
+    if (data === "share") {
+      const link = `https://pptlinks/${Id}`;
+      navigator?.share ? shareLink(link) : copyLink(link);
+      return;
+    }
+    openModal({
+      cardId: Id,
+      message:
+        data === "delete"
+          ? "Are you sure you want to delete this card?"
+          : data === "report"
+            ? "Are you sure you want to report this card?"
+            : data === "edit"
+              ? "Are you sure you want to edit this card?"
+              : "",
+      actionText:
+        data === "delete"
+          ? "Delete"
+          : data === "report"
+            ? "Report"
+            : data === "edit"
+              ? "Edit"
+              : ""
+    });
+  };
+
+  function onSubmitModal(e) {
+    e.preventDefault();
+    if (modal.actionText === "Delete") {
+      deletePresentation.mutate(modal.cardId);
+    }
+  }
 
   const containerVarient = {
     initial: {
@@ -78,70 +175,114 @@ export default function Card({ presentation, handleCardModel }) {
   };
 
   return (
-    <motion.div
-      variants={containerVarient}
-      // whileHover="hover"
-      className="card rounded-2xl p-5 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
-    >
-      <Link to={`/${presentation.liveId}`}>
-        <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
-          <img
-            src={presentation.thumbnail}
-            alt={`${presentation.name} presentation thumbnail`}
-            className="w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-2xl object-cover"
-            loading="lazy"
-          />
-        </div>
+    <>
+      <PopUpModal
+        open={modal.isTriggered}
+        onClose={closeModal}
+        onSubmit={onSubmitModal}
+        isLoading={deletePresentation.isPending}
+        message={modal.message}
+        actionText={modal.actionText}
+      />
+      <motion.div
+        variants={containerVarient}
+        // whileHover="hover"
+        className="card rounded-2xl p-5 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
+      >
+        <Link to={`/${presentation.liveId}`}>
+          <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
+            <img
+              src={presentation.thumbnail}
+              alt={`${presentation.name} presentation thumbnail`}
+              className="w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-2xl object-cover"
+              loading="lazy"
+            />
+          </div>
 
-        <div className={`card_body pb-5 maxScreenMobile:pb-0 text-white`}>
-          <h3 className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
-            {presentation.name}
-          </h3>
-          <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
-            <strong>Presenter: </strong>
-            <em>{presentation.User.username}</em>
-          </p>
-          <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
-            <strong>Cartegory: </strong>
-            <em>edge computing</em>
-          </p>
-          <span
-            className="block w-fit mt-2 ml-[-1.2rem]"
-            onClick={(e) => e.preventDefault()}
-          >
-            <Button
-              id="basic-button"
-              aria-controls={open ? "basic-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
+          <div className={`card_body pb-5 maxScreenMobile:pb-0 text-white`}>
+            <h3 className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
+              {presentation.name}
+            </h3>
+            <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+              <strong>Presenter: </strong>
+              <em>{presentation.User.username}</em>
+            </p>
+            <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+              <strong>Cartegory: </strong>
+              <em>edge computing</em>
+            </p>
+            <span
+              className="block w-fit mt-2 ml-[-1.2rem]"
+              onClick={(e) => e.preventDefault()}
             >
-              <FaEllipsisV className="text-xl text-[#FFA500] cursor-pointer rotate-90" />
-            </Button>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button"
-              }}
-              PaperProps={{
-                style: {
-                  backgroundColor: "#252525",
-                  color: "white"
-                }
-              }}
-            >
-              <div className="w-full h-full _bg-black _text-white">
-                {user && user.id === presentation.User.id && (
-                  <>
+              <Button
+                id="basic-button"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+              >
+                <FaEllipsisV className="text-xl text-[#FFA500] cursor-pointer rotate-90" />
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button"
+                }}
+                PaperProps={{
+                  style: {
+                    backgroundColor: "#252525",
+                    color: "white"
+                  }
+                }}
+              >
+                <div className="w-full h-full _bg-black _text-white">
+                  {user && user.id === presentation.User.id && (
+                    <>
+                      <MenuItem
+                        onClick={() => {
+                          handleCardModel(presentation.id, "edit");
+                          handleClose();
+                        }}
+                        sx={{
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#FFA500",
+                            fontWeight: "bolder"
+                          }
+                        }}
+                      >
+                        <span className="block w-32 text-[.9rem]">Edit</span>
+                        <FaRegEdit />
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleCardModel(presentation.id, "delete");
+                          handleClose();
+                        }}
+                        disabled={deletePresentation.isPending}
+                        sx={{
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#FFA500",
+                            fontWeight: "bolder"
+                          }
+                        }}
+                      >
+                        <span className="block w-32 text-[.9rem]">{deletePresentation.isPending ? "Deleting..." : "Delete"}</span>
+                        <FiDelete />
+                      </MenuItem>
+                    </>
+                  )}
+                  {user && (
                     <MenuItem
+                      disabled={bookmarkPresentation.isPending}
                       onClick={() => {
-                        handleCardModel(
-                          presentation.id,
-                          "edit"
-                        );
+                        bookmarkPresentation.mutate(presentation.id);
+                        handleClose();
                       }}
                       sx={{
                         color: "white",
@@ -151,38 +292,20 @@ export default function Card({ presentation, handleCardModel }) {
                         }
                       }}
                     >
-                      <span className="block w-32 text-[.9rem]">
-                        Edit
-                      </span>
-                      <FaRegEdit />
+                      <span className="block w-32 text-[.9rem]">Bookmark</span>
+                      {bookmarked ? (
+                        <span className="text-[#FFA500]">
+                          <FaBookmark />
+                        </span>
+                      ) : (
+                        <FaRegBookmark />
+                      )}
                     </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleCardModel(
-                          presentation.id,
-                          "delete"
-                        );
-                      }}
-                      sx={{
-                        color: "white",
-                        "&:hover": {
-                          backgroundColor: "#FFA500",
-                          fontWeight: "bolder"
-                        }
-                      }}
-                    >
-                      <span className="block w-32 text-[.9rem]">
-                        Delete
-                      </span>
-                      <FiDelete />
-                    </MenuItem>
-                  </>
-                )}
-                {user && (
+                  )}
                   <MenuItem
-                    disabled={bookmarkPresentation.isPending}
                     onClick={() => {
-                      bookmarkPresentation.mutate(presentation.id);
+                      handleCardModel(presentation.liveId, "share");
+                      handleClose();
                     }}
                     sx={{
                       color: "white",
@@ -193,66 +316,36 @@ export default function Card({ presentation, handleCardModel }) {
                     }}
                   >
                     <span className="block w-32 text-[.9rem]">
-                      Bookmark
-                    </span>
-                    {bookmarked ? (
-                      <span className="text-[#FFA500]">
-                        <FaBookmark />
-                      </span>
+                      {navigator?.share ? "Share" : "Copy Link"}
+                    </span>{" "}
+                    {navigator?.share ? (
+                      <IoShareSocialOutline />
                     ) : (
-                      <FaRegBookmark />
+                      <IoCopyOutline />
                     )}
                   </MenuItem>
-                )}
-                <MenuItem
-                  onClick={() => {
-                    handleCardModel(
-                      presentation.liveId,
-                      "share"
-                    );
-                  }}
-                  sx={{
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#FFA500",
-                      fontWeight: "bolder"
-                    }
-                  }}
-                >
-                  <span className="block w-32 text-[.9rem]">
-                    {navigator?.share ? "Share" : "Copy Link"}
-                  </span>{" "}
-                  {navigator?.share ? (
-                    <IoShareSocialOutline />
-                  ) : (
-                    <IoCopyOutline />
-                  )}
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleCardModel(
-                      presentation.id,
-                      "report"
-                    );
-                  }}
-                  sx={{
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#FFA500",
-                      fontWeight: "bolder"
-                    }
-                  }}
-                >
-                  <span className="block w-32 text-[.9rem]">
-                    Report
-                  </span>
-                  <MdOutlineReportProblem />
-                </MenuItem>
-              </div>
-            </Menu>
-          </span>
-        </div>
-      </Link>
-    </motion.div>
+                  <MenuItem
+                    onClick={() => {
+                      handleCardModel(presentation.id, "report");
+                      handleClose();
+                    }}
+                    sx={{
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#FFA500",
+                        fontWeight: "bolder"
+                      }
+                    }}
+                  >
+                    <span className="block w-32 text-[.9rem]">Report</span>
+                    <MdOutlineReportProblem />
+                  </MenuItem>
+                </div>
+              </Menu>
+            </span>
+          </div>
+        </Link>
+      </motion.div>
+    </>
   );
 }
