@@ -187,7 +187,7 @@ export default function NewHome() {
             </motion.p>
             <motion.div
               variants={parentVarient}
-              className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col"
+              className="banner_btns w-[50%] mx-[auto] flex justify-evenly items-center maxScreenMobile:w-full maxScreenMobile:flex-col"
             >
               <button
                 className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
@@ -205,7 +205,7 @@ export default function NewHome() {
               </button>
             </motion.div>
           </motion.div>
-          <div className="banner_img w-3/5 h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
+          <div className="banner_img w-3/5 lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
             <motion.iframe
               whileanimate={{ skewY: "-20deg", skewX: "deg" }}
               ref={targetRef}
@@ -220,8 +220,8 @@ export default function NewHome() {
         </div>
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
-      <div className="_recent relative w-full min-h-[60vh] bg-black text-white text-justify md:pb-20">
-        <div className="container relative pt-10">
+      <div className="w-full h-fit bg-black">
+        <div className="_recent container relative min-h-[60vh] bg-transparent text-white text-justify py-6">
           <h2 className="w-full">
             <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
             <span className="block w-full text-center text-4xl">
@@ -243,20 +243,22 @@ export default function NewHome() {
               />
             </button>
           </div>
-          {presentationQuery.isSuccess && (
-            <motion.div
-              variants={containerVarient}
-              initial="initial"
-              whileInView="inView"
-              viewport={{ once: true }}
-              className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
-              ref={scrollRef}
-            >
-              {presentationQuery.data.data.presentations.map((presentation) => (
-                <Card key={presentation.id} presentation={presentation} refresh={presentationQuery.refetch()} />
-              ))}
-            </motion.div>
-          )}
+          <div className="mt-16 mb-6">
+            {presentationQuery.isSuccess && (
+              <motion.div
+                variants={containerVarient}
+                initial="initial"
+                whileInView="inView"
+                viewport={{ once: true }}
+                className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+                ref={scrollRef}
+              >
+                {presentationQuery.data.data.presentations.map((presentation) => (
+                  <Card key={presentation.id} presentation={presentation} refresh={presentationQuery.refetch()} />
+                ))}
+              </motion.div>
+            )}
+          </div>
           <NavLink
             to="/public_presentation"
             className="block text-center text-[#FFA500] underline"
