@@ -221,7 +221,7 @@ export default function NewHome() {
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
       <div className="w-full h-fit bg-black">
-        <div className="_recent container relative min-h-[60vh] bg-transparent text-white text-justify py-6">
+        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify py-6">
           <h2 className="w-full">
             <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
             <span className="block w-full text-center text-4xl">
@@ -243,7 +243,7 @@ export default function NewHome() {
               />
             </button>
           </div>
-          <div className="mt-16 mb-6">
+          <div className="min-h-[40vh] mt-16 mb-6">
             {presentationQuery.isSuccess && (
               <motion.div
                 variants={containerVarient}
