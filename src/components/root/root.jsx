@@ -10,12 +10,9 @@ import MovingEllipses from "../animation/MovingEllipes";
 import Header from "../header/header";
 import Footer from "../footer/footer";
 import Backmenu from "../backmenu/backmenu";
-import PopUpModal from "../Models/dashboardModel";
-import { ModalContext } from "../../contexts/modalContext";
 // import { MdModelTraining } from "react-icons/md";
 
 export default function Root() {
-  const { modal, closeModal } = useContext(ModalContext);
   const controller = new AbortController();
   // context
   const { user } = useContext(userContext);
@@ -141,25 +138,6 @@ export default function Root() {
         <MovingEllipses />
         {!getlocation && <Footer />}
       </div>
-      {modal.isTriggered && (
-        <PopUpModal
-          open={modal.isTriggered}
-          onClose={closeModal}
-          onSubmit={(e) => {
-            e.preventDefault();
-            closeModal();
-            if (modal.actionText === "Edit") {
-              // navigate(`/upload/${modal.cardId}`);
-              navigate(`/upload`);
-            } else {
-              console.log(`${modal.actionText} action performed on ID: ${modal.cardId} Done`);
-            }
-          }}
-          isLoading={false}
-          message={modal.message}
-          actionText={modal.actionText}
-        />
-      )}
     </div>
   );
 }

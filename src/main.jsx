@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./index.css";
 import App from "./App";
 import UserContextProvider from "./contexts/userContext";
-import { ModalProvider } from "./contexts/modalContext";
 
 const queryClient = new QueryClient();
 
@@ -15,11 +14,9 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <UserContextProvider>
-        <ModalProvider>
-          <Router>
-            <App />
-          </Router>
-        </ModalProvider>
+        <Router>
+          <App />
+        </Router>
       </UserContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
