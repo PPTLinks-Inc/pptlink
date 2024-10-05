@@ -89,7 +89,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
           <button
             onClick={() => handlePresentationBtn()}
             type="submit"
-            className={`w-[10rem] h-[2rem] flex items-center justify-center text-[.8rem] font-medium rounded-[2rem] ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+            className={`w-[10rem] h-[2rem] flex items-center justify-center text-[.8rem] font-medium rounded-md ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
           >
             {buttontext()}
           </button>
