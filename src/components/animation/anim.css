@@ -1,6 +1,6 @@
 .ellipse-container {
     position: absolute;
-    width: 30px;
+    width: 20px;
     height: fit-content;
     pointer-events: none;
     opacity: 0;
