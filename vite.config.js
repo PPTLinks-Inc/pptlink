@@ -37,7 +37,7 @@ export default defineConfig({
   plugins: plugins,
   resolve: {
     alias: {
-      "@": new URL("./src", import.meta.url).pathname
+      "@": path.resolve(__dirname, "./src"),
     }
   },
   build: {

@@ -63,6 +63,27 @@ export default function useAudio() {
     });
   }
 
+  function activeNoiceSuppression(audioTrack: ILocalAudioTrack) {
+    const denoiser = new AIDenoiserExtension({ assetsPath: "/external" });
+
+    if (!denoiser.checkCompatibility()) {
+      console.error("Does not support AI Denoiser!");
+    }
+    AgoraRTC.registerExtensions([denoiser]);
+
+    const processor = denoiser.createProcessor();
+    processor.on("loaderror", function (e: any) {
+      console.log(e);
+    });
+
+    processor.on("overload", async function () {
+      await processor.disable();
+    });
+
+    audioTrack.pipe(processor).pipe(audioTrack.processorDestination);
+    processor.enable();
+  }
+
   async function startAudio(
     liveId: string,
     rtcToken: string,
@@ -107,29 +128,7 @@ export default function useAudio() {
       await rtcClient.publish(audioTracks.current.localAudioTrack);
       audioTracks.current.localAudioTrack.setMuted(true);
 
-      /*const wasmPath = new URL(
-        "./external",
-        import.meta.url
-      ).toString();
-
-      const denoiser = new AIDenoiserExtension({ assetsPath: wasmPath });
-
-      if (!denoiser.checkCompatibility()) {
-        console.error("Does not support AI Denoiser!");
-      }
-      AgoraRTC.registerExtensions([denoiser]);
-      
-      const processor = denoiser.createProcessor();
-      processor.on("loaderror", function(e: any) {
-        console.log(e);
-      });
-
-      processor.on("overload", async function() {
-        await processor.disable();
-      });
-
-      audioTracks.current.localAudioTrack.pipe(processor).pipe(audioTracks.current.localAudioTrack.processorDestination);
-      await processor.enable();*/
+      activeNoiceSuppression(audioTracks.current.localAudioTrack);
 
       setSuccess(true);
     } catch (err) {
