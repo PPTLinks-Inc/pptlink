@@ -345,7 +345,7 @@ export default function Controls({
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
           {audioData.success && (
             <>
-              <button className="rounded-full p-3 bg-gray-300 shadow">
+              <button onClick={() => setShowOptions(true)} className="rounded-full p-3 bg-gray-300 shadow">
                 <BsThreeDots size={24} />
               </button>
 
