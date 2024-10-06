@@ -164,7 +164,7 @@ export default function NewHome() {
       animate="visible"
       exit="exit"
     >
-      <div className="banner relative w-full h-fit text-white">
+      <div className="_banner relative w-full h-fit bg-black text-white">
         <div className="container h-full text-center">
           <motion.div
             variants={parentVarient}
@@ -187,10 +187,10 @@ export default function NewHome() {
             </motion.p>
             <motion.div
               variants={parentVarient}
-              className="banner_btns w-3/5 mx-[auto] flex justify-between items-center maxScreenMobile:w-full maxScreenMobile:flex-col"
+              className="banner_btns w-[50%] mx-[auto] flex justify-evenly items-center maxScreenMobile:w-full maxScreenMobile:flex-col"
             >
               <button
-                className="block w-2/5 h-[3rem] bg-[#FFFFF0] text-black text-xl rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
+                className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
                 onClick={() =>
                   user ? navigate("/upload") : navigate("/signin")
                 }
@@ -198,39 +198,36 @@ export default function NewHome() {
                 Present
               </button>
               <button
+                className="block w-2/5 h-[3rem] bg-[#FFFFF0] text-black text-xl rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
                 onClick={goToLibrary}
-                className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-[2rem] maxScreenMobile:w-full maxScreenMobile:mb-3"
               >
                 Libraries
               </button>
             </motion.div>
           </motion.div>
-          <div className="banner_img w-full m-auto">
-            <motion.img
-              // initial={}
-              // animate
+          <div className="banner_img w-3/5 lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
+            <motion.iframe
               whileanimate={{ skewY: "-20deg", skewX: "deg" }}
               ref={targetRef}
-              src="https://res.cloudinary.com/dsmydljex/image/upload/v1713996099/ppt/app%20assets/slide_i4elun.webp"
-              alt="Banner Image"
-              className="w-full aspect-square"
-              // eslint-disable-next-line react/no-unknown-property
-              fetchpriority="high"
-            />
+              className="w-full aspect-[4/2.5] mx-auto border-2 rounded-md"
+              src="https://www.youtube-nocookie.com/embed/meTNh23fYKg?si=-ibyWcdA5oWJ7TTv&amp;controls=0"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+              fetchpriority="high"></motion.iframe>
           </div>
         </div>
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
-      <div className="recent relative w-full max-h-fit text-white text-justify md:pb-20">
-        <div className="container relative pt-10">
-          <div className="flex flex-col items-center text-black maxScreenMobile:pb-10">
-            <h2 className="text-[2.2rem]">
-              Recent{" "}
-              <span className="inline-block maxScreenMobile:hidden">
-                Presentation
-              </span>
-            </h2>
-          </div>
+      <div className="w-full h-fit bg-black">
+        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify py-6">
+          <h2 className="w-full">
+            <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
+            <span className="block w-full text-center text-4xl">
+              Presentation
+            </span>
+          </h2>
 
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
             <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
@@ -246,20 +243,22 @@ export default function NewHome() {
               />
             </button>
           </div>
-          {presentationQuery.isSuccess && (
-            <motion.div
-              variants={containerVarient}
-              initial="initial"
-              whileInView="inView"
-              viewport={{ once: true }}
-              className="cards_wrapper w-full mt-20 maxScreenMobile:mt-20 mb-10 maxScreenMobile:mb-10 scroll-smooth"
-              ref={scrollRef}
-            >
-              {presentationQuery.data.data.presentations.map((presentation) => (
-                <Card key={presentation.id} presentation={presentation} refresh={presentationQuery.refetch()} />
-              ))}
-            </motion.div>
-          )}
+          <div className="min-h-[40vh] mt-16 mb-6">
+            {presentationQuery.isSuccess && (
+              <motion.div
+                variants={containerVarient}
+                initial="initial"
+                whileInView="inView"
+                viewport={{ once: true }}
+                className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+                ref={scrollRef}
+              >
+                {presentationQuery.data.data.presentations.map((presentation) => (
+                  <Card key={presentation.id} presentation={presentation} refresh={presentationQuery.refetch()} />
+                ))}
+              </motion.div>
+            )}
+          </div>
           <NavLink
             to="/public_presentation"
             className="block text-center text-[#FFA500] underline"
@@ -563,7 +562,7 @@ export default function NewHome() {
                 </div>
                 <button
                   type="submit"
-                  className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-[2rem] maxScreenMobile:w-full"
+                  className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-md maxScreenMobile:w-full"
                 >
                   {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                 </button>

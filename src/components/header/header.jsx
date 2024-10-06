@@ -72,8 +72,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className={`_absolute _top-0 _left-0 _right-0 pt-10 pb-5 flex items-center justify-center ${isBackMenu ? "" : "z-50"} 
-        ${isBackMenu ? "bg-[#FFFFF0]" : getlocation ? "!bg-transparent chokes" : "bg-black"}`}
+      className={`border-b-[0.1px] py-8 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#FFFFF0]"} ${!isBackMenu && "z-50"}`}
     >
       <div className="container flex justify-between items-center">
         <div className="logo_wrapper">
@@ -89,7 +88,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
           <button
             onClick={() => handlePresentationBtn()}
             type="submit"
-            className={`w-[10rem] h-[2rem] flex items-center justify-center text-[.8rem] font-medium rounded-[2rem] ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+            className={`w-[10rem] h-[2rem] flex items-center justify-center text-[.8rem] font-medium rounded-md ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
           >
             {buttontext()}
           </button>
