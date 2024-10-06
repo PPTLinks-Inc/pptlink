@@ -4,13 +4,13 @@ import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoIosMic } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
-import { IoReturnUpBackOutline } from "react-icons/io5";
+import { IoReturnUpBackOutline, IoMusicalNotesOutline } from "react-icons/io5";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdCallEnd, MdError } from "react-icons/md";
 import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
 import { PiHandWaving } from "react-icons/pi";
 import { FiHome } from "react-icons/fi";
-import { BsThreeDots, BsLockFill } from "react-icons/bs";
+import { BsThreeDots } from "react-icons/bs";
 import { PresentationContext } from "../../contexts/presentationContext";
 import "./styles/style.css";
 import Modal from "./Modals/Modal";
@@ -23,9 +23,23 @@ import { MIC_STATE } from "../../constants/routes";
 import axios from "axios";
 import download from "./download";
 import { useMessageStore } from "./hooks/messageStore";
+import { IoOptions } from "react-icons/io5";
+import { RiBarChart2Line, RiFolderAddLine } from "react-icons/ri";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { MdOutlineScreenShare, MdNoiseControlOff } from "react-icons/md";
+import { GoBell } from "react-icons/go";
+import { PiPenNibLight } from "react-icons/pi";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "../ui/label";
 
 // eslint-disable-next-line react/prop-types
-export default function Controls({ containerRef, actionsActive }: {containerRef: React.MutableRefObject<any>, actionsActive: boolean}) {
+export default function Controls({
+  containerRef,
+  actionsActive
+}: {
+  containerRef: React.MutableRefObject<any>;
+  actionsActive: boolean;
+}) {
   const orientation = useOrientation();
   const {
     fullScreenShow,
@@ -64,7 +78,22 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
 
   const [loadingStatus, setLoadingStatus] = useState<any>({});
 
-  const unReadMessagesCount = useMessageStore((state) => state.unReadMessages.length);
+  const unReadMessagesCount = useMessageStore(
+    (state) => state.unReadMessages.length
+  );
+
+  useEffect(function() {
+    // closes all menu when escape key is pressed
+    function closeAllMenus(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setShowUsersList(false);
+        setShowMessage(false);
+        setShowOptions(false);
+      }
+    }
+    window.addEventListener("keydown", closeAllMenus);
+    return () => window.removeEventListener("keydown", closeAllMenus);
+  }, []);
 
   const micStyle = useMemo(
     function () {
@@ -104,7 +133,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
   }, []);
 
   const handleAcceptMicRequest = useCallback(
-    async function (user: { status: MIC_STATE; id: string; }) {
+    async function (user: { status: MIC_STATE; id: string }) {
       if (!presentation?.data) return;
       if (presentation.data.User !== "HOST") return;
 
@@ -130,7 +159,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
       endAudioPrompt ||
       showUsersList ||
       showMessage ||
-      audioData.error
+      audioData.error ||
+      showOptions
     ) {
       return "opacity-100";
     }
@@ -146,7 +176,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
     showUsersList,
     showMessage,
     audioData.error,
-    audioConnectionState
+    audioConnectionState,
+    showOptions
   ]);
 
   function actionMicButton() {
@@ -201,11 +232,13 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
   }
 
   function downloadFile(url: string, filename: string) {
-    axios.get(url, {
-      responseType: 'blob',
-    }).then(res => {
-      download(res.data, filename);
-    });
+    axios
+      .get(url, {
+        responseType: "blob"
+      })
+      .then((res) => {
+        download(res.data, filename);
+      });
   }
 
   return (
@@ -226,30 +259,36 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
           {audioData.success && (
             <>
-              <div className="relative">
-                <button onClick={() => setShowOptions(true)} className="rounded-full p-3 bg-gray-300 shadow !cursor-not-allowed">
-                  <BsThreeDots size={24} />
-                </button>
-                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
-                  <BsLockFill color="black" size={13} />
-                </span>
-              </div>
+              <button
+                onClick={() => setShowOptions(true)}
+                className="rounded-full p-3 bg-gray-300 shadow"
+              >
+                <BsThreeDots size={24} />
+              </button>
               <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
                 <FiHome size={24} />
               </a>
               <button
                 disabled={!presentation?.data?.downloadable}
                 className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.data?.downloadable && "!cursor-not-allowed"}`}
-                onClick={() => downloadFile(presentation?.data?.pdfLink || "", `${presentation?.data?.name}.pdf` || "")}
+                onClick={() =>
+                  downloadFile(
+                    presentation?.data?.pdfLink || "",
+                    `${presentation?.data?.name}.pdf` || ""
+                  )
+                }
               >
                 <IoCloudDownloadOutline
                   size={24}
-                  color={presentation?.data?.downloadable ? "black" : "bg-gray-400"}
+                  color={
+                    presentation?.data?.downloadable ? "black" : "bg-gray-400"
+                  }
                 />
               </button>
             </>
           )}
-          {(presentation?.data?.audio || presentation?.data?.User === "HOST") && (
+          {(presentation?.data?.audio ||
+            presentation?.data?.User === "HOST") && (
             <button
               className={`${micStyle?.style} rounded-full p-3 shadow ${audioData.loading && "!cursor-not-allowed"}`}
               onClick={actionMicButton}
@@ -259,7 +298,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                 <LoadingAssetBig2 />
               ) : (
                 <>
-                  {(audioData.success || !audioData.success) && !audioData.error ? (
+                  {(audioData.success || !audioData.success) &&
+                  !audioData.error ? (
                     micStyle?.icon
                   ) : (
                     <MdError size={60} />
@@ -282,7 +322,10 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                 </span>
               </div>
               <div className="relative">
-                <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
+                <button
+                  className="rounded-full p-3 bg-gray-300 shadow"
+                  onClick={() => setShowMessage(true)}
+                >
                   <LuMessagesSquare size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
@@ -302,14 +345,9 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
           {audioData.success && (
             <>
-              <div className="relative">
-                <button className="rounded-full p-3 bg-gray-300 shadow">
-                  <BsThreeDots size={24} />
-                </button>
-                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full flex justify-center items-center p-2 text-center">
-                  <BsLockFill color="black" size={13} />
-                </span>
-              </div>
+              <button onClick={() => setShowOptions(true)} className="rounded-full p-3 bg-gray-300 shadow">
+                <BsThreeDots size={24} />
+              </button>
 
               <div className="relative">
                 <button
@@ -324,7 +362,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
               </div>
             </>
           )}
-          {(presentation?.data?.audio || presentation?.data?.User === "HOST") && (
+          {(presentation?.data?.audio ||
+            presentation?.data?.User === "HOST") && (
             <button
               className={`${micStyle?.style} rounded-full p-3 shadow`}
               onClick={actionMicButton}
@@ -334,7 +373,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                 <LoadingAssetBig2 />
               ) : (
                 <>
-                  {(audioData.success || !audioData.success) && !audioData.error ? (
+                  {(audioData.success || !audioData.success) &&
+                  !audioData.error ? (
                     micStyle?.icon
                   ) : (
                     <MdError color="white" size={60} />
@@ -346,7 +386,10 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           {audioData.success && (
             <>
               <div className="relative">
-                <button className="rounded-full p-3 bg-gray-300 shadow" onClick={() => setShowMessage(true)}>
+                <button
+                  className="rounded-full p-3 bg-gray-300 shadow"
+                  onClick={() => setShowMessage(true)}
+                >
                   <LuMessagesSquare size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
@@ -385,11 +428,15 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           )}
         </div>
       </div>
-        
+
       <MessageMenu open={showMessage} onClose={() => setShowMessage(false)} />
-          
-      <Menu right={true} open={showUsersList} onClose={() => setShowUsersList(false)}>
-        <div className="rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
+
+      <Menu
+        right={true}
+        open={showUsersList}
+        onClose={() => setShowUsersList(false)}
+      >
+        <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-x-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
             <h4 className="text-2xl text-center text-black font-bold">
               Live Audience
@@ -404,9 +451,7 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             </div>
           </div>
 
-          <button
-            onClick={() => setShowUsersList(false)}
-          >
+          <button onClick={() => setShowUsersList(false)}>
             <IoReturnUpBackOutline size="32" />
           </button>
         </div>
@@ -446,8 +491,11 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                 await handleAcceptMicRequest({
                   id: user.id,
                   status: user.micState
-                })
-                setLoadingStatus((prev: any) => ({ ...prev, [user.id]: false }));
+                });
+                setLoadingStatus((prev: any) => ({
+                  ...prev,
+                  [user.id]: false
+                }));
               }}
               disabled={loadingStatus[user.id]}
             >
@@ -457,19 +505,104 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
                   src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
                   alt={`${user.userName} Image`}
                 />
-                <span className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}></span>
+                <span
+                  className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}
+                ></span>
               </div>
-              {loadingStatus[user.id] ? <p>Loading...</p> : <p title={user.userName} className="w-16 truncate ...">{user.userName}</p>}
+              {loadingStatus[user.id] ? (
+                <p>Loading...</p>
+              ) : (
+                <p title={user.userName} className="w-16 truncate ...">
+                  {user.userName}
+                </p>
+              )}
               <div className="w-20 flex justify-center items-center gap-2">
-                {index === 0 && presentation?.data?.rtc.rtcUid === user.id && <span>(You)</span>}
+                {index === 0 && presentation?.data?.rtc.rtcUid === user.id && (
+                  <span>(You)</span>
+                )}
               </div>
             </button>
           ))}
         </div>
       </Menu>
 
-      <Menu right={false} open={showOptions} onClose={() => setShowOptions(false)}>
-          <h1>Option</h1>
+      <Menu
+        right={false}
+        open={showOptions}
+        onClose={() => setShowOptions(false)}
+      >
+        <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-r-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
+          <div className="flex items-center">
+            <h4 className="text-2xl text-center text-black font-bold">
+              Options
+            </h4>
+            <div className="rounded-full p-3">
+              <IoOptions size="18" />
+            </div>
+          </div>
+
+          <button onClick={() => setShowUsersList(false)}>
+            <IoReturnUpBackOutline size="32" />
+          </button>
+        </div>
+        <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
+          <div className="flex flex-col gap-7">
+            <div className="flex justify-between items-center">
+              <Label htmlFor="pen" className="text-lg">Pen</Label>
+              <div className="flex gap-5 items-center">
+                <Label htmlFor="pen">
+                  <PiPenNibLight size="28" />
+                </Label>
+                <Switch id="pen" />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <Label htmlFor="music" className="text-lg">Music</Label>
+              <div className="flex gap-5 items-center">
+                <Label htmlFor="music">
+                <IoMusicalNotesOutline size="28" />
+                </Label>
+                <Switch id="music" />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <Label htmlFor="ping-audience" className="text-lg">Ping audience</Label>
+              <div className="flex gap-5 items-center">
+                <Label htmlFor="ping-audience">
+                  <GoBell size="28" />
+                </Label>
+                <Switch id="ping-audience" />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <Label htmlFor="noise-suppression" className="text-lg">Noise suppression</Label>
+              <div className="flex gap-5 items-center">
+                <Label htmlFor="noise-suppression">
+                  <MdNoiseControlOff size="28" />
+                </Label>
+                <Switch id="noise-suppression" />
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-around">
+            <button className="flex flex-col justify-center items-center">
+              <RiBarChart2Line />
+              <span>Poll</span>
+            </button>
+            <button className="flex flex-col justify-center items-center">
+              <AiOutlineUsergroupAdd />
+              <span>Co-host</span>
+            </button>
+            <button className="flex flex-col justify-center items-center">
+              <RiFolderAddLine />
+              <span>Add Slides</span>
+            </button>
+            <button className="flex flex-col justify-center items-center">
+              <MdOutlineScreenShare />
+              <span>Share Screen</span>
+            </button>
+          </div>
+        </div>
       </Menu>
 
       <Modal
@@ -484,7 +617,8 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
             className="flex flex-col gap-5"
             onSubmit={async (e) => {
               e.preventDefault();
-              if (!userName.trim() || userName.toLowerCase().includes("host")) return toast.error("Please enter your name");
+              if (!userName.trim() || userName.toLowerCase().includes("host"))
+                return toast.error("Please enter your name");
               localStorage.setItem("userName", `"${userName}"`);
               if (!presentation?.data) return;
               try {
@@ -551,12 +685,20 @@ export default function Controls({ containerRef, actionsActive }: {containerRef:
           setStartPrompt(false);
         }}
         isLoading={startAudio.isPending}
-        message={ 
+        message={
           presentation?.data?.User === "HOST"
-            ? (presentation?.data?.audio ? "Rejoin" : "Start")
+            ? presentation?.data?.audio
+              ? "Rejoin"
+              : "Start"
             : "Join"
         }
-        actionText={presentation?.data?.User === "HOST" ? (presentation?.data?.audio ? "Rejoin" : "Start") : "Join"}
+        actionText={
+          presentation?.data?.User === "HOST"
+            ? presentation?.data?.audio
+              ? "Rejoin"
+              : "Start"
+            : "Join"
+        }
       />
 
       <ConfirmModal
