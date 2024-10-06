@@ -205,11 +205,11 @@ export default function NewHome() {
               </button>
             </motion.div>
           </motion.div>
-          <div className="banner_img w-3/5 lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
+          <div className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
             <motion.iframe
               whileanimate={{ skewY: "-20deg", skewX: "deg" }}
               ref={targetRef}
-              className="w-full aspect-[4/2.5] mx-auto border-2 rounded-md"
+              className="w-full h-full mx-auto border-2 rounded-md"
               src="https://www.youtube-nocookie.com/embed/meTNh23fYKg?si=-ibyWcdA5oWJ7TTv&amp;controls=0"
               title="YouTube video player"
               frameborder="0"
@@ -281,22 +281,120 @@ export default function NewHome() {
         >
           WHY USE PPTLINKS?
         </motion.h3>
-        <div className="wrap_circle w-full h-fit mt-40 !text-black maxScreenMobile:mt-10">
+        <div className="wrap_circle w-full h-fit mt-20 !text-black maxScreenMobile:mt-10">
           <motion.div
-            initial={{ opacity: 1, rotate: "180deg" }}
-            whileInView={{
-              opacity: 1,
-              rotate: "0deg",
-              x: 0,
-              transition: { duration: 1 }
-            }}
-            viewport={{ margin: "100px", once: true }}
-            className="wrapAnim relative w-[40rem] h-[40rem] m-auto 
-                mt-20 bg-transparent rounded-[20rem] border-[2px]
-                border-solid border-black maxScreenMobile:flex maxScreenMobile:flex-col maxScreenMobile:justify-between maxScreenMobile:items-center maxScreenMobile:gap-[1rem] maxScreenMobile:w-full maxScreenMobile:h-fit maxScreenMobile:!rounded-none maxScreenMobile:!border-none maxScreenMobile:!m-0 maxScreenMobile:!p-0"
+            // initial={{ opacity: 1, rotate: "180deg" }}
+            // whileInView={{
+            //   opacity: 1,
+            //   rotate: "0deg",
+            //   x: 0,
+            //   transition: { duration: 1 }
+            // }}
+            // viewport={{ margin: "100px", once: true }}
+            // className="wrapAnim relative w-[40rem] h-[40rem] m-auto 
+            //     mt-20 bg-transparent rounded-[20rem] border-[2px]
+            //     border-solid border-black maxScreenMobile:flex maxScreenMobile:flex-col maxScreenMobile:justify-between maxScreenMobile:items-center maxScreenMobile:gap-[1rem] maxScreenMobile:w-full maxScreenMobile:h-fit maxScreenMobile:!rounded-none maxScreenMobile:!border-none maxScreenMobile:!m-0 maxScreenMobile:!p-0"
+            className="grid_anim_wrapper"
           >
             {/* ///////////////////////////////////////////////////// */}
-            <div className="rounded_animation absolute top-[-80px] left-[50%] translate-x-[-50%] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2 maxScreenMobile:translate-x-0">
+
+            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex !justify-between items-center">
+              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
+                <img
+                  src={anim_img1}
+                  alt={anim_img1}
+                  className="w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+
+              <div className="">
+                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
+                  Make Amazing Presentation
+                </h4>
+                <p className="text-4 w-full text-ellipsis m-auto text-center">
+                  and carry your audience along.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
+              <div className="anim_img bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
+                <img
+                  src={anim_img2}
+                  alt={anim_img2}
+                  className="w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+              <div className="">
+                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
+                  Host Classes with Libraries
+                </h4>
+                <p className="text-4 w-full text-ellipsis m-auto text-center">
+                  to create engaging learning experiences for participants.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
+              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
+                <img
+                  src={anim_img3}
+                  alt={anim_img3}
+                  className="w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+              <div className="">
+                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
+                  For Physical Presentations
+                </h4>
+                <p className="text-4 w-full text-ellipsis m-auto text-center">
+                  backbenchers become part of the session.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
+              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
+                <img
+                  src={anim_img4}
+                  alt={anim_img4}
+                  className="w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+              <div className="">
+                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
+                  Tell your story visually
+                </h4>
+                <p className="text-4 w-full text-ellipsis m-auto text-center">
+                  to give a lasting impression.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
+              <div className="bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
+                <img
+                  src={anim_img5}
+                  alt={anim_img5}
+                  className="w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+              <div className="">
+                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
+                  For Business
+                </h4>
+                <p className="text-4 w-full text-ellipsis m-auto text-center">
+                  present Your ideas with Confidence and Clarity.
+                </p>
+              </div>
+            </div>
+
+            {/* <div className="rounded_animation absolute top-[-80px] left-[50%] translate-x-[-50%] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2 maxScreenMobile:translate-x-0">
               <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
                 <img
                   src={anim_img1}
@@ -392,7 +490,7 @@ export default function NewHome() {
                   </p>
                 </p>
               </div>
-            </div>
+            </div> */}
             {/* ///////////////////////////////////////////////////// */}
           </motion.div>
         </div>
@@ -405,7 +503,7 @@ export default function NewHome() {
             initial="initial"
             whileInView="inView"
             viewport={{ margin: "100px", once: true }}
-            className="text-5xl mb-10"
+            className="text-5xl mb-10 uppercase font-[500]"
           >
             Get in touch
           </motion.h3>
@@ -419,13 +517,13 @@ export default function NewHome() {
             >
               <motion.h5
                 variants={secondVarient}
-                className="mb-3 text-[1.2rem]"
+                className="mb-3 text-[1.2rem] font-semibold"
               >
                 Send a Message
               </motion.h5>
               <motion.p
                 variants={secondVarient}
-                className="w-full mb-10 text-[1.1rem]"
+                className="w-full mb-16 text-[1.1rem] font-thin"
               >
                 Your voice matters! Share your thought and feedback with us and
                 be part of our community.
@@ -557,7 +655,7 @@ export default function NewHome() {
                     onChange={(e) => {
                       setValues({ ...values, msg: e.target.value });
                     }}
-                    className="block w-full min-h-[5rem] bg-transparent border-b-[1px] border-solid border-white py-2"
+                    className="block w-full !h-32 bg-transparent border-b-[1px] border-solid border-white py-2 resize-none"
                   ></textarea>
                 </div>
                 <button
@@ -574,11 +672,11 @@ export default function NewHome() {
               initial="initial"
               whileInView="inView"
               viewport={{ margin: "100px", once: true }}
-              className="w-2/5 min-h-[30rem] maxScreenMobile:w-full"
+              className="w-2/5 min-h-[30rem] maxScreenMobile:w-full relative parallel_lines"
             >
               <div className="w-full mb-10">
-                <h4 className="mb-3 text-[1.1rem]">Call Us</h4>
-                <p className="text-[1.1rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem] font-semibold">Call Us</h4>
+                <p className="text-[1.1rem] mb-3 font-thin">
                   Have a question or need guidance? Call us now and lets discuss
                   how we can help you achieve your goal.
                 </p>
@@ -596,8 +694,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3 text-[1.1rem]">Visit Us</h4>
-                <p className="text-[1.1rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem] font-semibold">Visit Us</h4>
+                <p className="text-[1.1rem] mb-3 font-thin">
                   We’d love to welcome you to our office. Visit us let’s discuss
                   your project.
                 </p>
@@ -616,8 +714,8 @@ export default function NewHome() {
               </div>
 
               <div className="w-full mb-10">
-                <h4 className="mb-3 text-[1.1rem]">Message Us</h4>
-                <p className="text-[1.1rem] mb-3">
+                <h4 className="mb-3 text-[1.1rem] font-semibold">Message Us</h4>
+                <p className="text-[1.1rem] mb-3 font-thin">
                   Write to us through text, on linkedin or any of our social
                   handles
                 </p>
