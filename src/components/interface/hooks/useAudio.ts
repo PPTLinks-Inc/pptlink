@@ -11,6 +11,7 @@ import RTC, {
 import { AIDenoiserExtension } from "agora-extension-ai-denoiser";
 import { AGORA_APP_ID } from "../../../constants/routes";
 import AgoraRTC from "agora-rtc-sdk-ng";
+import { useOptionsStore } from "./OptionsStore";
 
 let rtcClient: IAgoraRTCClient | null = null;
 
@@ -26,6 +27,10 @@ export default function useAudio() {
     localAudioTrack: null,
     remoteAudioTracks: {}
   });
+
+  const setNoiseProcessor = useOptionsStore((state) => state.setDenoiseProcessor);
+  const toggleNoiseSuppression = useOptionsStore((state) => state.toggleNoiseSuppression);
+  const setNoiseSuppressionAvailable = useOptionsStore((state) => state.setNoiseSuppressionAvailable);
 
   const [networkScore, setNetworkScore] = useState<NetworkQuality>();
 
@@ -63,25 +68,40 @@ export default function useAudio() {
     });
   }
 
-  function activeNoiceSuppression(audioTrack: ILocalAudioTrack) {
-    const denoiser = new AIDenoiserExtension({ assetsPath: "/external" });
-
-    if (!denoiser.checkCompatibility()) {
-      console.error("Does not support AI Denoiser!");
+  async function activeNoiceSuppression(audioTrack: ILocalAudioTrack) {
+    try {
+      const denoiser = new AIDenoiserExtension({ assetsPath: "/external" });
+  
+      if (!denoiser.checkCompatibility()) {
+        toggleNoiseSuppression(false);
+        setNoiseSuppressionAvailable(false);
+        return;
+      }
+      AgoraRTC.registerExtensions([denoiser]);
+  
+      const processor = denoiser.createProcessor();
+      processor.on("loaderror", function (e: any) {
+        console.log("loaderror", e);
+        toggleNoiseSuppression(false);
+        setNoiseSuppressionAvailable(false);
+      });
+  
+      processor.on("overload", async function () {
+        console.log("overload");
+        toggleNoiseSuppression(false);
+        await processor.disable();
+      });
+  
+      audioTrack.pipe(processor).pipe(audioTrack.processorDestination);
+      await processor.enable();
+      setNoiseProcessor(processor);
+      toggleNoiseSuppression(true);
+      setNoiseSuppressionAvailable(true);
+    } catch (error) {
+      console.log(error);
+      toggleNoiseSuppression(false);
+      setNoiseSuppressionAvailable(false);
     }
-    AgoraRTC.registerExtensions([denoiser]);
-
-    const processor = denoiser.createProcessor();
-    processor.on("loaderror", function (e: any) {
-      console.log(e);
-    });
-
-    processor.on("overload", async function () {
-      await processor.disable();
-    });
-
-    audioTrack.pipe(processor).pipe(audioTrack.processorDestination);
-    processor.enable();
   }
 
   async function startAudio(
