@@ -6,6 +6,7 @@ import { AGORA_APP_ID, MIC_STATE } from "../../../constants/routes";
 import { PresentationContextI, presentationData } from "../types";
 import { toast } from "react-toastify";
 import { Message, useMessageStore } from "./messageStore";
+import micRequest from "../assets/mic-request.mp3";
 
 export default function useRTM(
   endAudio: PresentationContextI["endAudio"],
@@ -23,6 +24,8 @@ export default function useRTM(
     useState<RTMEvents.RTMConnectionStatusChangeEvent["state"]>("DISCONNECTED");
 
   const addMessage = useMessageStore((state) => state.addUnreadMessage);
+
+  const audio = useRef<HTMLAudioElement | null>(null);
 
   async function leaveRtmChannel(e?: BeforeUnloadEvent) {
     if (!e) {
@@ -84,6 +87,9 @@ export default function useRTM(
       }
     } else if (messageData.message === MIC_STATE.MIC_MUTED || messageData.message === MIC_STATE.MIC_OFF) {
       if (messageData.message === MIC_STATE.MIC_MUTED) {
+        audio.current?.play().catch((error) => {
+          console.error("Error playing audio", error);
+        });
         toast.info("Unmute your mic to speak");
       }
       else if (messageData.message === MIC_STATE.MIC_OFF) {
@@ -152,6 +158,10 @@ export default function useRTM(
             withMessage: true,
             withPresence: true
           });
+
+          audio.current = new Audio(micRequest);
+          audio.current.volume = 1;
+          audio.current.load();
 
           setSuccess(true);
 
