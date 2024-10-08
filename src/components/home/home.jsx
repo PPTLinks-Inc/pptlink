@@ -221,7 +221,7 @@ export default function NewHome() {
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
       <div className="w-full h-fit bg-black">
-        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify py-6">
+        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify pt-14 pb-10">
           <h2 className="w-full">
             <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
             <span className="block w-full text-center text-4xl">
@@ -243,7 +243,7 @@ export default function NewHome() {
               />
             </button>
           </div>
-          <div className="min-h-[40vh] mt-16 mb-6">
+          <div className="min-h-[40vh] mt-20 mb-6">
             {presentationQuery.isSuccess && (
               <motion.div
                 variants={containerVarient}
@@ -291,206 +291,116 @@ export default function NewHome() {
             //   transition: { duration: 1 }
             // }}
             // viewport={{ margin: "100px", once: true }}
-            // className="wrapAnim relative w-[40rem] h-[40rem] m-auto 
-            //     mt-20 bg-transparent rounded-[20rem] border-[2px]
-            //     border-solid border-black maxScreenMobile:flex maxScreenMobile:flex-col maxScreenMobile:justify-between maxScreenMobile:items-center maxScreenMobile:gap-[1rem] maxScreenMobile:w-full maxScreenMobile:h-fit maxScreenMobile:!rounded-none maxScreenMobile:!border-none maxScreenMobile:!m-0 maxScreenMobile:!p-0"
             className="grid_anim_wrapper"
           >
             {/* ///////////////////////////////////////////////////// */}
 
-            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex !justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img1}
-                  alt={anim_img1}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
+            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img1}
+                    alt={anim_img1}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
 
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Make Amazing Presentation
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  and carry your audience along.
-                </p>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    Make Amazing Presentation
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    and carry your audience along.
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img2}
-                  alt={anim_img2}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Host Classes with Libraries
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  to create engaging learning experiences for participants.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img3}
-                  alt={anim_img3}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Physical Presentations
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  backbenchers become part of the session.
-                </p>
+            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+                <div className="anim_img bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img2}
+                    alt={anim_img2}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    Host Classes with Libraries
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    to create engaging learning experiences for participants.
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img4}
-                  alt={anim_img4}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Tell your story visually
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  to give a lasting impression.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img5}
-                  alt={anim_img5}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Business
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  present Your ideas with Confidence and Clarity.
-                </p>
+            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img4}
+                    alt={anim_img4}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    Tell your story visually
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    to give a lasting impression.
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* <div className="rounded_animation absolute top-[-80px] left-[50%] translate-x-[-50%] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2 maxScreenMobile:translate-x-0">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img1}
-                  alt={anim_img1}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Make Amazing Presentation
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  and carry your audience along.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute top-[100px] left-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img2}
-                  alt={anim_img2}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Host Classes with Libraries
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  to create engaging learning experiences for participants.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute bottom-0 left-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img3}
-                  alt={anim_img3}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Physical Presentations
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  backbenchers become part of the session.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute bottom-0 right-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img4}
-                  alt={anim_img4}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Tell your story visually
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  to give a lasting impression.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute top-[100px] right-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img5}
-                  alt={anim_img5}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Business
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
+            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img5}
+                    alt={anim_img5}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    For Business
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
                     present Your ideas with Confidence and Clarity.
                   </p>
-                </p>
+                </div>
               </div>
-            </div> */}
+            </div>
+
+            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img3}
+                    alt={anim_img3}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    For Physical Presentations to Carry
+                    Everyone Alone
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    backbenchers become part of the session.
+                  </p>
+                </div>
+              </div>
+            </div>
             {/* ///////////////////////////////////////////////////// */}
           </motion.div>
         </div>
