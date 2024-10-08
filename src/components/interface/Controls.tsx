@@ -4,7 +4,7 @@ import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoIosMic } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
-import { IoReturnUpBackOutline, IoMusicalNotesOutline } from "react-icons/io5";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdCallEnd, MdError } from "react-icons/md";
 import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
@@ -23,14 +23,8 @@ import { MIC_STATE } from "../../constants/routes";
 import axios from "axios";
 import download from "./download";
 import { useMessageStore } from "./hooks/messageStore";
-import { IoOptions } from "react-icons/io5";
-import { RiBarChart2Line, RiFolderAddLine } from "react-icons/ri";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { MdOutlineScreenShare, MdNoiseControlOff } from "react-icons/md";
-import { GoBell } from "react-icons/go";
-import { PiPenNibLight } from "react-icons/pi";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "../ui/label";
+import OptionMenu from "./Modals/optionMenu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({
@@ -82,7 +76,7 @@ export default function Controls({
     (state) => state.unReadMessages.length
   );
 
-  useEffect(function() {
+  useEffect(function () {
     // closes all menu when escape key is pressed
     function closeAllMenus(e: KeyboardEvent) {
       if (e.key === "Escape") {
@@ -102,7 +96,7 @@ export default function Controls({
       } else if (micState === MIC_STATE.REQ_MIC) {
         return { style: "bg-orange-500", icon: <PiHandWaving size={60} /> };
       } else if (micState === MIC_STATE.MIC_MUTED) {
-        return { style: "bg-[#ff0000]", icon: <IoIosMic size={60} /> };
+        return { style: "bg-rose-500", icon: <IoIosMic size={60} /> };
       } else if (micState === MIC_STATE.CAN_SPK) {
         return { style: "bg-green-500", icon: <IoIosMic size={60} /> };
       }
@@ -122,7 +116,7 @@ export default function Controls({
 
   const getUserMicStatusColor = useCallback(function (micStatus: MIC_STATE) {
     if (micStatus === MIC_STATE.MIC_MUTED) {
-      return "border-[#ff0000]";
+      return "border-rose-500";
     } else if (micStatus === MIC_STATE.REQ_MIC) {
       return "border-orange-500 animate-pinging";
     } else if (micStatus === MIC_STATE.CAN_SPK) {
@@ -334,7 +328,7 @@ export default function Controls({
               </div>
               <button
                 onClick={endUserAudio}
-                className="rounded-full p-3 bg-[#ff0000]"
+                className="rounded-full p-3 bg-rose-500"
               >
                 <MdCallEnd size={24} />
               </button>
@@ -345,7 +339,10 @@ export default function Controls({
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
           {audioData.success && (
             <>
-              <button onClick={() => setShowOptions(true)} className="rounded-full p-3 bg-gray-300 shadow">
+              <button
+                onClick={() => setShowOptions(true)}
+                className="rounded-full p-3 bg-gray-300 shadow"
+              >
                 <BsThreeDots size={24} />
               </button>
 
@@ -398,7 +395,7 @@ export default function Controls({
               </div>
               <button
                 onClick={endUserAudio}
-                className="rounded-full p-3 bg-[#ff0000]"
+                className="rounded-full p-3 bg-rose-500"
               >
                 <MdCallEnd size={24} />
               </button>
@@ -500,11 +497,10 @@ export default function Controls({
               disabled={loadingStatus[user.id]}
             >
               <div className="relative p-1 rounded-full">
-                <img
-                  className="w-16 rounded-full"
-                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
-                  alt={`${user.userName} Image`}
-                />
+                <Avatar>
+                  <AvatarImage src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`} />
+                  <AvatarFallback>{user.userName.substring(0, 1).toUpperCase()}</AvatarFallback>
+                </Avatar>
                 <span
                   className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}
                 ></span>
@@ -526,84 +522,7 @@ export default function Controls({
         </div>
       </Menu>
 
-      <Menu
-        right={false}
-        open={showOptions}
-        onClose={() => setShowOptions(false)}
-      >
-        <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-r-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
-          <div className="flex items-center">
-            <h4 className="text-2xl text-center text-black font-bold">
-              Options
-            </h4>
-            <div className="rounded-full p-3">
-              <IoOptions size="18" />
-            </div>
-          </div>
-
-          <button onClick={() => setShowUsersList(false)}>
-            <IoReturnUpBackOutline size="32" />
-          </button>
-        </div>
-        <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
-          <div className="flex flex-col gap-7">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="pen" className="text-lg">Pen</Label>
-              <div className="flex gap-5 items-center">
-                <Label htmlFor="pen">
-                  <PiPenNibLight size="28" />
-                </Label>
-                <Switch id="pen" />
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <Label htmlFor="music" className="text-lg">Music</Label>
-              <div className="flex gap-5 items-center">
-                <Label htmlFor="music">
-                <IoMusicalNotesOutline size="28" />
-                </Label>
-                <Switch id="music" />
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <Label htmlFor="ping-audience" className="text-lg">Ping audience</Label>
-              <div className="flex gap-5 items-center">
-                <Label htmlFor="ping-audience">
-                  <GoBell size="28" />
-                </Label>
-                <Switch id="ping-audience" />
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <Label htmlFor="noise-suppression" className="text-lg">Noise suppression</Label>
-              <div className="flex gap-5 items-center">
-                <Label htmlFor="noise-suppression">
-                  <MdNoiseControlOff size="28" />
-                </Label>
-                <Switch id="noise-suppression" />
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center justify-around">
-            <button className="flex flex-col justify-center items-center">
-              <RiBarChart2Line />
-              <span>Poll</span>
-            </button>
-            <button className="flex flex-col justify-center items-center">
-              <AiOutlineUsergroupAdd />
-              <span>Co-host</span>
-            </button>
-            <button className="flex flex-col justify-center items-center">
-              <RiFolderAddLine />
-              <span>Add Slides</span>
-            </button>
-            <button className="flex flex-col justify-center items-center">
-              <MdOutlineScreenShare />
-              <span>Share Screen</span>
-            </button>
-          </div>
-        </div>
-      </Menu>
+      <OptionMenu open={showOptions} onClose={() => setShowOptions(false)} users={users} />
 
       <Modal
         open={enterName}
