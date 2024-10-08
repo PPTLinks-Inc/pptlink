@@ -597,6 +597,9 @@ label.toggle__label {
             grid-row: 3/4;
         }
     }
+
+    @include is_mediaQuery_MaxWidth_Yes {
+    }
 }
 
 .parallel_lines {
