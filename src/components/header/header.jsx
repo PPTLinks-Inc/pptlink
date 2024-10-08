@@ -72,19 +72,35 @@ export default function Header({ isBackMenu, handleDropdown }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className={`border-b-[0.1px] py-8 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#FFFFF0]"} ${!isBackMenu && "z-50"}`}
+      className={`border-b-[0.1px] pt-8 pb-4 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#FFFFF0]"} ${!isBackMenu && "z-50"}`}
     >
       <div className="container flex justify-between items-center">
-        <div className="logo_wrapper">
+        <motion.div
+          initial={{ x: 50, opacity: 0 }}
+          whileInView={{
+            opacity: 1,
+            x: 0,
+            transition: { duration: 1, type: "tween" }
+          }}
+          viewport={{ once: true }}
+          className="logo_wrapper">
           <Link to="/" className="hlogo uppercase block w-10 h-10">
             <img
               src={isBackMenu ? logo_black : logo_white}
               alt={isBackMenu ? logo_black : logo_white}
             />
           </Link>
-        </div>
+        </motion.div>
 
-        <div className="btnGroup1 flex flex-row justify-between items-center w-[225px]">
+        <motion.div
+          initial={{ x: -50, opacity: 0 }}
+          whileInView={{
+            opacity: 1,
+            x: 0,
+            transition: { duration: 1, type: "tween" }
+          }}
+          viewport={{ once: true }}
+          className="btnGroup1 flex flex-row justify-between items-center w-[225px]">
           <button
             onClick={() => handlePresentationBtn()}
             type="submit"
@@ -112,7 +128,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
               />
             </svg>
           </button>
-        </div>
+        </motion.div>
       </div>
     </motion.header>
   );

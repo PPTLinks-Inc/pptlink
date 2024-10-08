@@ -71,7 +71,6 @@ export default function NewHome() {
   };
 
   // framer
-  const targetRef = useRef(null);
   const parentVarient = {
     initial: {
       // y: 5,
@@ -165,12 +164,12 @@ export default function NewHome() {
       exit="exit"
     >
       <div className="_banner relative w-full h-fit bg-black text-white">
-        <div className="container h-full text-center">
+        <div className="container h-fit pb-2 text-center">
           <motion.div
             variants={parentVarient}
             initial="initial"
             animate="animate"
-            className="flex flex-col justify-between items-center pt-[4rem]"
+            className="flex flex-col justify-between items-center pt-[3.5rem]"
           >
             <motion.h1
               variants={parentVarient}
@@ -205,45 +204,59 @@ export default function NewHome() {
               </button>
             </motion.div>
           </motion.div>
-          <div className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 1, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
             <motion.iframe
-              whileanimate={{ skewY: "-20deg", skewX: "deg" }}
-              ref={targetRef}
               className="w-full h-full mx-auto border-2 rounded-md"
               src="https://www.youtube-nocookie.com/embed/meTNh23fYKg?si=-ibyWcdA5oWJ7TTv&amp;controls=0"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
-              fetchpriority="high"></motion.iframe>
-          </div>
+              fetchpriority="high" ></motion.iframe>
+          </motion.div>
         </div>
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
       <div className="w-full h-fit bg-black">
         <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify pt-14 pb-10">
-          <h2 className="w-full">
+          <motion.h2
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 1, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            className="w-full">
             <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
             <span className="block w-full text-center text-4xl">
               Presentation
             </span>
-          </h2>
+          </motion.h2>
 
-          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
-            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!mt-5">
+            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCards(true)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
-            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretRight
                 onClick={() => scrollCards(false)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
           </div>
-          <div className="min-h-[40vh] mt-20 mb-6">
+          <div className="min-h-[40vh] mt-24 mb-6">
             {presentationQuery.isSuccess && (
               <motion.div
                 variants={containerVarient}
@@ -283,20 +296,20 @@ export default function NewHome() {
         </motion.h3>
         <div className="wrap_circle w-full h-fit mt-20 !text-black maxScreenMobile:mt-10">
           <motion.div
-            // initial={{ opacity: 1, rotate: "180deg" }}
-            // whileInView={{
-            //   opacity: 1,
-            //   rotate: "0deg",
-            //   x: 0,
-            //   transition: { duration: 1 }
-            // }}
-            // viewport={{ margin: "100px", once: true }}
             className="grid_anim_wrapper"
           >
             {/* ///////////////////////////////////////////////////// */}
 
-            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
-              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
                     src={anim_img1}
@@ -315,11 +328,19 @@ export default function NewHome() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
-              <div className="w-fit mr-auto flex justify-between items-start gap-6">
-                <div className="anim_img bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
                     src={anim_img2}
                     alt={anim_img2}
@@ -336,10 +357,18 @@ export default function NewHome() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
-              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
                     src={anim_img4}
@@ -357,10 +386,18 @@ export default function NewHome() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
-              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
                     src={anim_img5}
@@ -378,10 +415,18 @@ export default function NewHome() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
-              <div className="w-fit mr-auto flex justify-between items-start gap-6">
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
                     src={anim_img3}
@@ -400,7 +445,7 @@ export default function NewHome() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
             {/* ///////////////////////////////////////////////////// */}
           </motion.div>
         </div>
@@ -678,6 +723,6 @@ export default function NewHome() {
           </div>
         </div>
       </div>
-    </motion.section>
+    </motion.section >
   );
 }
