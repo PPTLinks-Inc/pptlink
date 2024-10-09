@@ -24,9 +24,7 @@ export default function NewUploadPage() {
   const scrollableRef = useRef(null);
   const previewRef = useRef(null);
   const [canUpload, setCanUpload] = useState(true);
-  // const [categories, setCategories] = useState([
-  //   ["Category One", false]
-  // ]);
+
   const categories = useQuery({
     queryKey: ["categories"],
     refetchOnWindowFocus: false,
@@ -194,8 +192,8 @@ export default function NewUploadPage() {
       className="upload_svg_cover h-fit relative bg-[#FFFFF0]"
       ref={scrollableRef}
     >
-      <div className="bottom_cover pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
-        <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[1rem] maxScreenMobile:text-center">
+      <div className="bottom_cover_ pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
+        <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[2rem] maxScreenMobile:text-center">
           New Presentation
         </h1>
         <hr />
@@ -234,9 +232,9 @@ export default function NewUploadPage() {
         </div>
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="addshadow w-full min-h-screen bg-[#FFFFF0] _shadow-md relative py-20 maxScreenMobile:pt-0"
+          className="w-full min-h-screen bg-[#FFFFF0] shadow-xl relative py-20 maxScreenMobile:pt-0 md:rounded-md"
         >
-          <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium maxScreenMobile:hidden">
+          <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium maxScreenMobile:hidden rounded-tl-md">
             {currentView === 1
               ? "Upload File"
               : currentView === 2
@@ -250,7 +248,6 @@ export default function NewUploadPage() {
             className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}
           >
             {/* first stage 🐱‍👤😒 upload el onNext remove */}
-            {/* <div className="w-[90%] h-[15rem] m-auto bg-black border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0]  before:absolute before:top-0 before:left-0 before:pointer-events-none"> */}
             <div
               className={`w-[90%] h-[15rem] m-auto ${errors.errors?.file ? "bg-[red]" : "bg-black"} ${!errors.errors?.file && values.file && "hidden"} 
               border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0] 
@@ -320,7 +317,7 @@ export default function NewUploadPage() {
                 )}
               </div>
               {errors.errors?.file && (
-                <p className="text-[red]">{errors.errors?.file}</p>
+                <p className="text-[red] text-lg mt-2 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">{errors.errors?.file}</p>
               )}
             </div>
 
@@ -333,7 +330,7 @@ export default function NewUploadPage() {
               uploadProcessing={uploadProcessing}
             />
             {/* first stage 🐱‍👤😒 onNext remove */}
-            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
+            <div className="w-[90%] h-fit m-auto mt-14 text-lg text-black">
               <label htmlFor="title" className="block mb-2">
                 <sup className="w-full text-xl font-bold">*</sup>Title
               </label>
@@ -350,7 +347,7 @@ export default function NewUploadPage() {
               )}
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
-            <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
+            <div className="w-[90%] h-fit m-auto mt-8 text-lg text-black">
               <label htmlFor="textarea" className="block mb-2">
                 <sup className="w-full text-xl font-bold"></sup>Description
                 (Optional)
@@ -369,7 +366,7 @@ export default function NewUploadPage() {
               )}
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
-            <div className="flex justify-between w-[90%] m-auto">
+            <div className="flex justify-between w-[90%] m-auto mt-6">
               <div className="w-[48%] h-fit mt-6 text-lg text-black">
                 <label htmlFor="publicSelector" className="block mb-2">
                   <sup className="w-full text-xl font-bold">*</sup>Privacy
@@ -408,7 +405,7 @@ export default function NewUploadPage() {
               </div>
             </div>
             {/* first stage 🐱‍👤😒 onNext remove */}
-            <div className="flex justify-between w-[90%] m-auto">
+            <div className="flex justify-between w-[90%] m-auto mt-6">
               <div className="w-[48%] maxScreenMobile:w-full mr-auto flex flex-col justify-center _items-center h-fit mt-6 text-lg text-black">
                 <div className="w-full relative">
                   <label htmlFor="publicSelector" className="block mb-2">
@@ -449,15 +446,15 @@ export default function NewUploadPage() {
                       onClick={addCategory}
                       className="w-[45%] maxScreenMobile:text-[0.8rem] 
                       flex gap-1 justify-evenly items-center h-full p-2 
-                      bg-black border-none rounded-tl-md rounded-bl-md maxScreenMobile:w-fit maxScreenMobile:p-4"
+                      bg-black border-black rounded-tr-md rounded-br-md maxScreenMobile:w-fit maxScreenMobile:p-4"
                     >
-                      <img
+                      {/* <img
                         src={img_plus}
                         alt={img_plus}
                         className="block w-3 h-3 scale-125 maxScreenMobile:scale-150"
-                      />
+                      /> */}
                       <span className="text-white text-[1rem] block w-fit h-fit italic maxScreenMobile:hidden">
-                        ADD NEW
+                        NEW
                       </span>
                     </button>
                   </div>
@@ -470,12 +467,12 @@ export default function NewUploadPage() {
                       id="title"
                       value={addedCategory}
                       onChange={(e) => setAddedCategory(e.target.value)}
-                      className="block w-[65%] p-2 indent-8 border-2 border-black border-r-0 rounded-tl-md rounded-bl-md"
+                      className="block w-[65%] p-2 indent-8 border-none border-black border-r-0 rounded-tl-md rounded-bl-md"
                       placeholder="ADD CATEGORY"
                     />
                     <button
                       type="button"
-                      className="w-[45%] flex gap-1 justify-center items-center h-full p-2 bg-black border-2 border-black rounded-tr-md rounded-br-md cursor-pointer"
+                      className="w-[45%] flex gap-1 justify-center items-center h-full p-2 bg-black border-none border-black rounded-tr-md rounded-br-md cursor-pointer"
                       onClick={newCategory}
                     >
                       <span className="text-white text-[1rem] block w-fit h-fit italic">

@@ -26,6 +26,7 @@ import NewDashboard from "./components/profile/newDashboard";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 import { ToastContainer } from "react-toastify";
+import SupperUpload from "./components/upload/supperUpload";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -90,6 +91,7 @@ function App() {
               }
             />
             <Route path="upload" element={<NewUploadPage />} />
+            <Route path="supper_upload" element={<SupperUpload />} />
           </Route>
           <Route
             path="/:id"
