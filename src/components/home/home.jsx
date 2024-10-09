@@ -11,7 +11,7 @@ import anim_img5 from "/team/pptlink_resources/analytics-presentation-svgrepo-co
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import sms from "/team/pptlink_resources/Group 33.png";
-import Accordion from "../accordion/accordion";
+import AccordionWrapper from "../accordion/accordion";
 import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
@@ -706,19 +706,16 @@ export default function NewHome() {
 
           <div className="accurdion w-3/5 maxScreenMobile:w-full" ref={scope}>
             {FAQ.map((_, id) => (
-              <Accordion
+              <AccordionWrapper
                 key={id}
                 title={_.title}
                 className="transition-all duration-300"
               >
-                <div>
-                  <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
+                  <h3 className="!text-8 font-semibold leading-[28px] mb-[15px]">
                     {_.h3}
                   </h3>
-
-                  <p className="text-[1.1rem]">{_.p}</p>
-                </div>
-              </Accordion>
+                  <p className="!text-8">{_.p}</p>
+              </AccordionWrapper>
             ))}
           </div>
         </div>

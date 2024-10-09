@@ -72,7 +72,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className={`border-b-[0.1px] pt-8 pb-4 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#FFFFF0]"} ${!isBackMenu && "z-50"}`}
+      className={`border-b-[0.1px] pt-8 pb-4 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#fffff022]"} ${!isBackMenu && "z-50"}`}
     >
       <div className="container flex justify-between items-center">
         <motion.div
