@@ -9,22 +9,92 @@ import { userContext } from "../../contexts/userContext";
 import axios from "axios";
 import { SERVER_URL } from "../../constants/routes";
 import SlidePreview from "./SlidePreview";
-import { LoadingAssetSmall2 } from "../../assets/assets";
-import { ProgressIndicator, FormLabelIndicator } from "./uploadSubcomponents/progressIndicator";
+import { ProgressIndicator, FormLabelIndicator, FormStageMover } from "./uploadSubcomponents/progressIndicator";
 import UploadStage from "./presentationStages/uploadStage";
 import InformationStage from "./presentationStages/informationStage";
 import PreviewStage from "./presentationStages/previewStage";
 
-let eventSourse = null;
-
 export default function SupperUpload() {
     const { user } = useContext(userContext);
     const queries = useQueryClient();
-    const [currentView, setCurrentView] = useState(2);
+    const scrollableRef = useRef(null);
+    const [currentView, setCurrentView] = useState(1);
+    const [uploadValues, setUploadValues] = useState({
+        // values to collect here
+        file: null,
+        title: "",
+        description: "",
+        privacy: "PUBLIC",
+        downloadable: true,
+        category: "",
+        categories: ["Educational Contents"],
+        linkType: "",
+        tempFileId: "",
+        presenterName: "",
+        bio: "",
+        socialMediaLink: "",
+        presentationDate: "",
+        presentationStartTime: "",
+        presentationEndTime: "",
+        canUpload: true,
+    });
+
+    const [uploadValuesErrors, setUploadValuesErrors] = useState({
+        // errors to lookout for here
+        fileError: "",
+        titleError: "",
+        descriptionError: "",
+        privacyError: "",
+        downloadableError: "",
+        categoryError: "",
+        linkTypeError: "",
+        tempFileIdError: "",
+        presenterNameError: "",
+        bioError: "",
+        socialMediaLinkError: "",
+        presentationDateError: "",
+        presentationStartTimeError: "",
+        presentationEndTimeError: "",
+    });
+    // seters
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUploadValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    };
+
+    // create axios requset to get all categories here
+    console.log(uploadValues);
 
     // form validation functions
+    // handling previous and next views
+    function moveStage(btnClicked) {
+        setCurrentView((prev) => {
+            if (btnClicked === "prev") {
+                if (prev <= 1) return (prev = 1);
+                return prev - 1;
+            } else if (btnClicked === "next") {
+                if (prev >= 3) return (prev = 3);
+                return prev + 1;
+            } else {
+                alert("😣 Stop trying to hack it skum bag!!!");
+            }
+        });
+    }
+
+    // scroll page to the top when currentView changes
+    useEffect(() => {
+        if (scrollableRef.current) {
+            scrollableRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [currentView]);
+
     return (
-        <section className="upload_svg_cover h-fit relative bg-[#FFFFF0]">
+        <section
+            ref={scrollableRef}
+            className="upload_svg_cover h-fit relative bg-[#FFFFF0]">
             <div className="bottom_cover_ pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
                 {/* progress indicator */}
                 <ProgressIndicator currentView={currentView} />
@@ -33,45 +103,37 @@ export default function SupperUpload() {
                     className="w-full min-h-screen bg-[#FFFFF0] shadow-xl relative py-20 maxScreenMobile:pt-0 md:rounded-md"
                 >
                     <FormLabelIndicator currentView={currentView} />
-                    {/* first stage elements */}
-                    <UploadStage currentView={currentView} />
+                    {/* first stage elements 👀👀 */}
+                    <UploadStage
+                        currentView={currentView}
+                        uploadValues={uploadValues}
+                        setUploadValues={setUploadValues}
+                        uploadValuesErrors={uploadValuesErrors}
+                        setUploadValuesErrors={setUploadValuesErrors}
+                        handleInputChange={handleInputChange}
+                    />
                     {/* Second stage show els 👀👀 */}
-                    <InformationStage currentView={currentView} />
+                    <InformationStage
+                        currentView={currentView}
+                        uploadValues={uploadValues}
+                        setUploadValues={setUploadValues}
+                        uploadValuesErrors={uploadValuesErrors}
+                        setUploadValuesErrors={setUploadValuesErrors}
+                        handleInputChange={handleInputChange}
+                    />
                     {/* Third stage show els 👀👀 */}
-                    <PreviewStage currentView={currentView} />
+                    <PreviewStage
+                        currentView={currentView}
+                        uploadValues={uploadValues}
+                    />
                 </form>
-                <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
-                    <button
-                        type="button"
-                        className={`${currentView === 1
-                            ? "!cursor-not-allowed"
-                            : "pointer-events-auto"
-                            } border border-black text-black text-[1.5rem] px-2 py-[calc(0.5rem-2px)] rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
-                        onClick={() => { }}
-                        disabled={false}
-                    >
-                        Back
-                    </button>
-
-                    <button
-                        type="button"
-                        className={`${false ? "bg-[red]" : "bg-[black]"} pointer-events-auto text-white text-[1.5rem] p-2 border-none rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
-                        onClick={(e) => {
-                            e.preventDefault();
-                        }}
-                        disabled={false}
-                    >
-                        {false ? (
-                            "Error, Try again"
-                        ) : false ? (
-                            <LoadingAssetSmall2 />
-                        ) : currentView === 3 ? (
-                            "Submit"
-                        ) : (
-                            "Next"
-                        )}
-                    </button>
-                </div>
+                {/* form stage tracker */}
+                <FormStageMover
+                    currentView={currentView}
+                    moveStage={moveStage}
+                    uploadValuesErrors={uploadValuesErrors}
+                    setUploadValuesErrors={setUploadValuesErrors}
+                />
             </div>
         </section>
     );

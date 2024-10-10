@@ -1,3 +1,5 @@
+import { LoadingAssetSmall2 } from "../../../assets/assets";
+
 function ProgressIndicator({ currentView }) {
 
     return (
@@ -41,6 +43,7 @@ function ProgressIndicator({ currentView }) {
 }
 
 function FormLabelIndicator({ currentView }) {
+
     return (
         <span className="absolute top-0 left-0 bg-[#FFFFF0] text-[#ffa500] block w-fit p-4 border-r-[2px] border-b-[2px] border-black text-xl font-medium maxScreenMobile:hidden rounded-tl-md rounded-br-md">
             {currentView === 1
@@ -54,4 +57,42 @@ function FormLabelIndicator({ currentView }) {
     )
 }
 
-export { ProgressIndicator, FormLabelIndicator }
+function FormStageMover({ currentView, moveStage }) {
+    
+    return (
+        <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
+            <button
+                type="button"
+                data-next="prev"
+                className={`${currentView === 1
+                    ? "!cursor-not-allowed"
+                    : "pointer-events-auto"
+                    } border border-black text-black text-[1.5rem] px-2 py-[calc(0.5rem-2px)] rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
+                onClick={(e) => moveStage(e.target.dataset.next)}
+                disabled={currentView === 1 ? true : false}
+            >
+                Back
+            </button>
+
+            <button
+                type={"button"}
+                data-next="next"
+                className={`${false ? "bg-[red]" : "bg-[black]"} pointer-events-auto text-white text-[1.5rem] p-2 border-none rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
+                onClick={(e) => moveStage(e.target.dataset.next)}
+                disabled={false}
+            >
+                {false ? (
+                    "Error, Try again"
+                ) : false ? (
+                    <LoadingAssetSmall2 />
+                ) : currentView === 3 ? (
+                    "Submit"
+                ) : (
+                    "Next"
+                )}
+            </button>
+        </div>
+    )
+}
+
+export { ProgressIndicator, FormLabelIndicator, FormStageMover }
