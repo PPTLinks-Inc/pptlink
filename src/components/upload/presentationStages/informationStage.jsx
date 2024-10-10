@@ -1,7 +1,7 @@
 import { DatePicker, EndTimePicker, StartTimePicker } from "../calender";
 import { Switch } from "@/components/ui/switch"
 
-export default function InformationStage({ currentView }) {
+export default function InformationStage({ currentView, uploadValues, handleInputChange }) {
 
     return (
         <div
@@ -17,6 +17,8 @@ export default function InformationStage({ currentView }) {
                     type="text"
                     name="name"
                     id="name"
+                    value={uploadValues.presenterName}
+                    onChange={() => handleInputChange}
                     className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
                 {false && (
@@ -34,8 +36,8 @@ export default function InformationStage({ currentView }) {
                     rows="5"
                     cols="50"
                     name="bio"
-                    onChange={() => { }}
-                    value={""}
+                    value={() => uploadValues.bio}
+                    onChange={handleInputChange}
                 ></textarea>
                 {false && (
                     <p className="text-[red]">{""}</p>
