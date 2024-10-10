@@ -363,7 +363,7 @@ export default function SignPage() {
             </div>
             <button
               disabled={signin.isPending || signup.isPending}
-              className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-3xl text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
+              className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
             >
               {signin.isPending || signup.isPending ? (
                 <LoadingAssetSmall2 />
@@ -398,7 +398,7 @@ export default function SignPage() {
 
             <button
               disabled
-              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -418,7 +418,7 @@ export default function SignPage() {
             </button>
             <button
               disabled
-              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
