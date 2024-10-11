@@ -1,31 +1,34 @@
+import { useState } from "react";
 import { DatePicker, EndTimePicker, StartTimePicker } from "../calender";
 import { Switch } from "@/components/ui/switch"
 
-export default function InformationStage({ currentView, uploadValues, handleInputChange }) {
+export default function InformationStage({ currentView, uploadValues, setUploadValues, handleInputChange }) {
+    const [toggleDateTime, setToggleDateTime] = useState(false);
 
     return (
         <div
             className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}
         >
-            {/* first stage 🐱‍👤😒 onNext remove */}
+            {/* Presenter&apos;s Name */}
             <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black maxScreenMobile:pt-6">
-                <label htmlFor="name" className="block mb-2">
+                <label htmlFor="presenterName" className="block mb-2">
                     <sup className="w-full text-xl font-bold">*</sup>
                     Presenter&apos;s Name
                 </label>
                 <input
                     type="text"
-                    name="name"
-                    id="name"
+                    name="presenterName"
+                    id="presenterName"
                     value={uploadValues.presenterName}
-                    onChange={() => handleInputChange}
+                    onChange={handleInputChange} // Correct: Just pass the function, no need for "() => handleInputChange"
                     className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
+
                 {false && (
                     <p className="text-[red]">{""}</p>
                 )}
             </div>
-            {/* first stage 🐱‍👤😒 onNext remove */}
+            {/* Bio */}
             <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
                 <label htmlFor="BioOptional" className="block mb-2">
                     <sup className="w-full text-xl font-bold"></sup>Bio (Optional)
@@ -36,25 +39,25 @@ export default function InformationStage({ currentView, uploadValues, handleInpu
                     rows="5"
                     cols="50"
                     name="bio"
-                    value={() => uploadValues.bio}
+                    value={uploadValues.bio} // Correct: No need for a function
                     onChange={handleInputChange}
-                ></textarea>
+                />
                 {false && (
                     <p className="text-[red]">{""}</p>
                 )}
             </div>
-            {/* first stage 🐱‍👤😒 onNext remove */}
+            {/* Social Media Link */}
             <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
-                <label htmlFor="title" className="block mb-2">
+                <label htmlFor="socialMediaLink" className="block mb-2">
                     <sup className="w-full text-xl font-bold"></sup>Social Media
                     Link (Optional)
                 </label>
                 <input
                     type="text"
-                    id="title"
-                    name="social"
-                    onChange={() => { }}
-                    value={""}
+                    id="socialMediaLink"
+                    name="socialMediaLink"
+                    value={uploadValues.socialMediaLink}
+                    onChange={handleInputChange}
                     className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
                 {false && (<p className="text-[red]">{""}</p>)}
@@ -65,19 +68,19 @@ export default function InformationStage({ currentView, uploadValues, handleInpu
                     Time of Presentation
                 </span>
                 <span>
-                    <Switch />
+                    <Switch setToggleDateTime={() => setToggleDateTime(prev => !prev)} />
                 </span>
             </span>
             {/* time constants for presentaions */}
-            {true && (
+            {toggleDateTime && (
                 <div className="flex maxScreenMobile:flex-col justify-between w-[90%] m-auto">
                     {/* 1 */}
-                    <DatePicker
+                    {/* <DatePicker
                         handleChange={() => { }}
                         setValues={() => { }}
                         values={""}
                         errors={""}
-                    />
+                    /> */}
 
                     {/* 2 */}
                     <StartTimePicker
