@@ -47,7 +47,7 @@ const DatePicker = ({ handleChange, setValues, values, errors }) => {
           <span className="w-full text-xl font-bold">*</span>Date Selection
         </label>
         <div
-          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.date ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${errors.errors2?.date ? "border border-[red] outline-offset-2" : "border-none"}`}
         >
           <input
             type="date"
@@ -111,7 +111,7 @@ const StartTimePicker = ({ handleChange, setValues, values, errors }) => {
           <span className="w-full text-xl font-bold">*</span>Start Time
         </label>
         <div
-          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"
+          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${errors.errors2?.startTime ? "border border-[red] outline-offset-2" : "border-none"
             }`}
         >
           <input
@@ -120,7 +120,7 @@ const StartTimePicker = ({ handleChange, setValues, values, errors }) => {
             ref={startTimeRef}
             value={values.startTime || ""}
             onChange={handleStartTimeChange}
-            className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+            className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
           />
           <label
             type="button"
@@ -177,7 +177,7 @@ const EndTimePicker = ({ handleChange, setValues, values, errors }) => {
           <span className="w-full text-xl font-bold">*</span>End Time (Optional)
         </label>
         <div
-          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-md ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"
+          className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${errors.errors2?.endTime ? "border border-[red] outline-offset-2" : "border-none"
             }`}
         >
           <input
@@ -186,7 +186,7 @@ const EndTimePicker = ({ handleChange, setValues, values, errors }) => {
             ref={endTimeRef}
             value={values.endTime || ""}
             onChange={handleEndTimeChange}
-            className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+            className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
           />
           <label
             type="button"

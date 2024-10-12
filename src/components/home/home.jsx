@@ -11,7 +11,7 @@ import anim_img5 from "/team/pptlink_resources/analytics-presentation-svgrepo-co
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import sms from "/team/pptlink_resources/Group 33.png";
-import Accordion from "../accordion/accordion";
+import AccordionWrapper from "../accordion/accordion";
 import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
@@ -71,7 +71,6 @@ export default function NewHome() {
   };
 
   // framer
-  const targetRef = useRef(null);
   const parentVarient = {
     initial: {
       // y: 5,
@@ -165,12 +164,12 @@ export default function NewHome() {
       exit="exit"
     >
       <div className="_banner relative w-full h-fit bg-black text-white">
-        <div className="container h-full text-center">
+        <div className="container h-fit pb-2 text-center">
           <motion.div
             variants={parentVarient}
             initial="initial"
             animate="animate"
-            className="flex flex-col justify-between items-center pt-[4rem]"
+            className="flex flex-col justify-between items-center pt-[3.5rem]"
           >
             <motion.h1
               variants={parentVarient}
@@ -205,45 +204,59 @@ export default function NewHome() {
               </button>
             </motion.div>
           </motion.div>
-          <div className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 1, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
             <motion.iframe
-              whileanimate={{ skewY: "-20deg", skewX: "deg" }}
-              ref={targetRef}
               className="w-full h-full mx-auto border-2 rounded-md"
               src="https://www.youtube-nocookie.com/embed/meTNh23fYKg?si=-ibyWcdA5oWJ7TTv&amp;controls=0"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
-              fetchpriority="high"></motion.iframe>
-          </div>
+              fetchpriority="high" ></motion.iframe>
+          </motion.div>
         </div>
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
       <div className="w-full h-fit bg-black">
-        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify py-6">
-          <h2 className="w-full">
+        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify pt-14 pb-10">
+          <motion.h2
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 1, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            className="w-full">
             <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
             <span className="block w-full text-center text-4xl">
               Presentation
             </span>
-          </h2>
+          </motion.h2>
 
-          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!pb-2">
-            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!mt-5">
+            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCards(true)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
-            <button className="border-[rgba(255,166,0,0.53)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretRight
                 onClick={() => scrollCards(false)}
                 className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
           </div>
-          <div className="min-h-[40vh] mt-16 mb-6">
+          <div className="min-h-[40vh] mt-24 mb-6">
             {presentationQuery.isSuccess && (
               <motion.div
                 variants={containerVarient}
@@ -283,214 +296,156 @@ export default function NewHome() {
         </motion.h3>
         <div className="wrap_circle w-full h-fit mt-20 !text-black maxScreenMobile:mt-10">
           <motion.div
-            // initial={{ opacity: 1, rotate: "180deg" }}
-            // whileInView={{
-            //   opacity: 1,
-            //   rotate: "0deg",
-            //   x: 0,
-            //   transition: { duration: 1 }
-            // }}
-            // viewport={{ margin: "100px", once: true }}
-            // className="wrapAnim relative w-[40rem] h-[40rem] m-auto 
-            //     mt-20 bg-transparent rounded-[20rem] border-[2px]
-            //     border-solid border-black maxScreenMobile:flex maxScreenMobile:flex-col maxScreenMobile:justify-between maxScreenMobile:items-center maxScreenMobile:gap-[1rem] maxScreenMobile:w-full maxScreenMobile:h-fit maxScreenMobile:!rounded-none maxScreenMobile:!border-none maxScreenMobile:!m-0 maxScreenMobile:!p-0"
             className="grid_anim_wrapper"
           >
             {/* ///////////////////////////////////////////////////// */}
 
-            <div className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex !justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img1}
-                  alt={anim_img1}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img1}
+                    alt={anim_img1}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
 
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Make Amazing Presentation
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  and carry your audience along.
-                </p>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    Make Amazing Presentation
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    and carry your audience along.
+                  </p>
+                </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img2}
-                  alt={anim_img2}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img2}
+                    alt={anim_img2}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    Host Classes with Libraries
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    to create engaging learning experiences for participants.
+                  </p>
+                </div>
               </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Host Classes with Libraries
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  to create engaging learning experiences for participants.
-                </p>
-              </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img3}
-                  alt={anim_img3}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img4}
+                    alt={anim_img4}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    Tell your story visually
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    to give a lasting impression.
+                  </p>
+                </div>
               </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Physical Presentations
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  backbenchers become part of the session.
-                </p>
-              </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[120px] aspect-square m-auto mb-3">
-                <img
-                  src={anim_img4}
-                  alt={anim_img4}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Tell your story visually
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  to give a lasting impression.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#FFFFF0] w-full _h-[200px] p-3 border-[2px] border-solid border-[#FFA500] rounded-md flex justify-between items-center">
-              <div className="bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img5}
-                  alt={anim_img5}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="">
-                <h4 className="text-[2rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Business
-                </h4>
-                <p className="text-4 w-full text-ellipsis m-auto text-center">
-                  present Your ideas with Confidence and Clarity.
-                </p>
-              </div>
-            </div>
-
-            {/* <div className="rounded_animation absolute top-[-80px] left-[50%] translate-x-[-50%] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2 maxScreenMobile:translate-x-0">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img1}
-                  alt={anim_img1}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Make Amazing Presentation
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  and carry your audience along.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute top-[100px] left-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img2}
-                  alt={anim_img2}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Host Classes with Libraries
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  to create engaging learning experiences for participants.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute bottom-0 left-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img3}
-                  alt={anim_img3}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Physical Presentations
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  backbenchers become part of the session.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute bottom-0 right-0 bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img4}
-                  alt={anim_img4}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  Tell your story visually
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  to give a lasting impression.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded_animation absolute top-[100px] right-[-80px] bg-[#FFFFF0] w-[200px] h-[200px] rounded-[100px] p-3 border-[2px] border-solid border-[#FFA500] maxScreenMobile:!static maxScreenMobile:w-full maxScreenMobile:!rounded-[5px] maxScreenMobile:mb-2">
-              <div className="anim_img bg-black p-2 rounded-[5px] w-[80px] h-[80px] m-auto mb-3">
-                <img
-                  src={anim_img5}
-                  alt={anim_img5}
-                  className="w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-              <div className="anim_body">
-                <h4 className="text-[.8rem] w-full text-ellipsis m-auto text-center font-medium">
-                  For Business
-                </h4>
-                <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
-                  <p className="text-[.8rem] w-4/5 text-ellipsis m-auto text-center">
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img5}
+                    alt={anim_img5}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    For Business
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
                     present Your ideas with Confidence and Clarity.
                   </p>
-                </p>
+                </div>
               </div>
-            </div> */}
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
+                <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
+                  <img
+                    src={anim_img3}
+                    alt={anim_img3}
+                    className="block w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="w-full !text-left">
+                  <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
+                    For Physical Presentations to Carry
+                    Everyone Alone
+                  </h4>
+                  <p className="text-4 w-full text-ellipsis m-auto">
+                    backbenchers become part of the session.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
             {/* ///////////////////////////////////////////////////// */}
           </motion.div>
         </div>
@@ -751,23 +706,20 @@ export default function NewHome() {
 
           <div className="accurdion w-3/5 maxScreenMobile:w-full" ref={scope}>
             {FAQ.map((_, id) => (
-              <Accordion
+              <AccordionWrapper
                 key={id}
                 title={_.title}
                 className="transition-all duration-300"
               >
-                <div>
-                  <h3 className="text-[20px] font-semibold leading-[28px] mb-[15px]">
+                  <h3 className="!text-8 font-semibold leading-[28px] mb-[15px]">
                     {_.h3}
                   </h3>
-
-                  <p className="text-[1.1rem]">{_.p}</p>
-                </div>
-              </Accordion>
+                  <p className="!text-8">{_.p}</p>
+              </AccordionWrapper>
             ))}
           </div>
         </div>
       </div>
-    </motion.section>
+    </motion.section >
   );
 }

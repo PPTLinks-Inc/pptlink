@@ -197,7 +197,7 @@ export default function SignPage() {
     >
       <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
         <div className="formwrapper relative w-[38.75rem] bg-[#FFFFF0] max-h-[38.75rem] rounded-[0.9375rem] p-10 maxScreenMobile:px-[0.125rem] !text-[0.8rem] overflow-auto maxScreenMobile:w-full maxScreenMobile:max-h-[90vh]">
-          <div className="_sticky top-0 maxScreen:z-50">
+          <div className="flex justify-left item-center gap-2 maxScreen:z-50 maxScreenMobile:px-3">
             <Link to="/" className="block text-md mb-3 font-[600]">
               <img
                 src={logo_orange}
@@ -213,7 +213,7 @@ export default function SignPage() {
           <h1 className="text-center text-3xl font-[400] mb-10">
             {isSignupPage ? "Sign Up" : "Sign In"}
           </h1>
-          <form onSubmit={handleSubmition} autoComplete="false">
+          <form onSubmit={handleSubmition} autoComplete="false" className="maxScreenMobile:px-3">
             {" "}
             {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
             {/* sign up */}
@@ -363,7 +363,7 @@ export default function SignPage() {
             </div>
             <button
               disabled={signin.isPending || signup.isPending}
-              className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-3xl text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
+              className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
             >
               {signin.isPending || signup.isPending ? (
                 <LoadingAssetSmall2 />
@@ -389,7 +389,7 @@ export default function SignPage() {
               Forgot password
             </a>
           </form>
-          <div className="w-full mt-3 flex flex-col items-center justify-between gap-2">
+          <div className="w-full mt-3 flex flex-col items-center justify-between gap-2 maxScreenMobile:px-3">
             <span className="flex w-full justify-center items-center mb-2">
               <hr className="block w-[35%] h-[.1px] bg-black" />
               <span className="block w-fit text-center mx-1 font-bold">Or</span>
@@ -398,7 +398,7 @@ export default function SignPage() {
 
             <button
               disabled
-              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -418,7 +418,7 @@ export default function SignPage() {
             </button>
             <button
               disabled
-              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-3xl maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+              className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
