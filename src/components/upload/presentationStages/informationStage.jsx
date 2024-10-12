@@ -1,9 +1,57 @@
-import { useState } from "react";
-import { DatePicker, EndTimePicker, StartTimePicker } from "../calender";
-import { Switch } from "@/components/ui/switch"
+import React, { useState, useRef, useEffect } from "react";
+import { Switch } from "@/components/ui/switch";
+import Icon_awesome_clock from "/Icon-awesome-clock.svg";
+// import NativeDatepicker from "../reactNativeDatePicker";
+import { Calendar } from "@/components/ui/calendar"
+import { TimePicker } from "@/components/ui/customTimePicker"
+import { SlCalender } from "react-icons/sl";
+// custom function
+function formatDate(date, format = 'DD/MM/YYYY') {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Replace format tokens with actual date values
+    return format.replace('DD', day)
+        .replace('MM', month)
+        .replace('YYYY', year)
+        .replace('HH', hours)
+        .replace('mm', minutes)
+        .replace('ss', seconds);
+}
 
 export default function InformationStage({ currentView, uploadValues, setUploadValues, handleInputChange }) {
     const [toggleDateTime, setToggleDateTime] = useState(false);
+    const [toggleDateTimeDatePicker, setToggleDateTimeDatePicker] = useState(false);
+    // const [date, setDate] = useState(new Date())
+    const startTimeRef = useRef(null);
+    const endTimeRef = useRef(null);
+    // console.log("Date popup ", date);
+
+    const handleClickStartTime = () => {
+        const timeInput = startTimeRef.current;
+        if (timeInput) {
+            if (timeInput.showPicker) {
+                timeInput.showPicker();
+            } else {
+                timeInput.focus();
+            }
+        }
+    };
+
+    const handleClickEndTime = () => {
+        const timeInput = endTimeRef.current;
+        if (timeInput) {
+            if (timeInput.showPicker) {
+                timeInput.showPicker();
+            } else {
+                timeInput.focus();
+            }
+        }
+    };
 
     return (
         <div
@@ -35,7 +83,7 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                 </label>
                 <textarea
                     id="BioOptional"
-                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
+                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md resize-none ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
                     rows="5"
                     cols="50"
                     name="bio"
@@ -63,40 +111,156 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                 {false && (<p className="text-[red]">{""}</p>)}
             </div>
             {/* time of presentation */}
-            <span className="bg-black border-none rounded-tr-md rounded-br-md text-[#ffa500] w-fit p-4 mt-8 text-xl font-medium flex justify-between items-center gap-2 maxScreenMobile:text-white maxScreenMobile:bg-[#ffa500] maxScreenMobile:border-[#ffa500]">
+            <span className="bg-black border-none rounded-tr-md rounded-br-md text-[#ffa500] w-fit p-4 mt-8 mb-6 text-xl font-medium flex justify-between items-center gap-2 _maxScreenMobile:text-white _maxScreenMobile:bg-[#ffa500] _maxScreenMobile:border-[#ffa500]">
                 <span>
                     Time of Presentation
                 </span>
                 <span>
                     <Switch setToggleDateTime={() => setToggleDateTime(prev => !prev)} />
+                    {/* <Switch onChange={() => setToggleDateTime(prev => !prev)} /> */}
                 </span>
             </span>
             {/* time constants for presentaions */}
             {toggleDateTime && (
-                <div className="flex maxScreenMobile:flex-col justify-between w-[90%] m-auto">
+                <div className="flex maxScreenMobile:flex-col justify-between w-[90%] m-auto relative">
                     {/* 1 */}
-                    {/* <DatePicker
-                        handleChange={() => { }}
-                        setValues={() => { }}
-                        values={""}
-                        errors={""}
-                    /> */}
+                    <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black relative">
+                        <div className="w-full relative">
+                            <label htmlFor="DateSelectionID" className="block mb-2">
+                                <span className="w-full text-xl font-bold">*</span>Date Selection
+                            </label>
+                            <div
+                                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
+                            >
+                                <input
+                                    type="date"
+                                    id="DateSelectionID"
+                                    name="presentationDate"
+                                    value={uploadValues.presentationDate || ""}
+                                    onChange={handleInputChange}
+                                    className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                                />
+                                <label
+                                    aria-label="Open Date Picker"
+                                    htmlFor="DateSelectionIDTwo"
+                                    onClick={() => setToggleDateTimeDatePicker(prev => !prev)}
+                                    className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+                                >
+                                    <span className="_text-[#ffa500] !text-white">
+                                        <SlCalender />
+                                    </span>
+                                </label>
+                            </div>
+                            {false && (
+                                <p className="text-[red]">{""}</p>
+                            )}
+                        </div>
+                    </div>
+                    {/* Datepicker model */}
+                    {toggleDateTimeDatePicker && (
+                        <div className="absolute top-auto bottom-[100%] left-auto right-0 bg-[#FFFFF0] z-50">
+                            <Calendar
+                                mode="single"
+                                selected={uploadValues.presentationDate || ""}
+                                onSelect={(date) => {
+                                    // Call a custom handler to update the date in uploadValues
+                                    setUploadValues((prevValues) => ({
+                                        ...prevValues,
+                                        presentationDate: formatDate(date, 'YYYY-MM-DD'),
+                                    }));
+                                }}
+                                className="rounded-md border !border-[#ffa500]"
+                            />,
+                        </div>
+                    )}
 
                     {/* 2 */}
-                    <StartTimePicker
-                        handleChange={() => { }}
-                        setValues={() => { }}
-                        values={""}
-                        errors={""}
-                    />
+                    <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black relative">
+                        <div className="w-full relative">
+                            <label htmlFor="StartTime" className="block mb-2">
+                                <span className="w-full text-xl font-bold">*</span>Start Time
+                            </label>
+                            <div
+                                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${false ? "border border-[red] outline-offset-2" : "border-none"
+                                    }`}
+                            >
+                                <input
+                                    type="time"
+                                    id="StartTime"
+                                    ref={startTimeRef}
+                                    name="presentationStartTime"
+                                    value={uploadValues.presentationStartTime || ""}
+                                    onChange={handleInputChange}
+                                    className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                                />
+                                <label
+                                    type="button"
+                                    aria-label="Open Start Time Picker"
+                                    htmlFor="StartTime"
+                                    onClick={handleClickStartTime}
+                                    className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+                                >
+                                    <img
+                                        src={Icon_awesome_clock}
+                                        alt="Clock Icon"
+                                        className="block w-4 h-4 scale-150 pointer-events-auto"
+                                    />
+                                </label>
+                            </div>
+                            {false && (
+                                <p className="text-[red]">{""}</p>
+                            )}
+                        </div>
+                    </div>
+                    {/* <TimePicker /> */}
+                    {true && <div className="absolute top-auto bottom-[100%] left-auto right-0 bg-[#FFFFF0] z-10">
+                        <TimePicker
+                            onTimeChange={(hours, minutes, period) => {
+                                console.log(`Selected time: ${hours}:${minutes} ${period}`);
+                            }}
+                            className="rounded-md border !border-[#ffa500]"
+                        />
+                    </div>}
+
 
                     {/* 3 */}
-                    <EndTimePicker
-                        handleChange={() => { }}
-                        setValues={() => { }}
-                        values={""}
-                        errors={""}
-                    />
+                    <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black">
+                        <div className="w-full relative">
+                            <label htmlFor="EndTime" className="block mb-2">
+                                <span className="w-full text-xl font-bold">*</span>End Time (Optional)
+                            </label>
+                            <div
+                                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${false ? "border border-[red] outline-offset-2" : "border-none"
+                                    }`}
+                            >
+                                <input
+                                    type="time"
+                                    id="EndTime"
+                                    ref={endTimeRef}
+                                    name="presentationEndTime"
+                                    value={uploadValues.presentationEndTime || ""}
+                                    onChange={handleInputChange}
+                                    className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                                />
+                                <label
+                                    type="button"
+                                    aria-label="Open End Time Picker"
+                                    htmlFor="EndTime"
+                                    onClick={handleClickEndTime}
+                                    className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+                                >
+                                    <img
+                                        src={Icon_awesome_clock}
+                                        alt="Clock Icon"
+                                        className="block w-4 h-4 scale-150 pointer-events-auto"
+                                    />
+                                </label>
+                            </div>
+                            {false && (
+                                <p className="text-[red]">{""}</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
             {/* end */}

@@ -113,7 +113,7 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                 </label>
                 <textarea
                     id="textarea"
-                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
+                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md resize-none ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
                     rows="5"
                     cols="50"
                     name="description"
