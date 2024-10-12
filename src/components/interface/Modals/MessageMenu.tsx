@@ -3,10 +3,11 @@ import { IoReturnUpBackOutline } from "react-icons/io5";
 import { IoSendOutline } from "react-icons/io5";
 import { BsArrowDown } from "react-icons/bs";
 import Menu from "./Menu";
-import { useContext, useEffect, useRef, useState } from "react";
-import { PresentationContext } from "../../../contexts/presentationContext";
-import { Message, useMessageStore } from "../hooks/messageStore";
+import { useEffect, useRef, useState } from "react";
+import { Message, useMessageStore } from "../store/messageStore";
 import { useIntersection } from "react-use";
+import { useRtmStore } from "../store/rtmStore";
+import { usepresentationStore } from "../store/presentationStore";
 
 export default function MessageMenu({
   open,
@@ -15,8 +16,12 @@ export default function MessageMenu({
   open: boolean;
   onClose: () => void;
 }) {
-  const { rtm, userName, presentation, tokens } =
-    useContext(PresentationContext);
+  // const { rtm, userName, presentation, tokens } =
+  //   useContext(PresentationContext);
+  const rtm = useRtmStore((state) => state.rtm);
+  const userName = useRtmStore((state) => state.userName);
+  const presentation = usepresentationStore((state) => state.presentation);
+  const tokens = useRtmStore((state) => state.token);
   const messages = useMessageStore((state) => state.readMessages);
   const sendMessage = useMessageStore((state) => state.sendMessage);
   const unreadMessages = useMessageStore((state) => state.unReadMessages);
@@ -58,20 +63,20 @@ export default function MessageMenu({
 
   async function sendUserMessage(e: React.FormEvent) {
     e.preventDefault();
-    if (!rtm || !presentation?.data) return;
+    if (!rtm || !presentation) return;
 
     if (userText.trim() === "") return;
 
     const messageData: Message = {
       type: "text",
       content: userText.trim(),
-      sender: presentation.data.User === "HOST" ? "HOST" : userName,
+      sender: presentation.User === "HOST" ? "HOST" : userName,
       senderId:
-        presentation.data.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
+        presentation.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
       time: ""
     };
 
-    await sendMessage(messageData, rtm, presentation.data.liveId);
+    await sendMessage(messageData);
     setUserText("");
   }
 
