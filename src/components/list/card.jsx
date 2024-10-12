@@ -141,7 +141,7 @@ export default function Card({ presentation, refresh }) {
   // Modal handler
   const handleCardModel = (Id, data) => {
     if (data === "share") {
-      const link = `https://pptlinks/${Id}`;
+      const link = `https://pptlinks.com/${Id}`;
       navigator?.share ? shareLink(link) : copyLink(link);
       return;
     }
