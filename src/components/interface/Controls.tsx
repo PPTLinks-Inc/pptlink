@@ -121,16 +121,36 @@ export default function Controls({
   const micStyle = useMemo(
     function () {
       if (micState === MIC_STATE.MIC_OFF || audioLoadingStatus !== "success") {
-        return { style: "bg-gray-300", icon: <IoIosMic size={60} />, text: audioLoadingStatus === "success" ? "MIC OFF" : "JOIN" };
+        const text =
+          audioLoadingStatus === "success"
+            ? "MIC OFF"
+            : presentation?.User === "HOST" && presentation?.audio
+              ? "REJOIN"
+              : presentation?.User === "HOST" && !presentation?.audio
+                ? "START"
+                : "JOIN";
+        return { style: "bg-gray-300", icon: <IoIosMic size={60} />, text };
       } else if (micState === MIC_STATE.REQ_MIC) {
-        return { style: "bg-orange-500", icon: <PiHandWaving size={60} />, text: "REQUESTING" };
+        return {
+          style: "bg-orange-500",
+          icon: <PiHandWaving size={60} />,
+          text: "REQUESTING"
+        };
       } else if (micState === MIC_STATE.MIC_MUTED) {
-        return { style: "bg-rose-500", icon: <IoIosMic size={60} />, text: "MIC MUTED" };
+        return {
+          style: "bg-rose-500",
+          icon: <IoIosMic size={60} />,
+          text: "MIC MUTED"
+        };
       } else if (micState === MIC_STATE.CAN_SPK) {
-        return { style: "bg-green-500", icon: <IoIosMic size={60} />, text: "MIC ON" };
+        return {
+          style: "bg-green-500",
+          icon: <IoIosMic size={60} />,
+          text: "MIC ON"
+        };
       }
     },
-    [micState, audioLoadingStatus]
+    [micState, audioLoadingStatus, presentation]
   );
 
   const getUserMicStatusColor = useCallback(function (micStatus: MIC_STATE) {
@@ -303,7 +323,9 @@ export default function Controls({
                   micStyle?.icon
                 )}
               </button>
-              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">{micStyle?.text}</span>
+              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">
+                {micStyle?.text}
+              </span>
             </div>
           )}
           {audioLoadingStatus === "success" && (
@@ -398,7 +420,9 @@ export default function Controls({
                   micStyle?.icon
                 )}
               </button>
-              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">{micStyle?.text}</span>
+              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">
+                {micStyle?.text}
+              </span>
             </div>
           )}
           {audioLoadingStatus === "success" && (
