@@ -12,7 +12,7 @@ import {
   IoMusicalNotesOutline,
   IoOptions
 } from "react-icons/io5";
-import { useOptionsStore } from "../hooks/OptionsStore";
+import { useOptionsStore } from "../store/optionsStore";
 import { useCallback, useState } from "react";
 import { MIC_STATE } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -91,16 +91,16 @@ function MainMenu({
         </div>
       </div>
       <div className="flex items-center justify-around">
-        <button className="flex flex-col justify-center items-center">
-          <RiBarChart2Line />
-          <span>Poll</span>
-        </button>
         <button
           className="flex flex-col justify-center items-center"
           onClick={() => setCurrentMenuOption("co-host")}
         >
           <AiOutlineUsergroupAdd />
           <span>Co-host</span>
+        </button>
+        <button className="flex flex-col justify-center items-center">
+          <MdOutlineScreenShare />
+          <span>Share Screen</span>
         </button>
         <button
           className="flex flex-col justify-center items-center"
@@ -110,8 +110,8 @@ function MainMenu({
           <span>Add Slides</span>
         </button>
         <button className="flex flex-col justify-center items-center">
-          <MdOutlineScreenShare />
-          <span>Share Screen</span>
+          <RiBarChart2Line />
+          <span>Poll</span>
         </button>
       </div>
     </div>
@@ -187,7 +187,7 @@ export default function OptionMenu({
   >("main");
 
   return (
-    <Menu right={false} open={open} onClose={onClose}>
+    <Menu right={false} open={open} onClose={onClose} small={true}>
       <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-r-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
         <div className="flex items-center">
           {currentMenuOption === "main" ? (

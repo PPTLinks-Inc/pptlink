@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import { toast } from "@/hooks/use-toast";
 import { CiShare2 } from "react-icons/ci";
 import { FaRegCopy } from "react-icons/fa6";
 
@@ -14,12 +14,14 @@ function ShareAPI() {
   function shareLink() {
     navigator
       .share(shareData)
-      .catch(() => toast.error("Error sharing the link"));
+      .catch(() => {/*  */});
   }
 
   function copyLink() {
     navigator.clipboard && navigator.clipboard.writeText(window.location.href);
-    toast.success("Link Copied successfully");
+    toast({
+      description: "Link Copied successfully"
+    });
   }
 
   return (

@@ -25,7 +25,7 @@ import PublicPresentation from "./components/see_more_presentation/seeMorePresen
 import NewDashboard from "./components/profile/newDashboard";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "@/components/ui/toaster";
 import SupperUpload from "./components/upload/supperUpload";
 
 axios.defaults.baseURL = SERVER_URL;
@@ -108,7 +108,7 @@ function App() {
           <Route path="datetest" element={<DateTest />} />
         </Routes>
       </AnimatePresence>
-      {/* <ToastContainer stacked /> */}
+      <Toaster />
     </>
   );
 }

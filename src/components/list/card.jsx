@@ -15,8 +15,9 @@ import { MdOutlineReportProblem } from "react-icons/md";
 import { userContext } from "../../contexts/userContext";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { toast } from "react-toastify";
 import PopUpModal from "../Models/dashboardModel";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 export default function Card({ presentation, refresh }) {
 
@@ -49,10 +50,15 @@ export default function Card({ presentation, refresh }) {
     onSuccess: function () {
       closeModal();
       refresh();
-      toast.success("Presentation deleted successfully");
+      toast({
+        description: "Presentation deleted successfully"
+      });
     },
     onError: function () {
-      toast.error("An error occured while deleting presentation");
+      toast({
+        description: "An error occured while deleting presentation",
+        variant: "destructive"
+      });
     }
   });
 
@@ -64,16 +70,29 @@ export default function Card({ presentation, refresh }) {
       );
       return data;
     },
-    onSuccess: function (data) {
+    onSuccess: function (data, id) {
       if (data.bookmarked) {
-        toast.success("Presentation added to your Bookmarks");
+        toast({
+          description: "Presentation added to your Bookmarks",
+          action: (
+            <ToastAction onClick={() => bookmarkPresentation.mutate(id)} altText="undo">Undo</ToastAction>
+          )
+        });
       } else {
-        toast.success("Presentation removed from your Bookmarks");
+        toast({
+          description: "Presentation removed from your Bookmarks",
+          action: (
+            <ToastAction onClick={() => bookmarkPresentation.mutate()} altText="undo">Undo</ToastAction>
+          )
+        });
       }
     },
     onError: function () {
       setBookmarked((prev) => !prev);
-      toast.error("An error occured while bookmarking presentation");
+      toast({
+        description: "An error occured while bookmarking presentation",
+        variant: "destructive"
+      });
     }
   });
 
@@ -113,7 +132,9 @@ export default function Card({ presentation, refresh }) {
       navigator.clipboard
         .writeText(link)
         .then(() => {
-          toast.success("Link Copied successfully");
+          toast({
+            description: "Link Copied successfully"
+          });
         })
         .catch(() => {});
   }
