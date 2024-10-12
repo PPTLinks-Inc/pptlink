@@ -10,6 +10,8 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import "swiper/css";
 import "./styles/style.css";
+import { useSlideStore } from "./store/slideStore";
+import { usepresentationStore } from "./store/presentationStore";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -43,7 +45,10 @@ function FullScreenLoading({ progress }: { progress: number }) {
 function LoadError() {
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-black inset-0">
-      <p className="text-slate-200">Error Loading Presentation File</p>
+      <p className="text-slate-200 text-3xl text-center">Error Loading Presentation File.</p>
+      <p className="text-slate-200 mt-5 text-center">
+        This could be due to an outdated browser or a poor network connection.
+      </p>
       <button
         className="bg-slate-200 text-black p-3 mt-3 rounded-md"
         onClick={() => location.reload()}
@@ -58,20 +63,27 @@ export default function Slider({
   setIsLoaded,
   handleMouseClick,
   handleMouseMove
-}: {setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>, handleMouseClick: (e: any) => void, handleMouseMove: () => void}) {
+}: {
+  setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
+  handleMouseClick: (e: any) => void;
+  handleMouseMove: () => void;
+}) {
   const swiperRef = useRef<any>(null);
   const slideContainer = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [maxWidth, setMaxWidth] = useState(0);
-  const { isMobilePhone, presentation, setSwiperRef, fullScreenShow } =
+  const { isMobilePhone, fullScreenShow } =
     useContext(PresentationContext);
+  const setSwiperRef = useSlideStore((state) => state.setSwiperRef);
+  const initSlide = useSlideStore((state) => state.init);
+  const presentation = usepresentationStore((state) => state.presentation);
   const orientation = useOrientation();
   const file = useMemo(
     function () {
-      return presentation?.data?.pdfLink;
+      return presentation?.pdfLink;
     },
-    [presentation?.data?.pdfLink]
+    [presentation?.pdfLink]
   );
   const { height: windowHeight } = useWindowSize();
 
@@ -84,7 +96,9 @@ export default function Slider({
 
   useEffect(() => {
     if (!swiperRef.current) return;
+    console.log("Setting swiper ref");
     setSwiperRef(swiperRef.current);
+    initSlide();
   }, [swiperRef.current]);
 
   function adjustWidth() {
