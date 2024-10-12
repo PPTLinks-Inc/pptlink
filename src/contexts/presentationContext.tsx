@@ -146,7 +146,7 @@ const PresentationContextProvider = (props: { children: any }) => {
   );
 
   useEffect(function () {
-    window.addEventListener("beforeunload", function (e?: BeforeUnloadEvent) {
+    function beforeUnload(e?: BeforeUnloadEvent) {
       if (!e) {
         useSlideStore.getState().setSwiperRef(null);
         useAudioStore.getState().endAudio({ hostEnd: false });
@@ -162,12 +162,14 @@ const PresentationContextProvider = (props: { children: any }) => {
         useRtmStore.getState().rtm?.logout();
       }
       return confirmationMessage;
-    });
+    }
+    window.addEventListener("beforeunload", beforeUnload);
 
     return function () {
       useSlideStore.getState().setSwiperRef(null);
       useAudioStore.getState().endAudio({ hostEnd: false });
       useRtmStore.getState().rtm?.logout();
+      window.removeEventListener("beforeunload", beforeUnload);
     };
   }, []);
 
