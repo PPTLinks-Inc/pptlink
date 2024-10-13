@@ -4,58 +4,35 @@
 import {
   createContext,
   useCallback,
-  useEffect,
   useState,
-  useContext
+  useContext,
+  useEffect
 } from "react";
 import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import rotateImage from "../components/interface/assets/rotate.gif";
 import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import { userContext } from "./userContext";
-import { MIC_STATE } from "../constants/routes";
-import useAudio from "../components/interface/hooks/useAudio";
-import { toast } from "react-toastify";
-import useRTM from "../components/interface/hooks/useRTM";
-import useSlide from "../components/interface/hooks/useSlide";
 import {
   PresentationContextI,
-  presentationData,
-  rtmTokenI
+  presentationData
 } from "../components/interface/types";
-import { RTMClient } from "agora-rtm-sdk";
+import { usepresentationStore } from "@/components/interface/store/presentationStore";
+import { useRtmStore } from "@/components/interface/store/rtmStore";
+import { useAudioStore } from "@/components/interface/store/audioStore";
+import { useSlideStore } from "@/components/interface/store/slideStore";
+import { toast } from "@/hooks/use-toast";
+import { MIC_STATE } from "@/constants/routes";
 
 const contextValues = {
   fullScreenShow: false,
   fullScreenToggle: () => {},
   isIphone: false,
-  isMobilePhone: false,
-  presentation: null,
-  makeLive: {},
-  setSwiperRef: () => {},
-  micState: MIC_STATE.MIC_OFF,
-  setMicState: () => {},
-  audioSuccess: false,
-  startPrompt: false,
-  setStartPrompt: () => {},
-  audioLoading: false,
-  audioError: false,
-  setMute: () => {},
-  joinAudio: false,
-  setJoinAudio: () => {},
-  userName: "",
-  setUserName: () => {},
-  rtcToken: null,
-  networkStatus: "unknown",
-  startAudio: {},
-  fetchRtcToken: {},
-  synced: false,
-  setSynced: () => {},
-  rtmConnectionState: "DISCONNECTED"
+  isMobilePhone: false
 } as unknown as PresentationContextI;
 
 export const PresentationContext = createContext(contextValues);
@@ -81,21 +58,14 @@ function OrientationPrompt({
 }
 
 const PresentationContextProvider = (props: { children: any }) => {
-  const [swiperRef, setSwiperRef] = useState<any>();
-
   const { user } = useContext(userContext);
   const params = useParams();
   const [showPrompt, setShowPrompt] = useState(true);
   const [fullScreenShow, fullScreenToggle] = useToggle(false);
-  const [startPrompt, setStartPrompt] = useState(false);
   const orientation = useOrientation();
   const [userUid, setUserUid] = useLocalStorage<string>("userUid");
   const [prevUsername] = useLocalStorage<string>("userName");
-  const [tokens, setTokens] = useState<rtmTokenI>();
-  const [userName, setUserName] = useState(
-    prevUsername || user?.username || ""
-  );
-  const [micState, setMicState] = useState(MIC_STATE.MIC_OFF);
+
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
       return /iPhone/i.test(navigator.userAgent);
@@ -103,24 +73,41 @@ const PresentationContextProvider = (props: { children: any }) => {
     return /Android|iPhone/i.test(navigator.userAgent);
   }, []);
 
-  const queryClient = useQueryClient();
+  const setToken = useRtmStore((state) => state.setToken);
+  const setStartPrompt = usepresentationStore(
+    (state) => state.setShowStartPrompt
+  );
+  const setPresentation = usepresentationStore(
+    (state) => state.setPresentation
+  );
+  const initRTM = useRtmStore((state) => state.init);
+  const setUserName = useRtmStore((state) => state.setUserName);
+
   const presentationQuery = useQuery<presentationData>({
     queryKey: ["presentation", params.id],
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     queryFn: async () => {
+      setUserName(prevUsername || user?.username || "");
       const { data } = await axios.get<{
         sucess: boolean;
         presentation: presentationData;
       }>(`/api/v1/ppt/presentations/present/${params.id}`, {
         params: { userUid }
       });
-      setTokens({
+
+      setPresentation(data.presentation);
+
+      setToken({
         rtmToken: data.presentation.rtc.rtmToken,
-        rtcUid: data.presentation.rtc.rtcUid
+        rtcUid: data.presentation.rtc.rtcUid,
+        rtcToken: data.presentation.rtc.rtcToken || ""
       });
+
       setUserUid(data.presentation.rtc.rtcUid);
+
+      await initRTM();
 
       if (data.presentation.audio) {
         setStartPrompt(true);
@@ -129,16 +116,16 @@ const PresentationContextProvider = (props: { children: any }) => {
     }
   });
 
+  const presentation = usepresentationStore((state) => state.presentation);
   useQuery({
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
     queryKey: ["orientation-prompt"],
-    enabled: presentationQuery.data?.live,
+    enabled: presentation !== null,
     queryFn: function () {
       if (
-        (orientation.type.includes("landscape") &&
-          presentationQuery.data?.live) ||
+        (orientation.type.includes("landscape") && presentation !== null) ||
         !("orientation" in screen)
       ) {
         setShowPrompt(false);
@@ -147,247 +134,144 @@ const PresentationContextProvider = (props: { children: any }) => {
     }
   });
 
-  const endAudio = useMutation({
-    mutationFn: async function ({
-      User,
-      liveId,
-      presentationId,
-      hostEnd
-    }: {
-      User: "HOST" | "GUEST";
-      liveId: string;
-      presentationId: string;
-      hostEnd: boolean;
-    }) {
-      await signalling.rtm?.presence.setState(liveId, "MESSAGE", {
-        id: "null",
-        userName: "null",
-        micState: "null"
-      });
-      if (User === "HOST") {
-        await signalling.rtm?.publish(liveId, "END_AUDIO");
-        await axios.put(
-          `/api/v1/ppt/presentations/make-audio/${presentationId}`,
-          {},
-          { params: { endOrStart: "end", userUid } }
-        );
-      }
-      audioData.endAudio();
-    },
-    onSuccess: function (_, { hostEnd, User }) {
-      if (User === "HOST" || hostEnd) {
-        queryClient.setQueryData<presentationData>(
-          ["presentation", params.id],
-          (prev) => {
-            if (!prev) return undefined;
-            return {
-              ...prev,
-              audio: false
-            };
-          }
-        );
-      }
-    },
-    onError: function (err) {
-      toast.error(err.message || "An error occurred");
-    }
-  });
-
-  const audioData = useAudio();
-  const signalling = useRTM(
-    endAudio,
-    setStartPrompt,
-    changeMicState,
-    tokens,
-    presentationQuery.data
-  );
-  const slides = useSlide(
-    signalling.success && presentationQuery.isSuccess,
-    signalling.rtm,
-    swiperRef,
-    audioData.audioConnectionState,
-    tokens?.rtcUid,
-    presentationQuery.data
-  );
-
-  function changeMicState(state: MIC_STATE, rtm: RTMClient | null) {
-    if (!rtm) return;
-    const user = queryClient.getQueryData<presentationData>([
-      "presentation",
-      params.id
-    ]);
-    if (!user) return;
-    slides
-      .changeMicState(user.User === "HOST" ? "HOST" : userName, state, rtm)
-      .then(function () {
-        if (state === MIC_STATE.MIC_MUTED || state === MIC_STATE.MIC_OFF) {
-          audioData.setMute(true);
-        }
-
-        setMicState(state);
-      })
-      .catch(function (err: any) {
-        console.error(err);
-        toast.error("An error occurred");
-      });
-  }
-
   const isIphone = isMobile({ iphone: true });
   const isMobilePhone = isMobile({ iphone: false });
 
-  const makeLive = useMutation({
-    mutationFn: async function ({
-      liveId,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      live // this is not use in the main mutation, but it is used to toogle the live state
-    }: {
-      liveId: string;
-      live: boolean;
-    }) {
-      if (!presentationQuery.data) throw new Error("No presentation data");
-      const { data } = await axios.put<never>(
-        `/api/v1/ppt/presentations/make-live/${presentationQuery.data.id}`
-      );
-      await signalling.rtm?.publish(liveId, "LIVE");
-      return data;
-    },
-    onSuccess: function (_, { live, liveId }) {
-      if (!live) {
-        toast.success("Presentation is now live");
-      } else {
-        toast.success("Presentation is no longer live");
-      }
-      queryClient.setQueryData<presentationData>(
-        ["presentation", liveId],
-        (prev) => {
-          if (prev) {
-            return {
-              ...prev,
-              live: !live
-            };
-          }
-        }
-      );
-    },
-    onError: function (err) {
-      toast.error(err.message || "An error occurred");
-    }
-  });
-
-  const fetchRtcToken = useMutation({
-    mutationFn: async function ({
-      liveId,
-      userUid
-    }: {
-      liveId: string;
-      userUid?: string;
-    }) {
-      if (!presentationQuery.data) throw new Error("No presentation data");
-      const { data } = await axios.get<{
-        rtcToken: string;
-      }>(`/api/v1/ppt/presentations/present/token/${liveId}`, {
-        params: { userUid }
-      });
-      return data;
-    }
-  });
-
-  const startAudio = useMutation({
-    mutationKey: ["make-audio"],
-    retry: false,
-    mutationFn: async function ({
-      liveId,
-      live,
-      User,
-      presentationId,
-      tokens
-    }: {
-      liveId: string;
-      live: boolean;
-      User: "HOST" | "GUEST";
-      presentationId: string;
-      tokens: presentationData["rtc"];
-    }) {
-      if (!live) {
-        throw new Error("Presentation is not live");
-      }
-      if (tokens.rtcToken) {
-        await audioData.startAudio(
-          liveId,
-          tokens.rtcToken,
-          tokens.rtcUid,
-          slides.removeUsers
-        );
-        await slides.setUsersInfo({
-          id: tokens.rtcUid,
-          userName: userName,
-          liveId,
-          User
-        });
-      } else {
-        let tempToken: {
-          rtcToken: string;
-        };
-
-        if (User === "GUEST") {
-          tempToken = await fetchRtcToken.mutateAsync({ liveId, userUid });
-        } else {
-          const { data } = await axios.put<{
-            rtcToken: string;
-          }>(
-            `/api/v1/ppt/presentations/make-audio/${presentationId}`,
-            {},
-            { params: { userUid, endOrStart: "start" } }
-          );
-          tempToken = data;
-        }
-
-        await audioData.startAudio(
-          liveId,
-          tempToken.rtcToken,
-          tokens.rtcUid,
-          slides.removeUsers
-        );
-        await slides.setUsersInfo({
-          id: tokens.rtcUid,
-          userName: userName,
-          liveId,
-          User
-        });
-        return { tokens: tempToken.rtcToken };
+  const users = useRtmStore((state) => state.users);
+  useEffect(
+    function () {
+      if (users) {
+        useRtmStore.getState().setSortedUsers();
       }
     },
-    onSuccess: async function (data, { liveId }) {
-      try {
-        const d = queryClient.getQueryData<presentationData>([
-          "presentation",
-          params.id
-        ]);
-        if (presentationQuery.data?.User === "HOST" && !d?.audio) {
-          await signalling.rtm?.publish(liveId, "START_AUDIO");
+    [users]
+  );
+
+  const rtmConnectionState = useRtmStore((state) => state.status);
+
+  useEffect(
+    function () {
+      const rtm = useRtmStore.getState().rtm;
+      const setSlideData = useSlideStore.getState().setSlideData;
+      const syncSlide = useSlideStore.getState().syncSlide;
+      const synced = useSlideStore.getState().synced;
+      const presentation = usepresentationStore.getState().presentation;
+
+      if (rtmConnectionState === "CONNECTED") {
+        if (presentation?.audio) {
+          rtm?.presence
+            .getOnlineUsers(presentation.liveId, "MESSAGE", {
+              includedState: true
+            })
+            .then(function (data) {
+              type UserType = {
+                [key: string]: {
+                  id: string;
+                  userName: string;
+                  micState: MIC_STATE;
+                };
+              };
+
+              const tempUsrs: UserType = {};
+              for (let i = 0; i < data.occupants.length; i++) {
+                const u = data.occupants[i];
+                if (u.states.userName === "HOST") {
+                  const host = {
+                    id: u.userId,
+                    userName: u.states.userName,
+                    micState: u.states.micState as MIC_STATE
+                  };
+                  useRtmStore.setState({ host });
+                  continue;
+                }
+                if (Object.keys(u.states).length === 0) continue;
+                if (u.states.userName === "null" || u.states.userName === "")
+                  continue;
+                tempUsrs[u.userId] = {
+                  id: u.userId,
+                  userName: u.states.userName,
+                  micState: u.states.micState as MIC_STATE
+                };
+              }
+
+              useRtmStore.setState({ users: tempUsrs });
+            })
+            .catch(function () {
+              toast({
+                title: "Error",
+                description: "Failed to update users",
+                variant: "destructive"
+              });
+            });;
         }
-      } catch (err) {
-        // do nothing
-      }
-      queryClient.setQueryData<presentationData>(
-        ["presentation", params.id],
-        (prev) => {
-          if (!prev) return undefined;
-          return {
-            ...prev,
-            audio: true,
-            rtc: {
-              ...prev.rtc,
-              rtcToken: data?.tokens || prev.rtc.rtcToken
-            }
+
+        if (presentation?.User === "GUEST") {
+          rtm?.storage
+            .getChannelMetadata(presentation.liveId, "MESSAGE")
+            .then((data) => {
+              const newSlideData = JSON.parse(data.metadata.slideData.value);
+              setSlideData(newSlideData);
+              if (synced) syncSlide();
+            })
+            .catch(function () {
+              toast({
+                title: "Error",
+                description: "Failed to sync slides",
+                variant: "destructive"
+              });
+            });
+        } else if (presentation?.User === "HOST") {
+          let slideData = useSlideStore.getState().slideData;
+          const swiperRef = useSlideStore.getState().swiperRef;
+          if (!swiperRef) return;
+          slideData = {
+            maxSlides:
+              swiperRef.swiper.activeIndex >= slideData.maxSlides
+                ? swiperRef.swiper.activeIndex
+                : slideData.maxSlides,
+            hostSlide: swiperRef.swiper.activeIndex,
+            prevHostSlide: slideData.hostSlide
           };
+          setSlideData(slideData);
+          rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
+            {
+              key: "slideData",
+              value: JSON.stringify(slideData)
+            }
+          ]);
         }
-      );
+      }
     },
-    onError: function (err) {
-      toast.error(err.message || "An error occurred");
+    [rtmConnectionState]
+  );
+
+  useEffect(function () {
+    function beforeUnload(e?: BeforeUnloadEvent) {
+      if (!e) {
+        useSlideStore.getState().setSwiperRef(null);
+        useAudioStore.getState().endAudio({ hostEnd: false });
+        useRtmStore.getState().rtm?.logout();
+        return; // No need to show confirmation message
+      }
+      e.preventDefault();
+      const confirmationMessage =
+        "You are about to leave the presentation. Are you sure?";
+      if (window.confirm(confirmationMessage)) {
+        useSlideStore.getState().setSwiperRef(null);
+        useAudioStore.getState().endAudio({ hostEnd: false });
+        useRtmStore.getState().rtm?.logout();
+      }
+      return confirmationMessage;
     }
-  });
+    window.addEventListener("beforeunload", beforeUnload);
+
+    return function () {
+      useSlideStore.getState().setSwiperRef(null);
+      useAudioStore.getState().endAudio({ hostEnd: false });
+      useRtmStore.getState().rtm?.logout();
+      window.removeEventListener("beforeunload", beforeUnload);
+    };
+  }, []);
 
   return (
     <PresentationContext.Provider
@@ -395,31 +279,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         fullScreenShow,
         isIphone,
         isMobilePhone,
-        presentation: presentationQuery,
-        makeLive,
-        micState,
-        startPrompt,
-        userName,
-        networkStatus: audioData.networkStatus,
-        startAudio,
-        endAudio,
-        synced: slides.synced,
-        rtmConnectionState: signalling.rtmConnectionState,
-        users: slides.user,
-        host: slides.host,
-        audioData,
-        rtm: signalling.rtm,
-        audioConnectionState: audioData.audioConnectionState,
-        tokens,
-        changeMicState,
-        acceptMicRequest: slides.acceptMicRequest,
-        fullScreenToggle,
-        setSwiperRef,
-        setMicState,
-        setStartPrompt,
-        setMute: audioData.setMute,
-        setUserName,
-        syncSlide: slides.syncSlide
+        fullScreenToggle
       }}
     >
       {presentationQuery.isLoading ? (
@@ -430,7 +290,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         <PresentationNotFound />
       ) : (
         <>
-          {isMobilePhone && showPrompt && presentationQuery.data?.live && (
+          {isMobilePhone && showPrompt && (
             <OrientationPrompt setShowPrompt={setShowPrompt} />
           )}
           {props.children}

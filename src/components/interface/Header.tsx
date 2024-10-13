@@ -5,11 +5,15 @@ import { useOrientation } from "react-use";
 import { PresentationContext } from "../../contexts/presentationContext";
 import ShareAPI from "./Share";
 import { LoadingAssetSmall2 } from "../../assets/assets";
+import { usepresentationStore } from "./store/presentationStore";
+import { useMutation } from "@tanstack/react-query";
 
 export default function Header({ actionsActive }: { actionsActive: boolean }) {
-  const { fullScreenShow, isMobilePhone, makeLive, presentation } =
-    useContext(PresentationContext);
+  const { fullScreenShow, isMobilePhone } = useContext(PresentationContext);
   const orientation = useOrientation();
+
+  const presentation = usepresentationStore((state) => state.presentation);
+  const makeLive = usepresentationStore((state) => state.makeLive);
 
   const style = useMemo(
     function () {
@@ -25,14 +29,9 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
     [isMobilePhone, orientation, fullScreenShow, actionsActive]
   );
 
-  function togglePresentationLive() {
-    if (!presentation?.data) return;
-
-    makeLive.mutate({
-      live: presentation.data.live,
-      liveId: presentation.data.liveId
-    });
-  }
+  const togglePresentationLive = useMutation({
+    mutationFn: makeLive
+  });
 
   return (
     <header
@@ -43,17 +42,17 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
         (!isMobilePhone && !fullScreenShow)) && (
         <p className="text-white text-lg">PPTLINKS</p>
       )}
-      {presentation?.data?.User === "HOST" ? (
+      {presentation?.User === "HOST" ? (
         <button
-          onClick={togglePresentationLive}
-          disabled={makeLive.isPending}
-          className={`${presentation.data.live ? "bg-rose-500" : "bg-green-500"} w-[150px] h-[40px] !text-slate-200 !rounded-xl space-x-2 flex items-center justify-center gap-1`}
+          onClick={() => togglePresentationLive.mutate()}
+          disabled={togglePresentationLive.isPending}
+          className={`${presentation.live ? "bg-rose-500" : "bg-green-500"} w-[150px] h-[40px] !text-slate-200 !rounded-xl space-x-2 flex items-center justify-center gap-1`}
         >
-          {makeLive.isPending ? (
+          {togglePresentationLive.isPending ? (
             <LoadingAssetSmall2 />
           ) : (
             <>
-              {presentation.data.live ? "End Live" : "Go Live"}
+              {presentation.live ? "End Live" : "Go Live"}
               <BsRecord2 size={36} />
             </>
           )}

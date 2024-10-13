@@ -3,10 +3,12 @@ import { IoReturnUpBackOutline } from "react-icons/io5";
 import { IoSendOutline } from "react-icons/io5";
 import { BsArrowDown } from "react-icons/bs";
 import Menu from "./Menu";
-import { useContext, useEffect, useRef, useState } from "react";
-import { PresentationContext } from "../../../contexts/presentationContext";
-import { Message, useMessageStore } from "../hooks/messageStore";
+import { useEffect, useRef, useState } from "react";
+import { Message, useMessageStore } from "../store/messageStore";
 import { useIntersection } from "react-use";
+import { useRtmStore } from "../store/rtmStore";
+import { usepresentationStore } from "../store/presentationStore";
+import { useMutation } from "@tanstack/react-query";
 
 export default function MessageMenu({
   open,
@@ -15,8 +17,11 @@ export default function MessageMenu({
   open: boolean;
   onClose: () => void;
 }) {
-  const { rtm, userName, presentation, tokens } =
-    useContext(PresentationContext);
+  // const { rtm, userName, presentation, tokens } =
+  //   useContext(PresentationContext);
+  const userName = useRtmStore((state) => state.userName);
+  const presentation = usepresentationStore((state) => state.presentation);
+  const tokens = useRtmStore((state) => state.token);
   const messages = useMessageStore((state) => state.readMessages);
   const sendMessage = useMessageStore((state) => state.sendMessage);
   const unreadMessages = useMessageStore((state) => state.unReadMessages);
@@ -27,7 +32,7 @@ export default function MessageMenu({
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
     root: messageContainer.current,
-    rootMargin: '50px',
+    rootMargin: "50px",
     threshold: 1
   });
 
@@ -56,24 +61,25 @@ export default function MessageMenu({
     });
   }
 
-  async function sendUserMessage(e: React.FormEvent) {
-    e.preventDefault();
-    if (!rtm || !presentation?.data) return;
+  const sendUserMessage = useMutation({
+    mutationFn: async function () {
+      if (!presentation) return;
 
-    if (userText.trim() === "") return;
+      if (userText.trim() === "") return;
 
-    const messageData: Message = {
-      type: "text",
-      content: userText.trim(),
-      sender: presentation.data.User === "HOST" ? "HOST" : userName,
-      senderId:
-        presentation.data.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
-      time: ""
-    };
+      const messageData: Message = {
+        type: "text",
+        content: userText.trim(),
+        sender: presentation.User === "HOST" ? "HOST" : userName,
+        senderId:
+          presentation.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
+        time: ""
+      };
 
-    await sendMessage(messageData, rtm, presentation.data.liveId);
-    setUserText("");
-  }
+      await sendMessage(messageData);
+      setUserText("");
+    }
+  });
 
   return (
     <Menu right={true} open={open} onClose={onClose}>
@@ -121,10 +127,16 @@ export default function MessageMenu({
             </div>
           ))}
           {/*eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
-          <div ref={intersectionRef as any} className="h-10 w-full flex gap-3 justify-start items-start"></div>
+          <div
+            ref={intersectionRef as any}
+            className="h-10 w-full flex gap-3 justify-start items-start"
+          ></div>
         </div>
         <form
-          onSubmit={sendUserMessage}
+          onSubmit={(e) => {
+            e.preventDefault();
+            !sendUserMessage.isPending && sendUserMessage.mutate();
+          }}
           className="w-full flex p-3 gap-2 border-t-[1px] border-[#FF8B1C]"
         >
           <input
@@ -142,12 +154,14 @@ export default function MessageMenu({
           </button>
         </form>
 
-        {intersection && intersection.intersectionRatio < 1 && <button
-          onClick={scrollToBottom}
-          className="bg-[#FF8B1C] w-10 h-10 rounded-full absolute bottom-24 flex justify-center items-center shadow-2xl"
-        >
-          <BsArrowDown color="#fff" size="20" />
-        </button>}
+        {intersection && intersection.intersectionRatio < 1 && (
+          <button
+            onClick={scrollToBottom}
+            className="bg-[#FF8B1C] w-10 h-10 rounded-full absolute bottom-24 flex justify-center items-center shadow-2xl"
+          >
+            <BsArrowDown color="#fff" size="20" />
+          </button>
+        )}
       </div>
     </Menu>
   );

@@ -3,12 +3,14 @@
 /* eslint-disable no-unused-vars */
 import { useRef, useState, useContext, useEffect } from "react";
 import { useOrientation } from "react-use";
-import { ToastContainer } from "react-toastify";
 import Header from "./Header";
 import Slider from "./Slider";
 import Controls from "./Controls";
 import { PresentationContext } from "../../contexts/presentationContext";
 import { LoadingAssetBig2 } from "../../assets/assets";
+import { useRtmStore } from "./store/rtmStore";
+import { useAudioStore } from "./store/audioStore";
+import { Toaster } from "@/components/ui/toaster";
 
 let wakeLock: WakeLockSentinel | null = null;
 let setTimerActive: any = null;
@@ -17,13 +19,18 @@ function Interface() {
   const ref = useRef(null);
   const [loaded, setIsLoaded] = useState(false);
   const [actionsActive, setActionsActive] = useState(true);
-  const { isMobilePhone, rtmConnectionState, audioConnectionState } = useContext(PresentationContext);
+  const { isMobilePhone, fullScreenShow } = useContext(PresentationContext);
   const orientation = useOrientation();
 
   const [status, setStatus] = useState({
     online: false,
     offline: false
   });
+
+  const rtmConnectionState = useRtmStore((state) => state.status);
+  const audioConnectionState = useAudioStore(
+    (state) => state.audioConnectionState
+  );
 
   useEffect(() => {
     if (status.online === true) {
@@ -149,7 +156,8 @@ function Interface() {
           </div>
         )
       )}
-      <ToastContainer stacked />
+
+      {fullScreenShow && <Toaster />}
     </div>
   );
 }

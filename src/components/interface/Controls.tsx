@@ -6,7 +6,7 @@ import { IoIosMic } from "react-icons/io";
 import { FaRegUser } from "react-icons/fa6";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import { LuMessagesSquare } from "react-icons/lu";
-import { MdCallEnd, MdError } from "react-icons/md";
+import { MdCallEnd } from "react-icons/md";
 import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
 import { PiHandWaving } from "react-icons/pi";
 import { FiHome } from "react-icons/fi";
@@ -15,16 +15,21 @@ import { PresentationContext } from "../../contexts/presentationContext";
 import "./styles/style.css";
 import Modal from "./Modals/Modal";
 import ConfirmModal from "./Modals/confirmModal";
-import { toast } from "react-toastify";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
 import MessageMenu from "./Modals/MessageMenu";
 import { MIC_STATE } from "../../constants/routes";
 import axios from "axios";
 import download from "./download";
-import { useMessageStore } from "./hooks/messageStore";
+import { useMessageStore } from "./store/messageStore";
 import OptionMenu from "./Modals/optionMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { usepresentationStore } from "./store/presentationStore";
+import { useAudioStore } from "./store/audioStore";
+import { useToast } from "@/hooks/use-toast";
+import { useRtmStore } from "./store/rtmStore";
+import { useSlideStore } from "./store/slideStore";
+import { useMutation } from "@tanstack/react-query";
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({
@@ -35,40 +40,64 @@ export default function Controls({
   actionsActive: boolean;
 }) {
   const orientation = useOrientation();
-  const {
-    fullScreenShow,
-    isMobilePhone,
-    presentation,
-    micState,
-    startPrompt,
-    audioData,
-    userName,
-    networkStatus,
-    startAudio,
-    endAudio,
-    synced,
-    users,
-    host,
-    rtm,
-    audioConnectionState,
-    changeMicState,
-    acceptMicRequest,
-    fullScreenToggle,
-    setMicState,
-    setStartPrompt,
-    setMute,
-    setUserName,
-    syncSlide
-  } = useContext(PresentationContext);
+  const { fullScreenShow, isMobilePhone, fullScreenToggle } =
+    useContext(PresentationContext);
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
   });
+  const { toast } = useToast();
+  const endAudioPrompt = usepresentationStore((state) => state.endAudioPrompt);
+  const setEndAudioPrompt = usepresentationStore(
+    (state) => state.setEndAudioPrompt
+  );
+  const enterName = usepresentationStore((state) => state.enterName);
+  const setEnterName = usepresentationStore((state) => state.setEnterName);
+  const showUsersList = usepresentationStore((state) => state.showUsersList);
+  const setShowUsersList = usepresentationStore(
+    (state) => state.setShowUsersList
+  );
+  const showMessage = usepresentationStore((state) => state.showMessage);
+  const setShowMessage = usepresentationStore((state) => state.setShowMessage);
+  const showOptions = usepresentationStore((state) => state.showOptions);
+  const setShowOptions = usepresentationStore((state) => state.setShowOptions);
+  const showStartPrompt = usepresentationStore(
+    (state) => state.showStartPrompt
+  );
+  const setShowStartPrompt = usepresentationStore(
+    (state) => state.setShowStartPrompt
+  );
 
-  const [endAudioPrompt, setEndAudioPrompt] = useState(false);
-  const [enterName, setEnterName] = useState(false);
-  const [showUsersList, setShowUsersList] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+  const micState = useAudioStore((state) => state.micState);
+  const audioLoadingStatus = useAudioStore((state) => state.loadingStatus);
+  const setMicState = useAudioStore((state) => state.setMicState);
+
+  const presentation = usepresentationStore((state) => state.presentation);
+  const acceptMicRequest = useAudioStore((state) => state.acceptMicRequest);
+  const audioConnectionState = useAudioStore(
+    (state) => state.audioConnectionState
+  );
+  const networkStatus = useAudioStore((state) => state.networkStatus);
+
+  const endAudioFn = useAudioStore((state) => state.endAudio);
+  const startAudioFn = useAudioStore((state) => state.startAudio);
+
+  const endAudio = useMutation({
+    mutationFn: endAudioFn
+  });
+
+  const startAudio = useMutation({
+    mutationFn: startAudioFn
+  });
+
+  const userName = useRtmStore((state) => state.userName);
+  const setUserName = useRtmStore((state) => state.setUserName);
+  const users = useRtmStore((state) => state.sortedUsers);
+  const host = useRtmStore((state) => state.host);
+
+  const synced = useSlideStore((state) => state.synced);
+  const syncSlide = useSlideStore((state) => state.syncSlide);
+
+  const rtcUid = useRtmStore((state) => state.token?.rtcUid);
 
   const [loadingStatus, setLoadingStatus] = useState<any>({});
 
@@ -91,27 +120,37 @@ export default function Controls({
 
   const micStyle = useMemo(
     function () {
-      if (micState === MIC_STATE.MIC_OFF || !audioData.success) {
-        return { style: "bg-gray-300", icon: <IoIosMic size={60} /> };
+      if (micState === MIC_STATE.MIC_OFF || audioLoadingStatus !== "success") {
+        const text =
+          audioLoadingStatus === "success"
+            ? "MIC OFF"
+            : presentation?.User === "HOST" && presentation?.audio
+              ? "REJOIN"
+              : presentation?.User === "HOST" && !presentation?.audio
+                ? "START"
+                : "JOIN";
+        return { style: "bg-gray-300", icon: <IoIosMic size={60} />, text };
       } else if (micState === MIC_STATE.REQ_MIC) {
-        return { style: "bg-orange-500", icon: <PiHandWaving size={60} /> };
+        return {
+          style: "bg-orange-500",
+          icon: <PiHandWaving size={60} />,
+          text: "REQUESTING"
+        };
       } else if (micState === MIC_STATE.MIC_MUTED) {
-        return { style: "bg-rose-500", icon: <IoIosMic size={60} /> };
+        return {
+          style: "bg-rose-500",
+          icon: <IoIosMic size={60} />,
+          text: "MIC MUTED"
+        };
       } else if (micState === MIC_STATE.CAN_SPK) {
-        return { style: "bg-green-500", icon: <IoIosMic size={60} /> };
+        return {
+          style: "bg-green-500",
+          icon: <IoIosMic size={60} />,
+          text: "MIC ON"
+        };
       }
     },
-    [micState, audioData.success]
-  );
-
-  useEffect(
-    function () {
-      if (audioData.success) {
-        if (!presentation?.data) return;
-        changeMicState(micState, rtm);
-      }
-    },
-    [audioData.success, micState, presentation?.data, rtm]
+    [micState, audioLoadingStatus, presentation]
   );
 
   const getUserMicStatusColor = useCallback(function (micStatus: MIC_STATE) {
@@ -128,8 +167,8 @@ export default function Controls({
 
   const handleAcceptMicRequest = useCallback(
     async function (user: { status: MIC_STATE; id: string }) {
-      if (!presentation?.data) return;
-      if (presentation.data.User !== "HOST") return;
+      if (!presentation) return;
+      if (presentation.User !== "HOST") return;
 
       if (user.status === MIC_STATE.REQ_MIC) {
         await acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
@@ -148,12 +187,11 @@ export default function Controls({
       (isMobilePhone && orientation.type.includes("portrait")) ||
       actionsActive ||
       enterName ||
-      startPrompt ||
-      audioData.loading ||
+      showStartPrompt ||
+      audioLoadingStatus === "success" ||
       endAudioPrompt ||
       showUsersList ||
       showMessage ||
-      audioData.error ||
       showOptions
     ) {
       return "opacity-100";
@@ -163,44 +201,37 @@ export default function Controls({
     actionsActive,
     orientation,
     enterName,
-    startPrompt,
+    showStartPrompt,
     isMobilePhone,
-    audioData.loading,
+    audioLoadingStatus,
     endAudioPrompt,
     showUsersList,
     showMessage,
-    audioData.error,
     audioConnectionState,
     showOptions
   ]);
 
   function actionMicButton() {
-    if (!audioData.success) {
-      setStartPrompt(true);
+    if (audioLoadingStatus !== "success") {
+      setShowStartPrompt(true);
       return;
     }
 
-    if (presentation?.data?.User === "HOST") {
+    if (presentation?.User === "HOST") {
       if (micState === MIC_STATE.CAN_SPK) {
         setMicState(MIC_STATE.MIC_MUTED);
-        setMute(true);
       } else {
         setMicState(MIC_STATE.CAN_SPK);
-        setMute(false);
       }
     } else {
       if (micState === MIC_STATE.MIC_OFF) {
         setMicState(MIC_STATE.REQ_MIC);
-        setMute(true);
       } else if (micState === MIC_STATE.REQ_MIC) {
         setMicState(MIC_STATE.MIC_OFF);
-        setMute(true);
       } else if (micState === MIC_STATE.CAN_SPK) {
         setMicState(MIC_STATE.MIC_MUTED);
-        setMute(true);
       } else if (micState === MIC_STATE.MIC_MUTED) {
         setMicState(MIC_STATE.CAN_SPK);
-        setMute(false);
       }
     }
   }
@@ -210,18 +241,16 @@ export default function Controls({
       setEndAudioPrompt(true);
       return;
     }
-    if (!presentation?.data) return;
     try {
-      await endAudio.mutateAsync({
-        liveId: presentation.data.liveId,
-        presentationId: presentation.data.id,
-        User: presentation.data.User,
-        hostEnd: false
-      });
+      await endAudio.mutateAsync({ hostEnd: false });
       setEndAudioPrompt(false);
       setMicState(MIC_STATE.MIC_OFF);
     } catch (error) {
-      toast.error("Error ending audio");
+      toast({
+        title: "Error",
+        description: "Could'nt end audio",
+        variant: "destructive"
+      });
     }
   }
 
@@ -239,7 +268,7 @@ export default function Controls({
     <div
       className={`fixed z-10 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
     >
-      {audioData.success && (
+      {audioLoadingStatus === "success" && (
         <div
           className={`absolute sm:bottom-5 bottom-24 left-5 network__bar ${networkStatus}`}
         >
@@ -248,61 +277,58 @@ export default function Controls({
           <span className="bar3"></span>
         </div>
       )}
-      <div className="flex flex-row gap-20 items-center justify-center relative w-full">
+      <div className="flex flex-row gap-20 items-center justify-center relative w-full mb-5">
         {/* Desktop controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
-          {audioData.success && (
+          {audioLoadingStatus === "success" && (
             <>
-              <button
-                onClick={() => setShowOptions(true)}
-                className="rounded-full p-3 bg-gray-300 shadow"
-              >
-                <BsThreeDots size={24} />
-              </button>
+              {presentation?.User === "HOST" && (
+                <button
+                  onClick={() => setShowOptions(true)}
+                  className="rounded-full p-3 bg-gray-300 shadow"
+                >
+                  <BsThreeDots size={24} />
+                </button>
+              )}
               <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
                 <FiHome size={24} />
               </a>
               <button
-                disabled={!presentation?.data?.downloadable}
-                className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.data?.downloadable && "!cursor-not-allowed"}`}
+                disabled={!presentation?.downloadable}
+                className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
                 onClick={() =>
                   downloadFile(
-                    presentation?.data?.pdfLink || "",
-                    `${presentation?.data?.name}.pdf` || ""
+                    presentation?.pdfLink || "",
+                    `${presentation?.name}.pdf` || ""
                   )
                 }
               >
                 <IoCloudDownloadOutline
                   size={24}
-                  color={
-                    presentation?.data?.downloadable ? "black" : "bg-gray-400"
-                  }
+                  color={presentation?.downloadable ? "black" : "bg-gray-400"}
                 />
               </button>
             </>
           )}
-          {(presentation?.data?.audio ||
-            presentation?.data?.User === "HOST") && (
-            <button
-              className={`${micStyle?.style} rounded-full p-3 shadow ${audioData.loading && "!cursor-not-allowed"}`}
-              onClick={actionMicButton}
-              disabled={audioData.loading}
-            >
-              {audioData.loading ? (
-                <LoadingAssetBig2 />
-              ) : (
-                <>
-                  {(audioData.success || !audioData.success) &&
-                  !audioData.error ? (
-                    micStyle?.icon
-                  ) : (
-                    <MdError size={60} />
-                  )}
-                </>
-              )}
-            </button>
+          {(presentation?.audio || presentation?.User === "HOST") && (
+            <div className="flex flex-col items-center justify-center relative">
+              <button
+                className={`${micStyle?.style} rounded-full p-3 shadow ${audioLoadingStatus === "loading" && "!cursor-not-allowed"}`}
+                onClick={actionMicButton}
+                disabled={audioLoadingStatus === "loading"}
+              >
+                {audioLoadingStatus === "loading" ? (
+                  <LoadingAssetBig2 />
+                ) : (
+                  micStyle?.icon
+                )}
+              </button>
+              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">
+                {micStyle?.text}
+              </span>
+            </div>
           )}
-          {audioData.success && (
+          {audioLoadingStatus === "success" && (
             <>
               <div className="relative">
                 <button
@@ -312,7 +338,7 @@ export default function Controls({
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {users.length}
+                  {users.length + (host ? 1 : 0)}
                 </span>
               </div>
               <div className="relative">
@@ -337,14 +363,36 @@ export default function Controls({
         </div>
         {/* mobile controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
-          {audioData.success && (
+          {audioLoadingStatus === "success" && (
             <>
-              <button
-                onClick={() => setShowOptions(true)}
-                className="rounded-full p-3 bg-gray-300 shadow"
-              >
-                <BsThreeDots size={24} />
-              </button>
+              {presentation?.User === "HOST" ? (
+                <button
+                  onClick={() => setShowOptions(true)}
+                  className="rounded-full p-3 bg-gray-300 shadow"
+                >
+                  <BsThreeDots size={24} />
+                </button>
+              ) : presentation?.downloadable ? (
+                <button
+                  disabled={!presentation?.downloadable}
+                  className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
+                  onClick={() =>
+                    downloadFile(
+                      presentation?.pdfLink || "",
+                      `${presentation?.name}.pdf` || ""
+                    )
+                  }
+                >
+                  <IoCloudDownloadOutline
+                    size={24}
+                    color={presentation?.downloadable ? "black" : "bg-gray-400"}
+                  />
+                </button>
+              ) : (
+                <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
+                  <FiHome size={24} />
+                </a>
+              )}
 
               <div className="relative">
                 <button
@@ -354,33 +402,30 @@ export default function Controls({
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {users.length}
+                  {users.length + (host ? 1 : 0)}
                 </span>
               </div>
             </>
           )}
-          {(presentation?.data?.audio ||
-            presentation?.data?.User === "HOST") && (
-            <button
-              className={`${micStyle?.style} rounded-full p-3 shadow`}
-              onClick={actionMicButton}
-              disabled={audioData.loading}
-            >
-              {audioData.loading ? (
-                <LoadingAssetBig2 />
-              ) : (
-                <>
-                  {(audioData.success || !audioData.success) &&
-                  !audioData.error ? (
-                    micStyle?.icon
-                  ) : (
-                    <MdError color="white" size={60} />
-                  )}
-                </>
-              )}
-            </button>
+          {(presentation?.audio || presentation?.User === "HOST") && (
+            <div className="flex flex-col items-center justify-center relative">
+              <button
+                className={`${micStyle?.style} rounded-full p-3 shadow`}
+                onClick={actionMicButton}
+                disabled={audioLoadingStatus === "loading"}
+              >
+                {audioLoadingStatus === "loading" ? (
+                  <LoadingAssetBig2 />
+                ) : (
+                  micStyle?.icon
+                )}
+              </button>
+              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">
+                {micStyle?.text}
+              </span>
+            </div>
           )}
-          {audioData.success && (
+          {audioLoadingStatus === "success" && (
             <>
               <div className="relative">
                 <button
@@ -403,7 +448,7 @@ export default function Controls({
           )}
         </div>
         <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
-          {!synced && presentation?.data?.User !== "HOST" && (
+          {!synced && presentation?.User !== "HOST" && (
             <button
               onClick={syncSlide}
               className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
@@ -443,7 +488,7 @@ export default function Controls({
                 <FaRegUser size={18} />
               </div>
               <span className="absolute -top-2 -right-2 bg-white rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                {users.length}
+                {users.length + (host ? 1 : 0)}
               </span>
             </div>
           </div>
@@ -471,9 +516,9 @@ export default function Controls({
             )}
           </div>
           <div className="flex flex-col justify-between w-full border-[1px] border-[#FF8B1C] p-3 rounded-2xl">
-            <p className="font-bold text-sm">{presentation?.data?.name}</p>
-            {presentation?.data?.presenter && (
-              <p className="text-sm">By {presentation?.data.presenter}</p>
+            <p className="font-bold text-sm">{presentation?.name}</p>
+            {presentation?.presenter && (
+              <p className="text-sm">By {presentation?.presenter}</p>
             )}
           </div>
         </div>
@@ -498,8 +543,12 @@ export default function Controls({
             >
               <div className="relative p-1 rounded-full">
                 <Avatar>
-                  <AvatarImage src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`} />
-                  <AvatarFallback>{user.userName.substring(0, 1).toUpperCase()}</AvatarFallback>
+                  <AvatarImage
+                    src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
+                  />
+                  <AvatarFallback>
+                    {user.userName.substring(0, 1).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <span
                   className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}
@@ -513,23 +562,29 @@ export default function Controls({
                 </p>
               )}
               <div className="w-20 flex justify-center items-center gap-2">
-                {index === 0 && presentation?.data?.rtc.rtcUid === user.id && (
-                  <span>(You)</span>
-                )}
+                {index === 0 && rtcUid === user.id && <span>(You)</span>}
               </div>
             </button>
           ))}
         </div>
       </Menu>
 
-      <OptionMenu open={showOptions} onClose={() => setShowOptions(false)} users={users} />
+      {presentation?.User === "HOST" && (
+        <OptionMenu
+          open={showOptions}
+          onClose={() => setShowOptions(false)}
+          users={users}
+        />
+      )}
 
       <Modal
         open={enterName}
-        onClose={startAudio.isPending ? null : () => setEnterName(false)}
+        onClose={
+          audioLoadingStatus === "loading" ? null : () => setEnterName(false)
+        }
         color="bg-black"
       >
-        {startAudio.isPending ? (
+        {audioLoadingStatus === "loading" ? (
           <LoadingAssetBig2 />
         ) : (
           <form
@@ -537,20 +592,22 @@ export default function Controls({
             onSubmit={async (e) => {
               e.preventDefault();
               if (!userName.trim() || userName.toLowerCase().includes("host"))
-                return toast.error("Please enter your name");
-              localStorage.setItem("userName", `"${userName}"`);
-              if (!presentation?.data) return;
-              try {
-                await startAudio.mutateAsync({
-                  live: presentation.data.live,
-                  liveId: presentation.data.liveId,
-                  presentationId: presentation.data.id,
-                  User: presentation.data.User,
-                  tokens: presentation.data.rtc
+                return toast({
+                  title: "Error",
+                  description: "Please enter your name",
+                  variant: "destructive"
                 });
+              localStorage.setItem("userName", `"${userName}"`);
+              if (!presentation) return;
+              try {
+                await startAudio.mutateAsync();
                 setEnterName(false);
               } catch (error) {
-                toast.error("Could'nt join conversation");
+                toast({
+                  title: "Error",
+                  description: "Could'nt start audio",
+                  variant: "destructive"
+                });
               }
             }}
           >
@@ -582,38 +639,36 @@ export default function Controls({
       </Modal>
 
       <ConfirmModal
-        open={startPrompt}
-        onClose={startAudio.isPending ? null : () => setStartPrompt(false)}
+        open={showStartPrompt}
+        onClose={startAudio.isPending ? null : () => setShowStartPrompt(false)}
         onSubmit={async (e) => {
           e.preventDefault();
-          if (!presentation?.data) return;
-          if (presentation.data.User === "HOST") {
+          if (!presentation) return;
+          if (presentation.User === "HOST") {
             try {
-              await startAudio.mutateAsync({
-                live: presentation.data.live,
-                liveId: presentation.data.liveId,
-                presentationId: presentation.data.id,
-                User: presentation.data.User,
-                tokens: presentation.data.rtc
-              });
+              await startAudio.mutateAsync();
             } catch (error) {
-              toast.error("Could'nt start conversation");
+              toast({
+                title: "Error",
+                description: "Could'nt start conversation",
+                variant: "destructive"
+              });
               return;
             }
           } else setEnterName(true);
-          setStartPrompt(false);
+          setShowStartPrompt(false);
         }}
         isLoading={startAudio.isPending}
         message={
-          presentation?.data?.User === "HOST"
-            ? presentation?.data?.audio
+          presentation?.User === "HOST"
+            ? presentation?.audio
               ? "Rejoin"
               : "Start"
             : "Join"
         }
         actionText={
-          presentation?.data?.User === "HOST"
-            ? presentation?.data?.audio
+          presentation?.User === "HOST"
+            ? presentation?.audio
               ? "Rejoin"
               : "Start"
             : "Join"
@@ -628,10 +683,8 @@ export default function Controls({
           endUserAudio();
         }}
         isLoading={endAudio.isPending}
-        message={
-          presentation?.data?.User === "HOST" ? "End Audio" : "Leave Audio"
-        }
-        actionText={presentation?.data?.User === "HOST" ? "End" : "Leave"}
+        message={presentation?.User === "HOST" ? "End Audio" : "Leave Audio"}
+        actionText={presentation?.User === "HOST" ? "End" : "Leave"}
       />
     </div>
   );
