@@ -1,35 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import Icon_awesome_clock from "/Icon-awesome-clock.svg";
-// import NativeDatepicker from "../reactNativeDatePicker";
-import { Calendar } from "@/components/ui/calendar"
-import { TimePicker } from "@/components/ui/customTimePicker"
+import { Calendar, FormatDate } from "@/components/ui/calendar";
+// import { TimePicker } from "@/components/ui/customTimePicker"
 import { SlCalender } from "react-icons/sl";
-// custom function
-function formatDate(date, format = 'DD/MM/YYYY') {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
 
-    // Replace format tokens with actual date values
-    return format.replace('DD', day)
-        .replace('MM', month)
-        .replace('YYYY', year)
-        .replace('HH', hours)
-        .replace('mm', minutes)
-        .replace('ss', seconds);
-}
-
-export default function InformationStage({ currentView, uploadValues, setUploadValues, handleInputChange }) {
+export default function InformationStage({ currentView, uploadValues, setUploadValues, uploadValuesErrors, handleInputChange }) {
     const [toggleDateTime, setToggleDateTime] = useState(false);
     const [toggleDateTimeDatePicker, setToggleDateTimeDatePicker] = useState(false);
-    // const [date, setDate] = useState(new Date())
     const startTimeRef = useRef(null);
     const endTimeRef = useRef(null);
-    // console.log("Date popup ", date);
 
     const handleClickStartTime = () => {
         const timeInput = startTimeRef.current;
@@ -53,12 +33,22 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
         }
     };
 
+    useEffect(function () {
+        setUploadValues((prevValues) => ({
+            ...prevValues,
+            presentationDate: "",
+            presentationStartTime: "",
+            presentationEndTime: "",
+        }));
+        setToggleDateTimeDatePicker(false);
+    }, [toggleDateTime]);
+
     return (
         <div
             className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}
         >
             {/* Presenter&apos;s Name */}
-            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black maxScreenMobile:pt-6">
+            <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black maxScreenMobile:pt-12">
                 <label htmlFor="presenterName" className="block mb-2">
                     <sup className="w-full text-xl font-bold">*</sup>
                     Presenter&apos;s Name
@@ -71,9 +61,8 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                     onChange={handleInputChange} // Correct: Just pass the function, no need for "() => handleInputChange"
                     className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-
-                {false && (
-                    <p className="text-[red]">{""}</p>
+                {uploadValuesErrors.presenterNameError && (
+                    <p className="text-[red]">{uploadValuesErrors.presenterNameError}</p>
                 )}
             </div>
             {/* Bio */}
@@ -90,8 +79,8 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                     value={uploadValues.bio} // Correct: No need for a function
                     onChange={handleInputChange}
                 />
-                {false && (
-                    <p className="text-[red]">{""}</p>
+                {uploadValuesErrors.bioError && (
+                    <p className="text-[red]">{uploadValuesErrors.bioError}</p>
                 )}
             </div>
             {/* Social Media Link */}
@@ -108,15 +97,15 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                     onChange={handleInputChange}
                     className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {false && (<p className="text-[red]">{""}</p>)}
+                {uploadValuesErrors.socialMediaLinkError && (<p className="text-[red]">{uploadValuesErrors.socialMediaLinkError}</p>)}
             </div>
             {/* time of presentation */}
             <span className="bg-black border-none rounded-tr-md rounded-br-md text-[#ffa500] w-fit p-4 mt-8 mb-6 text-xl font-medium flex justify-between items-center gap-2 _maxScreenMobile:text-white _maxScreenMobile:bg-[#ffa500] _maxScreenMobile:border-[#ffa500]">
-                <span>
+                <label htmlFor="setToggleDateTime">
                     Time of Presentation
-                </span>
+                </label>
                 <span>
-                    <Switch setToggleDateTime={() => setToggleDateTime(prev => !prev)} />
+                    <Switch id="setToggleDateTime" setToggleDateTime={() => setToggleDateTime(prev => !prev)} />
                     {/* <Switch onChange={() => setToggleDateTime(prev => !prev)} /> */}
                 </span>
             </span>
@@ -138,7 +127,7 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                                     name="presentationDate"
                                     value={uploadValues.presentationDate || ""}
                                     onChange={handleInputChange}
-                                    className="block w-[100%] p-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                                    className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
                                 />
                                 <label
                                     aria-label="Open Date Picker"
@@ -151,28 +140,29 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                                     </span>
                                 </label>
                             </div>
-                            {false && (
-                                <p className="text-[red]">{""}</p>
+                            {/* Datepicker model */}
+                            {toggleDateTimeDatePicker && (
+                                <div className="absolute top-auto bottom-[100%] left-auto right-0 z-50">
+                                    <Calendar
+                                        mode="single"
+                                        selected={uploadValues.presentationDate || ""}
+                                        onSelect={(date) => {
+                                            // Call a custom handler to update the date in uploadValues
+                                            setUploadValues((prevValues) => ({
+                                                ...prevValues,
+                                                presentationDate: FormatDate(date, 'YYYY-MM-DD'),
+                                            }));
+                                        }}
+                                        className="rounded-md border !border-[#ffa500] bg-[#FFFFF0]"
+                                    />
+                                </div>
+                            )}
+                            {/* error */}
+                            {uploadValuesErrors.presentationDateError && (
+                                <p className="text-[red]">{uploadValuesErrors.presentationDateError}</p>
                             )}
                         </div>
                     </div>
-                    {/* Datepicker model */}
-                    {toggleDateTimeDatePicker && (
-                        <div className="absolute top-auto bottom-[100%] left-auto right-0 bg-[#FFFFF0] z-50">
-                            <Calendar
-                                mode="single"
-                                selected={uploadValues.presentationDate || ""}
-                                onSelect={(date) => {
-                                    // Call a custom handler to update the date in uploadValues
-                                    setUploadValues((prevValues) => ({
-                                        ...prevValues,
-                                        presentationDate: formatDate(date, 'YYYY-MM-DD'),
-                                    }));
-                                }}
-                                className="rounded-md border !border-[#ffa500]"
-                            />,
-                        </div>
-                    )}
 
                     {/* 2 */}
                     <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black relative">
@@ -207,21 +197,21 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                                     />
                                 </label>
                             </div>
-                            {false && (
-                                <p className="text-[red]">{""}</p>
+                            {/* error */}
+                            {uploadValuesErrors.presentationStartTimeError && (
+                                <p className="text-[red]">{uploadValuesErrors.presentationStartTimeError}</p>
                             )}
+                            {/* <TimePicker /> custom made 😉😁 */}
+                            {/* {!true && <div className="absolute top-auto bottom-[100%] left-auto right-0 bg-[#FFFFF0] z-10">
+                                <TimePicker
+                                    onTimeChange={(hours, minutes, period) => {
+                                        console.log(`Selected time: ${hours}:${minutes} ${period}`);
+                                    }}
+                                    className="rounded-md border !border-[#ffa500]"
+                                />
+                            </div>} */}
                         </div>
                     </div>
-                    {/* <TimePicker /> */}
-                    {true && <div className="absolute top-auto bottom-[100%] left-auto right-0 bg-[#FFFFF0] z-10">
-                        <TimePicker
-                            onTimeChange={(hours, minutes, period) => {
-                                console.log(`Selected time: ${hours}:${minutes} ${period}`);
-                            }}
-                            className="rounded-md border !border-[#ffa500]"
-                        />
-                    </div>}
-
 
                     {/* 3 */}
                     <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black">
@@ -256,8 +246,8 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
                                     />
                                 </label>
                             </div>
-                            {false && (
-                                <p className="text-[red]">{""}</p>
+                            {uploadValuesErrors.presentationEndTimeError && (
+                                <p className="text-[red]">{uploadValuesErrors.presentationEndTimeError}</p>
                             )}
                         </div>
                     </div>

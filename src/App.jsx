@@ -17,8 +17,8 @@ import About from "./components/about-us/about";
 import Document from "./components/document/document";
 import PresentationContextProvider from "./contexts/presentationContext";
 import SignPage from "./components/sign/sign";
-import NewUploadPage from "./components/upload/newupload";
-import DateTest from "./components/upload/dateTest";
+// import NewUploadPage from "./components/upload/newupload";
+// import DateTest from "./components/upload/dateTest";
 import Documentation from "./components/document/Documentation";
 import Library from "./components/library/library";
 import PublicPresentation from "./components/see_more_presentation/seeMorePresentation";
@@ -90,8 +90,7 @@ function App() {
                 />
               }
             />
-            <Route path="upload" element={<NewUploadPage />} />
-            <Route path="supper_upload" element={<SupperUpload />} />
+            <Route path="upload" element={<SupperUpload />} />
           </Route>
           <Route
             path="/:id"
@@ -105,7 +104,7 @@ function App() {
           />
           <Route path="signin" element={<SignPage />} />
           <Route path="signup" element={<SignPage />} />
-          <Route path="datetest" element={<DateTest />} />
+          {/* <Route path="datetest" element={<DateTest />} /> */}
         </Routes>
       </AnimatePresence>
       <Toaster />
