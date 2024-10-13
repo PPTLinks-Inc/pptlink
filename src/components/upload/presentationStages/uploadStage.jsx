@@ -2,7 +2,7 @@ import { useState } from "react";
 import img_feather from "/Icon-feather-upload-cloud.svg";
 import img_featherTwo from "/Group92.png";
 
-export default function UploadStage({ currentView, uploadValues, setUploadValues, handleInputChange }) {
+export default function UploadStage({ currentView, uploadValues, setUploadValues, uploadValuesErrors, handleInputChange }) {
     const [addCategory, setAddCategory] = useState({ isNewCategory: false, newCategory: "" });
     const [addCategoryError, setAddCategoryError] = useState(false);
     // make axios request to update categories here
@@ -14,16 +14,16 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
             setAddCategoryError(false);
         }
         setAddCategory((prev) => ({ ...prev, isNewCategory: false }));
-        console.log("Added categories", addCategory);
+        // console.log("Added categories", addCategory);
     }
 
     return (
         <div
             className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}
         >
-            {/* first stage 🐱‍👤😒 upload el onNext remove */}
+            {/* select file for upload */}
             <div
-                className={`w-[90%] h-[15rem] m-auto ${false ? "bg-[red]" : "bg-black"} ${false && "hidden"} 
+                className={`w-[90%] h-[15rem] m-auto ${false && "hidden"} 
               border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0] 
               before:absolute before:top-0 before:left-0 before:pointer-events-none maxScreenMobile:w-full maxScreenMobile:bg-[black]
                maxScreenMobile:before:bg-black`}
@@ -32,10 +32,10 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                     <input
                         type="file"
                         name="file"
-                        onChange={() => { }}
+                        onChange={handleInputChange}
                         accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
                         multiple={false}
-                        className="block w-full h-full bg-[red] cursor-pointer"
+                        className="block w-full h-full cursor-pointer"
                     />
                 )}
                 <div
@@ -84,8 +84,8 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                         </>
                     )}
                 </div>
-                {false && (
-                    <p className="text-[red] text-lg mt-2 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">{false}</p>
+                {uploadValuesErrors.fileError && (
+                    <p className="text-[red] text-lg mt-2 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">{uploadValuesErrors.fileError}</p>
                 )}
             </div>
             {/* Title */}
@@ -99,10 +99,10 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                     name="title"
                     value={uploadValues.title}
                     onChange={handleInputChange}
-                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${false ? "border border-[red] outline-offset-2" : "border-none"}`}
+                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${uploadValuesErrors.title ? "border border-[red] outline-offset-2" : "border-none"}`}
                 />
-                {false && (
-                    <p className="text-[red]">{false}</p>
+                {uploadValuesErrors.titleError && (
+                    <p className="text-[red]">{uploadValuesErrors.titleError}</p>
                 )}
             </div>
             {/* Description (Optional) */}
@@ -120,8 +120,8 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                     value={uploadValues.description}
                     onChange={handleInputChange}
                 ></textarea>
-                {false && (
-                    <p className="text-[red]">{""}</p>
+                {uploadValuesErrors.descriptionError && (
+                    <p className="text-[red]">{uploadValuesErrors.descriptionError}</p>
                 )}
             </div>
             {/* Privacy/Downloadable */}
@@ -140,8 +140,8 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                         <option value="PRIVATE">Private</option>
                         <option value="TEMP">Temprary</option>
                     </select>
-                    {false && (
-                        <p className="text-[red]">{""}</p>
+                    {uploadValuesErrors.privacyError && (
+                        <p className="text-[red]">{uploadValuesErrors.privacyError}</p>
                     )}
                 </div>
 
@@ -158,8 +158,8 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                         <option value={true}>Yes</option>
                         <option value={false}>No</option>
                     </select>
-                    {false && (
-                        <p className="text-[red]">{""}</p>
+                    {uploadValuesErrors.downloadableError && (
+                        <p className="text-[red]">{uploadValuesErrors.downloadableError}</p>
                     )}
                 </div>
             </div>
@@ -177,7 +177,7 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                                 title="category"
                                 onChange={(e) => setUploadValues({ ...uploadValues, category: e.target.value })}
                                 id="publicSelector"
-                                className="block w-[65%] text-lg maxScreenMobile:w-[85%] p-2 mr-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
+                                className="block w-[60%] text-lg _maxScreenMobile:w-[85%] p-2 mr-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
                                 value={uploadValues.category}
                                 disabled={false}
                             >
@@ -199,9 +199,9 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                                 }}
                                 className="w-[40%] maxScreenMobile:text-[0.8rem] 
                       flex gap-1 justify-evenly items-center h-full p-2 
-                      bg-black border-black rounded-tr-md rounded-br-md maxScreenMobile:w-fit maxScreenMobile:p-4"
+                      bg-black border-black rounded-tr-md rounded-br-md _maxScreenMobile:w-fit _maxScreenMobile:p-4"
                             >
-                                <span className="text-white text-[1rem] block w-fit h-fit italic maxScreenMobile:hidden">
+                                <span className="text-white text-[1rem] block w-fit h-fit italic _maxScreenMobile:hidden">
                                     NEW
                                 </span>
                             </button>
@@ -217,7 +217,7 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                                 onChange={(e) =>
                                     setAddCategory((prev) => ({ ...prev, newCategory: e.target.value }))
                                 }
-                                className="block w-[65%] p-2 indent-8 border-none border-black border-r-0 rounded-tl-md rounded-bl-md"
+                                className="block w-[60%] p-2 indent-8 border-none border-black border-r-0 rounded-tl-md rounded-bl-md"
                                 placeholder="ADD CATEGORY"
                             />
                             <button
@@ -231,7 +231,11 @@ export default function UploadStage({ currentView, uploadValues, setUploadValues
                             </button>
                         </div>
                     </div>
-                    {addCategoryError && (<p className="text-[red] w-full">{"Category already exists or is invalid"}</p>)}
+                    {addCategoryError ||
+                        uploadValuesErrors.categoryError
+                        && (<p className="text-[red] w-full">{uploadValuesErrors.categoryError ?
+                            uploadValuesErrors.categoryError
+                            : "Category already exists or is invalid"}</p>)}
                 </div>
             </div>
         </div>
