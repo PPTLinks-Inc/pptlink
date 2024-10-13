@@ -338,7 +338,7 @@ export default function Controls({
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {users.length}
+                  {users.length + (host ? 1 : 0)}
                 </span>
               </div>
               <div className="relative">
@@ -402,7 +402,7 @@ export default function Controls({
                   <FaRegUser size={24} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                  {users.length}
+                  {users.length + (host ? 1 : 0)}
                 </span>
               </div>
             </>
@@ -488,7 +488,7 @@ export default function Controls({
                 <FaRegUser size={18} />
               </div>
               <span className="absolute -top-2 -right-2 bg-white rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
-                {users.length}
+                {users.length + (host ? 1 : 0)}
               </span>
             </div>
           </div>
@@ -646,7 +646,7 @@ export default function Controls({
           if (!presentation) return;
           if (presentation.User === "HOST") {
             try {
-              await startAudio.mutateAsync(undefined);
+              await startAudio.mutateAsync();
             } catch (error) {
               toast({
                 title: "Error",

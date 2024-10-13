@@ -25,6 +25,8 @@ import { usepresentationStore } from "@/components/interface/store/presentationS
 import { useRtmStore } from "@/components/interface/store/rtmStore";
 import { useAudioStore } from "@/components/interface/store/audioStore";
 import { useSlideStore } from "@/components/interface/store/slideStore";
+import { toast } from "@/hooks/use-toast";
+import { MIC_STATE } from "@/constants/routes";
 
 const contextValues = {
   fullScreenShow: false,
@@ -143,6 +145,104 @@ const PresentationContextProvider = (props: { children: any }) => {
       }
     },
     [users]
+  );
+
+  const rtmConnectionState = useRtmStore((state) => state.status);
+
+  useEffect(
+    function () {
+      const rtm = useRtmStore.getState().rtm;
+      const setSlideData = useSlideStore.getState().setSlideData;
+      const syncSlide = useSlideStore.getState().syncSlide;
+      const synced = useSlideStore.getState().synced;
+      const presentation = usepresentationStore.getState().presentation;
+
+      if (rtmConnectionState === "CONNECTED") {
+        if (presentation?.audio) {
+          rtm?.presence
+            .getOnlineUsers(presentation.liveId, "MESSAGE", {
+              includedState: true
+            })
+            .then(function (data) {
+              type UserType = {
+                [key: string]: {
+                  id: string;
+                  userName: string;
+                  micState: MIC_STATE;
+                };
+              };
+
+              const tempUsrs: UserType = {};
+              for (let i = 0; i < data.occupants.length; i++) {
+                const u = data.occupants[i];
+                if (u.states.userName === "HOST") {
+                  const host = {
+                    id: u.userId,
+                    userName: u.states.userName,
+                    micState: u.states.micState as MIC_STATE
+                  };
+                  useRtmStore.setState({ host });
+                  continue;
+                }
+                if (Object.keys(u.states).length === 0) continue;
+                if (u.states.userName === "null" || u.states.userName === "")
+                  continue;
+                tempUsrs[u.userId] = {
+                  id: u.userId,
+                  userName: u.states.userName,
+                  micState: u.states.micState as MIC_STATE
+                };
+              }
+
+              useRtmStore.setState({ users: tempUsrs });
+            })
+            .catch(function () {
+              toast({
+                title: "Error",
+                description: "Failed to update users",
+                variant: "destructive"
+              });
+            });;
+        }
+
+        if (presentation?.User === "GUEST") {
+          rtm?.storage
+            .getChannelMetadata(presentation.liveId, "MESSAGE")
+            .then((data) => {
+              const newSlideData = JSON.parse(data.metadata.slideData.value);
+              setSlideData(newSlideData);
+              if (synced) syncSlide();
+            })
+            .catch(function () {
+              toast({
+                title: "Error",
+                description: "Failed to sync slides",
+                variant: "destructive"
+              });
+            });
+        } else if (presentation?.User === "HOST") {
+          let slideData = useSlideStore.getState().slideData;
+          const swiperRef = useSlideStore.getState().swiperRef;
+          if (!swiperRef) return;
+          slideData = {
+            maxSlides:
+              swiperRef.swiper.activeIndex >= slideData.maxSlides
+                ? swiperRef.swiper.activeIndex
+                : slideData.maxSlides,
+            hostSlide: swiperRef.swiper.activeIndex,
+            prevHostSlide: slideData.hostSlide
+          };
+          setSlideData(slideData);
+          rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
+            {
+              key: "slideData",
+              value: JSON.stringify(slideData)
+            }
+          ]);
+        }
+      }
+    },
+    [rtmConnectionState]
   );
 
   useEffect(function () {
