@@ -96,7 +96,7 @@ export default function SupperUpload() {
         if (!uploadValues.file) {
             errors.fileError = "Please upload a presentation file.";
         } else {
-            const baseFileSize = 2; // change it to suit the required file size
+            const baseFileSize = 10; // change it to suit the required file size
             const { type, size } = uploadValues.file;
             const fileExtension = uploadValues.file?.name.split(".").pop();
 
@@ -184,18 +184,20 @@ export default function SupperUpload() {
                 errors.socialMediaLinkError = "";
             }
             // Date validation checks
-            if (!uploadValues.presentationDate) {
-                errors.presentationDateError = "Must select start Date, can't be empty";
-            } else if (uploadValues.presentationDate &&
+            // if (!uploadValues.presentationDate) {
+            //     errors.presentationDateError = "Must select start Date, can't be empty";
+            // } else 
+            if (uploadValues.presentationDate &&
                 uploadValues.presentationDate < FormatDate(new Date(), 'YYYY-MM-DD')) {
                 errors.presentationDateError = "Date cannot be in the past";
             } else {
                 errors.presentationDateError = "";
             }
             // start time validation checks
-            if (!uploadValues.presentationStartTime) {
-                errors.presentationStartTimeError = "Must select start time, can't be empty";
-            } else {
+            // if (!uploadValues.presentationStartTime) {
+            //     errors.presentationStartTimeError = "Must select start time, can't be empty";
+            // } else 
+            if (uploadValues.presentationStartTime) {
                 const startTime = new Date(`1970-01-01T${uploadValues.presentationStartTime}:00Z`);
                 const currentTime = new Date();
 
@@ -281,6 +283,7 @@ export default function SupperUpload() {
                         uploadValues={uploadValues}
                         setUploadValues={setUploadValues}
                         uploadValuesErrors={uploadValuesErrors}
+                        setUploadValuesErrors={setUploadValuesErrors}
                         handleInputChange={handleInputChange}
                     />
                     {/* Second stage show els 👀👀 */}
@@ -289,6 +292,7 @@ export default function SupperUpload() {
                         uploadValues={uploadValues}
                         setUploadValues={setUploadValues}
                         uploadValuesErrors={uploadValuesErrors}
+                        setUploadValuesErrors={setUploadValuesErrors}
                         handleInputChange={handleInputChange}
                     />
                     {/* Third stage show els 👀👀 */}
