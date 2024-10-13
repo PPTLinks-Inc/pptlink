@@ -19,22 +19,6 @@ export default function PreviewStage({ currentView, uploadValues }) {
                             />
                         )}
                     </div>
-                    {/* file: null,
-                    title: "",
-                    description: "",
-                    privacy: "PUBLIC",
-                    downloadable: true,
-                    category: "",
-                    categories: ["Educational Contents"],
-                    linkType: "",
-                    tempFileId: "",
-                    presenterName: "",
-                    bio: "",
-                    socialMediaLink: "",
-                    presentationDate: "",
-                    presentationStartTime: "",
-                    presentationEndTime: "",
-                    canUpload: true, */}
                     <div className="bg-black h-fit mt-16 pb-4">
                         <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]">
                             PRESENTER&apos;S INFORMATION

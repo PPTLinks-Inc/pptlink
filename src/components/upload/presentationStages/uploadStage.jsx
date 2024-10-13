@@ -2,7 +2,13 @@ import { useState } from "react";
 import img_feather from "/Icon-feather-upload-cloud.svg";
 import img_featherTwo from "/Group92.png";
 
-export default function UploadStage({ currentView, uploadValues, setUploadValues, uploadValuesErrors, handleInputChange }) {
+export default function UploadStage({
+    currentView,
+    uploadValues,
+    setUploadValues,
+    uploadValuesErrors,
+    setUploadValuesErrors,
+    handleInputChange }) {
     const [addCategory, setAddCategory] = useState({ isNewCategory: false, newCategory: "" });
     const [addCategoryError, setAddCategoryError] = useState(false);
     // make axios request to update categories here
