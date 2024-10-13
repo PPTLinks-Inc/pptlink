@@ -58,7 +58,7 @@ function FormLabelIndicator({ currentView }) {
 }
 
 function FormStageMover({ currentView, moveStage }) {
-    
+
     return (
         <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
             <button
@@ -68,7 +68,7 @@ function FormStageMover({ currentView, moveStage }) {
                     ? "!cursor-not-allowed"
                     : "pointer-events-auto"
                     } border border-black text-black text-[1.5rem] px-2 py-[calc(0.5rem-2px)] rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
-                onClick={(e) => moveStage(e.target.dataset.next)}
+                onClick={() => moveStage("prev")}
                 disabled={currentView === 1 ? true : false}
             >
                 Back
@@ -78,7 +78,7 @@ function FormStageMover({ currentView, moveStage }) {
                 type={"button"}
                 data-next="next"
                 className={`${false ? "bg-[red]" : "bg-[black]"} pointer-events-auto text-white text-[1.5rem] p-2 border-none rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
-                onClick={(e) => moveStage(e.target.dataset.next)}
+                onClick={() => moveStage("next")}
                 disabled={false}
             >
                 {false ? (

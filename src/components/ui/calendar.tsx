@@ -1,11 +1,11 @@
-import * as React from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
-import { DayPicker } from "react-day-picker"
+import * as React from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { DayPicker } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 function Calendar({
   className,
@@ -18,7 +18,8 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
-        months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 !text-[#ffa500]",
+        months:
+          "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 !text-[#ffa500]",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center !text-white",
         caption_label: "text-sm font-medium !text-[#ffa500]",
@@ -55,16 +56,35 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
-        ...classNames,
+        ...classNames
       }}
       components={{
         IconLeft: ({ ...props }) => <ChevronLeftIcon className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />,
+        IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />
       }}
       {...props}
     />
-  )
+  );
 }
-Calendar.displayName = "Calendar"
+Calendar.displayName = "Calendar";
 
-export { Calendar }
+// custom FormatDate function
+function FormatDate(date, format = "DD/MM/YYYY") {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  // Replace format tokens with actual date values
+  return format
+    .replace("DD", day)
+    .replace("MM", month)
+    .replace("YYYY", year)
+    .replace("HH", hours)
+    .replace("mm", minutes)
+    .replace("ss", seconds);
+}
+
+export { Calendar, FormatDate };

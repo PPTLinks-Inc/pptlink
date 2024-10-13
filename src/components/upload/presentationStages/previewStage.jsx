@@ -1,4 +1,6 @@
-export default function PreviewStage({ currentView }) {
+import SlidePreview from '../SlidePreview';
+
+export default function PreviewStage({ currentView, uploadValues }) {
 
     return (
         <div className={`w-full min-h-full ${currentView === 3 ? "flex" : "hidden"} justify-center items-center`}>
@@ -12,10 +14,27 @@ export default function PreviewStage({ currentView }) {
                         {false && (
                             <SlidePreview
                                 currentView={currentView}
+                                uploadValues={uploadValues}
                                 url={""}
                             />
                         )}
                     </div>
+                    {/* file: null,
+                    title: "",
+                    description: "",
+                    privacy: "PUBLIC",
+                    downloadable: true,
+                    category: "",
+                    categories: ["Educational Contents"],
+                    linkType: "",
+                    tempFileId: "",
+                    presenterName: "",
+                    bio: "",
+                    socialMediaLink: "",
+                    presentationDate: "",
+                    presentationStartTime: "",
+                    presentationEndTime: "",
+                    canUpload: true, */}
                     <div className="bg-black h-fit mt-16 pb-4">
                         <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]">
                             PRESENTER&apos;S INFORMATION
@@ -26,21 +45,21 @@ export default function PreviewStage({ currentView }) {
                                     <span>Name</span>
                                     <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                     <p className="text-[0.9rem] italic mt-2">
-                                        {false ? false : "No Name Set"}
+                                        {uploadValues.presenterName ? uploadValues.presenterName : "No Name Set"}
                                     </p>
                                 </li>
                                 <li className="block w-full mb-4 px-4">
                                     <span>Bio</span>
                                     <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                     <p className="text-[0.9rem] italic mt-2">
-                                        {false ? false : "No Bios Set"}
+                                        {uploadValues.bio ? uploadValues.bio : "No Bios Set"}
                                     </p>
                                 </li>
                                 <li className="block w-full mb-4 px-4">
                                     <span>Social Media Link</span>
                                     <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                     <p className="text-[0.9rem] italic mt-2">
-                                        {false ? false : "No Social Link Set"}
+                                        {uploadValues.socialMediaLink ? uploadValues.socialMediaLink : "No Social Link Set"}
                                     </p>
                                 </li>
                             </ul>
@@ -57,41 +76,35 @@ export default function PreviewStage({ currentView }) {
                                 <span>Presentation title</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
-                                    {false ? false : "No Title Set"}
+                                    {uploadValues.title ? uploadValues.title : "No Title Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Description</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
-                                    {false
-                                        ? false
-                                        : "No Description Set"}
+                                    {uploadValues.description ? uploadValues.description : "No Description Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Privacy</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
-                                    {false ? false : "No Privacy Set"}
+                                    {uploadValues.privacy ? uploadValues.privacy : "No Privacy Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Category</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
-                                    {false
-                                        ? false
-                                        : "No Category Set"}
+                                    {uploadValues.category ? uploadValues.category : "No Category Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Downloadable</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
-                                    {false
-                                        ? "Downloadable"
-                                        : "Not downloadable"}
+                                    {uploadValues.downloadable === "true" ? "Downloadable" : "Not downloadable"}
                                 </p>
                             </li>
                         </ul>
@@ -103,21 +116,19 @@ export default function PreviewStage({ currentView }) {
                                 <span>Date</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
-                                    {false
-                                        ? `Start Date: ${false}`
-                                        : "No Date Set"}
+                                    {uploadValues.presentationDate ? `Start Date: ${uploadValues.presentationDate}` : "No Date Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Time</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
-                                    {false
-                                        ? `Start Time(${false}) `
+                                    {uploadValues.presentationStartTime
+                                        ? `Start Time(${uploadValues.presentationStartTime}) `
                                         : "No Start Time Set "}
                                     -
-                                    {false
-                                        ? ` End Time(${false})`
+                                    {uploadValues.presentationEndTime
+                                        ? ` End Time(${uploadValues.presentationEndTime})`
                                         : " No End Time Set"}
                                 </p>
                             </li>
