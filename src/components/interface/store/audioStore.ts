@@ -347,8 +347,6 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 includedState: true
             });
 
-            console.log(data);
-
             type UserType = {
                 [key: string]: {
                     id: string;
@@ -370,7 +368,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                     continue
                 };
                 if (Object.keys(u.states).length === 0) continue;
-                if (u.states.id === "null") continue;
+                if (u.states.userName === "null" || u.states.userName === "") continue;
                 tempUsrs[u.userId] = {
                     id: u.userId,
                     userName: u.states.userName,

@@ -10,6 +10,7 @@ interface SlideStore {
         hostSlide: number;
         prevHostSlide: number;
     };
+    setSlideData: (data: SlideStore["slideData"]) => void;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     swiperRef: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,6 +27,9 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         maxSlides: 0,
         hostSlide: 0,
         prevHostSlide: 0
+    },
+    setSlideData: function (data) {
+        set({ slideData: data });
     },
     swiperRef: null,
     setSwiperRef: function (ref) {
