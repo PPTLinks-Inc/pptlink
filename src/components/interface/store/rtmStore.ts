@@ -195,7 +195,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 set({ host });
                 return
             };
-            if (u.userName === "null") {
+            if (u.userName === "null" || u.userName === "") {
                 const removeUser = get().removeUser;
                 removeUser(data.publisher);
                 return;
