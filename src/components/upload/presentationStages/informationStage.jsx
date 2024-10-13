@@ -5,7 +5,13 @@ import { Calendar, FormatDate } from "@/components/ui/calendar";
 // import { TimePicker } from "@/components/ui/customTimePicker"
 import { SlCalender } from "react-icons/sl";
 
-export default function InformationStage({ currentView, uploadValues, setUploadValues, uploadValuesErrors, handleInputChange }) {
+export default function InformationStage({
+    currentView,
+    uploadValues,
+    setUploadValues,
+    uploadValuesErrors,
+    setUploadValuesErrors,
+    handleInputChange }) {
     const [toggleDateTime, setToggleDateTime] = useState(false);
     const [toggleDateTimeDatePicker, setToggleDateTimeDatePicker] = useState(false);
     const startTimeRef = useRef(null);
@@ -42,6 +48,10 @@ export default function InformationStage({ currentView, uploadValues, setUploadV
         }));
         setToggleDateTimeDatePicker(false);
     }, [toggleDateTime]);
+
+    useEffect(function () {
+        setToggleDateTimeDatePicker(false);
+    }, [uploadValues.presentationStartTime, uploadValues.presentationEndTime]);
 
     return (
         <div
