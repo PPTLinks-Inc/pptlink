@@ -4,9 +4,8 @@ export default function PreviewStage({ currentView, uploadValues }) {
 
     return (
         <div className={`w-full min-h-full ${currentView === 3 ? "flex" : "hidden"} justify-center items-center`}>
-            {/* <h1 className='text-[3rem] font-black text-black'>Coming Soon pls🐱‍🏍</h1> */}
-            <div className="w-full h-fit flex justify-between items-start maxScreenMobile:flex-col">
-                <div className="!w-[50%] maxScreenMobile:!w-full max-h-auto mt-auto mb-0 flex flex-col justify-between bg-[#FFFFF0]">
+            <div className="w-full h-fit gridPreview">
+                <div className="w-full flex flex-col justify-between bg-[#FFFFF0]">
                     {/* MARK: Preview */}
                     <div
                         className="maxScreenMobile:mt-4 w-[95%] m-auto h-[20rem] bg-white rounded-md border-2 border-black"
@@ -19,7 +18,7 @@ export default function PreviewStage({ currentView, uploadValues }) {
                             />
                         )}
                     </div>
-                    <div className="bg-black h-fit mt-16 pb-4">
+                    <div className="bg-[#ffa500] h-fit mt-16 pb-4">
                         <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem]">
                             PRESENTER&apos;S INFORMATION
                         </p>
@@ -50,7 +49,7 @@ export default function PreviewStage({ currentView, uploadValues }) {
                         </div>
                     </div>
                 </div>
-                <div className="!w-[50%] maxScreenMobile:!w-full _overflow-auto max-h-auto bg-black pb-4 flex flex-col justify-between">
+                <div className="w-full bg-[#ffa500] pb-[1.7rem] flex flex-col justify-between">
                     <p className="w-fit m-auto pt-14 pb-4 text-black text-[1.2rem] mt-0">
                         PRESENTATION DETAILS
                     </p>
@@ -92,7 +91,7 @@ export default function PreviewStage({ currentView, uploadValues }) {
                                 </p>
                             </li>
                         </ul>
-                        <p className="bg-black text-slate-200 w-3/6 pl-4 py-2">
+                        <p className="bg-[#ffa500] text-black w-3/6 pl-4 py-2">
                             SCHEDULE
                         </p>
                         <ul className="block w-full pb-4">
@@ -108,7 +107,7 @@ export default function PreviewStage({ currentView, uploadValues }) {
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%]" />
                                 <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.presentationStartTime
-                                        ? `Start Time(${uploadValues.presentationStartTime}) `
+                                        ? `Start Time(${uploadValues.presentationStartTime})`
                                         : "No Start Time Set "}
                                     -
                                     {uploadValues.presentationEndTime
