@@ -2,8 +2,6 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import "../../assets/styles/general_css.css";
 // import img_plus from "/Icon-awesome-plus.png";
-// import validate from "./uploadValidationRules";
-// import useForm from "./useForm";
 // import Uploadanimation from "./uploadAnim";
 import { userContext } from "../../contexts/userContext";
 import axios from "axios";
@@ -183,7 +181,7 @@ export default function SupperUpload() {
             } else {
                 errors.socialMediaLinkError = "";
             }
-            // Date validation checks
+            // Date validation checks invoke must date
             // if (!uploadValues.presentationDate) {
             //     errors.presentationDateError = "Must select start Date, can't be empty";
             // } else 
@@ -193,21 +191,16 @@ export default function SupperUpload() {
             } else {
                 errors.presentationDateError = "";
             }
-            // start time validation checks
+            // start time validation checks invoke must time
             // if (!uploadValues.presentationStartTime) {
             //     errors.presentationStartTimeError = "Must select start time, can't be empty";
-            // } else 
+            // } else
             if (uploadValues.presentationStartTime) {
-                const startTime = new Date(`1970-01-01T${uploadValues.presentationStartTime}:00Z`);
-                const currentTime = new Date();
-
-                const startHours = startTime.getUTCHours();
-                const startMinutes = startTime.getUTCMinutes();
-                const currentHours = currentTime.getUTCHours();
-                const currentMinutes = currentTime.getUTCMinutes();
-
-                if (startHours < currentHours ||
-                    (startHours >= currentHours && startMinutes < currentMinutes)) {
+                // Get current time (in hours and minutes)
+                const currentDate = new Date();
+                const currentTimeString = currentDate.toISOString().slice(11, 16); // Current time in HH:MM format
+                // Compare time strings directly (as "HH:MM")
+                if (uploadValues.presentationStartTime < currentTimeString) {
                     errors.presentationStartTimeError = "Can't select past time";
                 } else {
                     errors.presentationStartTimeError = "";
@@ -256,7 +249,8 @@ export default function SupperUpload() {
     }
 
     // create axios requset to get all categories here with useEffect 🥂
-    console.log("uploadValuesErrors.fileError", uploadValuesErrors.fileError);
+    console.log("|||||||uploadValues||||||||", uploadValues);
+    console.log("|||||||uploadValuesErrors|||||||||", uploadValuesErrors);
 
     // scroll page to the top when currentView changes
     useEffect(() => {

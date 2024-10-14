@@ -137,7 +137,7 @@ export default function Document() {
         </div>
       </section>
       <section className="container py-5 min-h-screen bg-[#FFFFF0]">
-        <div className="documentatio_page flex flex-wrap justify-between items-center gap-y-16 gap-x-8 w-full mt-20 mb-10">
+        <div className="documentationPage flex flex-wrap justify-between items-center gap-y-16 gap-x-8 w-full mt-20 mb-10">
           {sections.map((section, index) => (
             <div
               key={index}
