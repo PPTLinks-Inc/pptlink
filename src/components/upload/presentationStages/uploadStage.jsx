@@ -27,12 +27,11 @@ export default function UploadStage({
         <div
             className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}
         >
-            {/* select file for upload */}
+            {/* Upload File here */}
             <div
-                className={`w-[90%] h-[15rem] m-auto ${false && "hidden"} 
-              border-[3px] !border-[#FFFFF0] border-dashed before:block before:w-full relative before:h-full before:bg-[#FFFFF0] 
-              before:absolute before:top-0 before:left-0 before:pointer-events-none maxScreenMobile:w-full maxScreenMobile:bg-[black]
-               maxScreenMobile:before:bg-black`}
+                className={`w-full h-[20rem] m-auto ${false && "hidden"} 
+              ${false && "border-[3px] !border-[red] border-dashed"} before:block before:w-full relative before:h-full before:bg-[#FFFFF0] 
+              before:absolute before:top-0 before:left-0 before:pointer-events-none`}
             >
                 {uploadValues.canUpload && (
                     <input
@@ -45,57 +44,34 @@ export default function UploadStage({
                     />
                 )}
                 <div
-                    className={`flex flex-col gap-2 justify-center items-center w-full h-full absolute top-0 left-0 pointer-events-none maxScreenMobile:bg-black`}
+                    className={`flex flex-col gap-2 justify-center items-center w-full h-full absolute top-0 left-0 pointer-events-none _maxScreenMobile:bg-black`}
                 >
-                    <img
-                        src={img_feather}
-                        alt={img_feather}
-                        className="block w-16 aspect-square maxScreenMobile:hidden"
-                    />
-                    <img
-                        src={img_featherTwo}
-                        alt={img_featherTwo}
-                        className="hidden w-16 aspect-square maxScreenMobile:block"
-                    />
-                    {false ? (
-                        <>
-                            <span className="w-fit h-fit text-black">
-                                File Upload successfully
-                            </span>
-                            <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full">
-                                Change File...
-                            </span>
-                        </>
-                    ) : uploadValues.canUpload ? (
-                        <>
-                            <span className="w-fit h-fit text-black maxScreenMobile:text-white">
-                                Drop your file in here
-                            </span>
-                            <span className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full maxScreenMobile:bg-white">
-                                Browse...
-                            </span>
-                        </>
-                    ) : (
-                        <>
-                            <span className="w-fit h-fit text-black">
-                                Error you can&apos;t upload right now
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => window.location.reload()}
-                                className="w-fit h-fit text-black bg-[#ffa500] py-2 px-8 rounded-full"
-                            >
-                                Reload
-                            </button>
-                        </>
-                    )}
+                    <span className="block w-[5rem] aspect-square">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.163 107.713" className="block w-full h-full">
+                            <g id="Icon_feather-upload-cloud" data-name="Icon feather-upload-cloud" transform="translate(2.029 -0.985)">
+                                <path id="Path_197" data-name="Path 197" d="M56.759,40.379,34.38,18,12,40.379" transform="translate(28.686 36.845)" fill="none" stroke={`${uploadValues.file ? "green" : !uploadValuesErrors.fileError ? "#ffa500" : "red"}`} stroke-linecap="round" stroke-linejoin="round" stroke-width="7" />
+                                <path id="Path_198" data-name="Path 198" d="M18,18V68.354" transform="translate(45.066 36.845)" fill="none" stroke={`${uploadValues.file ? "green" : !uploadValuesErrors.fileError ? "#ffa500" : "red"}`} stroke-linecap="round" stroke-linejoin="round" stroke-width="7" />
+                                <path id="Path_199" data-name="Path 199" d="M110.007,90.6A27.974,27.974,0,0,0,96.635,38.06h-7.05A44.759,44.759,0,1,0,12.712,78.9" transform="translate(0 0)" fill="none" stroke={`${uploadValues.file ? "green" : !uploadValuesErrors.fileError ? "#ffa500" : "red"}`} stroke-linecap="round" stroke-linejoin="round" stroke-width="7" />
+                                <path id="Path_200" data-name="Path 200" d="M56.759,40.379,34.38,18,12,40.379" transform="translate(28.686 36.845)" fill="none" stroke={`${uploadValues.file ? "green" : !uploadValuesErrors.fileError ? "#ffa500" : "red"}`} stroke-linecap="round" stroke-linejoin="round" stroke-width="7" />
+                            </g>
+                        </svg>
+                    </span>
+                    <span className={`w-fit h-fit ${uploadValues.file ? "text-[green]" : !uploadValuesErrors.fileError ? "text-black" : "text-[red]"}`}>
+                        {uploadValuesErrors.fileError ?
+                            <>{uploadValuesErrors.fileError}</>
+                            : <>{uploadValues.file ? "File Upload successfully" : true ? "Drop your file in here or" : "Error you can't upload right now"}</>
+                        }
+                    </span>
+                    <span className={`w-fit h-fit text-white ${uploadValues.file ? "bg-[green]" : !uploadValuesErrors.fileError ? "bg-[#ffa500]" : "bg-[red]"} py-2 px-8 rounded-full`}>
+                        {uploadValues.file ? "Change file..." : true ? "Browse..." : "Reload"}
+                    </span>
                 </div>
-                {uploadValuesErrors.fileError && (
-                    <p className="text-[red] text-lg mt-2 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">{uploadValuesErrors.fileError}</p>
-                )}
+                {/* {uploadValuesErrors.fileError && (
+                    <p className="text-[red] w-[90%] mx-auto text-lg mt-2 pb-6">{uploadValuesErrors.fileError}</p>
+                )} */}
             </div>
             {/* Title */}
-            <div className="w-[90%] h-fit m-auto mt-14 text-lg text-black">
+            <div className="w-[90%] h-fit m-auto mt-8 text-lg text-black">
                 <label htmlFor="title" className="block mb-2">
                     <sup className="w-full text-xl font-bold">*</sup>Title
                 </label>

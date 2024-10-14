@@ -110,7 +110,7 @@ export default function InformationStage({
                 {uploadValuesErrors.socialMediaLinkError && (<p className="text-[red]">{uploadValuesErrors.socialMediaLinkError}</p>)}
             </div>
             {/* time of presentation */}
-            <span className="bg-black border-none rounded-tr-md rounded-br-md text-[#ffa500] w-fit p-4 mt-8 mb-6 text-xl font-medium flex justify-between items-center gap-2 _maxScreenMobile:text-white _maxScreenMobile:bg-[#ffa500] _maxScreenMobile:border-[#ffa500]">
+            <span className={`bg-black rounded-tr-md rounded-br-md text-[#ffa500] w-fit p-4 mt-8 mb-6 text-xl font-medium flex justify-between items-center gap-2 ${(!toggleDateTime && (uploadValuesErrors.presentationEndTimeError || uploadValuesErrors.presentationStartTimeError || uploadValuesErrors.presentationDateError)) && "!border-t-2 !border-r-2 !border-b-2 !border-[red]"}`}>
                 <label htmlFor="setToggleDateTime">
                     Time of Presentation
                 </label>
