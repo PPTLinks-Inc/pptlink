@@ -293,8 +293,8 @@ export default function About() {
     //     ))}
     //   </section>
     // </main>
-    <main className="flex items-center justify-center">
-      <h1 className="text-7xl font-bold text-white">In the works...</h1>
+    <main className="min-h-screen bg-[#FFFFF0] flex items-center justify-center">
+      <h1 className="text-7xl font-bold text-black">In the works...</h1>
     </main>
   );
 }
