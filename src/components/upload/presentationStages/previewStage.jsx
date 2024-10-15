@@ -1,4 +1,5 @@
 import SlidePreview from '../SlidePreview';
+import img1 from "./Annotation_img.png";
 
 export default function PreviewStage({ currentView, uploadValues }) {
 
@@ -10,6 +11,7 @@ export default function PreviewStage({ currentView, uploadValues }) {
                     <div
                         className="maxScreenMobile:mt-4 w-[95%] maxScreenMobile:w-full m-auto h-[20rem] bg-white rounded-md border-2 border-black maxScreenMobile:border-[0.1px] maxScreenMobile:border-[#00000034] maxScreenMobile:rounded-none"
                     >
+                        <img src={img1} alt={img1} className="block w-full h-full object-cover" />
                         {false && (
                             <SlidePreview
                                 currentView={currentView}
@@ -27,21 +29,21 @@ export default function PreviewStage({ currentView, uploadValues }) {
                                 <li className="block w-full mb-4 px-4">
                                     <span>Name</span>
                                     <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                    <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                    <p className="text-[0.9rem] italic mt-2">
                                         {uploadValues.presenterName ? uploadValues.presenterName : "No Name Set"}
                                     </p>
                                 </li>
                                 <li className="block w-full mb-4 px-4">
                                     <span>Bio</span>
                                     <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                    <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                    <p className="text-[0.9rem] italic mt-2">
                                         {uploadValues.bio ? uploadValues.bio : "No Bios Set"}
                                     </p>
                                 </li>
                                 <li className="block w-full mb-4 px-4">
                                     <span>Social Media Link</span>
                                     <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                    <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                    <p className="text-[0.9rem] italic mt-2">
                                         {uploadValues.socialMediaLink ? uploadValues.socialMediaLink : "No Social Link Set"}
                                     </p>
                                 </li>
@@ -58,54 +60,54 @@ export default function PreviewStage({ currentView, uploadValues }) {
                             <li className="block w-full mb-4 px-4">
                                 <span>Presentation title</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.title ? uploadValues.title : "No Title Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Description</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.description ? uploadValues.description : "No Description Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Privacy</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.privacy ? uploadValues.privacy : "No Privacy Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Category</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.category ? uploadValues.category : "No Category Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Downloadable</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.downloadable === "true" ? "Downloadable" : "Not downloadable"}
                                 </p>
                             </li>
                         </ul>
-                        <p className="bg-[#ffa500] text-black w-3/6 pl-4 py-2">
+                        <p className="bg-[#ffa500] text-black w-3/6 pl-4 py-2 mb-4">
                             SCHEDULE
                         </p>
                         <ul className="block w-full pb-4">
                             <li className="block w-full mb-4 px-4">
                                 <span>Date</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.presentationDate ? `Start Date: ${uploadValues.presentationDate}` : "No Date Set"}
                                 </p>
                             </li>
                             <li className="block w-full mb-4 px-4">
                                 <span>Time</span>
                                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                                <p className="text-[0.9rem] italic mt-2 w-full !h-fit">
+                                <p className="text-[0.9rem] italic mt-2">
                                     {uploadValues.presentationStartTime
                                         ? `Start Time(${uploadValues.presentationStartTime})`
                                         : "No Start Time Set "}
