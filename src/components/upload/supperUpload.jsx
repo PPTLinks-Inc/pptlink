@@ -75,7 +75,7 @@ export default function SupperUpload() {
     // uploads Error SetersFunc
     const validateUploads = () => {
         let errors = {};
- 
+
         // Supported MIME types
         // const mimeTypes = [
         //     "application/wps-office.pptx",
