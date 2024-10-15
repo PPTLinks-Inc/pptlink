@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { userContext } from "../../contexts/userContext";
@@ -21,7 +21,7 @@ export default function SignPage() {
   const { setUser } = useContext(userContext);
 
   const [isSignupPage, setIsSignupPage] = useState(
-    useLocation().pathname === "/signup"
+    useLocation().pathname === "/signup" ? true : false
   );
 
   const [passwordErr, setPasswordErr] = useState(null);
@@ -382,18 +382,18 @@ export default function SignPage() {
                 {isSignupPage ? "Sign In" : "SIgn Up"}
               </a>
             </p>
-            <a
-              href="#"
+            <NavLink
+              to={"/reset_password"}
               className={`block w-fit m-auto mt-4 text-center text-[#FFA500] ${isSignupPage && "hidden"}`}
             >
               Forgot password
-            </a>
+            </NavLink>
           </form>
           <div className="w-full mt-3 flex flex-col items-center justify-between gap-2 maxScreenMobile:px-3">
             <span className="flex w-full justify-center items-center mb-2">
-              <hr className="block w-[35%] h-[.1px] bg-black" />
+              <hr className="block w-[35%] h-[0.1px] bg-black" />
               <span className="block w-fit text-center mx-1 font-bold">Or</span>
-              <hr className="block w-[35%] h-[.1px] bg-black" />
+              <hr className="block w-[35%] h-[0.1px] bg-black" />
             </span>
 
             <button

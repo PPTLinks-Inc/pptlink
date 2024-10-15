@@ -104,6 +104,7 @@ function App() {
           />
           <Route path="signin" element={<SignPage />} />
           <Route path="signup" element={<SignPage />} />
+          <Route path="reset_password" element={<SignPage />} />
           {/* <Route path="datetest" element={<DateTest />} /> */}
         </Routes>
       </AnimatePresence>
