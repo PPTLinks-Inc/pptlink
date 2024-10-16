@@ -124,7 +124,7 @@ export default function Card({ presentation, refresh }) {
         text: "Join the presentation",
         url: link
       })
-      .catch(() => {});
+      .catch(() => { });
   }
 
   function copyLink(link) {
@@ -136,7 +136,7 @@ export default function Card({ presentation, refresh }) {
             description: "Link Copied successfully"
           });
         })
-        .catch(() => {});
+        .catch(() => { });
   }
   // Modal handler
   const handleCardModel = (Id, data) => {
