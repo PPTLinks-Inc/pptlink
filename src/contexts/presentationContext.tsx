@@ -202,7 +202,7 @@ const PresentationContextProvider = (props: { children: any }) => {
                 description: "Failed to update users",
                 variant: "destructive"
               });
-            });;
+            });
         }
 
         if (presentation?.User === "GUEST") {
