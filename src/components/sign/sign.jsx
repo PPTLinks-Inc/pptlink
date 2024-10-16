@@ -255,7 +255,6 @@ export default function SignPage() {
             </h1>
             <form onSubmit={handleSubmition} autoComplete="false" className="maxScreenMobile:px-3">
               {" "}
-              {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
               {/* sign up */}
               {signin.isError && (
                 <p className="text-[red] text-center font-bold text-xl">

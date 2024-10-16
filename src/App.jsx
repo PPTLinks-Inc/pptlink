@@ -27,6 +27,7 @@ import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
 import SupperUpload from "./components/upload/supperUpload";
+import ResetPasswordPage from "./components/sign/resetPassword";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -105,6 +106,7 @@ function App() {
           <Route path="signin" element={<SignPage />} />
           <Route path="signup" element={<SignPage />} />
           <Route path="reset_password" element={<SignPage />} />
+          <Route path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`} element={<ResetPasswordPage />} />
           {/* <Route path="datetest" element={<DateTest />} /> */}
         </Routes>
       </AnimatePresence>
