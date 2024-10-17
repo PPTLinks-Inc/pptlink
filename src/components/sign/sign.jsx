@@ -36,7 +36,7 @@ export default function SignPage() {
     useLocation().pathname === "/signup" ? true : false
   );
   const [isResetPage, setIsResetPage] = useState(
-    useLocation().pathname === "/reset_password" ? true : false
+    useLocation().pathname === "/forgot-password" ? true : false
   );
 
   const showPassword = () => {
@@ -225,6 +225,7 @@ export default function SignPage() {
           switchPage(e);
         }}
         isLoading={false}
+        oneButton={true}
         message={`A reset link has been sent to this email ${values.email ? values.email : ""}`}
         actionText={"OK"}
       />
@@ -255,7 +256,6 @@ export default function SignPage() {
             </h1>
             <form onSubmit={handleSubmition} autoComplete="false" className="maxScreenMobile:px-3">
               {" "}
-              {/*action={isSignupPage ? "/signup" : "/signin"} method="post"*/}
               {/* sign up */}
               {signin.isError && (
                 <p className="text-[red] text-center font-bold text-xl">
@@ -427,7 +427,7 @@ export default function SignPage() {
                 </a>
               </p>
               <Link
-                to={"/reset_password"}
+                to={"/forgot-password"}
                 className={`block w-fit m-auto mt-4 text-center text-[#FFA500] ${(isSignupPage || isResetPage) && "hidden"}`}
               >
                 Forgot password
