@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import logo_orange from "/imgs/onemorecolor.png";
+import { MdDone } from "react-icons/md";
 import PopUpModal from "../Models/dashboardModel";
 
 export default function ResetPasswordPage() {
@@ -25,7 +26,7 @@ export default function ResetPasswordPage() {
                         className="block w-10 aspect-square"
                     />
                 </Link>
-            <p className="text-[1.7rem] font-[900] mx-auto maxSmallMobile:text-[1rem] maxSmallMobile:font-[500]">Welcome To Password Reset</p>
+                <p className="text-[1.7rem] font-[900] mx-auto maxSmallMobile:text-[1rem] maxSmallMobile:font-[500]">Welcome To Password Reset</p>
             </div>
             <form
                 onSubmit={(e) => {
@@ -35,7 +36,7 @@ export default function ResetPasswordPage() {
                     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
                     if (!passwordRegex.test(values.password)) {
                         setPasswordErr(
-                            "Your password must be at least 9 characters long, contain at least one lowercase letter, one uppercase letter, and one number."
+                            "Password must be at least 8 characters and contain at least one lowercase, uppercase, and a number."
                         );
                     } else {
                         setPasswordErr(null);
@@ -44,7 +45,6 @@ export default function ResetPasswordPage() {
                 }}
                 className=" h-fit w-[25rem] maxSmallMobile:w-[95%] maxSmallMobile:mx-auto"
             >
-
                 <div
                     className={`w-full h-fit flex justify-between items-center gap-4 mb-4 maxScreenMobile:!flex-col`}
                 >

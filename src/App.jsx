@@ -105,7 +105,7 @@ function App() {
           />
           <Route path="signin" element={<SignPage />} />
           <Route path="signup" element={<SignPage />} />
-          <Route path="reset_password" element={<SignPage />} />
+          <Route path="forgot-password" element={<SignPage />} />
           <Route path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`} element={<ResetPasswordPage />} />
           {/* <Route path="datetest" element={<DateTest />} /> */}
         </Routes>
