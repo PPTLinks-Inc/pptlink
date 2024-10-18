@@ -44,7 +44,6 @@ export default function Card({ presentation, refresh }) {
   const deletePresentation = useMutation({
     mutationFn: async function (id) {
       const { data } = await axios.delete(`/api/v1/ppt/presentations/${id}`);
-      console.log(data);
       return data;
     },
     onSuccess: function () {
@@ -149,11 +148,11 @@ export default function Card({ presentation, refresh }) {
       cardId: Id,
       message:
         data === "delete"
-          ? "Are you sure you want to delete this card?"
+          ? "Are you sure you want to delete this presentation?"
           : data === "report"
-            ? "Are you sure you want to report this card?"
+            ? "Are you sure you want to report this presentation?"
             : data === "edit"
-              ? "Are you sure you want to edit this card?"
+              ? "Are you sure you want to edit this presentation?"
               : "",
       actionText:
         data === "delete"
