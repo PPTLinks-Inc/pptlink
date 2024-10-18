@@ -16,6 +16,7 @@ import { SERVER_URL } from "./constants/routes";
 import About from "./components/about-us/about";
 import Document from "./components/document/document";
 import PresentationContextProvider from "./contexts/presentationContext";
+import PublicPresentationProvider from "./contexts/publicPresentationContext";
 import SignPage from "./components/sign/sign";
 // import NewUploadPage from "./components/upload/newupload";
 // import DateTest from "./components/upload/dateTest";
@@ -72,7 +73,24 @@ function App() {
       <AnimatePresence exit>
         <Routes location={location} key={location.key}>
           <Route path="/" element={<Root />}>
-            <Route exact path="/" element={<Home />} />
+            <Route
+              exact
+              path="/"
+              element={
+                <PublicPresentationProvider>
+                  <Home />
+                </PublicPresentationProvider>
+              }
+            />
+            <Route
+              path="public_presentation"
+              element={
+                <PublicPresentationProvider>
+                  <PublicPresentation />
+                </PublicPresentationProvider>
+              }
+            />
+
             <Route path="*" element={<NotFound />} />
             {/* <Route path="dashboard" element={<Dashboard />} /> */}
             <Route path="dashboard" element={<NewDashboard />} />
@@ -81,7 +99,6 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="documentation" element={<Document />} />
             <Route path="library" element={<Library />} />
-            <Route path="public_presentation" element={<PublicPresentation />} />
             <Route
               path="documentation/*"
               element={
@@ -106,7 +123,10 @@ function App() {
           <Route path="signin" element={<SignPage />} />
           <Route path="signup" element={<SignPage />} />
           <Route path="forgot-password" element={<SignPage />} />
-          <Route path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`} element={<ResetPasswordPage />} />
+          <Route
+            path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
+            element={<ResetPasswordPage />}
+          />
           {/* <Route path="datetest" element={<DateTest />} /> */}
         </Routes>
       </AnimatePresence>
