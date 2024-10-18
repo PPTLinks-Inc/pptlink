@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 import { useRef, useCallback, useContext, useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
 import anim_img1 from "/team/pptlink_resources/presentation.png";
 import anim_img2 from "/team/pptlink_resources/hosting-monitors-server-svgrepo-com.png";
 import anim_img3 from "/team/pptlink_resources/school-svgrepo-com.png";
@@ -16,26 +15,18 @@ import Card from "../list/card";
 import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
-import { useQuery } from "@tanstack/react-query";
 import { motion, stagger, useInView, useAnimate } from "framer-motion";
 import FAQ from "./data";
+import { publicPresentation } from "../../contexts/publicPresentationContext";
 
 export default function NewHome() {
   // context
   const scrollRef = useRef();
   const { user } = useContext(userContext);
+  const { presentations, refetch } = useContext(publicPresentation);
 
 
   const navigate = useNavigate();
-
-  const presentationQuery = useQuery({
-    queryKey: ["public-presentations"],
-    queryFn: () => {
-      return axios.get(
-        "/api/v1/ppt/presentations?noPerPage=12&pageNo=1&public=true"
-      );
-    }
-  });
 
   const [values, setValues] = useState({
     msgName: "",
@@ -257,20 +248,18 @@ export default function NewHome() {
             </button>
           </div>
           <div className="min-h-[40vh] mt-24 mb-6">
-            {presentationQuery.isSuccess && (
-              <motion.div
-                variants={containerVarient}
-                initial="initial"
-                whileInView="inView"
-                viewport={{ once: true }}
-                className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
-                ref={scrollRef}
-              >
-                {presentationQuery.data.data.presentations.map((presentation) => (
-                  <Card key={presentation.id} presentation={presentation} refresh={presentationQuery.refetch()} />
-                ))}
-              </motion.div>
-            )}
+            <motion.div
+              variants={containerVarient}
+              initial="initial"
+              whileInView="inView"
+              viewport={{ once: true }}
+              className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+              ref={scrollRef}
+            >
+              {presentations.slice(0, 12).map((presentation) => (
+                <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+              ))}
+            </motion.div>
           </div>
           <NavLink
             to="/public_presentation"
