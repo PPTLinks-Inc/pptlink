@@ -188,7 +188,6 @@ export default function Controls({
       actionsActive ||
       enterName ||
       showStartPrompt ||
-      audioLoadingStatus === "success" ||
       endAudioPrompt ||
       showUsersList ||
       showMessage ||
@@ -203,7 +202,6 @@ export default function Controls({
     enterName,
     showStartPrompt,
     isMobilePhone,
-    audioLoadingStatus,
     endAudioPrompt,
     showUsersList,
     showMessage,
