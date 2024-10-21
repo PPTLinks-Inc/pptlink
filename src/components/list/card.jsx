@@ -18,10 +18,12 @@ import axios from "axios";
 import PopUpModal from "../Models/dashboardModel";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Card({ presentation, refresh }) {
 
   const { user } = useContext(userContext);
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [bookmarked, setBookmarked] = useState(
@@ -169,6 +171,16 @@ export default function Card({ presentation, refresh }) {
     e.preventDefault();
     if (modal.actionText === "Delete") {
       deletePresentation.mutate(modal.cardId);
+    } else if (modal.actionText === "Edit") {
+      if (presentation.live) {
+        toast({
+          description: "You can't edit a live presentation",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      navigate(`/upload?edit=${presentation.id}`);
     }
   }
 

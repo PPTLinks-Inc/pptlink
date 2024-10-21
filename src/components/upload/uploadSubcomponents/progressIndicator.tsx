@@ -1,13 +1,15 @@
 /* eslint-disable react/prop-types */
 import { useUploadStore } from "@/store/uploadStore";
+import { useSearchParams } from "react-router-dom";
 
 function ProgressIndicator() {
   const currentView = useUploadStore((state) => state.currentView);
+  const [searchParams] = useSearchParams();
 
   return (
     <>
       <h1 className="text-[3rem] text-[#FFFFF0] maxScreenMobile:!text-[2rem] maxScreenMobile:text-center">
-        New Presentation
+        {searchParams.has("edit") ? "Edit Presentation" : "New Presentation"}
       </h1>
       <hr className="bg-[#FFFFF0] !h-[0.1px]" />
       <div className="form_tracker_wrapper w-full flex justify-center mb-20 maxScreenMobile:!mb-4">
@@ -60,6 +62,7 @@ function FormLabelIndicator() {
 }
 
 function FormStageMover() {
+  const [searchParams] = useSearchParams();
   const currentView = useUploadStore((state) => state.currentView);
   const moveView = useUploadStore((state) => state.moveView);
 
@@ -87,7 +90,7 @@ function FormStageMover() {
         onClick={() => moveView("next")}
         disabled={disableBtn}
       >
-        {currentView === 3 ? isSaving ? "Saving..." : "Submit" : "Next"}
+        {currentView === 3 ? isSaving ? "Saving..." : searchParams.has("edit") ? "Update" : "Submit" : "Next"}
       </button>
     </div>
   );

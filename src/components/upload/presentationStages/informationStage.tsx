@@ -15,6 +15,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import formatDate from "@/lib/formatDate";
+import { useSearchParams } from "react-router-dom";
 
 const schema = z
   .object({
@@ -122,25 +123,43 @@ export default function InformationStage() {
   const currentView = useUploadStore((state) => state.currentView);
   const setCurrentView = useUploadStore((state) => state.setCurrentView);
 
+  const [searchParams] = useSearchParams();
+
   const {
     register,
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
     setValue
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      presenterName: "",
-      bio: undefined,
-      socialLinks: undefined,
-      selectDateTime: false,
-      date: undefined,
-      startTime: undefined,
-      endTime: undefined
+      presenterName: useUploadStore.getState().presentersName,
+      bio: useUploadStore.getState().bio,
+      socialLinks: useUploadStore.getState().socialLinks,
+      selectDateTime: useUploadStore.getState().date ? true : false,
+      date: useUploadStore.getState().date ? new Date(useUploadStore.getState().date as string) : undefined,
+      startTime: useUploadStore.getState().startTime,
+      endTime: useUploadStore.getState().endTime
     }
   });
+
+  useEffect(function() {
+    if (!searchParams.has("edit")) {
+      reset({
+        presenterName: "",
+        bio: "",
+        socialLinks: "",
+        selectDateTime: false,
+        date: undefined,
+        startTime: "",
+        endTime: ""
+      });
+      return;
+    }
+  }, [searchParams]);
 
   const values = watch();
 
@@ -171,7 +190,7 @@ export default function InformationStage() {
           setPresenterName(values.presenterName);
           setBio(values.bio || "");
           setSocialLinks(values.socialLinks || "");
-          setDate(values.date || "");
+          setDate(values.date ? values.date.toISOString() : "");
           setStartTime(values.startTime || "");
           setEndTime(values.endTime || "");
           setCurrentView(3);

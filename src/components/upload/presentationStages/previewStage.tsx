@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 export default function PreviewStage() {
   const currentView = useUploadStore((state) => state.currentView);
@@ -25,27 +26,63 @@ export default function PreviewStage() {
   const processingFile = useUploadStore((state) => state.processingFile);
   const setIsSaving = useUploadStore((state) => state.setIsSaving);
 
+  const [searchParams] = useSearchParams();
+
   const savePresentationMutation = useMutation({
     mutationFn: async function () {
       setIsSaving(true);
-      const { data } = await axios.post(`${SERVER_URL}/api/v1/ppt/presentations/save`, {
-        title,
-        description,
-        category: selectedCategory,
-        downloadable,
-        linkType: privacy,
-        presenterName,
-        bio,
-        socialMediaLink: socialLinks,
-        presentationDate: date,
-        presentationStartTime: startTime,
-        presentationEndTime: endTime
-      });
 
-      return data.liveId;
+      if (!searchParams.has("edit")) {
+        const { data } = await axios.post(
+          `${SERVER_URL}/api/v1/ppt/presentations/save`,
+          {
+            title,
+            description,
+            category: selectedCategory,
+            downloadable,
+            linkType: privacy,
+            presenterName,
+            bio,
+            socialMediaLink: socialLinks,
+            presentationDate: date,
+            presentationStartTime: startTime,
+            presentationEndTime: endTime
+          }
+        );
+
+        return data.liveId;
+      } else {
+        await axios.put(
+          `${SERVER_URL}/api/v1/ppt/presentations/update`,
+          {
+            id: searchParams.get("edit"),
+            title,
+            description,
+            category: selectedCategory,
+            downloadable,
+            linkType: privacy,
+            presenterName,
+            bio,
+            socialMediaLink: socialLinks,
+            presentationDate: date,
+            presentationStartTime: startTime,
+            presentationEndTime: endTime
+          }
+        );
+
+        return null;
+      }
     },
     onSuccess: function (liveId) {
-      window.location.replace(`/${liveId}`);
+      if (liveId === null) {
+        toast({
+          title: "Success",
+          description: "Your presentation has been updated successfully"
+        });
+        setIsSaving(false);
+        return;
+      }
+      window.location.href = `/${liveId}`;
     },
     onError: function () {
       toast({
@@ -56,6 +93,69 @@ export default function PreviewStage() {
       setIsSaving(false);
     }
   });
+
+  /* const checkFileStatusMutation = useMutation({
+    mutationFn: async function () {
+      const { data } = await axios.get(
+        `${SERVER_URL}/api/v1/ppt/presentation/upload-status`
+      );
+      return data;
+    },
+    onSuccess: function (data) {
+      if (data.status === "SUCCESS") {
+        setPdfUrl(data.pdfUrl);
+        setModalValues({
+          message:
+            "Your file has been processed successfully. Click continue to proceed.",
+          open: true,
+          oneButton: true,
+          actionText: "Continue",
+          isLoading: false,
+          onSubmit: (e) => {
+            e.preventDefault();
+            setModalValues((prev) => ({ ...prev, open: false }));
+          },
+          onClose: () => {}
+        });
+      } else if (data.status === "ERROR") {
+        setModalValues({
+          message: "An error occurred while processing your file. Please retry.",
+          open: true,
+          oneButton: true,
+          actionText: "Retry",
+          isLoading: false,
+          onSubmit: () => {},
+          onClose: () => {
+            setPdfUrl("");
+            setValue("file", null);
+            setModalValues((prev) => ({ ...prev, open: false }));
+          }
+        });
+        setPdfUrl("");
+        setValue("file", null);
+      } else if (data.status === "PENDING") {
+        setModalValues({
+          message: "Your file is being processed. Please wait or cancel.",
+          open: true,
+          oneButton: false,
+          actionText: "OK",
+          isLoading: false,
+          onSubmit: (e) => {
+            e.preventDefault();
+            setModalValues((prev) => ({ ...prev, open: false }));
+          },
+          onClose: () => {
+            setModalValues((prev) => ({
+              ...prev,
+              isLoading: true,
+              message: "Cancelling upload..."
+            }));
+            cancelPendingUploadMutation.mutate();
+          }
+        });
+      }
+    }
+  }); */
 
   const setSavePresentationStageHandler = useUploadStore(
     (state) => state.setSavePresentationStageHandler
@@ -174,9 +274,7 @@ export default function PreviewStage() {
                 <span>Date</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
                 <p className="text-[0.9rem] italic mt-2">
-                  {date !== ""
-                    ? `Start Date: ${formatDate(date)}`
-                    : "No Date Set"}
+                  {date ? `Start Date: ${formatDate(date)}` : "No Date Set"}
                 </p>
               </li>
               <li className="block w-full mb-4 px-4">
