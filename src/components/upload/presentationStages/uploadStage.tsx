@@ -12,6 +12,7 @@ import PopUpModal from "@/components/Models/dashboardModel";
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { LoadingAssetBig, LoadingAssetSmall } from "@/assets/assets";
+import { useSearchParams } from "react-router-dom";
 
 const schema = z.object({
   title: z.string().min(2, { message: "Title is too short" }),
@@ -92,6 +93,9 @@ export default function UploadStage() {
   const processingFile = useUploadStore((state) => state.processingFile);
   const setProcessingFile = useUploadStore((state) => state.setProcessingFile);
 
+  const [allowCheckFileStatus, setAllowCheckFileStatus] = useState(true);
+
+  const [searchParams] = useSearchParams();
 
   const [modalValues, setModalValues] = useState({
     message: "",
@@ -118,6 +122,10 @@ export default function UploadStage() {
       const formData = new FormData();
       formData.append("ppt", file);
 
+      if (searchParams.has("edit")) {
+        formData.append("edit", searchParams.get("edit")!);
+      }
+
       const { data } = await axios.post(
         `${SERVER_URL}/api/v1/ppt/upload`,
         formData,
@@ -142,9 +150,7 @@ export default function UploadStage() {
       toastRef.current = toast({
         description: data.message,
         duration: 60000,
-        action: (
-            <LoadingAssetSmall />
-        )
+        action: <LoadingAssetSmall />
       });
       setProcessingFile(true);
     }
@@ -152,9 +158,7 @@ export default function UploadStage() {
 
   const cancelPendingUploadMutation = useMutation({
     mutationFn: async function () {
-      await axios.delete(
-        `${SERVER_URL}/api/v1/ppt/presentation/cancel-upload`
-      );
+      await axios.delete(`${SERVER_URL}/api/v1/ppt/presentation/cancel-upload`);
     },
     onSuccess: function () {
       setProcessingFile(false);
@@ -193,24 +197,56 @@ export default function UploadStage() {
     }
   });
 
+  const setCategories = useUploadStore((state) => state.setCategories);
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const { data } = await axios.get("/api/v1/ppt/categories");
+
+      setCategories(data);
+
+      return data;
+    }
+  });
+
   const {
     register,
     handleSubmit,
     watch,
     trigger,
     setValue,
+    reset,
     formState: { errors }
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: "",
-      description: undefined,
-      privacy: "PUBLIC",
-      downloadable: "YES",
-      category: "",
+      title: useUploadStore.getState().title,
+      description: useUploadStore.getState().description || "",
+      privacy: useUploadStore.getState().privacy,
+      downloadable: useUploadStore.getState().downloadable ? "YES" : "NO",
+      category: useUploadStore.getState().selectedCategory.id,
       file: null
     }
   });
+
+  useEffect(
+    function () {
+      if (!searchParams.has("edit")) {
+        categoriesQuery.refetch();
+        reset({
+          title: "",
+          description: "",
+          privacy: "PUBLIC",
+          downloadable: "YES",
+          category: "",
+          file: null
+        });
+        return;
+      }
+    },
+    [searchParams]
+  );
 
   const formValues = watch();
 
@@ -230,6 +266,21 @@ export default function UploadStage() {
         if (data.event === "connect") {
           setFailedToConnect(false);
           setServerConnected(true);
+
+          if (searchParams.has("edit")) {
+            const file = new File([], "File Name", {
+              type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const fileList: any = {
+              0: file,
+              length: 1,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              item: (_index: number) => file
+            } as unknown as FileList;
+            setValue("file", fileList);
+            return;
+          }
 
           if (data?.status === "SUCCESS") {
             setModalValues({
@@ -294,9 +345,7 @@ export default function UploadStage() {
             toastRef.current = toast({
               description: "Processing Presentation file",
               duration: 60000,
-              action: (
-                <LoadingAssetSmall />
-              )
+              action: <LoadingAssetSmall />
             });
             setModalValues({
               message: "Your file is being processed. Please wait or cancel.",
@@ -309,7 +358,11 @@ export default function UploadStage() {
                 setModalValues((prev) => ({ ...prev, open: false }));
               },
               onClose: () => {
-                setModalValues((prev) => ({ ...prev, isLoading: true, message: "Cancelling upload..." }));
+                setModalValues((prev) => ({
+                  ...prev,
+                  isLoading: true,
+                  message: "Cancelling upload..."
+                }));
                 cancelPendingUploadMutation.mutate();
               }
             });
@@ -371,6 +424,89 @@ export default function UploadStage() {
     [user]
   );
 
+  const checkFileStatusMutation = useMutation({
+    mutationFn: async function () {
+      const { data } = await axios.get(
+        `${SERVER_URL}/api/v1/ppt/presentation/upload-status`
+      );
+      return data;
+    },
+    onSuccess: function (data) {
+      setAllowCheckFileStatus(false);
+      if (data.status === "SUCCESS") {
+        setPdfUrl(data.pdfUrl);
+        setModalValues({
+          message:
+            "Your file has been processed successfully. Click continue to proceed.",
+          open: true,
+          oneButton: true,
+          actionText: "Continue",
+          isLoading: false,
+          onSubmit: (e) => {
+            e.preventDefault();
+            setModalValues((prev) => ({ ...prev, open: false }));
+          },
+          onClose: () => {}
+        });
+      } else if (data.status === "ERROR") {
+        setModalValues({
+          message:
+            "An error occurred while processing your file. Please retry.",
+          open: true,
+          oneButton: true,
+          actionText: "Retry",
+          isLoading: false,
+          onSubmit: () => {},
+          onClose: () => {
+            setPdfUrl("");
+            setValue("file", null);
+            setModalValues((prev) => ({ ...prev, open: false }));
+          }
+        });
+        setPdfUrl("");
+        setValue("file", null);
+      } else if (data.status === "PENDING") {
+        setModalValues({
+          message: "Your file is being processed. Please wait or cancel.",
+          open: true,
+          oneButton: false,
+          actionText: "OK",
+          isLoading: false,
+          onSubmit: (e) => {
+            e.preventDefault();
+            setModalValues((prev) => ({ ...prev, open: false }));
+          },
+          onClose: () => {
+            setModalValues((prev) => ({
+              ...prev,
+              isLoading: true,
+              message: "Cancelling upload..."
+            }));
+            cancelPendingUploadMutation.mutate();
+          }
+        });
+      }
+    }
+  });
+
+  useEffect(
+    function () {
+      let timer: NodeJS.Timeout | null = null;
+      if (!allowCheckFileStatus && processingFile) {
+        timer = setTimeout(() => {
+          setAllowCheckFileStatus(true);
+        }, 30000);
+      }
+
+      return () => {
+        if (timer) {
+          clearTimeout(timer);
+        }
+      };
+    },
+    [allowCheckFileStatus, processingFile]
+  );
+
   useEffect(
     function () {
       if (formValues.file && formValues.file[0]) {
@@ -379,7 +515,7 @@ export default function UploadStage() {
             const file = formValues.file![0] as File;
 
             const pdfUrl = useUploadStore.getState().pdfUrl;
-            if (pdfUrl !== "") {
+            if (pdfUrl !== "" && !searchParams.has("edit")) {
               return;
             }
 
@@ -435,19 +571,6 @@ export default function UploadStage() {
       categories
     ]
   );
-
-  const setCategories = useUploadStore((state) => state.setCategories);
-  const categoriesQuery = useQuery({
-    queryKey: ["categories"],
-    refetchOnWindowFocus: false,
-    queryFn: async () => {
-      const { data } = await axios.get("/api/v1/ppt/categories");
-
-      setCategories(data);
-
-      return data;
-    }
-  });
 
   function updateCategories() {
     setAddNewCategory(false);
@@ -569,16 +692,28 @@ export default function UploadStage() {
               "Connecting to server..."
             )}
           </span>
-          {serverConnected && (
+          {serverConnected && !processingFile && (
             <span
               className={`w-fit h-fit text-white ${uploadMutation.isSuccess || pdfUrl !== "" ? "bg-[green]" : uploadMutation.isError || errors.file?.message ? "bg-[red]" : "bg-[#ffa500]"} py-2 px-8 rounded-full`}
             >
-              {processingFile
-                ? "File is being processed..."
-                : formValues.file && formValues.file[0]
-                  ? "Change file..."
-                  : "Select File"}
+              {formValues.file && formValues.file[0]
+                ? "Change file..."
+                : "Select File"}
             </span>
+          )}
+          {allowCheckFileStatus && processingFile && (
+            <button
+              disabled={checkFileStatusMutation.isPending}
+              onClick={() => checkFileStatusMutation.mutate()}
+              className="w-fit h-fit text-white py-2 px-8 rounded-full bg-[green] mt-5 !pointer-events-auto"
+            >
+              {checkFileStatusMutation.isPending
+                ? "Checking file status..."
+                : "Check file status"}
+            </button>
+          )}
+          {processingFile && (
+            <p className="text-black">File Processing. Please wait...</p>
           )}
         </div>
         {/* {uploadValuesErrors.fileError && (

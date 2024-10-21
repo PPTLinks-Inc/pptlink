@@ -30,11 +30,11 @@ interface UploadStore {
     setBio: (bio: string) => void;
     socialLinks: string;
     setSocialLinks: (socialLinks: string) => void;
-    date: string;
+    date: string | undefined;
     setDate: (date: string) => void;
-    startTime: string;
+    startTime: string | undefined;
     setStartTime: (startTime: string) => void;
-    endTime: string;
+    endTime: string | undefined;
     setEndTime: (endTime: string) => void;
 
     uploadStageSubmitHandler: () => void;
@@ -47,6 +47,8 @@ interface UploadStore {
 
     isSaving: boolean;
     setIsSaving: (value: boolean) => void;
+
+    resetStore: () => void;
 }
 
 export const useUploadStore = create<UploadStore>((set, get) => ({
@@ -114,5 +116,26 @@ export const useUploadStore = create<UploadStore>((set, get) => ({
         }
     },
     isSaving: false,
-    setIsSaving: (value) => set({ isSaving: value })
+    setIsSaving: (value) => set({ isSaving: value }),
+
+    resetStore: () => {
+        set({
+            currentView: 1,
+            title: "",
+            description: "",
+            privacy: "PUBLIC",
+            downloadable: true,
+            categories: [],
+            selectedCategory: { id: "", name: "" },
+            pdfUrl: "",
+            processingFile: false,
+            presentersName: "",
+            bio: "",
+            socialLinks: "",
+            date: "",
+            startTime: "",
+            endTime: "",
+            isSaving: false,
+        });
+    }
 }));
