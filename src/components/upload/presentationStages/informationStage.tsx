@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Switch } from "@/components/ui/switch";
 import Icon_awesome_clock from "/Icon-awesome-clock.svg";
 import { Calendar } from "@/components/ui/calendar";
@@ -122,8 +122,31 @@ const schema = z
 export default function InformationStage() {
   const currentView = useUploadStore((state) => state.currentView);
   const setCurrentView = useUploadStore((state) => state.setCurrentView);
-
   const [searchParams] = useSearchParams();
+  const startTimeRef = useRef(null);
+  const endTimeRef = useRef(null);
+
+  const handleClickStartTime = () => {
+    const timeInput = startTimeRef.current;
+    if (timeInput) {
+      if (timeInput.showPicker) {
+        timeInput.showPicker();
+      } else {
+        timeInput.focus();
+      }
+    }
+  };
+
+  const handleClickEndTime = () => {
+    const timeInput = endTimeRef.current;
+    if (timeInput) {
+      if (timeInput.showPicker) {
+        timeInput.showPicker();
+      } else {
+        timeInput.focus();
+      }
+    }
+  };
 
   const {
     register,
@@ -140,26 +163,31 @@ export default function InformationStage() {
       bio: useUploadStore.getState().bio,
       socialLinks: useUploadStore.getState().socialLinks,
       selectDateTime: useUploadStore.getState().date ? true : false,
-      date: useUploadStore.getState().date ? new Date(useUploadStore.getState().date as string) : undefined,
+      date: useUploadStore.getState().date
+        ? new Date(useUploadStore.getState().date as string)
+        : undefined,
       startTime: useUploadStore.getState().startTime,
       endTime: useUploadStore.getState().endTime
     }
   });
 
-  useEffect(function() {
-    if (!searchParams.has("edit")) {
-      reset({
-        presenterName: "",
-        bio: "",
-        socialLinks: "",
-        selectDateTime: false,
-        date: undefined,
-        startTime: "",
-        endTime: ""
-      });
-      return;
-    }
-  }, [searchParams]);
+  useEffect(
+    function () {
+      if (!searchParams.has("edit")) {
+        reset({
+          presenterName: "",
+          bio: "",
+          socialLinks: "",
+          selectDateTime: false,
+          date: undefined,
+          startTime: "",
+          endTime: ""
+        });
+        return;
+      }
+    },
+    [searchParams]
+  );
 
   const values = watch();
 
@@ -197,7 +225,24 @@ export default function InformationStage() {
         })
       );
     },
-    [handleSubmit, setInformationStageSubmitHandler, setCurrentView, setPresenterName, values.presenterName, values.bio, values.socialLinks, values.date, values.startTime, values.endTime, setBio, setSocialLinks, setDate, setStartTime, setEndTime]);
+    [
+      handleSubmit,
+      setInformationStageSubmitHandler,
+      setCurrentView,
+      setPresenterName,
+      values.presenterName,
+      values.bio,
+      values.socialLinks,
+      values.date,
+      values.startTime,
+      values.endTime,
+      setBio,
+      setSocialLinks,
+      setDate,
+      setStartTime,
+      setEndTime
+    ]
+  );
 
   return (
     <div className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}>
@@ -283,42 +328,34 @@ export default function InformationStage() {
               <div
                 className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${errors.date?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
               >
-                {/* <input
-                  type="date"
-                  id="DateSelectionID"
-                  name="presentationDate"
-                  value={uploadValues.presentationDate || ""}
-                  onChange={handleInputChange}
-                  className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
-                />
-                <label
-                  aria-label="Open Date Picker"
-                  htmlFor="DateSelectionIDTwo"
-                  onClick={() => setToggleDateTimeDatePicker((prev) => !prev)}
-                  className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
-                >
-                  <span className="_text-[#ffa500] !text-white">
-                    <SlCalender />
-                  </span>
-                </label> */}
                 <Controller
+                  id="DateSelectionIDTwo"
                   name="date"
                   control={control}
                   render={({ field }) => (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button
+                        <span
+                          aria-label="button"
                           className={cn(
-                            " p-3 flex items-center w-full h-9 justify-start text-left font-normal"
+                            "p-3 flex items-center w-full h-9 justify-start text-left font-normal"
                           )}
                         >
-                          <SlCalender className="mr-2 h-4 w-4" />
                           {field.value ? (
                             formatDate(field.value)
                           ) : (
                             <span>Pick a date</span>
                           )}
-                        </button>
+                          <label
+                            aria-label="Open Date Picker"
+                            htmlFor="DateSelectionIDTwo"
+                            className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+                          >
+                            <span className="_text-[#ffa500] !text-white">
+                              <SlCalender />
+                            </span>
+                          </label>
+                        </span>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
@@ -355,19 +392,29 @@ export default function InformationStage() {
               >
                 <input
                   type="time"
-                  id="StartTime"
+                  ref={startTimeRef}
+                  id="StartTimeId"
                   className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
                   {...register("startTime")}
                 />
+                {/* <input
+                  type="time" // Change this to ensure it triggers the time picker
+                  ref={startTimeRef}
+                  id="startTime"
+                  className="..."
+                  {...register("startTime")}
+                /> */}
+
                 <label
                   aria-label="Open Start Time Picker"
-                  htmlFor="StartTime"
+                  htmlFor="StartTimeId"
+                  onClick={handleClickStartTime}
                   className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
                 >
                   <img
                     src={Icon_awesome_clock}
                     alt="Clock Icon"
-                    className="block w-4 h-4 scale-150 pointer-events-auto"
+                    className="block w-4 h-4 scale-150 pointer-events-none"
                   />
                 </label>
               </div>
@@ -396,19 +443,28 @@ export default function InformationStage() {
               >
                 <input
                   type="time"
-                  id="EndTime"
+                  ref={endTimeRef}
+                  id="EndTimeId"
                   className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
                   {...register("endTime")}
                 />
+                {/* <input
+                  type="time"
+                  ref={endTimeRef}
+                  id="endTime"
+                  className="..."
+                  {...register("endTime")}
+                /> */}
                 <label
                   aria-label="Open End Time Picker"
-                  htmlFor="EndTime"
+                  htmlFor="EndTimeId"
+                  onClick={handleClickEndTime}
                   className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
                 >
                   <img
                     src={Icon_awesome_clock}
                     alt="Clock Icon"
-                    className="block w-4 h-4 scale-150 pointer-events-auto"
+                    className="block w-4 h-4 scale-150 pointer-events-none"
                   />
                 </label>
               </div>
