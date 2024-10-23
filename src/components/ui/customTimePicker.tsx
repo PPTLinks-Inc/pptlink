@@ -3,19 +3,28 @@ import { cn } from "@/lib/utils";
 
 export type TimePickerProps = {
   className?: string;
-  onTimeChange?: (hours: number, minutes: number, period: "AM" | "PM") => void;
+  onTimeChange?: (hours: number, minutes: number) => void; // Remove period from the callback
 };
-
 function TimePicker({ className, onTimeChange }: TimePickerProps) {
   const [hours, setHours] = React.useState(12);
   const [minutes, setMinutes] = React.useState(0);
   const [period, setPeriod] = React.useState<"AM" | "PM">("AM");
 
-  const handleTimeChange = () => {
-    if (onTimeChange) {
-      onTimeChange(hours, minutes, period);
+  // Function to convert 12-hour format to 24-hour format
+  const get24HourTime = (hours: number, period: "AM" | "PM") => {
+    if (period === "AM") {
+      return hours === 12 ? 0 : hours; // 12 AM is 00 in 24-hour time
+    } else {
+      return hours === 12 ? 12 : hours + 12; // PM, 12 PM stays 12, 1 PM becomes 13
     }
   };
+
+  React.useEffect(() => {
+    if (onTimeChange) {
+      const hours24 = get24HourTime(hours, period);
+      onTimeChange(hours24, minutes); // Pass the 24-hour format value to the callback
+    }
+  }, [hours, minutes, period, onTimeChange]);
 
   const handleScrollChange = (type: "hours" | "minutes", value: number) => {
     if (type === "hours") {
@@ -23,12 +32,10 @@ function TimePicker({ className, onTimeChange }: TimePickerProps) {
     } else {
       setMinutes(value);
     }
-    handleTimeChange();
   };
 
   const handlePeriodToggle = () => {
     setPeriod((prev) => (prev === "AM" ? "PM" : "AM"));
-    handleTimeChange();
   };
 
   const renderScrollableColumn = (
