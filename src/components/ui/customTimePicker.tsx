@@ -5,7 +5,6 @@ export type TimePickerProps = {
   className?: string;
   onTimeChange?: (hours: number, minutes: number) => void; // Remove period from the callback
 };
-
 function TimePicker({ className, onTimeChange }: TimePickerProps) {
   const [hours, setHours] = React.useState(12);
   const [minutes, setMinutes] = React.useState(0);
