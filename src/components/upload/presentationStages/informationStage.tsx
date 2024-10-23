@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Switch } from "@/components/ui/switch";
 import Icon_awesome_clock from "/Icon-awesome-clock.svg";
 import { Calendar } from "@/components/ui/calendar";
+import { TimePicker } from "@/components/ui/customTimePicker";
 import {
   Popover,
   PopoverContent,
@@ -123,30 +124,8 @@ export default function InformationStage() {
   const currentView = useUploadStore((state) => state.currentView);
   const setCurrentView = useUploadStore((state) => state.setCurrentView);
   const [searchParams] = useSearchParams();
-  const startTimeRef = useRef(null);
-  const endTimeRef = useRef(null);
-
-  const handleClickStartTime = () => {
-    const timeInput = startTimeRef.current;
-    if (timeInput) {
-      if (timeInput.showPicker) {
-        timeInput.showPicker();
-      } else {
-        timeInput.focus();
-      }
-    }
-  };
-
-  const handleClickEndTime = () => {
-    const timeInput = endTimeRef.current;
-    if (timeInput) {
-      if (timeInput.showPicker) {
-        timeInput.showPicker();
-      } else {
-        timeInput.focus();
-      }
-    }
-  };
+  const [toggleStartTime, setToggleStartTime] = useState(false);
+  const [toggleEndTime, setToggleEndTime] = useState(false);
 
   const {
     register,
@@ -392,23 +371,14 @@ export default function InformationStage() {
               >
                 <input
                   type="time"
-                  ref={startTimeRef}
                   id="StartTimeId"
                   className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
                   {...register("startTime")}
                 />
-                {/* <input
-                  type="time" // Change this to ensure it triggers the time picker
-                  ref={startTimeRef}
-                  id="startTime"
-                  className="..."
-                  {...register("startTime")}
-                /> */}
-
                 <label
                   aria-label="Open Start Time Picker"
                   htmlFor="StartTimeId"
-                  onClick={handleClickStartTime}
+                  onClick={() => setToggleStartTime(!toggleStartTime)}
                   className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
                 >
                   <img
@@ -423,6 +393,16 @@ export default function InformationStage() {
                 <p className="text-[red]">
                   {errors.startTime?.message?.toString()}
                 </p>
+              )}
+              {toggleStartTime && (
+                <div className="w-full absolute bottom-[100%] left-0 right-0">
+                  <TimePicker
+                    onTimeChange={(h, m, s) => {
+                      console.log(`Start Time is ${h}, ${m}, ${s}`);
+                    }}
+                    className="rounded-md border !border-[#ffa500] bg-[#FFFFF0]"
+                  />
+                </div>
               )}
             </div>
           </div>
@@ -443,22 +423,14 @@ export default function InformationStage() {
               >
                 <input
                   type="time"
-                  ref={endTimeRef}
                   id="EndTimeId"
                   className="block w-[100%] p-1 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
                   {...register("endTime")}
                 />
-                {/* <input
-                  type="time"
-                  ref={endTimeRef}
-                  id="endTime"
-                  className="..."
-                  {...register("endTime")}
-                /> */}
                 <label
                   aria-label="Open End Time Picker"
                   htmlFor="EndTimeId"
-                  onClick={handleClickEndTime}
+                  onClick={() => setToggleEndTime(!toggleEndTime)}
                   className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
                 >
                   <img
@@ -472,6 +444,16 @@ export default function InformationStage() {
                 <p className="text-[red]">
                   {errors.endTime?.message?.toString()}
                 </p>
+              )}
+              {toggleEndTime && (
+                <div className="w-full absolute bottom-[100%] left-0 right-0">
+                  <TimePicker
+                    onTimeChange={(h, m, s) => {
+                      console.log(`End Time is ${h}, ${m}, ${s}`);
+                    }}
+                    className="rounded-md border !border-[#ffa500] bg-[#FFFFF0]"
+                  />
+                </div>
               )}
             </div>
           </div>
