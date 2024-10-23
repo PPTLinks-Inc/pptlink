@@ -52,7 +52,7 @@ interface UploadStore {
 }
 
 export const useUploadStore = create<UploadStore>((set, get) => ({
-    currentView: 1,
+    currentView: 2,
     setCurrentView: (view: number) => set({ currentView: view }),
     title: "",
     setTitle: (title) => set({ title }),
