@@ -1,4 +1,4 @@
-import { LoadingAssetBig2 } from "../../../assets/assets";
+import { LoadingAssetBig } from "../../../assets/assets";
 import Modal from "./Modal";
 
 // eslint-disable-next-line react/prop-types
@@ -7,29 +7,29 @@ export default function ConfirmModal({open, onClose, onSubmit, isLoading, messag
       <Modal
           open={open}
           onClose={onClose || (() => {})}
-          color="bg-black"
+          color="bg-[#FFFFDB]"
         >
           <form
-            className="flex flex-col justify-evenly items-center gap-3"
+            className="flex flex-col justify-evenly items-center gap-3 min-w-32"
             onSubmit={onSubmit}
           >
-            <h4 className="text-xl text-white text-center mb-2">
+            <h4 className="text-xl text-black text-center mb-2">
               {message}
             </h4>
             {isLoading ? (
               <div className="flex justify-center items-center">
-                <LoadingAssetBig2 />
+                <LoadingAssetBig />
               </div>
             ) : (
               <div className="flex gap-4 w-[200px]">
                 <button
                   onClick={onClose || (() => {})}
-                  className="bg-slate-200 p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-black hover:bg-black hover:text-[#FFA500] hover:border-2 hover:border-[#FFA500]"
+                  className="bg-black p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-white"
                   type="button"
                 >
                   Cancel
                 </button>
-                <button className="bg-slate-200 p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-black hover:bg-black hover:text-[#FFA500] hover:border-2 hover:border-[#FFA500]" type="submit">
+                <button className="bg-black p-1 w-[calc(100%/2)] hover:p-[calc(0.25rem-2px)] rounded text-white" type="submit">
                   {actionText}
                 </button>
               </div>
