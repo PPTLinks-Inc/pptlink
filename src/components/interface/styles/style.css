@@ -84,15 +84,15 @@ canvas {
 
 /* if network is poor therefore the class 'poor' */
 .network__bar.poor :nth-child(1) {
-    background-color: red;
+    background-color: #f43f5e;
 }
 
 .network__bar.poor :nth-child(2) {
-    border: 1px solid red;
+    border: 1px solid #f43f5e;
 }
 
 .network__bar.poor :nth-child(3) {
-    border: 1px solid red;
+    border: 1px solid #f43f5e;
 }
 
 /* if network is mid therefore the class 'mid' */
