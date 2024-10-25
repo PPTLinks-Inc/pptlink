@@ -10,6 +10,7 @@ import { useOptionsStore } from "./optionsStore";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { RTMEvents } from "agora-rtm-sdk";
 import micRequest from "../assets/mic-request.mp3";
+import safeAwait from "@/util/safeAwait";
 
 interface AudioStore {
     rtcClient: IAgoraRTCClient | null;
@@ -41,49 +42,61 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
     audioTracks: null,
     micState: MIC_STATE.MIC_OFF,
     setMicState: async function (micState) {
-        try {
-            set({ micState });
-            if (micState === MIC_STATE.CAN_SPK) {
-                get().audioTracks?.localAudioTrack?.setMuted(false);
-            } else {
-                get().audioTracks?.localAudioTrack?.setMuted(true);
-            }
-            const presentation = usepresentationStore.getState().presentation;
-            const userName = usepresentationStore.getState().userName;
-            const tokens = useRtmStore.getState().token;
-            if (presentation && tokens) {
-                await useRtmStore.getState().rtm?.presence.setState(presentation.liveId, "MESSAGE", {
-                    id: tokens.rtcUid,
-                    userName,
-                    micState
-                });
-
-                if (presentation.User === "HOST") {
-                    useRtmStore.setState({ host: { id: tokens.rtcUid, userName, micState } });
-                    return;
-                }
-
-                const usersTemp = { ...useRtmStore.getState().users };
-                usersTemp[tokens.rtcUid] = { id: tokens.rtcUid, userName, micState };
-                useRtmStore.setState({ users: usersTemp });
-            }
-        } catch (_: unknown) {
+        set({ micState });
+        if (micState === MIC_STATE.CAN_SPK) {
+            get().audioTracks?.localAudioTrack?.setMuted(false);
+        } else {
+            get().audioTracks?.localAudioTrack?.setMuted(true);
+        }
+        const presentation = usepresentationStore.getState().presentation;
+        const userName = usepresentationStore.getState().userName;
+        const tokens = useRtmStore.getState().token;
+        const rtm = useRtmStore.getState().rtm;
+        if (!presentation || !tokens || !rtm) {
+            toast({
+                title: "Error",
+                variant: "destructive",
+                description: "Presentation or Token not set"
+            });
+            return;
+        }
+        const [presenceErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
+            id: tokens.rtcUid,
+            userName,
+            micState
+        }));
+        if (presenceErr) {
             toast({
                 title: "Error",
                 variant: "destructive",
                 description: "Failed to change mic state"
             });
+            return;
         }
+
+        if (presentation.User === "HOST") {
+            useRtmStore.setState({ host: { id: tokens.rtcUid, userName, micState } });
+            return;
+        }
+
+        const usersTemp = { ...useRtmStore.getState().users };
+        usersTemp[tokens.rtcUid] = { id: tokens.rtcUid, userName, micState };
+        useRtmStore.setState({ users: usersTemp });
     },
     acceptMicRequest: async function (userId: string, micState: MIC_STATE) {
-        try {
-            const rtm = useRtmStore.getState().rtm;
-            if (rtm) {
-                await rtm.publish(userId, micState, {
-                    channelType: "USER"
-                });
-            }
-        } catch (_: unknown) {
+        const rtm = useRtmStore.getState().rtm;
+        if (!rtm) {
+            toast({
+                title: "Error",
+                description: "RTM not set",
+                variant: "destructive"
+            });
+            return;
+        }
+        const [err] = await safeAwait(rtm.publish(userId, micState, {
+            channelType: "USER"
+        }));
+        if (err) {
             toast({
                 title: "Error",
                 variant: "destructive",
@@ -103,107 +116,177 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         });
     },
     endAudio: async function ({ hostEnd }: { hostEnd: boolean }) {
-        try {
-            const rtm = useRtmStore.getState().rtm;
-            const presentation = usepresentationStore.getState().presentation;
+        const rtm = useRtmStore.getState().rtm;
+        const presentation = usepresentationStore.getState().presentation;
 
-            if (!rtm || !presentation) throw new Error("RTM or Presenatation is null");
-
-            await rtm?.presence.setState(presentation.liveId, "MESSAGE", {
-                id: "null",
-                userName: "null",
-                micState: "null"
+        if (!rtm || !presentation) {
+            console.trace("me");
+            toast({
+                title: "Error",
+                description: "RTM or Presenatation is null",
+                variant: "destructive"
             });
-            if (presentation.User === "HOST") {
-                const userUid = useRtmStore.getState().token?.rtcUid;
-                await rtm?.publish(presentation.liveId, "END_AUDIO");
-                await axios.put(
-                    `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
-                    {},
-                    { params: { endOrStart: "end", userUid } }
-                );
-            }
-            useRtmStore.setState({ host: null, users: {} });
-            get().leaveAudio();
+            return;
+        }
 
-
-            if (presentation.User === "HOST" || hostEnd) {
-                usepresentationStore.setState({ presentation: { ...presentation, audio: false } });
-            }
-
-        } catch (_) {
-            const presentation = usepresentationStore.getState().presentation;
-            if (presentation) {
+        const [stateErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
+            id: "null",
+            userName: "null",
+            micState: "null"
+        }));
+        if (stateErr) {
+            toast({
+                title: "Error",
+                variant: "destructive",
+                description: `There was a problem ${presentation.User === "HOST" ? "ending" : "leaving"} the call`,
+            });
+        }
+        if (presentation.User === "HOST") {
+            const userUid = useRtmStore.getState().token?.rtcUid;
+            const [publishErr] = await safeAwait(rtm.publish(presentation.liveId, "END_AUDIO"));
+            if (publishErr) {
                 toast({
                     title: "Error",
                     variant: "destructive",
-                    description: `There was a problem ${presentation.User === "HOST" ? "ending" : "leaving"} the call`
+                    description: `There was a problem ${presentation.User === "HOST" ? "ending" : "leaving"} the call`,
+                });
+            }
+            const [endAudioErr] = await safeAwait(axios.put(
+                `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
+                {},
+                { params: { endOrStart: "end", userUid } }
+            ));
+            if (endAudioErr) {
+                toast({
+                    title: "Error",
+                    variant: "destructive",
+                    description: `There was a problem ${presentation.User === "HOST" ? "ending" : "leaving"} the call`,
                 });
             }
         }
+        useRtmStore.setState({ host: null, users: {} });
+        get().leaveAudio();
+
+
+        if (presentation.User === "HOST" || hostEnd) {
+            usepresentationStore.setState({ presentation: { ...presentation, audio: false } });
+        }
     },
     fetchRtcToken: async function () {
-        try {
-            const presentation = usepresentationStore.getState().presentation;
-            const userUid = useRtmStore.getState().token?.rtcUid;
-            if (!presentation) throw new Error("No presentation data");
-            const { data } = await axios.get<{
-                rtcToken: string;
-            }>(`/api/v1/ppt/presentations/present/token/${presentation.liveId}`, {
-                params: { userUid }
-            });
-            useRtmStore.setState((state) => ({
-                token: {
-                    rtcToken: data.rtcToken,
-                    rtcUid: state.token?.rtcUid || "",
-                    rtmToken: state.token?.rtmToken || ""
-                }
-            }));
-        } catch (_) { /*  */ }
+        const presentation = usepresentationStore.getState().presentation;
+        const userUid = useRtmStore.getState().token?.rtcUid;
+        if (!presentation) throw new Error();
+        const { data } = await axios.get<{
+            rtcToken: string;
+        }>(`/api/v1/ppt/presentations/present/token/${presentation.liveId}`, {
+            params: { userUid }
+        });
+        useRtmStore.setState((state) => ({
+            token: {
+                rtcToken: data.rtcToken,
+                rtcUid: state.token?.rtcUid || "",
+                rtmToken: state.token?.rtmToken || ""
+            }
+        }));
     },
     startAudio: async function () {
         try {
             const presentation = usepresentationStore.getState().presentation;
             const tokens = useRtmStore.getState().token;
             if (!presentation?.live) {
-                throw new Error("Presentation is not live");
+                toast({
+                    title: "Error",
+                    variant: "destructive",
+                    description: "Presentation is not live",
+                });
+                return;
             }
             if (tokens?.rtcToken) {
-                await get().init();
+                const [err] = await safeAwait(get().init());
+                if (err) {
+                    toast({
+                        title: "Error",
+                        variant: "destructive",
+                        description: err.message,
+                    });
+                    return;
+                }
             } else {
                 if (presentation.User === "GUEST") {
-                    await get().fetchRtcToken();
+                    const [rtcTokenErr] = await safeAwait(get().fetchRtcToken());
+                    if (rtcTokenErr) {
+                        toast({
+                            title: "Error",
+                            variant: "destructive",
+                            description: "Failed to fetch audio token",
+                        });
+                        return;
+                    }
                 } else {
-                    const { data } = await axios.put<{
+                    const axiosPromise = axios.put<{
                         rtcToken: string;
                     }>(
                         `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
                         {},
                         { params: { userUid: tokens?.rtcUid, endOrStart: "start" } }
                     );
+                    const [err, response] = await safeAwait(axiosPromise);
+                    if (err) {
+                        toast({
+                            title: "Error",
+                            variant: "destructive",
+                            description: "Failed to start audio",
+                        });
+                        return;
+                    }
                     useRtmStore.setState((state) => ({
                         token: {
-                            rtcToken: data.rtcToken,
+                            rtcToken: response.data.rtcToken,
                             rtcUid: state.token?.rtcUid || "",
                             rtmToken: state.token?.rtmToken || ""
                         }
                     }));
                 }
-                await get().init();
+
+                const [err] = await safeAwait(get().init());
+                if (err) {
+                    toast({
+                        title: "Error",
+                        variant: "destructive",
+                        description: err.message,
+                    });
+                    return;
+                }
             }
 
 
-            const rtm = useRtmStore.getState().rtm;
 
             if (presentation.User === "HOST" && !presentation.audio) {
-                await rtm?.publish(presentation.liveId, "START_AUDIO");
+                const rtm = useRtmStore.getState().rtm;
+                if (!rtm) {
+                    toast({
+                        title: "Error",
+                        variant: "destructive",
+                        description: "Audio Started but failed to broadcast to guest",
+                    });
+                    return;
+                }
+                const [err] = await safeAwait(rtm.publish(presentation.liveId, "START_AUDIO"));
+                if (err) {
+                    toast({
+                        title: "Error",
+                        variant: "destructive",
+                        description: "Audio Started but failed to broadcast to guest",
+                    });
+                    return;
+                }
             }
             usepresentationStore.setState((state) => ({ presentation: { ...state.presentation!, audio: true } }));
         } catch (err) {
             toast({
                 title: "Error",
                 variant: "destructive",
-                description: "An error occurred"
+                description: "An error occurred when start audio, please try again"
             });
         }
     },
@@ -244,153 +327,183 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             console.log(error);
             toggleNoiseSuppression(false);
             setNoiseSuppressionAvailable(false);
+            toast({
+                title: "Error",
+                variant: "destructive",
+                description: "Failed to activate noise Suppression",
+            });
         }
     },
     init: async function () {
-        try {
-            set({ loadingStatus: "loading" });
-            const rtcClient = RTC.createClient({ mode: "rtc", codec: "vp8" });
+        // try {
+        set({ loadingStatus: "loading" });
+        const rtcClient = RTC.createClient({ mode: "rtc", codec: "vp8" });
 
-            rtcClient.on("connection-state-change", function (state) {
-                set({ audioConnectionState: state });
-            });
+        rtcClient.on("connection-state-change", function (state) {
+            set({ audioConnectionState: state });
+        });
 
-            rtcClient.on("user-published", async (user, mediaType) => {
-                await rtcClient?.subscribe(user, mediaType);
+        rtcClient.on("user-published", async (user, mediaType) => {
+            const [err] = await safeAwait(rtcClient?.subscribe(user, mediaType));
 
-                if (mediaType == "audio") {
-                    if (!user.audioTrack) return;
-                    const audioTracks = get().audioTracks;
-                    if (audioTracks) {
-                        set((state) => ({
-                            audioTracks: {
-                                localAudioTrack: state.audioTracks?.localAudioTrack || null,
-                                remoteAudioTracks: {
-                                    ...state.audioTracks?.remoteAudioTracks,
-                                    [user.uid]: user.audioTrack || undefined
-                                }
-                            }
-                        }));
-                        user.audioTrack?.play();
-                    }
-                }
-            });
+            if (err) {
+                throw new Error("Failed to subscribe to user audio");
+            }
 
-            rtcClient.on("user-left", (user) => {
-                useRtmStore.getState().removeUser(user.uid);
+            if (mediaType == "audio") {
+                if (!user.audioTrack) return;
+                // const audioTracks = get().audioTracks;
+                // if (audioTracks) {
                 set((state) => ({
                     audioTracks: {
                         localAudioTrack: state.audioTracks?.localAudioTrack || null,
                         remoteAudioTracks: {
                             ...state.audioTracks?.remoteAudioTracks,
-                            [user.uid]: undefined
+                            [user.uid]: user.audioTrack || undefined
                         }
                     }
                 }));
-            });
-
-            rtcClient.on("network-quality", function (quality) {
-                const networkLabels = {
-                    0: "Unknown",
-                    1: "good",
-                    2: "mid",
-                    3: "poor",
-                    4: "poor",
-                    5: "poor",
-                    6: "No Connection"
-                };
-
-                set({ networkStatus: networkLabels[quality.uplinkNetworkQuality] as AudioStore['networkStatus'] })
-            });
-
-            const presentation = usepresentationStore.getState().presentation;
-            const token = useRtmStore.getState().token;
-
-            if (!presentation || !token) throw new Error("Failed to start audio");
-
-            await rtcClient.join(AGORA_APP_ID, presentation.liveId, token.rtcToken, token.rtcUid);
-            const localAudioTrack = await RTC.createMicrophoneAudioTrack({
-                encoderConfig: "speech_low_quality"
-            });
-
-            await rtcClient.publish(localAudioTrack);
-
-            await get().activeNoiceSuppression(localAudioTrack);
-
-            set((state) => ({ audioTracks: { localAudioTrack, remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {} } }));
-
-            get().setMicState(presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF);
-
-            const rtm = useRtmStore.getState().rtm;
-            if (!rtm || !token) throw new Error("RTM or Token not set");
-            const userDataChange = useRtmStore.getState().handleUserDataChange();
-            const presencesEvent = useRtmStore.getState().presencesEvent;
-            rtm.addEventListener("presence", function (data: RTMEvents.PresenceEvent) {
-                if (data.eventType === "REMOTE_STATE_CHANGED" && presentation.User === "HOST") {
-                    userDataChange(data);
-                    return;
-                }
-
-                presencesEvent(data);
-            });
-
-            await rtm.presence.setState(presentation.liveId, "MESSAGE", {
-                id: token.rtcUid,
-                userName: presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
-                micState: presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF
-            });
-            if (presentation.User === "GUEST") {
-                await rtm.subscribe(token.rtcUid);
+                user.audioTrack?.play();
+                // }
             }
+        });
 
-            const data = await rtm.presence.getOnlineUsers(presentation.liveId, "MESSAGE", {
-                includedState: true
-            });
-
-            type UserType = {
-                [key: string]: {
-                    id: string;
-                    userName: string;
-                    micState: MIC_STATE
+        rtcClient.on("user-left", (user) => {
+            useRtmStore.getState().removeUser(user.uid);
+            set((state) => ({
+                audioTracks: {
+                    localAudioTrack: state.audioTracks?.localAudioTrack || null,
+                    remoteAudioTracks: {
+                        ...state.audioTracks?.remoteAudioTracks,
+                        [user.uid]: undefined
+                    }
                 }
+            }));
+        });
+
+        rtcClient.on("network-quality", function (quality) {
+            const networkLabels = {
+                0: "Unknown",
+                1: "good",
+                2: "mid",
+                3: "poor",
+                4: "poor",
+                5: "poor",
+                6: "No Connection"
             };
 
-            const tempUsrs: UserType = {};
-            for (let i = 0; i < data.occupants.length; i++) {
-                const u = data.occupants[i];
-                if (u.states.userName === "HOST") {
-                    const host = {
-                        id: u.userId,
-                        userName: u.states.userName,
-                        micState: u.states.micState as MIC_STATE
-                    };
-                    useRtmStore.setState({ host });
-                    continue
-                };
-                if (Object.keys(u.states).length === 0) continue;
-                if (u.states.userName === "null" || u.states.userName === "") continue;
-                tempUsrs[u.userId] = {
+            set({ networkStatus: networkLabels[quality.uplinkNetworkQuality] as AudioStore['networkStatus'] })
+        });
+
+        const presentation = usepresentationStore.getState().presentation;
+        const token = useRtmStore.getState().token;
+
+        if (!presentation || !token) {
+            throw new Error("Presentation or Token not set");
+            // get().leaveAudio();
+        }
+
+        const [joinErr] = await safeAwait(rtcClient.join(AGORA_APP_ID, presentation.liveId, token.rtcToken, token.rtcUid));
+        if (joinErr) {
+            throw new Error("Failed to join the audio");
+        }
+
+        const [localAudioTrackErr, localAudioTrack] = await safeAwait(RTC.createMicrophoneAudioTrack({
+            encoderConfig: "speech_low_quality"
+        }));
+        if (localAudioTrackErr) {
+            throw new Error("Failed to create audio track");
+        }
+
+        const [publishErr] = await safeAwait(rtcClient.publish(localAudioTrack));
+        if (publishErr) {
+            throw new Error("Failed to create audio track");
+        }
+
+        // await get().activeNoiceSuppression(localAudioTrack);
+
+        set((state) => ({ audioTracks: { localAudioTrack, remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {} } }));
+
+        get().setMicState(presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF);
+
+        const rtm = useRtmStore.getState().rtm;
+        if (!rtm || !token) {
+            throw new Error("RTM or Token not set");
+        }
+        const userDataChange = useRtmStore.getState().handleUserDataChange();
+        const presencesEvent = useRtmStore.getState().presencesEvent;
+        rtm.addEventListener("presence", function (data: RTMEvents.PresenceEvent) {
+            if (data.eventType === "REMOTE_STATE_CHANGED" && presentation.User === "HOST") {
+                userDataChange(data);
+                return;
+            }
+
+            presencesEvent(data);
+        });
+
+        const [presenceErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
+            id: token.rtcUid,
+            userName: presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
+            micState: presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF
+        }));
+        if (presenceErr) {
+            throw new Error("Failed to set presence state");
+        }
+        if (presentation.User === "GUEST") {
+            const [subscribeErr] = await safeAwait(rtm.subscribe(token.rtcUid));
+            if (subscribeErr) {
+                throw new Error("Failed to subscribe to RTM");
+            }
+        }
+
+        const [presenceDataErr, data] = await safeAwait(rtm.presence.getOnlineUsers(presentation.liveId, "MESSAGE", {
+            includedState: true
+        }));
+
+        if (presenceDataErr) {
+            throw new Error("Failed to get online users");
+        }
+
+        type UserType = {
+            [key: string]: {
+                id: string;
+                userName: string;
+                micState: MIC_STATE
+            }
+        };
+
+        const tempUsrs: UserType = {};
+        for (let i = 0; i < data.occupants.length; i++) {
+            const u = data.occupants[i];
+            if (u.states.userName === "HOST") {
+                const host = {
                     id: u.userId,
                     userName: u.states.userName,
                     micState: u.states.micState as MIC_STATE
                 };
-            }
-
-            useRtmStore.setState({ users: tempUsrs });
-
-            const audio = new Audio(micRequest);
-            audio.volume = 1;
-            audio.load();
-
-            useRtmStore.setState({ audio });
-
-            set({
-                loadingStatus: "success",
-                rtcClient
-            })
-        } catch (error: unknown) {
-            set({ loadingStatus: "error" });
-            get().leaveAudio();
+                useRtmStore.setState({ host });
+                continue
+            };
+            if (Object.keys(u.states).length === 0) continue;
+            if (u.states.userName === "null" || u.states.userName === "") continue;
+            tempUsrs[u.userId] = {
+                id: u.userId,
+                userName: u.states.userName,
+                micState: u.states.micState as MIC_STATE
+            };
         }
+
+        useRtmStore.setState({ users: tempUsrs });
+
+        const audio = new Audio(micRequest);
+        audio.volume = 1;
+        audio.load();
+
+        useRtmStore.setState({ audio });
+
+        set({
+            loadingStatus: "success",
+            rtcClient
+        });
     }
 }));
