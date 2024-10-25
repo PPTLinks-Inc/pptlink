@@ -444,6 +444,7 @@ export default function UploadStage() {
           isLoading: false,
           onSubmit: (e) => {
             e.preventDefault();
+            setProcessingFile(false);
             setModalValues((prev) => ({ ...prev, open: false }));
           },
           onClose: () => {}
