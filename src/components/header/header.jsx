@@ -22,6 +22,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
         ? true
         : false
   );
+  const [getDashboardLocation] = useState(useLocation().pathname === "/dashboard");
 
   const getPathName = () => {
     return location.pathname === "/" ? true : false;
@@ -39,13 +40,14 @@ export default function Header({ isBackMenu, handleDropdown }) {
 
   const handlePresentationBtn = () => {
     if (!user) return navigate("/signin");
-    if (user && user.presentations < 1) return navigate(UPLOAD);
+    if (user && user.presentations < 1 || getDashboardLocation) return navigate(UPLOAD);
     if (user.presentations > 0) return navigate(DASHBOARD);
   };
 
   const buttontext = () => {
     if (!user) return "Sign in";
     if (user && user.presentations < 1) return "Upload";
+    if (user.presentations > 0 && getDashboardLocation) return "Upload";
     if (user.presentations > 0) return "Dashboard";
   };
   const containertVarients = {

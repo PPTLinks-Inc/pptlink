@@ -855,7 +855,7 @@ export default function UploadStage() {
             </div>
           </div>
           {errors.category?.message && (
-            <p className="text-[red]">{errors.category?.message?.toString()}</p>
+            <p className="text-[red] w-full">{errors.category?.message?.toString()}</p>
           )}
         </div>
       </div>
