@@ -104,10 +104,9 @@ const PresentationContextProvider = (props: { children: any }) => {
         rtcUid: data.presentation.rtc.rtcUid,
         rtcToken: data.presentation.rtc.rtcToken || ""
       });
+      await initRTM();
 
       setUserUid(data.presentation.rtc.rtcUid);
-
-      await initRTM();
 
       if (data.presentation.audio) {
         setStartPrompt(true);
@@ -115,6 +114,36 @@ const PresentationContextProvider = (props: { children: any }) => {
       return data.presentation;
     }
   });
+
+  const swiperRef = useSlideStore((state) => state.swiperRef);
+
+  const rtmConnectionState = useRtmStore((state) => state.status);
+  const initSlide = useSlideStore((state) => state.init);
+
+  const setSlideQuery = useQuery({
+    queryKey: ["set-slide-on-first-load"],
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    enabled: rtmConnectionState === "CONNECTED" && swiperRef !== null,
+    queryFn: async function() {
+      await initSlide();
+      return true;
+    }
+  });
+
+  useEffect(
+    function () {
+      if (setSlideQuery.isError) {
+        toast({
+          title: "Error",
+          description: "Failed to initialize slide",
+          variant: "destructive"
+        });
+      }
+    },
+    [setSlideQuery.isError]
+  );
 
   const presentation = usepresentationStore((state) => state.presentation);
   useQuery({
@@ -146,8 +175,6 @@ const PresentationContextProvider = (props: { children: any }) => {
     },
     [users]
   );
-
-  const rtmConnectionState = useRtmStore((state) => state.status);
 
   useEffect(
     function () {

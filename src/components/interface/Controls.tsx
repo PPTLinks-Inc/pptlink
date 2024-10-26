@@ -15,7 +15,7 @@ import { PresentationContext } from "../../contexts/presentationContext";
 import "./styles/style.css";
 import Modal from "./Modals/Modal";
 import ConfirmModal from "./Modals/confirmModal";
-import { LoadingAssetBig2 } from "../../assets/assets";
+import { LoadingAssetBig, LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
 import MessageMenu from "./Modals/MessageMenu";
 import { MIC_STATE } from "../../constants/routes";
@@ -580,10 +580,10 @@ export default function Controls({
         onClose={
           audioLoadingStatus === "loading" ? null : () => setEnterName(false)
         }
-        color="bg-black"
+        color="bg-[#FFFFDB]"
       >
         {audioLoadingStatus === "loading" ? (
-          <LoadingAssetBig2 />
+          <LoadingAssetBig />
         ) : (
           <form
             className="flex flex-col gap-5"
@@ -609,11 +609,11 @@ export default function Controls({
               }
             }}
           >
-            <h4 className="text-2xl text-white text-center">Enter your name</h4>
+            <h4 className="text-2xl text-center text-black">Enter your name</h4>
             <input
               type="text"
               placeholder="Enter your name"
-              className="rounded p-2 w-full text-center"
+              className="rounded p-2 w-full text-center border-[1px] border-[#FF7A00]"
               autoFocus
               value={userName}
               onChange={(e) => {
@@ -623,12 +623,12 @@ export default function Controls({
             <div className="flex gap-3">
               <button
                 onClick={() => setEnterName(false)}
-                className="bg-slate-200 p-2 w-full rounded"
+                className="bg-black text-white p-2 w-full rounded"
                 type="button"
               >
                 Cancel
               </button>
-              <button className="bg-slate-200 p-2 w-full rounded" type="submit">
+              <button className="bg-black text-white p-2 w-full rounded" type="submit">
                 Join
               </button>
             </div>

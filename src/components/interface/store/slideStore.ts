@@ -3,6 +3,7 @@ import { usepresentationStore } from "./presentationStore";
 import { RTMEvents } from "agora-rtm-sdk";
 import { useRtmStore } from "./rtmStore";
 import { toast } from "@/hooks/use-toast";
+import safeAwait from "@/util/safeAwait";
 
 interface SlideStore {
     slideData: {
@@ -19,7 +20,7 @@ interface SlideStore {
     syncSlide: () => void;
     slidesEvent: (event: RTMEvents.StorageEvent) => void;
     slideHandler: () => void;
-    init: () => void;
+    init: () => Promise<void>;
 }
 
 export const useSlideStore = create<SlideStore>((set, get) => ({
@@ -117,7 +118,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
             }
         }
     },
-    init: function () {
+    init: async function () {
         const swiperRef = get().swiperRef;
         if (swiperRef) {
             const slideHandler = get().slideHandler;
@@ -131,6 +132,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
                     rtm.addEventListener("storage", slidesEvent);
                     if (presentation.live) {
                         rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE").then((data) => {
+                            console.log(data);
                             const newSlideData = JSON.parse(
                                 data.metadata.slideData.value
                             );
@@ -156,13 +158,20 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
                         prevHostSlide: slideData.hostSlide
                     };
                     set({ slideData });
-                    rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
+                    const [err] = await safeAwait(rtm?.storage.setChannelMetadata(presentation.liveId, "MESSAGE", [
                         {
                             key: "slideData",
-                            value: JSON.stringify(slideData),
-                            revision: -1
+                            value: JSON.stringify(slideData)
                         }
-                    ]);
+                    ]));
+
+                    if (err) {
+                        toast({
+                            title: "Error",
+                            description: "Failed to set slide data",
+                            variant: "destructive"
+                        });
+                    }
                 }
             }
         }
