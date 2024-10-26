@@ -120,7 +120,6 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         const presentation = usepresentationStore.getState().presentation;
 
         if (!rtm || !presentation) {
-            console.trace("me");
             toast({
                 title: "Error",
                 description: "RTM or Presenatation is null",

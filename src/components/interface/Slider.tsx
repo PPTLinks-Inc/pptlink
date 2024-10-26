@@ -76,7 +76,6 @@ export default function Slider({
   const { isMobilePhone, fullScreenShow } =
     useContext(PresentationContext);
   const setSwiperRef = useSlideStore((state) => state.setSwiperRef);
-  const initSlide = useSlideStore((state) => state.init);
   const presentation = usepresentationStore((state) => state.presentation);
   const orientation = useOrientation();
   const file = useMemo(
@@ -98,7 +97,6 @@ export default function Slider({
     if (!swiperRef.current) return;
     console.log("Setting swiper ref");
     setSwiperRef(swiperRef.current);
-    initSlide();
   }, [swiperRef.current]);
 
   function adjustWidth() {
