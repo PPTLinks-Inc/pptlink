@@ -126,8 +126,45 @@ const PresentationContextProvider = (props: { children: any }) => {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     enabled: rtmConnectionState === "CONNECTED" && swiperRef !== null,
-    queryFn: async function() {
+    queryFn: async function () {
       await initSlide();
+
+      const presentation = usepresentationStore.getState().presentation;
+      const setPresentation = usepresentationStore.getState().setPresentation;
+      const rtm = useRtmStore.getState().rtm;
+      const token = useRtmStore.getState().token;
+      const slidesEvent = useSlideStore.getState().slidesEvent;
+      const setMicState = useAudioStore.getState().setMicState;
+
+      if (!presentation) return;
+      if (presentation.User === "GUEST" || presentation.User === "CO-HOST") {
+        rtm?.addEventListener("storage", function (e) {
+          if (e.data.metadata["co-host"] && e.data.metadata["co-host"].value !== useRtmStore.getState().coHostId) {
+            useRtmStore.setState({ coHostId: e.data.metadata["co-host"].value });
+            useRtmStore.getState().setSortedUsers();
+
+            const tempPresentation = usepresentationStore.getState().presentation as presentationData;
+            if (e.data.metadata["co-host"].value === token?.rtcUid) {
+              const swiperRef =  useSlideStore.getState().swiperRef;
+              swiperRef.swiper.allowSlideNext = true;
+              toast({
+                description: "You are now a co-host of this presentation"
+              });
+              setPresentation({ ...tempPresentation, User: "CO-HOST" });
+              if (useAudioStore.getState().micState === MIC_STATE.REQ_MIC) {
+                setMicState(MIC_STATE.MIC_MUTED);
+              }
+            } else if (tempPresentation.User === "CO-HOST") {
+              toast({
+                description: "You are no longer a co-host of this presentation"
+              });
+              setPresentation({ ...tempPresentation, User: "GUEST" });
+            }
+          }
+
+          slidesEvent(e);
+        });
+      }
       return true;
     }
   });
@@ -212,8 +249,7 @@ const PresentationContextProvider = (props: { children: any }) => {
                   continue;
                 }
                 if (Object.keys(u.states).length === 0) continue;
-                if (u.states.userName === "null" || u.states.userName === "")
-                  continue;
+                if (u.states.audio !== "true") continue;
                 tempUsrs[u.userId] = {
                   id: u.userId,
                   userName: u.states.userName,

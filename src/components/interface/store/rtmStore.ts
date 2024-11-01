@@ -34,6 +34,7 @@ interface RtmStore {
     status: "DISCONNECTED" | "CONNECTING" | "RECONNECTING" | "CONNECTED" | "FAILED" | "DISCONNECTING";
     rtm: RTMClient | null;
     host: User | null;
+    coHostId: string;
     users: { [key: string]: User };
     sortedUsers: User[];
     setSortedUsers: () => void;
@@ -59,10 +60,15 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
     status: "DISCONNECTED",
     rtm: null,
     host: null,
+    coHostId: "",
     users: {},
     sortedUsers: [],
     setSortedUsers: function () {
         const users = Object.values(get().users).sort((a, b) => {
+            // check if either co-host
+            if (a.id === get().coHostId) return -1;
+            if (b.id === get().coHostId) return 1;
+
             // Check if either user is the current user
             if (a.id === get().token?.rtcUid) return -1;
             if (b.id === get().token?.rtcUid) return 1;
@@ -80,8 +86,15 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             return;
         }
         const users = { ...get().users };
-        delete users[uid];
-        set({ users });
+        if (users[uid]) {
+            if (usepresentationStore.getState().presentation?.User === "HOST" && uid === get().coHostId) {
+                toast({
+                    description: "The co-host have left the presentation"
+                });
+            }
+            delete users[uid];
+            set({ users });
+        }
     },
     messageListerner: async function (messageData: RTMEvents.MessageEvent) {
         const presentation = usepresentationStore.getState().presentation;
@@ -103,7 +116,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 usepresentationStore.setState((state) => ({ ...state, showStartPrompt: true, presentation: { ...state.presentation!, audio: true } }));
             }
         } else if (messageData.message === "END_AUDIO") {
-            if (presentation.User === "GUEST") {
+            if (presentation.User !== "HOST") {
                 usepresentationStore.setState({ showStartPrompt: false });
                 endAudio({
                     hostEnd: true
@@ -169,6 +182,10 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 withPresence: true
             });
 
+            await rtm.presence.setState(presentation.liveId, "MESSAGE", {
+                "audio": "false"
+            });
+
             set({ rtm });
         } catch (_: unknown) {
             toast({
@@ -179,12 +196,16 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
         }
     },
     presencesEvent: function (data: RTMEvents.PresenceEvent) {
+        const removeUser = get().removeUser;
         if (data.eventType === "REMOTE_LEAVE" || data.eventType === "REMOTE_TIMEOUT") {
-            const removeUser = get().removeUser;
             removeUser(data.publisher);
         } else if (data.eventType === "REMOTE_STATE_CHANGED") {
             const u = data.stateChanged;
             if (Object.keys(u).length === 0) return;
+            if (u.audio !== "true") {
+                removeUser(data.publisher);
+                return;
+            }
             if (!u.userName) return;
             if (u.userName === "HOST") {
                 const host = {
@@ -195,11 +216,6 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 set({ host });
                 return
             };
-            if (u.userName === "null" || u.userName === "") {
-                const removeUser = get().removeUser;
-                removeUser(data.publisher);
-                return;
-            }
             const user = {
                 id: u.id,
                 userName: u.userName,
