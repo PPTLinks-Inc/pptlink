@@ -95,7 +95,6 @@ export default function Slider({
 
   useEffect(() => {
     if (!swiperRef.current) return;
-    console.log("Setting swiper ref");
     setSwiperRef(swiperRef.current);
   }, [swiperRef.current]);
 

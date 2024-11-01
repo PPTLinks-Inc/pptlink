@@ -98,6 +98,7 @@ export default function Controls({
   const syncSlide = useSlideStore((state) => state.syncSlide);
 
   const rtcUid = useRtmStore((state) => state.token?.rtcUid);
+  const coHostId = useRtmStore((state) => state.coHostId);
 
   const [loadingStatus, setLoadingStatus] = useState<any>({});
 
@@ -168,7 +169,7 @@ export default function Controls({
   const handleAcceptMicRequest = useCallback(
     async function (user: { status: MIC_STATE; id: string }) {
       if (!presentation) return;
-      if (presentation.User !== "HOST") return;
+      if (presentation.User === "GUEST") return;
 
       if (user.status === MIC_STATE.REQ_MIC) {
         await acceptMicRequest(user.id, MIC_STATE.MIC_MUTED);
@@ -215,7 +216,7 @@ export default function Controls({
       return;
     }
 
-    if (presentation?.User === "HOST") {
+    if (presentation?.User === "HOST" || presentation?.User === "CO-HOST") {
       if (micState === MIC_STATE.CAN_SPK) {
         setMicState(MIC_STATE.MIC_MUTED);
       } else {
@@ -242,7 +243,6 @@ export default function Controls({
     try {
       await endAudio.mutateAsync({ hostEnd: false });
       setEndAudioPrompt(false);
-      setMicState(MIC_STATE.MIC_OFF);
     } catch (error) {
       toast({
         title: "Error",
@@ -280,7 +280,7 @@ export default function Controls({
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
           {audioLoadingStatus === "success" && (
             <>
-              {presentation?.User === "HOST" && (
+              {(presentation?.User === "HOST" || presentation?.User === "CO-HOST") && (
                 <button
                   onClick={() => setShowOptions(true)}
                   className="rounded-full p-3 bg-gray-300 shadow"
@@ -363,7 +363,7 @@ export default function Controls({
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
           {audioLoadingStatus === "success" && (
             <>
-              {presentation?.User === "HOST" ? (
+              {(presentation?.User === "HOST" || presentation?.User === "CO-HOST") ? (
                 <button
                   onClick={() => setShowOptions(true)}
                   className="rounded-full p-3 bg-gray-300 shadow"
@@ -446,7 +446,7 @@ export default function Controls({
           )}
         </div>
         <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
-          {!synced && presentation?.User !== "HOST" && (
+          {!synced && presentation?.live && presentation?.User === "GUEST" && (
             <button
               onClick={syncSlide}
               className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
@@ -522,7 +522,7 @@ export default function Controls({
         </div>
 
         <div className="text-sm p-3 grid grid-cols-5 sm:grid-cols-4 gap-y-5 overflow-y-auto">
-          {users.map((user, index) => (
+          {users.map((user) => (
             <button
               key={user.id}
               className="flex flex-col w-full justify-start items-center"
@@ -559,15 +559,16 @@ export default function Controls({
                   {user.userName}
                 </p>
               )}
-              <div className="w-20 flex justify-center items-center gap-2">
-                {index === 0 && rtcUid === user.id && <span>(You)</span>}
+              <div className="w-20 flex flex-col justify-center items-center gap-2">
+                {rtcUid === user.id && <span>(You)</span>}
+                {coHostId === user.id && <span>(Co-host)</span>}
               </div>
             </button>
           ))}
         </div>
       </Menu>
 
-      {presentation?.User === "HOST" && (
+      {(presentation?.User === "HOST" || presentation?.User === "CO-HOST") && (
         <OptionMenu
           open={showOptions}
           onClose={() => setShowOptions(false)}
@@ -595,18 +596,18 @@ export default function Controls({
                   description: "Please enter your name",
                   variant: "destructive"
                 });
-              localStorage.setItem("userName", `"${userName}"`);
-              if (!presentation) return;
-              try {
-                await startAudio.mutateAsync();
-                setEnterName(false);
-              } catch (error) {
-                toast({
-                  title: "Error",
-                  description: "Could'nt start audio",
-                  variant: "destructive"
-                });
-              }
+                if (!presentation) return;
+                try {
+                  await startAudio.mutateAsync();
+                  setEnterName(false);
+                  localStorage.setItem("userName", `"${userName}"`);
+                } catch (error) {
+                  toast({
+                    title: "Error",
+                    description: "Could'nt start audio",
+                    variant: "destructive"
+                  });
+                }
             }}
           >
             <h4 className="text-2xl text-center text-black">Enter your name</h4>

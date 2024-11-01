@@ -150,7 +150,7 @@ function Interface() {
       ) : (
         status.offline === true && (
           <div
-            className={`fixed bottom-0 text-center transition-all duration-500 z-50 text-white w-full bg-[#ff0000] font-bold px-2`}
+            className={`fixed bottom-0 text-center transition-all duration-500 z-50 text-white w-full bg-rose-500 font-bold px-2`}
           >
             {rtmConnectionState}
           </div>
