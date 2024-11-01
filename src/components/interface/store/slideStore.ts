@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import safeAwait from "@/util/safeAwait";
 
 interface SlideStore {
+    lockSlide: boolean;
     slideData: {
         maxSlides: number;
         hostSlide: number;
@@ -24,6 +25,7 @@ interface SlideStore {
 }
 
 export const useSlideStore = create<SlideStore>((set, get) => ({
+    lockSlide: false,
     slideData: {
         maxSlides: 0,
         hostSlide: 0,
@@ -64,6 +66,13 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
 
             set({ slideData });
             const synced = get().synced;
+            const User = usepresentationStore.getState().presentation?.User;
+
+            if (User === "HOST" || User === "CO-HOST") {
+                swiperRef.swiper.slideTo(newSlideData.hostSlide, 1000, true);
+                return;
+            }
+
             if (synced && swiperRef.swiper.activeIndex === newSlideData.prevHostSlide) {
                 swiperRef.swiper.allowSlideNext = true;
                 swiperRef.swiper.slideTo(newSlideData.hostSlide, 1000, true);
@@ -84,7 +93,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         const swiperRef = get().swiperRef;
         const rtm = useRtmStore.getState().rtm;
         let slideData = { ...get().slideData };
-        if (presentation?.User === "HOST" && presentation?.live) {
+        if ((presentation?.User === "HOST" || presentation?.User === "CO-HOST") && presentation?.live) {
             slideData = {
                 maxSlides:
                     swiperRef.swiper.activeIndex >= slideData.maxSlides
@@ -120,19 +129,27 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
     },
     init: async function () {
         const swiperRef = get().swiperRef;
+        function debounce() {
+            let timeout: NodeJS.Timeout;;
+            return function () {
+                clearTimeout(timeout);
+                
+                timeout = setTimeout(function() {
+                    const slideHandler = get().slideHandler;
+                    slideHandler();
+                }, 500);
+            }
+        }
         if (swiperRef) {
-            const slideHandler = get().slideHandler;
-            swiperRef.addEventListener("swiperslidechange", slideHandler);
+            const func = debounce();
+            swiperRef.addEventListener("swiperslidechange", func);
 
             const presentation = usepresentationStore.getState().presentation;
             const rtm = useRtmStore.getState().rtm;
-            const slidesEvent = get().slidesEvent;
             if (presentation && rtm) {
                 if (presentation.User === "GUEST") {
-                    rtm.addEventListener("storage", slidesEvent);
                     if (presentation.live) {
                         rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE").then((data) => {
-                            console.log(data);
                             const newSlideData = JSON.parse(
                                 data.metadata.slideData.value
                             );
