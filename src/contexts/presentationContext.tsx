@@ -139,13 +139,19 @@ const PresentationContextProvider = (props: { children: any }) => {
       if (!presentation) return;
       if (presentation.User === "GUEST" || presentation.User === "CO-HOST") {
         rtm?.addEventListener("storage", function (e) {
-          if (e.data.metadata["co-host"] && e.data.metadata["co-host"].value !== useRtmStore.getState().coHostId) {
-            useRtmStore.setState({ coHostId: e.data.metadata["co-host"].value });
+          if (
+            e.data.metadata["co-host"] &&
+            e.data.metadata["co-host"].value !== useRtmStore.getState().coHostId
+          ) {
+            useRtmStore.setState({
+              coHostId: e.data.metadata["co-host"].value
+            });
             useRtmStore.getState().setSortedUsers();
 
-            const tempPresentation = usepresentationStore.getState().presentation as presentationData;
+            const tempPresentation = usepresentationStore.getState()
+              .presentation as presentationData;
             if (e.data.metadata["co-host"].value === token?.rtcUid) {
-              const swiperRef =  useSlideStore.getState().swiperRef;
+              const swiperRef = useSlideStore.getState().swiperRef;
               swiperRef.swiper.allowSlideNext = true;
               toast({
                 description: "You are now a co-host of this presentation"
@@ -158,6 +164,7 @@ const PresentationContextProvider = (props: { children: any }) => {
               toast({
                 description: "You are no longer a co-host of this presentation"
               });
+              useSlideStore.setState({ lockSlide: false });
               setPresentation({ ...tempPresentation, User: "GUEST" });
             }
           }
@@ -301,7 +308,9 @@ const PresentationContextProvider = (props: { children: any }) => {
               key: "slideData",
               value: JSON.stringify(slideData)
             }
-          ]);
+          ], {
+            addUserId: true
+          });
         }
       }
     },
