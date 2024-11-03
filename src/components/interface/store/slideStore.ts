@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import safeAwait from "@/util/safeAwait";
 
 interface SlideStore {
+    debounceTimer: NodeJS.Timeout | null;
     lockSlide: boolean;
     slideData: {
         maxSlides: number;
@@ -25,6 +26,7 @@ interface SlideStore {
 }
 
 export const useSlideStore = create<SlideStore>((set, get) => ({
+    debounceTimer: null,
     lockSlide: false,
     slideData: {
         maxSlides: 0,
@@ -53,7 +55,6 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         }
     },
     slidesEvent: function (event) {
-        // console.log(event);
         const slideData = { ...get().slideData };
         const swiperRef = get().swiperRef;
         if (event.data.metadata.slideData) {
@@ -69,6 +70,15 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
             const User = usepresentationStore.getState().presentation?.User;
 
             if (User === "HOST" || User === "CO-HOST") {
+                if (event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "HOST") return;
+                else if (!event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "CO-HOST") return;
+
+                if (event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "CO-HOST") {
+                    set({ lockSlide: true });
+                } else if (!event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "HOST") {
+                    set({ lockSlide: true });
+                }
+
                 swiperRef.swiper.slideTo(newSlideData.hostSlide, 1000, true);
                 return;
             }
@@ -89,28 +99,46 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         }
     },
     slideHandler: function () {
-        const presentation = usepresentationStore.getState().presentation;
         const swiperRef = get().swiperRef;
+
+        if (get().lockSlide) {
+            swiperRef.swiper.allowSlideNext = false;
+            const debounceTimer = get().debounceTimer;
+            if (debounceTimer) {
+                clearTimeout(debounceTimer);
+            }
+            const timer = setTimeout(function () {
+                swiperRef.swiper.allowSlideNext = true;
+                set({ lockSlide: false, debounceTimer: null });
+            }, 2000);
+            set({ debounceTimer: timer });
+            return;
+        }
+
+        const presentation = usepresentationStore.getState().presentation;
         const rtm = useRtmStore.getState().rtm;
         let slideData = { ...get().slideData };
-        if ((presentation?.User === "HOST" || presentation?.User === "CO-HOST") && presentation?.live) {
+        if ((presentation?.User === "HOST" || presentation?.User === "CO-HOST") && presentation?.live && presentation?.audio) {
             slideData = {
                 maxSlides:
                     swiperRef.swiper.activeIndex >= slideData.maxSlides
                         ? swiperRef.swiper.activeIndex
                         : slideData.maxSlides,
                 hostSlide: swiperRef.swiper.activeIndex,
-                prevHostSlide: slideData.hostSlide
+                prevHostSlide: slideData.hostSlide,
             };
             set({ slideData });
+
             rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
                 {
                     key: "slideData",
                     value: JSON.stringify(slideData),
                     revision: -1
                 }
-            ]);
-        } else if (presentation?.User === "GUEST") {
+            ], {
+                addUserId: true,
+            });
+        } else if (presentation?.User === "GUEST" || presentation?.User === "CO-HOST") {
             if (!presentation.live) {
                 return;
             }
@@ -133,8 +161,8 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
             let timeout: NodeJS.Timeout;;
             return function () {
                 clearTimeout(timeout);
-                
-                timeout = setTimeout(function() {
+
+                timeout = setTimeout(function () {
                     const slideHandler = get().slideHandler;
                     slideHandler();
                 }, 500);
