@@ -439,7 +439,9 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         }
 
         const [localAudioTrackErr, localAudioTrack] = await safeAwait(RTC.createMicrophoneAudioTrack({
-            encoderConfig: "speech_low_quality"
+            encoderConfig: "speech_low_quality",
+            AEC: true,
+            ANS: true
         }));
         if (localAudioTrackErr) {
             throw new Error("Failed to create audio track");
