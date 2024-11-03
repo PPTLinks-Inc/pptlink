@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { IoIosArrowBack } from "react-icons/io";
 import { RiBarChart2Line, RiFolderAddLine } from "react-icons/ri";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { MdOutlineScreenShare, MdNoiseControlOff } from "react-icons/md";
+import { MdOutlineScreenShare,/*  MdNoiseControlOff */ } from "react-icons/md";
 import { GoBell } from "react-icons/go";
 import { PiPenNibLight } from "react-icons/pi";
 import {
@@ -12,7 +12,7 @@ import {
   IoMusicalNotesOutline,
   IoOptions
 } from "react-icons/io5";
-import { useOptionsStore } from "../store/optionsStore";
+// import { useOptionsStore } from "../store/optionsStore";
 import { useCallback, useState } from "react";
 import { MIC_STATE } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,15 +30,15 @@ function MainMenu({
     value: "main" | "poll" | "co-host" | "slides" | "screen"
   ) => void;
 }) {
-  const noiseSuppressionEnabled = useOptionsStore(
-    (state) => state.noiseSuppressionEnabled
-  );
-  const noiseSuppressionAvailable = useOptionsStore(
-    (state) => state.noiseSuppressionAvailable
-  );
-  const toggleNoiseSuppression = useOptionsStore(
-    (state) => state.toggleNoiseSuppression
-  );
+  // const noiseSuppressionEnabled = useOptionsStore(
+  //   (state) => state.noiseSuppressionEnabled
+  // );
+  // const noiseSuppressionAvailable = useOptionsStore(
+  //   (state) => state.noiseSuppressionAvailable
+  // );
+  // const toggleNoiseSuppression = useOptionsStore(
+  //   (state) => state.toggleNoiseSuppression
+  // );
 
   const User = usepresentationStore((state) => state.presentation?.User);
 
@@ -78,7 +78,7 @@ function MainMenu({
             <Switch id="ping-audience" />
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <Label htmlFor="noise-suppression" className="text-lg font-normal">
             Noise suppression
           </Label>
@@ -96,7 +96,7 @@ function MainMenu({
               className={`${!noiseSuppressionAvailable ? "cursor-not-allowed" : ""}`}
             />
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center justify-around">
         {User === "HOST" && (
