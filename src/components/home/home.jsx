@@ -25,7 +25,6 @@ export default function NewHome() {
   const { user } = useContext(userContext);
   const { presentations, refetch } = useContext(publicPresentation);
 
-
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
@@ -52,13 +51,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft - scrollAmount,
-        behavior: "smooth"
-      })
+          left: scrollContainer.scrollLeft - scrollAmount,
+          behavior: "smooth"
+        })
       : scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft + scrollAmount,
-        behavior: "smooth"
-      });
+          left: scrollContainer.scrollLeft + scrollAmount,
+          behavior: "smooth"
+        });
   };
 
   // framer
@@ -203,15 +202,18 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
+            className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg"
+          >
             <motion.iframe
               className="w-full h-full mx-auto border-2 rounded-md"
               src="https://www.youtube-nocookie.com/embed/meTNh23fYKg?si=-ibyWcdA5oWJ7TTv&amp;controls=0"
               title="YouTube video player"
               frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
-              fetchpriority="high" ></motion.iframe>
+              fetchpriority="high"
+            ></motion.iframe>
           </motion.div>
         </div>
       </div>
@@ -226,8 +228,11 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="w-full">
-            <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
+            className="w-full"
+          >
+            <span className="text-5xl block text-center font-bold mb-2 w-full">
+              Recent
+            </span>
             <span className="block w-full text-center text-4xl">
               Presentation
             </span>
@@ -257,7 +262,11 @@ export default function NewHome() {
               ref={scrollRef}
             >
               {presentations.slice(0, 12).map((presentation) => (
-                <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+                <Card
+                  key={presentation.id}
+                  presentation={presentation}
+                  refresh={refetch}
+                />
               ))}
             </motion.div>
           </div>
@@ -284,9 +293,7 @@ export default function NewHome() {
           WHY USE PPTLINKS?
         </motion.h3>
         <div className="wrap_circle w-full h-fit mt-20 !text-black maxScreenMobile:mt-10">
-          <motion.div
-            className="grid_anim_wrapper"
-          >
+          <motion.div className="grid_anim_wrapper">
             {/* ///////////////////////////////////////////////////// */}
 
             <motion.div
@@ -297,7 +304,8 @@ export default function NewHome() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl"
+            >
               <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
@@ -327,7 +335,8 @@ export default function NewHome() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl"
+            >
               <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
@@ -356,7 +365,8 @@ export default function NewHome() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl"
+            >
               <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
@@ -385,7 +395,8 @@ export default function NewHome() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl"
+            >
               <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
@@ -414,7 +425,8 @@ export default function NewHome() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl">
+              className="bg-[#FFFFF0] w-full p-3 border-[2px] border-solid border-[#FFA500] rounded-md shadow-xl"
+            >
               <div className="w-fit maxSmallMobile:mx-auto md:mr-auto flex justify-between items-start gap-6">
                 <div className="bg-black p-2 rounded-[5px] w-40 aspect-square m-auto flex justify-center items-center">
                   <img
@@ -426,8 +438,7 @@ export default function NewHome() {
                 </div>
                 <div className="w-full !text-left">
                   <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
-                    For Physical Presentations to Carry
-                    Everyone Alone
+                    For Physical Presentations to Carry Everyone Alone
                   </h4>
                   <p className="text-4 w-full text-ellipsis m-auto">
                     backbenchers become part of the session.
@@ -700,15 +711,15 @@ export default function NewHome() {
                 title={_.title}
                 className="transition-all duration-300"
               >
-                  <h3 className="!text-8 font-semibold leading-[28px] mb-[15px]">
-                    {_.h3}
-                  </h3>
-                  <p className="!text-8">{_.p}</p>
+                <h3 className="!text-8 font-semibold leading-[28px] mb-[15px]">
+                  {_.h3}
+                </h3>
+                <p className="!text-8">{_.p}</p>
               </AccordionWrapper>
             ))}
           </div>
         </div>
       </div>
-    </motion.section >
+    </motion.section>
   );
 }
