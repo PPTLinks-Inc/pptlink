@@ -94,69 +94,6 @@ export default function PreviewStage() {
     }
   });
 
-  /* const checkFileStatusMutation = useMutation({
-    mutationFn: async function () {
-      const { data } = await axios.get(
-        `${SERVER_URL}/api/v1/ppt/presentation/upload-status`
-      );
-      return data;
-    },
-    onSuccess: function (data) {
-      if (data.status === "SUCCESS") {
-        setPdfUrl(data.pdfUrl);
-        setModalValues({
-          message:
-            "Your file has been processed successfully. Click continue to proceed.",
-          open: true,
-          oneButton: true,
-          actionText: "Continue",
-          isLoading: false,
-          onSubmit: (e) => {
-            e.preventDefault();
-            setModalValues((prev) => ({ ...prev, open: false }));
-          },
-          onClose: () => {}
-        });
-      } else if (data.status === "ERROR") {
-        setModalValues({
-          message: "An error occurred while processing your file. Please retry.",
-          open: true,
-          oneButton: true,
-          actionText: "Retry",
-          isLoading: false,
-          onSubmit: () => {},
-          onClose: () => {
-            setPdfUrl("");
-            setValue("file", null);
-            setModalValues((prev) => ({ ...prev, open: false }));
-          }
-        });
-        setPdfUrl("");
-        setValue("file", null);
-      } else if (data.status === "PENDING") {
-        setModalValues({
-          message: "Your file is being processed. Please wait or cancel.",
-          open: true,
-          oneButton: false,
-          actionText: "OK",
-          isLoading: false,
-          onSubmit: (e) => {
-            e.preventDefault();
-            setModalValues((prev) => ({ ...prev, open: false }));
-          },
-          onClose: () => {
-            setModalValues((prev) => ({
-              ...prev,
-              isLoading: true,
-              message: "Cancelling upload..."
-            }));
-            cancelPendingUploadMutation.mutate();
-          }
-        });
-      }
-    }
-  }); */
-
   const setSavePresentationStageHandler = useUploadStore(
     (state) => state.setSavePresentationStageHandler
   );
