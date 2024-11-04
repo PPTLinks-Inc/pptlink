@@ -11,6 +11,7 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import { RTMEvents } from "agora-rtm-sdk";
 import micRequest from "../assets/mic-request.mp3";
 import safeAwait from "@/util/safeAwait";
+import { useSlideStore } from "./slideStore";
 
 interface AudioStore {
     rtcClient: IAgoraRTCClient | null;
@@ -24,6 +25,7 @@ interface AudioStore {
         remoteAudioTracks: { [key: string]: IRemoteAudioTrack | undefined };
     } | null,
     acceptMicRequest(userId: string, micState: MIC_STATE): Promise<void>;
+    makeCohost: (value: string) => Promise<void>;
     leaveAudio: () => void;
     endAudio: ({
         hostEnd
@@ -61,9 +63,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             return;
         }
         const [presenceErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
-            id: tokens.rtcUid,
-            userName,
-            micState
+            "micState": micState
         }));
         if (presenceErr) {
             toast({
@@ -104,6 +104,34 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             });
         }
     },
+    makeCohost: async function (value) {
+        const rtm = useRtmStore.getState().rtm;
+        const presentation = usepresentationStore.getState().presentation;
+
+        if (!rtm || !presentation) {
+            toast({
+                title: "Error",
+                variant: "destructive",
+                description: "Presentation or RTM not set"
+            });
+            return;
+        }
+
+        const [err] = await safeAwait(rtm.storage.setChannelMetadata(presentation.liveId, "MESSAGE", [
+            {
+                key: "co-host",
+                value: value
+            }
+        ]));
+
+        if (err) {
+            toast({
+                title: "Error",
+                variant: "destructive",
+                description: "Failed to make co-host"
+            });
+        }
+    },
     leaveAudio: function () {
         get().audioTracks?.localAudioTrack?.stop();
         get().audioTracks?.localAudioTrack?.close();
@@ -129,9 +157,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         }
 
         const [stateErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
-            id: "null",
-            userName: "null",
-            micState: "null"
+            "MIC_STATE": MIC_STATE.MIC_OFF,
+            "audio": "false"
         }));
         if (stateErr) {
             toast({
@@ -208,6 +235,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                         variant: "destructive",
                         description: err.message,
                     });
+                    set({ loadingStatus: "error" });
+                    get().leaveAudio();
                     return;
                 }
             } else {
@@ -254,6 +283,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                         variant: "destructive",
                         description: err.message,
                     });
+                    set({ loadingStatus: "error" });
+                    get().leaveAudio();
                     return;
                 }
             }
@@ -408,7 +439,9 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         }
 
         const [localAudioTrackErr, localAudioTrack] = await safeAwait(RTC.createMicrophoneAudioTrack({
-            encoderConfig: "speech_low_quality"
+            encoderConfig: "speech_low_quality",
+            AEC: true,
+            ANS: true
         }));
         if (localAudioTrackErr) {
             throw new Error("Failed to create audio track");
@@ -432,7 +465,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         const userDataChange = useRtmStore.getState().handleUserDataChange();
         const presencesEvent = useRtmStore.getState().presencesEvent;
         rtm.addEventListener("presence", function (data: RTMEvents.PresenceEvent) {
-            if (data.eventType === "REMOTE_STATE_CHANGED" && presentation.User === "HOST") {
+            const User = usepresentationStore.getState().presentation?.User;
+            if (data.eventType === "REMOTE_STATE_CHANGED" && User === "HOST" || User === "CO-HOST") {
                 userDataChange(data);
                 return;
             }
@@ -441,9 +475,10 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         });
 
         const [presenceErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
-            id: token.rtcUid,
-            userName: presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
-            micState: presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF
+            "id": token.rtcUid,
+            "userName": presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
+            "micState": presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF,
+            "audio": "true"
         }));
         if (presenceErr) {
             throw new Error("Failed to set presence state");
@@ -484,7 +519,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 continue
             };
             if (Object.keys(u.states).length === 0) continue;
-            if (u.states.userName === "null" || u.states.userName === "") continue;
+            if (!u.states?.audio) continue;
+            if (u.states?.audio !== "true") continue;
             tempUsrs[u.userId] = {
                 id: u.userId,
                 userName: u.states.userName,
@@ -493,6 +529,24 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         }
 
         useRtmStore.setState({ users: tempUsrs });
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_, coHost] = await safeAwait(rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE"));
+
+        useRtmStore.setState({ coHostId: coHost?.metadata["co-host"]?.value || "" });
+        const coHostId = useRtmStore.getState().coHostId;
+        if (coHostId === token.rtcUid) {
+            const swiperRef = useSlideStore.getState().swiperRef;
+            swiperRef.swiper.allowSlideNext = true;
+            usepresentationStore.setState((state) => {
+                if (!state.presentation) return state;
+                return { ...state, presentation: { ...state.presentation, User: "CO-HOST" } };
+            });
+        }
+
+        if (presentation.User === "HOST" && coHostId !== "") {
+            rtm.addEventListener("storage", useSlideStore.getState().slidesEvent);
+        }
 
         const audio = new Audio(micRequest);
         audio.volume = 1;

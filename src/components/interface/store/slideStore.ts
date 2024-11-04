@@ -6,6 +6,8 @@ import { toast } from "@/hooks/use-toast";
 import safeAwait from "@/util/safeAwait";
 
 interface SlideStore {
+    debounceTimer: NodeJS.Timeout | null;
+    lockSlide: boolean;
     slideData: {
         maxSlides: number;
         hostSlide: number;
@@ -24,6 +26,8 @@ interface SlideStore {
 }
 
 export const useSlideStore = create<SlideStore>((set, get) => ({
+    debounceTimer: null,
+    lockSlide: false,
     slideData: {
         maxSlides: 0,
         hostSlide: 0,
@@ -51,7 +55,6 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         }
     },
     slidesEvent: function (event) {
-        // console.log(event);
         const slideData = { ...get().slideData };
         const swiperRef = get().swiperRef;
         if (event.data.metadata.slideData) {
@@ -64,6 +67,22 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
 
             set({ slideData });
             const synced = get().synced;
+            const User = usepresentationStore.getState().presentation?.User;
+
+            if (User === "HOST" || User === "CO-HOST") {
+                if (event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "HOST") return;
+                else if (!event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "CO-HOST") return;
+
+                if (event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "CO-HOST") {
+                    set({ lockSlide: true });
+                } else if (!event.data.metadata.slideData.authorUid.startsWith("HOST") && User === "HOST") {
+                    set({ lockSlide: true });
+                }
+
+                swiperRef.swiper.slideTo(newSlideData.hostSlide, 1000, true);
+                return;
+            }
+
             if (synced && swiperRef.swiper.activeIndex === newSlideData.prevHostSlide) {
                 swiperRef.swiper.allowSlideNext = true;
                 swiperRef.swiper.slideTo(newSlideData.hostSlide, 1000, true);
@@ -80,28 +99,46 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         }
     },
     slideHandler: function () {
-        const presentation = usepresentationStore.getState().presentation;
         const swiperRef = get().swiperRef;
+
+        if (get().lockSlide) {
+            swiperRef.swiper.allowSlideNext = false;
+            const debounceTimer = get().debounceTimer;
+            if (debounceTimer) {
+                clearTimeout(debounceTimer);
+            }
+            const timer = setTimeout(function () {
+                swiperRef.swiper.allowSlideNext = true;
+                set({ lockSlide: false, debounceTimer: null });
+            }, 2000);
+            set({ debounceTimer: timer });
+            return;
+        }
+
+        const presentation = usepresentationStore.getState().presentation;
         const rtm = useRtmStore.getState().rtm;
         let slideData = { ...get().slideData };
-        if (presentation?.User === "HOST" && presentation?.live) {
+        if ((presentation?.User === "HOST" || presentation?.User === "CO-HOST") && presentation?.live && presentation?.audio) {
             slideData = {
                 maxSlides:
                     swiperRef.swiper.activeIndex >= slideData.maxSlides
                         ? swiperRef.swiper.activeIndex
                         : slideData.maxSlides,
                 hostSlide: swiperRef.swiper.activeIndex,
-                prevHostSlide: slideData.hostSlide
+                prevHostSlide: slideData.hostSlide,
             };
             set({ slideData });
+
             rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
                 {
                     key: "slideData",
                     value: JSON.stringify(slideData),
                     revision: -1
                 }
-            ]);
-        } else if (presentation?.User === "GUEST") {
+            ], {
+                addUserId: true,
+            });
+        } else if (presentation?.User === "GUEST" || presentation?.User === "CO-HOST") {
             if (!presentation.live) {
                 return;
             }
@@ -120,19 +157,27 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
     },
     init: async function () {
         const swiperRef = get().swiperRef;
+        function debounce() {
+            let timeout: NodeJS.Timeout;;
+            return function () {
+                clearTimeout(timeout);
+
+                timeout = setTimeout(function () {
+                    const slideHandler = get().slideHandler;
+                    slideHandler();
+                }, 500);
+            }
+        }
         if (swiperRef) {
-            const slideHandler = get().slideHandler;
-            swiperRef.addEventListener("swiperslidechange", slideHandler);
+            const func = debounce();
+            swiperRef.addEventListener("swiperslidechange", func);
 
             const presentation = usepresentationStore.getState().presentation;
             const rtm = useRtmStore.getState().rtm;
-            const slidesEvent = get().slidesEvent;
             if (presentation && rtm) {
                 if (presentation.User === "GUEST") {
-                    rtm.addEventListener("storage", slidesEvent);
                     if (presentation.live) {
                         rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE").then((data) => {
-                            console.log(data);
                             const newSlideData = JSON.parse(
                                 data.metadata.slideData.value
                             );

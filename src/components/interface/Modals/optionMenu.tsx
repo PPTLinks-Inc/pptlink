@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { IoIosArrowBack } from "react-icons/io";
 import { RiBarChart2Line, RiFolderAddLine } from "react-icons/ri";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { MdOutlineScreenShare, MdNoiseControlOff } from "react-icons/md";
+import { MdOutlineScreenShare,/*  MdNoiseControlOff */ } from "react-icons/md";
 import { GoBell } from "react-icons/go";
 import { PiPenNibLight } from "react-icons/pi";
 import {
@@ -12,10 +12,16 @@ import {
   IoMusicalNotesOutline,
   IoOptions
 } from "react-icons/io5";
-import { useOptionsStore } from "../store/optionsStore";
+// import { useOptionsStore } from "../store/optionsStore";
 import { useCallback, useState } from "react";
 import { MIC_STATE } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ConfirmModal from "./confirmModal";
+import { useAudioStore } from "../store/audioStore";
+import { useRtmStore } from "../store/rtmStore";
+import { usepresentationStore } from "../store/presentationStore";
+import { toast } from "@/hooks/use-toast";
+import { useSlideStore } from "../store/slideStore";
 
 function MainMenu({
   setCurrentMenuOption
@@ -24,15 +30,17 @@ function MainMenu({
     value: "main" | "poll" | "co-host" | "slides" | "screen"
   ) => void;
 }) {
-  const noiseSuppressionEnabled = useOptionsStore(
-    (state) => state.noiseSuppressionEnabled
-  );
-  const noiseSuppressionAvailable = useOptionsStore(
-    (state) => state.noiseSuppressionAvailable
-  );
-  const toggleNoiseSuppression = useOptionsStore(
-    (state) => state.toggleNoiseSuppression
-  );
+  // const noiseSuppressionEnabled = useOptionsStore(
+  //   (state) => state.noiseSuppressionEnabled
+  // );
+  // const noiseSuppressionAvailable = useOptionsStore(
+  //   (state) => state.noiseSuppressionAvailable
+  // );
+  // const toggleNoiseSuppression = useOptionsStore(
+  //   (state) => state.toggleNoiseSuppression
+  // );
+
+  const User = usepresentationStore((state) => state.presentation?.User);
 
   return (
     <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
@@ -70,7 +78,7 @@ function MainMenu({
             <Switch id="ping-audience" />
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <Label htmlFor="noise-suppression" className="text-lg font-normal">
             Noise suppression
           </Label>
@@ -88,16 +96,18 @@ function MainMenu({
               className={`${!noiseSuppressionAvailable ? "cursor-not-allowed" : ""}`}
             />
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center justify-around">
-        <button
-          className="flex flex-col justify-center items-center"
-          onClick={() => setCurrentMenuOption("co-host")}
-        >
-          <AiOutlineUsergroupAdd />
-          <span>Co-host</span>
-        </button>
+        {User === "HOST" && (
+          <button
+            className="flex flex-col justify-center items-center"
+            onClick={() => setCurrentMenuOption("co-host")}
+          >
+            <AiOutlineUsergroupAdd />
+            <span>Co-host</span>
+          </button>
+        )}
         <button className="flex flex-col justify-center items-center">
           <MdOutlineScreenShare />
           <span>Share Screen</span>
@@ -139,33 +149,106 @@ function CoHostMenu({
     }
   }, []);
 
-  return (
-    <div className="text-sm p-3 grid grid-cols-5 sm:grid-cols-4 gap-y-5 overflow-y-auto pt-20">
-      {users.map((user) => (
-        <button
-          key={user.id}
-          className="flex flex-col w-full justify-start items-center"
-        >
-          <div className="relative p-1 rounded-full">
-            <Avatar>
-              <AvatarImage
-                src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
-              />
-              <AvatarFallback>
-                {user.userName.substring(0, 1).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span
-              className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}
-            ></span>
-          </div>
+  const [modalData, setModalData] = useState({
+    open: false,
+    onClose: () => {},
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+    },
+    isLoading: false,
+    message: "",
+    actionText: ""
+  });
 
-          <p title={user.userName} className="w-16 truncate ...">
-            {user.userName}
-          </p>
-        </button>
-      ))}
-    </div>
+  const makeCohost = useAudioStore((state) => state.makeCohost);
+  const coHostId = useRtmStore((state) => state.coHostId);
+
+  function handleMakeCohost(userId: string, userName: string) {
+    const action =
+      coHostId === userId ? "remove" : coHostId !== "" ? "replace" : "make";
+    const id = coHostId === userId ? "" : userId;
+    const rtm = useRtmStore.getState().rtm;
+
+    const message =
+      action === "remove"
+        ? `Are you sure you want to remove ${userName} as co-host?`
+        : action === "replace"
+          ? "Are you sure you want to replace the current co-host"
+          : `Are you sure you want to make ${userName} a co-host?`;
+
+    const successMessage =
+      action === "remove"
+        ? `${userName} is no longer a co-host`
+        : `${userName} is now a co-host`;
+
+    setModalData({
+      open: true,
+      onClose: () => setModalData({ ...modalData, open: false }),
+      onSubmit: (e) => {
+        e.preventDefault();
+        makeCohost(id).then(function () {
+          setModalData((prev) => ({ ...prev, open: false }));
+          useRtmStore.setState({ coHostId: id });
+          useRtmStore.getState().setSortedUsers();
+
+          if (action === "make") {
+            rtm?.addEventListener("storage", useSlideStore.getState().slidesEvent);
+          } else if (action === "remove") {
+            rtm?.removeEventListener("storage", useSlideStore.getState().slidesEvent);
+          }
+
+          toast({
+            title: "Success",
+            description: successMessage
+          });
+        });
+      },
+      isLoading: false,
+      message,
+      actionText:
+        action === "remove"
+          ? "Remove Co-host"
+          : action === "replace"
+            ? "Replace Co-host"
+            : "Make Co-host"
+    });
+  }
+
+  return (
+    <>
+      <div className="text-sm p-3 grid grid-cols-5 sm:grid-cols-4 gap-y-5 overflow-y-auto pt-20">
+        {users.map((user) => (
+          <button
+            key={user.id}
+            className="flex flex-col w-full justify-start items-center"
+            onClick={() => handleMakeCohost(user.id, user.userName)}
+          >
+            <div className="relative p-1 rounded-full">
+              <Avatar>
+                <AvatarImage
+                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
+                />
+                <AvatarFallback>
+                  {user.userName.substring(0, 1).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span
+                className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}
+              ></span>
+            </div>
+
+            <p title={user.userName} className="w-16 truncate ...">
+              {user.userName}
+            </p>
+            <div className="w-20 flex justify-center items-center gap-2">
+              {coHostId === user.id && <span>(Co-host)</span>}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <ConfirmModal {...modalData} />
+    </>
   );
 }
 
