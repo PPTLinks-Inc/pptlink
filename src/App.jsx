@@ -1,27 +1,35 @@
 /* eslint-disable no-unused-vars */
-import { Route, Routes, useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
+import {
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import { useContext, useState, lazy, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { userContext } from "./contexts/userContext";
-import Home from "./components/home/home";
-import NotFound from "./components/404/404";
-import List from "./components/list/list";
-import Interface from "./components/interface/Interface";
-import Root from "./components/root/root";
-import Institutions from "./components/institutions/institutions";
-import "react-toastify/dist/ReactToastify.css";
-import { SERVER_URL } from "./constants/routes";
-import About from "./components/about-us/about";
-import Document from "./components/document/document";
-import PresentationContextProvider from "./contexts/presentationContext";
-import PublicPresentationProvider from "./contexts/publicPresentationContext";
-import SignPage from "./components/sign/sign";
+
+// all commented imports
+
+// import Home from "./components/home/home";
+// import NotFound from "./components/404/404";
+// import List from "./components/list/list";
+// import Interface from "./components/interface/Interface";
+// import Root from "./components/root/root";
+// import Institutions from "./components/institutions/institutions";
+// import About from "./components/about-us/about";
+// import Document from "./components/document/document";
+// import SignPage from "./components/sign/sign";
 // import NewUploadPage from "./components/upload/newupload";
 // import DateTest from "./components/upload/dateTest";
+// import Library from "./components/library/library";
+
+// import "react-toastify/dist/ReactToastify.css";
+import { SERVER_URL } from "./constants/routes";
+import PresentationContextProvider from "./contexts/presentationContext";
+import PublicPresentationProvider from "./contexts/publicPresentationContext";
 import Documentation from "./components/document/Documentation";
-import Library from "./components/library/library";
 import PublicPresentation from "./components/see_more_presentation/seeMorePresentation";
 import NewDashboard from "./components/profile/newDashboard";
 import "./assets/styles/general_css.css";
@@ -31,6 +39,20 @@ import SupperUpload from "./components/upload/supperUpload";
 import ResetPasswordPage from "./components/sign/resetPassword";
 
 axios.defaults.baseURL = SERVER_URL;
+
+// all lazy import
+const Home = lazy(() => import("./components/home/home"));
+const NotFound = lazy(() => import("./components/404/404"));
+const List = lazy(() => import("./components/list/list"));
+const Interface = lazy(() => import("./components/interface/Interface"));
+const Root = lazy(() => import("./components/root/root"));
+const Library = lazy(() => import("./components/library/library"));
+const SignPage = lazy(() => import("./components/sign/sign"));
+const About = lazy(() => import("./components/about-us/about"));
+const Document = lazy(() => import("./components/document/Documentation"));
+const Institutions = lazy(
+  () => import("./components/institutions/institutions")
+);
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
@@ -69,69 +91,78 @@ function App() {
   const location = useLocation();
 
   return (
-    <>
+    <ErrorBoundary>
       <AnimatePresence exit>
-        <Routes location={location} key={location.key}>
-          <Route path="/" element={<Root />}>
-            <Route
-              exact
-              path="/"
-              element={
-                <PublicPresentationProvider>
-                  <Home />
-                </PublicPresentationProvider>
-              }
-            />
-            <Route
-              path="public_presentation"
-              element={
-                <PublicPresentationProvider>
-                  <PublicPresentation />
-                </PublicPresentationProvider>
-              }
-            />
+        {/* <Router> */}
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center">
+              <div className="animate-spin w-28 aspect-square bg-transparent border-2 border-black border-t-transparent rounded-full"></div>
+            </div>
+          }
+        >
+          <Routes location={location} key={location.key}>
+            <Route path="/" element={<Root />}>
+              <Route
+                exact
+                path="/"
+                element={
+                  <PublicPresentationProvider>
+                    <Home />
+                  </PublicPresentationProvider>
+                }
+              />
+              <Route
+                path="public_presentation"
+                element={
+                  <PublicPresentationProvider>
+                    <PublicPresentation />
+                  </PublicPresentationProvider>
+                }
+              />
 
-            <Route path="*" element={<NotFound />} />
-            {/* <Route path="dashboard" element={<Dashboard />} /> */}
-            <Route path="dashboard" element={<NewDashboard />} />
-            <Route path="institutions" element={<List />} />
-            <Route path="institutions/:id" element={<Institutions />} />
-            <Route path="about" element={<About />} />
-            <Route path="documentation" element={<Document />} />
-            <Route path="library" element={<Library />} />
+              <Route path="*" element={<NotFound />} />
+              {/* <Route path="dashboard" element={<Dashboard />} /> */}
+              <Route path="dashboard" element={<NewDashboard />} />
+              <Route path="institutions" element={<List />} />
+              <Route path="institutions/:id" element={<Institutions />} />
+              <Route path="about" element={<About />} />
+              <Route path="documentation" element={<Document />} />
+              <Route path="library" element={<Library />} />
+              <Route
+                path="documentation/*"
+                element={
+                  <Documentation
+                    activeDropdown={activeDropdown}
+                    handleDropdownID={handleDropdownID}
+                  />
+                }
+              />
+              <Route path="upload" element={<SupperUpload />} />
+            </Route>
             <Route
-              path="documentation/*"
+              path="/:id"
               element={
-                <Documentation
-                  activeDropdown={activeDropdown}
-                  handleDropdownID={handleDropdownID}
-                />
-              }
-            />
-            <Route path="upload" element={<SupperUpload />} />
-          </Route>
-          <Route
-            path="/:id"
-            element={
-              <ErrorBoundary>
                 <PresentationContextProvider>
                   <Interface />
                 </PresentationContextProvider>
-              </ErrorBoundary>
-            }
-          />
-          <Route path="signin" element={<SignPage />} />
-          <Route path="signup" element={<SignPage />} />
-          <Route path="forgot-password" element={<SignPage />} />
-          <Route
-            path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
-            element={<ResetPasswordPage />}
-          />
-          {/* <Route path="datetest" element={<DateTest />} /> */}
-        </Routes>
+              }
+            />
+
+            <Route path="signin" element={<SignPage />} />
+            <Route path="signup" element={<SignPage />} />
+            <Route path="forgot-password" element={<SignPage />} />
+            <Route
+              path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
+              element={<ResetPasswordPage />}
+            />
+            {/* <Route path="datetest" element={<DateTest />} /> */}
+          </Routes>
+        </Suspense>
+        {/* </Router> */}
       </AnimatePresence>
       <Toaster />
-    </>
+    </ErrorBoundary>
   );
 }
 
