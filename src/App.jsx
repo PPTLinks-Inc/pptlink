@@ -1,6 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { Route, Routes, useLocation } from "react-router-dom";
-import { useContext, useState, lazy } from "react";
+import {
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import { useContext, useState, lazy, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -21,7 +25,7 @@ import { userContext } from "./contexts/userContext";
 // import DateTest from "./components/upload/dateTest";
 // import Library from "./components/library/library";
 
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import PresentationContextProvider from "./contexts/presentationContext";
 import PublicPresentationProvider from "./contexts/publicPresentationContext";
@@ -87,69 +91,78 @@ function App() {
   const location = useLocation();
 
   return (
-    <>
+    <ErrorBoundary>
       <AnimatePresence exit>
-        <Routes location={location} key={location.key}>
-          <Route path="/" element={<Root />}>
-            <Route
-              exact
-              path="/"
-              element={
-                <PublicPresentationProvider>
-                  <Home />
-                </PublicPresentationProvider>
-              }
-            />
-            <Route
-              path="public_presentation"
-              element={
-                <PublicPresentationProvider>
-                  <PublicPresentation />
-                </PublicPresentationProvider>
-              }
-            />
+        {/* <Router> */}
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center">
+              <div className="animate-spin w-28 aspect-square bg-transparent border-2 border-black border-t-transparent rounded-full"></div>
+            </div>
+          }
+        >
+          <Routes location={location} key={location.key}>
+            <Route path="/" element={<Root />}>
+              <Route
+                exact
+                path="/"
+                element={
+                  <PublicPresentationProvider>
+                    <Home />
+                  </PublicPresentationProvider>
+                }
+              />
+              <Route
+                path="public_presentation"
+                element={
+                  <PublicPresentationProvider>
+                    <PublicPresentation />
+                  </PublicPresentationProvider>
+                }
+              />
 
-            <Route path="*" element={<NotFound />} />
-            {/* <Route path="dashboard" element={<Dashboard />} /> */}
-            <Route path="dashboard" element={<NewDashboard />} />
-            <Route path="institutions" element={<List />} />
-            <Route path="institutions/:id" element={<Institutions />} />
-            <Route path="about" element={<About />} />
-            <Route path="documentation" element={<Document />} />
-            <Route path="library" element={<Library />} />
+              <Route path="*" element={<NotFound />} />
+              {/* <Route path="dashboard" element={<Dashboard />} /> */}
+              <Route path="dashboard" element={<NewDashboard />} />
+              <Route path="institutions" element={<List />} />
+              <Route path="institutions/:id" element={<Institutions />} />
+              <Route path="about" element={<About />} />
+              <Route path="documentation" element={<Document />} />
+              <Route path="library" element={<Library />} />
+              <Route
+                path="documentation/*"
+                element={
+                  <Documentation
+                    activeDropdown={activeDropdown}
+                    handleDropdownID={handleDropdownID}
+                  />
+                }
+              />
+              <Route path="upload" element={<SupperUpload />} />
+            </Route>
             <Route
-              path="documentation/*"
+              path="/:id"
               element={
-                <Documentation
-                  activeDropdown={activeDropdown}
-                  handleDropdownID={handleDropdownID}
-                />
-              }
-            />
-            <Route path="upload" element={<SupperUpload />} />
-          </Route>
-          <Route
-            path="/:id"
-            element={
-              <ErrorBoundary>
                 <PresentationContextProvider>
                   <Interface />
                 </PresentationContextProvider>
-              </ErrorBoundary>
-            }
-          />
-          <Route path="signin" element={<SignPage />} />
-          <Route path="signup" element={<SignPage />} />
-          <Route path="forgot-password" element={<SignPage />} />
-          <Route
-            path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
-            element={<ResetPasswordPage />}
-          />
-          {/* <Route path="datetest" element={<DateTest />} /> */}
-        </Routes>
+              }
+            />
+
+            <Route path="signin" element={<SignPage />} />
+            <Route path="signup" element={<SignPage />} />
+            <Route path="forgot-password" element={<SignPage />} />
+            <Route
+              path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
+              element={<ResetPasswordPage />}
+            />
+            {/* <Route path="datetest" element={<DateTest />} /> */}
+          </Routes>
+        </Suspense>
+        {/* </Router> */}
       </AnimatePresence>
       <Toaster />
-    </>
+    </ErrorBoundary>
   );
 }
 

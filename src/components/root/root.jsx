@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Outlet } from "react-router";
-import { lazy, Suspense } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useContext, useEffect } from "react";
 import { DASHBOARD, LOGIN, UPLOAD } from "../../constants/routes";
@@ -141,15 +140,7 @@ export default function Root() {
         ref={mainScrollRef}
       >
         <Header isBackMenu={false} handleDropdown={handleDropdown} />
-        <Suspense
-          fallback={
-            <div className="flex justify-center items-center">
-              <div className="animate-spin w-28 aspect-square bg-transparent border-2 border-black border-t-transparent rounded-full"></div>
-            </div>
-          }
-        >
-          <Outlet />
-        </Suspense>
+        <Outlet />
         <MovingEllipses />
         {!getlocation && <Footer />}
       </div>
