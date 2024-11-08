@@ -7,6 +7,8 @@ import execution from "/team/pptlink_resources/execution.png";
 import controlSystem from "/team/pptlink_resources/control-system.png";
 import conclusion from "/team/pptlink_resources/conclusion.png";
 import others from "/team/pptlink_resources/other.png";
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
 
 const sections = [
   {
@@ -105,6 +107,41 @@ const sections = [
 export default function Document() {
   return (
     <>
+      <Helmet>
+        <title>{`Document - PPTLinks `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLinks, publicPresentation, documentation, `}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/documentation`} />
+        <meta property='og:title' content={`Document - PPTLinks `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/documentation`}
+        />
+
+        <meta property='twitter:title' content={`Document - PPTLinks `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
       <section className="bg-black">
         <div className="container min-h-fit py-10 flex flex-col justify-between items-center">
           <h1 className="text-5xl font-[400] uppercase mb-5">DOCUMENTATION</h1>

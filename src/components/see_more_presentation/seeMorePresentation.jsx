@@ -5,6 +5,8 @@ import Card from "../list/card";
 import { useIntersection } from "react-use";
 import { publicPresentation } from "../../contexts/publicPresentationContext";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
+import { Helmet } from 'react-helmet';
+import LogoBlack from '../../images/Logo-Black.png';
 
 export default function PublicPresentation() {
   const scrollRef = useRef();
@@ -38,7 +40,42 @@ export default function PublicPresentation() {
   );
 
   return (
-    <div ref={root}>
+    <div>
+      <Helmet>
+        <title>{`See more - PPTLinks `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLinks, publicPresentation, public_presentation, `}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/public_presentation`} />
+        <meta property='og:title' content={`See more - PPTLinks `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/public_presentation`}
+        />
+
+        <meta property='twitter:title' content={`See more - PPTLinks `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
       <section className="bg-black">
         <div className="container h-fit py-10 flex flex-col justify-between items-center">
           <h1 className="text-5xl font-[400] uppercase mb-5 maxScreenMobile:text-3xl maxScreenMobile:text-center">

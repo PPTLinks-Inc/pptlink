@@ -14,19 +14,56 @@ import Others from "./Other";
 import Guidelines from "./Guidelines";
 import Upload from "./Upload_presentation";
 import { FaChevronCircleRight, FaArrowRight } from "react-icons/fa";
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
 
 function Documentation({ activeDropdown, handleDropdownID }) {
   const currentRef = useRef();
-  const documentWord = useRef();  
+  const documentWord = useRef();
   const [nav, setNav] = useState(false);
-const [chapterInfo,SetChapterInfo] = useState([
-   {chapter:"what is pptLinks", path:'/what_is_pptLinks'},{chapter:"getting started",path:'/getting_started'},{chapter:"file upload",path:'/file_upload'},{chapter:"guidelines",path:'/guidelines'},{chapter:"others",path:'/others'},{chapter:"legal",path:'/legal'}])
+  const [chapterInfo, SetChapterInfo] = useState([
+    { chapter: "what is pptLinks", path: '/what_is_pptLinks' }, { chapter: "getting started", path: '/getting_started' }, { chapter: "file upload", path: '/file_upload' }, { chapter: "guidelines", path: '/guidelines' }, { chapter: "others", path: '/others' }, { chapter: "legal", path: '/legal' }])
 
- 
- 
+
+
 
   return (
     <main className="bg-black md:relative">
+      <Helmet>
+        <title>{`Documentation - PPTLinks `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLinks, publicPresentation, documentation/*, `}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/documentation/*`} />
+        <meta property='og:title' content={`Documentation - PPTLinks `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/documentation/*`}
+        />
+
+        <meta property='twitter:title' content={`Documentation - PPTLinks `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
       <div className=" absolute top-0 hero-background bg-black_">
         <img
           src={heroSection}
@@ -57,13 +94,13 @@ const [chapterInfo,SetChapterInfo] = useState([
               />
             </button>
             {/* chapter one */}
-            
-            {chapterInfo.map((data,i) =>{
-             return <ChapterDropdown key={i} data={data} id={i+1} activeDropdown={activeDropdown}
-              handleDropdownID={handleDropdownID}  />
+
+            {chapterInfo.map((data, i) => {
+              return <ChapterDropdown key={i} data={data} id={i + 1} activeDropdown={activeDropdown}
+                handleDropdownID={handleDropdownID} />
             })}
 
-          
+
           </ul>{" "}
         </aside>
         <section className="flex-[1.8] relative z-[51] bg-body text-black rounded-tl-xl pt-12 p-5 documentation ">
