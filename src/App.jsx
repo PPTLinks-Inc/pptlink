@@ -1,13 +1,10 @@
-import {
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useContext, useState, lazy, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { userContext } from "./contexts/userContext";
+import { LoadingAssetBig2 } from "./assets/assets";
 
 // all commented imports
 
@@ -23,19 +20,19 @@ import { userContext } from "./contexts/userContext";
 // import NewUploadPage from "./components/upload/newupload";
 // import DateTest from "./components/upload/dateTest";
 // import Library from "./components/library/library";
+// import Documentation from "./components/document/Documentation";
+// import NewDashboard from "./components/profile/newDashboard";
+// import PublicPresentation from "./components/see_more_presentation/seeMorePresentation";
+// import SupperUpload from "./components/upload/supperUpload";
+// import ResetPasswordPage from "./components/sign/resetPassword";
 
 // import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import PresentationContextProvider from "./contexts/presentationContext";
 import PublicPresentationProvider from "./contexts/publicPresentationContext";
-import Documentation from "./components/document/Documentation";
-import PublicPresentation from "./components/see_more_presentation/seeMorePresentation";
-import NewDashboard from "./components/profile/newDashboard";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
-import SupperUpload from "./components/upload/supperUpload";
-import ResetPasswordPage from "./components/sign/resetPassword";
 
 axios.defaults.baseURL = SERVER_URL;
 
@@ -48,7 +45,14 @@ const Root = lazy(() => import("./components/root/root"));
 const Library = lazy(() => import("./components/library/library"));
 const SignPage = lazy(() => import("./components/sign/sign"));
 const About = lazy(() => import("./components/about-us/about"));
-const Document = lazy(() => import("./components/document/Documentation"));
+const Document = lazy(() => import("./components/document/document"));
+const Documentation = lazy(() => import("./components/document/Documentation"));
+const NewDashboard = lazy(() => import("./components/profile/newDashboard"));
+const PublicPresentation = lazy(
+  () => import("./components/see_more_presentation/seeMorePresentation")
+);
+const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
+const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 const Institutions = lazy(
   () => import("./components/institutions/institutions")
 );
@@ -95,8 +99,8 @@ function App() {
         {/* <Router> */}
         <Suspense
           fallback={
-            <div className="flex justify-center items-center">
-              <div className="animate-spin w-28 aspect-square bg-transparent border-2 border-black border-t-transparent rounded-full"></div>
+            <div className="flex justify-center items-center h-screen bg-black">
+              <LoadingAssetBig2 />
             </div>
           }
         >
