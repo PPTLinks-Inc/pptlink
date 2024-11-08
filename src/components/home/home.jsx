@@ -18,15 +18,20 @@ import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { motion, stagger, useInView, useAnimate } from "framer-motion";
 import FAQ from "./data";
 import { publicPresentation } from "../../contexts/publicPresentationContext";
+import { Helmet } from 'react-helmet';
+import LogoBlack from '../../images/Logo-Black.png';
 
 export default function NewHome() {
   // context
   const scrollRef = useRef();
   const { user } = useContext(userContext);
   const { presentations, refetch } = useContext(publicPresentation);
-
-
+  const [currentView, setCurrentView] = useState(1);
   const navigate = useNavigate();
+
+  const handleView = (e) => {
+    setCurrentView(parseInt(e.target.dataset.allcourses));
+  };
 
   const [values, setValues] = useState({
     msgName: "",
@@ -148,53 +153,49 @@ export default function NewHome() {
 
   return (
     <motion.section
-      className={`parent_page_wrapper h-fit  w-full`}
+      className={`parent_page_wrapper w-full`}
       variants={containertVarients}
       initial="hidden"
       animate="visible"
       exit="exit"
     >
-      <div className="_banner relative w-full h-fit bg-black text-white">
-        <div className="container h-fit pb-2 text-center">
-          <motion.div
-            variants={parentVarient}
-            initial="initial"
-            animate="animate"
-            className="flex flex-col justify-between items-center pt-[3.5rem]"
-          >
-            <motion.h1
-              variants={parentVarient}
-              className="text-[4rem] mb-5 maxScreenMobile:text-4xl"
-            >
-              GET PRESENTABLE
-            </motion.h1>
-            <motion.p
-              variants={parentVarient}
-              className="w-[50%] text-[1.1rem] leading-[2rem] opacity-5 text-center mb-10 maxScreenMobile:w-full maxScreenMobile:"
-            >
-              Host your online classes, seminars and presentations with ultra
-              low data consumption.
-            </motion.p>
-            <motion.div
-              variants={parentVarient}
-              className="banner_btns w-[50%] mx-[auto] flex justify-evenly items-center maxScreenMobile:w-full maxScreenMobile:flex-col"
-            >
-              <button
-                className="block w-2/5 h-[3rem] _bg-[black] text-[#FFFFF0] text-xl border-2 border-[#FFFFF0] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
-                onClick={() =>
-                  user ? navigate("/upload") : navigate("/signin")
-                }
-              >
-                Present
-              </button>
-              <button
-                className="block w-2/5 h-[3rem] bg-[#FFFFF0] text-black text-xl rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
-                onClick={goToLibrary}
-              >
-                Libraries
-              </button>
-            </motion.div>
-          </motion.div>
+      <Helmet>
+        <title>{`Home - PPTLinks `}</title>
+        <meta
+          name='description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta
+          name='tags'
+          content={`PPT, Presentations, Powerpoint, PPTLinks`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={`https://www.PPTLink.com/`} />
+        <meta property='og:title' content={`Home - PPTLinks `} />
+        <meta
+          property='og:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='og:image' content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property='twitter:card' content='website' />
+        <meta
+          property='twitter:url'
+          content={`https://www.PPTLink.com/`}
+        />
+
+        <meta property='twitter:title' content={`Home - PPTLinks `} />
+        <meta
+          property='twitter:description'
+          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+        />
+        <meta property='twitter:image' content={LogoBlack} />
+      </Helmet>
+      <div className="_banner relative w-full min-h-[80vh] flex justify-center items-center tall:min-h-fit bg-black text-white py-20">
+        <div className="container flex justify-between gap-14 maxScreen:flex-col-reverse tall:flex-col-reverse">
           <motion.div
             initial={{ y: 100, opacity: 0 }}
             whileInView={{
@@ -203,18 +204,65 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="banner_img w-3/5 aspect-[4/2.5] _lg:min-h-[50vh] maxScreenMobile:w-[95%] h-fit mx-auto mt-16 border-2 border-[#FFFFF0] rounded-lg">
+            className="banner_img w-full aspect-[2/1] mx-auto !border-[0.5px] border-[#FFFFF0] rounded-2xl maxScreenMobile:aspect-[2/1.5]">
             <motion.iframe
-              className="w-full h-full mx-auto border-2 rounded-md"
+              className="w-full h-full mx-auto !border-0 rounded-2xl"
               src="https://www.youtube-nocookie.com/embed/meTNh23fYKg?si=-ibyWcdA5oWJ7TTv&amp;controls=0"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
-              fetchpriority="high" ></motion.iframe>
+              fetchpriority="high" >
+            </motion.iframe>
+          </motion.div>
+
+          <motion.div
+            variants={parentVarient}
+            initial="initial"
+            animate="animate"
+            className="flex flex-col justify-start _pt-[3.5rem] !text-left w-full maxScreenMobile:!text-center"
+          >
+            <motion.h1
+              variants={parentVarient}
+              className="text-[2rem] mb-1 font-extrabold"
+            >
+              Your Courses, Their Future
+            </motion.h1>
+            <motion.h3
+              variants={parentVarient}
+              className="text-[1rem] mb-1 font-bold"
+            >
+              Teach Across Africa, No Data Limits.
+            </motion.h3>
+            <motion.p
+              variants={parentVarient}
+              className="w-full text-[0.8rem] leading-[2rem] opacity-5 mb-4"
+            >
+              Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
+            </motion.p>
+            <motion.div
+              variants={parentVarient}
+              className="mx-[auto] flex justify-left items-center gap-4 w-full maxScreenMobile:flex-col"
+            >
+              <button
+                className="block _w-2/5 w-fit px-8 h-[2.5rem] _bg-[black] text-[#FFFFF0] text-[1rem] border-2 border-[#FFFFF0] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
+                onClick={() =>
+                  user ? navigate("/upload") : navigate("/signin")
+                }
+              >
+                Present
+              </button>
+              <button
+                className="block _w-2/5 w-fit px-8 h-[2.5rem] bg-[#FFFFF0] text-black text-[1rem] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
+                onClick={goToLibrary}
+              >
+                Libraries
+              </button>
+            </motion.div>
           </motion.div>
         </div>
       </div>
+      <div className="w-full bg-[#FFFFF0] py-1"></div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
       <div className="w-full h-fit bg-black">
         <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify pt-14 pb-10">
@@ -226,11 +274,8 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="w-full">
-            <span className="text-5xl block text-center font-bold mb-2 w-full">Recent</span>
-            <span className="block w-full text-center text-4xl">
-              Presentation
-            </span>
+            className="w-full text-4xl font-extrabold maxScreenMobile:font-bold maxScreenMobile:text-2xl maxScreenMobile:text-center">
+            Recent Presentation
           </motion.h2>
 
           <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!mt-5">
@@ -270,6 +315,93 @@ export default function NewHome() {
         </div>
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
+
+      <div className="w-full h-fit bg-black py-14">
+        <motion.h2
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            transition: { duration: 1, type: "tween" }
+          }}
+          viewport={{ once: true }}
+          className="container text-3xl font-extrabold text-center maxScreenMobile:text-2xl maxScreenMobile:font-bold">
+          All the skills you need in one place
+        </motion.h2>
+        <motion.h2
+          initial={{ y: 100, opacity: 0 }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            transition: { duration: 1, type: "tween" }
+          }}
+          viewport={{ once: true }}
+          className="w-2/5 !mx-auto text-[0.9rem] font-extrabold text-center maxScreenMobile:!container maxScreenMobile:mt-4">
+          Lorem ipsum dolor sit amet. consectetur adipisicing elit. Voluptate commodi rem, ut architecto mollitia saepe!
+        </motion.h2>
+
+        <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-14">
+          <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software development</span>
+          <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
+          <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
+          <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
+        </div>
+
+        <div className={`w-full max-h-[30rem] overflow-x-auto mt-8`}>
+          <motion.div
+            variants={containerVarient}
+            initial="initial"
+            whileInView="inView"
+            viewport={{ once: true }}
+            className={`${currentView === 1 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
+            ref={scrollRef}
+          >
+            {presentations.slice(0, 12).map((presentation) => (
+              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={containerVarient}
+            initial="initial"
+            whileInView="inView"
+            viewport={{ once: true }}
+            className={`${currentView === 2 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
+            ref={scrollRef}
+          >
+            {presentations.slice(0, 12).map((presentation) => (
+              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={containerVarient}
+            initial="initial"
+            whileInView="inView"
+            viewport={{ once: true }}
+            className={`${currentView === 3 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
+            ref={scrollRef}
+          >
+            {presentations.slice(0, 12).map((presentation) => (
+              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={containerVarient}
+            initial="initial"
+            whileInView="inView"
+            viewport={{ once: true }}
+            className={`${currentView === 4 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
+            ref={scrollRef}
+          >
+            {presentations.slice(0, 12).map((presentation) => (
+              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+            ))}
+          </motion.div>
+        </div>
+      </div>
+      {/* why use PPTLINKS */}
       <div className="why_pptlinks container w-full py-20 maxScreenMobile:py-12">
         <motion.h3
           initial={{ y: 100, opacity: 0 }}
@@ -700,10 +832,10 @@ export default function NewHome() {
                 title={_.title}
                 className="transition-all duration-300"
               >
-                  <h3 className="!text-8 font-semibold leading-[28px] mb-[15px]">
-                    {_.h3}
-                  </h3>
-                  <p className="!text-8">{_.p}</p>
+                <h3 className="!text-8 font-semibold leading-[28px] mb-[15px]">
+                  {_.h3}
+                </h3>
+                <p className="!text-8">{_.p}</p>
               </AccordionWrapper>
             ))}
           </div>

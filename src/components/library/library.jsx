@@ -3,9 +3,46 @@ import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).s
 import initiative from "/team/pptlink_resources/initiative.png";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
 
 export default function Library() {
     return (<>
+        <Helmet>
+            <title>{`Library - PPTLinks `}</title>
+            <meta
+                name='description'
+                content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+            />
+            <meta
+                name='tags'
+                content={`PPT, Presentations, Powerpoint, PPTLinks, publicPresentation, PPTLINKSLibrary, library, `}
+            />
+
+            {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+            <meta property='og:type' content='website' />
+            <meta property='og:url' content={`https://www.PPTLink.com/library`} />
+            <meta property='og:title' content={`Library - PPTLinks `} />
+            <meta
+                property='og:description'
+                content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+            />
+            <meta property='og:image' content={LogoBlack} />
+
+            {/* meta tags to display information on twitter  */}
+            <meta property='twitter:card' content='website' />
+            <meta
+                property='twitter:url'
+                content={`https://www.PPTLink.com/library`}
+            />
+
+            <meta property='twitter:title' content={`Library - PPTLinks `} />
+            <meta
+                property='twitter:description'
+                content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+            />
+            <meta property='twitter:image' content={LogoBlack} />
+        </Helmet>
         <section className="bg-black">
             <div className="container h-fit py-10 flex flex-col justify-between items-center">
                 <h1 className="text-5xl font-[400] uppercase mb-5">LIBRARY</h1>

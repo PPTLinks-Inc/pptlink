@@ -12,6 +12,8 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { LoadingAssetBig2 } from "@/assets/assets";
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
 
 export default function SupperUpload() {
   const scrollableRef = useRef<HTMLDivElement>(null);
@@ -26,8 +28,8 @@ export default function SupperUpload() {
     }
   }, [currentView]);
 
-  useEffect(function() {
-    return function() {
+  useEffect(function () {
+    return function () {
       resetUploadStore();
     };
   }, []);
@@ -64,6 +66,41 @@ export default function SupperUpload() {
       ref={scrollableRef}
       className="upload_svg_cover h-fit relative bg-[#FFFFF0]"
     >
+      <Helmet>
+        <title>{`Upload - PPTLinks `}</title>
+        <meta
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta
+          name="tags"
+          content={`PPT, Presentations, Powerpoint, PPTLinks, PPTLinksUpload`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.PPTLink.com/upload`} />
+        <meta property="og:title" content={`Upload - PPTLinks `} />
+        <meta
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="og:image" content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property="twitter:card" content="website" />
+        <meta
+          property="twitter:url"
+          content={`https://www.PPTLink.com/upload`}
+        />
+
+        <meta property="twitter:title" content={`Upload - PPTLinks `} />
+        <meta
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="twitter:image" content={LogoBlack} />
+      </Helmet>
       <div className="bottom_cover_ pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
         {editPresentationQuery.isLoading ? (
           <div className="flex flex-col justify-center items-center min-h-screen">
