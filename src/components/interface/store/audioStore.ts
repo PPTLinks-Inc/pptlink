@@ -19,6 +19,8 @@ interface AudioStore {
     networkStatus: "Unknown" | "good" | "mid" | "poor" | "No Connection";
     audioConnectionState: ConnectionState | null;
     micState: MIC_STATE;
+    screenShareEnabled: boolean;
+    iAmScreenSharing: boolean;
     startScreenShare: () => Promise<void>;
     stopScreenShare: () => Promise<void>;
     setMicState: (micState: MIC_STATE) => Promise<void>;
@@ -46,6 +48,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
     audioConnectionState: null,
     audioTracks: null,
     micState: MIC_STATE.MIC_OFF,
+    screenShareEnabled: false,
+    iAmScreenSharing: false,
     startScreenShare: async function () {
         const rtcClient = get().rtcClient;
 
@@ -69,10 +73,9 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 localAudioTrack: state.audioTracks?.localAudioTrack || null,
                 remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {},
                 screeenTrack: screenTrack
-            }
+            },
+            screenShareEnabled: true, iAmScreenSharing: true
         }));
-
-        useOptionsStore.setState({ screenShareEnabled: true, iAmScreenSharing: true });
 
         await rtcClient.publish(screenTrack);
     },
@@ -92,10 +95,9 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 localAudioTrack: state.audioTracks?.localAudioTrack || null,
                 remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {},
                 screeenTrack: null
-            }
+            },
+            screenShareEnabled: false, iAmScreenSharing: false 
         }));
-
-        useOptionsStore.setState({ screenShareEnabled: false, iAmScreenSharing: false });
     },
     setMicState: async function (micState) {
         set({ micState });
@@ -214,6 +216,9 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             "MIC_STATE": MIC_STATE.MIC_OFF,
             "audio": "false"
         }));
+        if ((presentation.User === "HOST" || presentation.User === "CO-HOST") && get().iAmScreenSharing) {
+            await get().stopScreenShare();
+        }
         if (stateErr) {
             toast({
                 title: "Error",
@@ -448,7 +453,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 }));
                 user.audioTrack?.play();
             } else if (mediaType === "video") {
-                useOptionsStore.setState({ screenShareEnabled: true, iAmScreenSharing: false });
+                set({ screenShareEnabled: true, iAmScreenSharing: false });
                 user.videoTrack?.play("video-container");
             }
         });
@@ -466,7 +471,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                     }
                 }));
             } else if (mediaType === "video") {
-                useOptionsStore.setState({ screenShareEnabled: false, iAmScreenSharing: false });
+                set({ screenShareEnabled: false, iAmScreenSharing: false });
             }
         });
 
