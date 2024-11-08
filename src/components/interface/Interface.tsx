@@ -11,6 +11,7 @@ import { LoadingAssetBig2 } from "../../assets/assets";
 import { useRtmStore } from "./store/rtmStore";
 import { useAudioStore } from "./store/audioStore";
 import { Toaster } from "@/components/ui/toaster";
+// import { motion } from "framer-motion";
 
 let wakeLock: WakeLockSentinel | null = null;
 let setTimerActive: any = null;
@@ -111,7 +112,7 @@ function Interface() {
   }
 
   function handleMouseClick(e: any) {
-    if (e.target.tagName === "DIV" || e.target.tagName === "SPAN") {
+    if (e.target.tagName === "DIV" || e.target.tagName === "SPAN" || e.target.tagName === "VIDEO") {
       if (actionsActive) {
         setActionsActive(false);
         if (setTimerActive) {
@@ -122,6 +123,8 @@ function Interface() {
       }
     }
   }
+
+  // const constraintsRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
@@ -135,11 +138,20 @@ function Interface() {
         </div>
       )}
       <Header actionsActive={actionsActive} />
+      {/* <motion.div ref={constraintsRef} className="relative h-screen"> */}
       <Slider
         setIsLoaded={setIsLoaded}
         handleMouseMove={handleMouseMove}
         handleMouseClick={handleMouseClick}
       />
+
+      {/* <motion.div
+          drag="y"
+          dragConstraints={constraintsRef}
+          className="cursor-grab rounded w-[200px] h-[100px] absolute bg-black top-5 left-5 z-50"
+        />
+      </motion.div> */}
+
       {loaded && <Controls containerRef={ref} actionsActive={actionsActive} />}
       {status.online === true ? (
         <div

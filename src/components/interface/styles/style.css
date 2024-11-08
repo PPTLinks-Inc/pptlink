@@ -2,6 +2,10 @@ body {
     background-color: black;
 }
 
+video {
+    object-fit: contain !important;
+}
+
 /* center canvas */
 canvas {
     display: block;
@@ -10,11 +14,14 @@ canvas {
 }
 
 @keyframes pinging {
-    75%, 100% {
+
+    75%,
+    100% {
         transform: scale(1.2);
         opacity: 0;
     }
 }
+
 .animate-pinging {
     animation: pinging 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }

@@ -1,4 +1,4 @@
-import RTC, { ConnectionState, IAgoraRTCClient, ILocalAudioTrack, IRemoteAudioTrack } from "agora-rtc-sdk-ng";
+import RTC, { ConnectionState, IAgoraRTCClient, ILocalAudioTrack, ILocalVideoTrack, IRemoteAudioTrack } from "agora-rtc-sdk-ng";
 import { create } from "zustand";
 import { useRtmStore } from "./rtmStore";
 import { usepresentationStore } from "./presentationStore";
@@ -19,11 +19,14 @@ interface AudioStore {
     networkStatus: "Unknown" | "good" | "mid" | "poor" | "No Connection";
     audioConnectionState: ConnectionState | null;
     micState: MIC_STATE;
+    startScreenShare: () => Promise<void>;
+    stopScreenShare: () => Promise<void>;
     setMicState: (micState: MIC_STATE) => Promise<void>;
     audioTracks: {
+        screeenTrack: ILocalVideoTrack | null;
         localAudioTrack: ILocalAudioTrack | null;
         remoteAudioTracks: { [key: string]: IRemoteAudioTrack | undefined };
-    } | null,
+    } | null;
     acceptMicRequest(userId: string, micState: MIC_STATE): Promise<void>;
     makeCohost: (value: string) => Promise<void>;
     leaveAudio: () => void;
@@ -43,6 +46,57 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
     audioConnectionState: null,
     audioTracks: null,
     micState: MIC_STATE.MIC_OFF,
+    startScreenShare: async function () {
+        const rtcClient = get().rtcClient;
+
+        if (!rtcClient) {
+            throw new Error();
+        }
+
+        const screenTrack = await AgoraRTC.createScreenVideoTrack({
+            encoderConfig: "1080p_1",
+            optimizationMode: "detail"
+        }) as ILocalVideoTrack;
+
+        screenTrack.on("track-ended", async () => {
+            await get().stopScreenShare();
+        });
+
+        screenTrack.play("video-container");
+        
+        set((state) => ({
+            audioTracks: {
+                localAudioTrack: state.audioTracks?.localAudioTrack || null,
+                remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {},
+                screeenTrack: screenTrack
+            }
+        }));
+
+        useOptionsStore.setState({ screenShareEnabled: true, iAmScreenSharing: true });
+
+        await rtcClient.publish(screenTrack);
+    },
+    stopScreenShare: async function () {
+        const rtcClient = get().rtcClient;
+        const screenTrack = get().audioTracks?.screeenTrack;
+
+        if (!rtcClient || !screenTrack) {
+            throw new Error();
+        }
+
+        await rtcClient.unpublish(screenTrack);
+        screenTrack.close();
+
+        set((state) => ({
+            audioTracks: {
+                localAudioTrack: state.audioTracks?.localAudioTrack || null,
+                remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {},
+                screeenTrack: null
+            }
+        }));
+
+        useOptionsStore.setState({ screenShareEnabled: false, iAmScreenSharing: false });
+    },
     setMicState: async function (micState) {
         set({ micState });
         if (micState === MIC_STATE.CAN_SPK) {
@@ -380,21 +434,39 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 throw new Error("Failed to subscribe to user audio");
             }
 
-            if (mediaType == "audio") {
+            if (mediaType === "audio") {
                 if (!user.audioTrack) return;
-                // const audioTracks = get().audioTracks;
-                // if (audioTracks) {
                 set((state) => ({
                     audioTracks: {
                         localAudioTrack: state.audioTracks?.localAudioTrack || null,
                         remoteAudioTracks: {
                             ...state.audioTracks?.remoteAudioTracks,
                             [user.uid]: user.audioTrack || undefined
-                        }
+                        },
+                        screeenTrack: state.audioTracks?.screeenTrack || null
                     }
                 }));
                 user.audioTrack?.play();
-                // }
+            } else if (mediaType === "video") {
+                useOptionsStore.setState({ screenShareEnabled: true, iAmScreenSharing: false });
+                user.videoTrack?.play("video-container");
+            }
+        });
+
+        rtcClient.on("user-unpublished", (user, mediaType) => {
+            if (mediaType === "audio") {
+                set((state) => ({
+                    audioTracks: {
+                        localAudioTrack: state.audioTracks?.localAudioTrack || null,
+                        remoteAudioTracks: {
+                            ...state.audioTracks?.remoteAudioTracks,
+                            [user.uid]: undefined
+                        },
+                        screeenTrack: state.audioTracks?.screeenTrack || null
+                    }
+                }));
+            } else if (mediaType === "video") {
+                useOptionsStore.setState({ screenShareEnabled: false, iAmScreenSharing: false });
             }
         });
 
@@ -406,7 +478,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                     remoteAudioTracks: {
                         ...state.audioTracks?.remoteAudioTracks,
                         [user.uid]: undefined
-                    }
+                    },
+                    screeenTrack: state.audioTracks?.screeenTrack || null
                 }
             }));
         });
@@ -454,7 +527,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
 
         // await get().activeNoiceSuppression(localAudioTrack);
 
-        set((state) => ({ audioTracks: { localAudioTrack, remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {} } }));
+        set((state) => ({ audioTracks: { localAudioTrack, remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {}, screeenTrack: state.audioTracks?.screeenTrack || null } }));
 
         get().setMicState(presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF);
 
