@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { IoIosArrowBack } from "react-icons/io";
 import { RiBarChart2Line, RiFolderAddLine } from "react-icons/ri";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { MdOutlineScreenShare,/*  MdNoiseControlOff */ } from "react-icons/md";
+import { MdOutlineScreenShare /*  MdNoiseControlOff */ } from "react-icons/md";
 import { GoBell } from "react-icons/go";
 import { PiPenNibLight } from "react-icons/pi";
 import {
@@ -22,6 +22,8 @@ import { useRtmStore } from "../store/rtmStore";
 import { usepresentationStore } from "../store/presentationStore";
 import { toast } from "@/hooks/use-toast";
 import { useSlideStore } from "../store/slideStore";
+import { useOptionsStore } from "../store/optionsStore";
+import { cn } from "@/lib/utils";
 
 function MainMenu({
   setCurrentMenuOption
@@ -41,6 +43,11 @@ function MainMenu({
   // );
 
   const User = usepresentationStore((state) => state.presentation?.User);
+  const toggleScreenShare = useOptionsStore((state) => state.toggleScreenShare);
+  const screenShareEnabled = useAudioStore(
+    (state) => state.screenShareEnabled
+  );
+  const iAmScreenSharing = useAudioStore((state) => state.iAmScreenSharing);
 
   return (
     <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
@@ -99,18 +106,27 @@ function MainMenu({
         </div> */}
       </div>
       <div className="flex items-center justify-around">
-        {User === "HOST" && (
-          <button
-            className="flex flex-col justify-center items-center"
-            onClick={() => setCurrentMenuOption("co-host")}
-          >
-            <AiOutlineUsergroupAdd />
-            <span>Co-host</span>
-          </button>
-        )}
-        <button className="flex flex-col justify-center items-center">
+        <button
+          className="flex flex-col justify-center items-center disabled:!cursor-not-allowed disabled:opacity-50"
+          onClick={() => setCurrentMenuOption("co-host")}
+          disabled={User !== "HOST"}
+        >
+          <AiOutlineUsergroupAdd />
+          <span>Co-host</span>
+        </button>
+        <button
+          className={cn(
+            "flex flex-col justify-center items-center disabled:!cursor-not-allowed disabled:opacity-50",
+          )}
+          onClick={toggleScreenShare}
+          disabled={screenShareEnabled && !iAmScreenSharing}
+        >
           <MdOutlineScreenShare />
-          <span>Share Screen</span>
+          {!screenShareEnabled ? (
+            <span>Share Screen</span>
+          ) : (
+            <span>Stop Sharing</span>
+          )}
         </button>
         <button
           className="flex flex-col justify-center items-center"
@@ -192,9 +208,15 @@ function CoHostMenu({
           useRtmStore.getState().setSortedUsers();
 
           if (action === "make") {
-            rtm?.addEventListener("storage", useSlideStore.getState().slidesEvent);
+            rtm?.addEventListener(
+              "storage",
+              useSlideStore.getState().slidesEvent
+            );
           } else if (action === "remove") {
-            rtm?.removeEventListener("storage", useSlideStore.getState().slidesEvent);
+            rtm?.removeEventListener(
+              "storage",
+              useSlideStore.getState().slidesEvent
+            );
           }
 
           toast({
