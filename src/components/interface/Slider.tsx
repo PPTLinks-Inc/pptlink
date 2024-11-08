@@ -13,7 +13,7 @@ import "./styles/style.css";
 import { useSlideStore } from "./store/slideStore";
 import { usepresentationStore } from "./store/presentationStore";
 import { cn } from "@/lib/utils";
-import { useOptionsStore } from "./store/optionsStore";
+import { useAudioStore } from "./store/audioStore";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -88,7 +88,7 @@ export default function Slider({
     [presentation?.pdfLink]
   );
   const { height: windowHeight } = useWindowSize();
-  const hide = useOptionsStore((state) => state.screenShareEnabled);
+  const hide = useAudioStore((state) => state.screenShareEnabled);
 
   useEffect(() => {
     // Update window height state when window is resized

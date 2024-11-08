@@ -5,8 +5,6 @@ import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
 
 interface OptionsStore {
-    screenShareEnabled: boolean;
-    iAmScreenSharing: boolean;
     noiseSuppressionEnabled: boolean;
     noiseSuppressionAvailable: boolean;
     denoiseProcessor: AIDenoiserProcessor | null;
@@ -16,10 +14,8 @@ interface OptionsStore {
     toggleScreenShare: () => Promise<void>;
 };
 
-export const useOptionsStore = create<OptionsStore>(function (set, get) {
+export const useOptionsStore = create<OptionsStore>(function (set) {
     return {
-        screenShareEnabled: false,
-        iAmScreenSharing: false,
         noiseSuppressionEnabled: false,
         noiseSuppressionAvailable: false,
         denoiseProcessor: null,
@@ -44,21 +40,20 @@ export const useOptionsStore = create<OptionsStore>(function (set, get) {
             });
         },
         toggleScreenShare: async function () {
-            if (!get().screenShareEnabled) {
+            const screenShareEnabled = useAudioStore.getState().screenShareEnabled;
+            if (!screenShareEnabled) {
                 const [err] = await safeAwait(useAudioStore.getState().startScreenShare());
 
                 if (err) {
                     toast({
-                        title: "Error",
                         description: "Failed to start screen share",
                         variant: "destructive"
                     });
-                    set({ screenShareEnabled: false });
+                    useAudioStore.setState({ screenShareEnabled: false });
                     return;
                 }
 
                 toast({
-                    title: "Screen Share",
                     description: "Screen share started"
                 });
                 return;
@@ -67,14 +62,12 @@ export const useOptionsStore = create<OptionsStore>(function (set, get) {
             const [err] = await safeAwait(useAudioStore.getState().stopScreenShare());
             if (err) {
                 toast({
-                    title: "Error",
                     description: "Failed to stop screen share",
                     variant: "destructive"
                 });
                 return;
             }
             toast({
-                title: "Screen Share",
                 description: "Screen share stopped"
             });
         }

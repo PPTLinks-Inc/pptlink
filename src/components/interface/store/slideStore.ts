@@ -118,7 +118,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         const presentation = usepresentationStore.getState().presentation;
         const rtm = useRtmStore.getState().rtm;
         let slideData = { ...get().slideData };
-        if ((presentation?.User === "HOST" || presentation?.User === "CO-HOST") && presentation?.live && presentation?.audio) {
+        if ((presentation?.User === "HOST" && presentation?.live) || (presentation?.User === "CO-HOST" && presentation?.live && presentation?.audio)) {
             slideData = {
                 maxSlides:
                     swiperRef.swiper.activeIndex >= slideData.maxSlides

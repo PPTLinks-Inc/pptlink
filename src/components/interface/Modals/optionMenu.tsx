@@ -44,10 +44,10 @@ function MainMenu({
 
   const User = usepresentationStore((state) => state.presentation?.User);
   const toggleScreenShare = useOptionsStore((state) => state.toggleScreenShare);
-  const screenShareEnabled = useOptionsStore(
+  const screenShareEnabled = useAudioStore(
     (state) => state.screenShareEnabled
   );
-  const iAmScreenSharing = useOptionsStore((state) => state.iAmScreenSharing);
+  const iAmScreenSharing = useAudioStore((state) => state.iAmScreenSharing);
 
   return (
     <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
