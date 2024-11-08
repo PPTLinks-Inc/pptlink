@@ -157,7 +157,7 @@ export default function Slider({
     >
       <div
         id="video-container"
-        className={cn("h-[70vh] w-full hidden", hide && "block")}
+        className={cn("h-[70vh] w-full hidden", hide && "block", orientation.type.includes("landscape") && "h-[100vh]")}
       ></div>
       <Document
         file={file}
