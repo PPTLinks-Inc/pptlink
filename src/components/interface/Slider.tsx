@@ -12,6 +12,8 @@ import "swiper/css";
 import "./styles/style.css";
 import { useSlideStore } from "./store/slideStore";
 import { usepresentationStore } from "./store/presentationStore";
+import { cn } from "@/lib/utils";
+import { useAudioStore } from "./store/audioStore";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -45,7 +47,9 @@ function FullScreenLoading({ progress }: { progress: number }) {
 function LoadError() {
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-black inset-0">
-      <p className="text-slate-200 text-3xl text-center">Error Loading Presentation File.</p>
+      <p className="text-slate-200 text-3xl text-center">
+        Error Loading Presentation File.
+      </p>
       <p className="text-slate-200 mt-5 text-center">
         This could be due to an outdated browser or a poor network connection.
       </p>
@@ -73,8 +77,7 @@ export default function Slider({
   const [numPages, setNumPages] = useState(0);
   const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [maxWidth, setMaxWidth] = useState(0);
-  const { isMobilePhone, fullScreenShow } =
-    useContext(PresentationContext);
+  const { isMobilePhone, fullScreenShow } = useContext(PresentationContext);
   const setSwiperRef = useSlideStore((state) => state.setSwiperRef);
   const presentation = usepresentationStore((state) => state.presentation);
   const orientation = useOrientation();
@@ -85,6 +88,7 @@ export default function Slider({
     [presentation?.pdfLink]
   );
   const { height: windowHeight } = useWindowSize();
+  const hide = useAudioStore((state) => state.screenShareEnabled);
 
   useEffect(() => {
     // Update window height state when window is resized
@@ -147,10 +151,14 @@ export default function Slider({
   return (
     <div
       ref={slideContainer}
-      className="w-full"
+      className={cn("w-full", hide && "!mt-0 overflow-y-hidden")}
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
     >
+      <div
+        id="video-container"
+        className={cn("h-[70vh] w-full hidden", hide && "block")}
+      ></div>
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
@@ -160,6 +168,7 @@ export default function Slider({
         }
         loading={<FullScreenLoading progress={fileDownloadProgress} />}
         error={<LoadError />}
+        className={cn(hide && "hidden")}
       >
         <swiper-container
           ref={swiperRef}
