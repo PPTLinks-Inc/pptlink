@@ -16,14 +16,12 @@ import {
 import { useCallback, useState } from "react";
 import { MIC_STATE } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ConfirmModal from "./confirmModal";
 import { useAudioStore } from "../store/audioStore";
 import { useRtmStore } from "../store/rtmStore";
 import { usepresentationStore } from "../store/presentationStore";
-import { toast } from "@/hooks/use-toast";
-import { useSlideStore } from "../store/slideStore";
 import { useOptionsStore } from "../store/optionsStore";
 import { cn } from "@/lib/utils";
+import { useModalStore } from "../store/modalStore";
 
 function MainMenu({
   setCurrentMenuOption
@@ -44,9 +42,7 @@ function MainMenu({
 
   const User = usepresentationStore((state) => state.presentation?.User);
   const toggleScreenShare = useOptionsStore((state) => state.toggleScreenShare);
-  const screenShareEnabled = useAudioStore(
-    (state) => state.screenShareEnabled
-  );
+  const screenShareEnabled = useAudioStore((state) => state.screenShareEnabled);
   const iAmScreenSharing = useAudioStore((state) => state.iAmScreenSharing);
 
   return (
@@ -116,7 +112,7 @@ function MainMenu({
         </button>
         <button
           className={cn(
-            "flex flex-col justify-center items-center disabled:!cursor-not-allowed disabled:opacity-50",
+            "flex flex-col justify-center items-center disabled:!cursor-not-allowed disabled:opacity-50"
           )}
           onClick={toggleScreenShare}
           disabled={screenShareEnabled && !iAmScreenSharing}
@@ -165,25 +161,14 @@ function CoHostMenu({
     }
   }, []);
 
-  const [modalData, setModalData] = useState({
-    open: false,
-    onClose: () => {},
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-    },
-    isLoading: false,
-    message: "",
-    actionText: ""
-  });
-
-  const makeCohost = useAudioStore((state) => state.makeCohost);
+  
   const coHostId = useRtmStore((state) => state.coHostId);
+  const coHostPrompt = useModalStore((state) => state.coHostPrompt);
 
   function handleMakeCohost(userId: string, userName: string) {
     const action =
       coHostId === userId ? "remove" : coHostId !== "" ? "replace" : "make";
     const id = coHostId === userId ? "" : userId;
-    const rtm = useRtmStore.getState().rtm;
 
     const message =
       action === "remove"
@@ -197,80 +182,47 @@ function CoHostMenu({
         ? `${userName} is no longer a co-host`
         : `${userName} is now a co-host`;
 
-    setModalData({
-      open: true,
-      onClose: () => setModalData({ ...modalData, open: false }),
-      onSubmit: (e) => {
-        e.preventDefault();
-        makeCohost(id).then(function () {
-          setModalData((prev) => ({ ...prev, open: false }));
-          useRtmStore.setState({ coHostId: id });
-          useRtmStore.getState().setSortedUsers();
-
-          if (action === "make") {
-            rtm?.addEventListener(
-              "storage",
-              useSlideStore.getState().slidesEvent
-            );
-          } else if (action === "remove") {
-            rtm?.removeEventListener(
-              "storage",
-              useSlideStore.getState().slidesEvent
-            );
-          }
-
-          toast({
-            title: "Success",
-            description: successMessage
-          });
-        });
-      },
-      isLoading: false,
-      message,
-      actionText:
-        action === "remove"
-          ? "Remove Co-host"
-          : action === "replace"
-            ? "Replace Co-host"
-            : "Make Co-host"
+    coHostPrompt({
+      actionText: action === "remove" ? "Remove" : "Make",
+      description: message,
+      title: "Co-host",
+      successMessage,
+      userId: id,
+      action
     });
   }
 
   return (
-    <>
-      <div className="text-sm p-3 grid grid-cols-5 sm:grid-cols-4 gap-y-5 overflow-y-auto pt-20">
-        {users.map((user) => (
-          <button
-            key={user.id}
-            className="flex flex-col w-full justify-start items-center"
-            onClick={() => handleMakeCohost(user.id, user.userName)}
-          >
-            <div className="relative p-1 rounded-full">
-              <Avatar>
-                <AvatarImage
-                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
-                />
-                <AvatarFallback>
-                  {user.userName.substring(0, 1).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <span
-                className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}
-              ></span>
-            </div>
+    <div className="text-sm p-3 grid grid-cols-5 sm:grid-cols-4 gap-y-5 overflow-y-auto pt-20">
+      {users.map((user) => (
+        <button
+          key={user.id}
+          className="flex flex-col w-full justify-start items-center"
+          onClick={() => handleMakeCohost(user.id, user.userName)}
+        >
+          <div className="relative p-1 rounded-full">
+            <Avatar>
+              <AvatarImage
+                src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${user.id}`}
+              />
+              <AvatarFallback>
+                {user.userName.substring(0, 1).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <span
+              className={`absolute inset-0 rounded-full border-2 ${getUserMicStatusColor(user.micState)}`}
+            ></span>
+          </div>
 
-            <p title={user.userName} className="w-16 truncate ...">
-              {user.userName}
-            </p>
-            <div className="w-20 flex justify-center items-center gap-2">
-              {coHostId === user.id && <span>(Co-host)</span>}
-            </div>
-          </button>
-        ))}
-      </div>
-
-      <ConfirmModal {...modalData} />
-    </>
+          <p title={user.userName} className="w-16 truncate ...">
+            {user.userName}
+          </p>
+          <div className="w-20 flex justify-center items-center gap-2">
+            {coHostId === user.id && <span>(Co-host)</span>}
+          </div>
+        </button>
+      ))}
+    </div>
   );
 }
 

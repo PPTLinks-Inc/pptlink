@@ -14,7 +14,7 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import rotateImage from "../components/interface/assets/rotate.gif";
-import { LoadingAssetBig2 } from "../assets/assets";
+import { LoadingAssetBig, LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import { userContext } from "./userContext";
 import {
@@ -27,6 +27,18 @@ import { useAudioStore } from "@/components/interface/store/audioStore";
 import { useSlideStore } from "@/components/interface/store/slideStore";
 import { toast } from "@/hooks/use-toast";
 import { MIC_STATE } from "@/constants/routes";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogOverlay
+} from "@/components/ui/alert-dialog";
+import { useModalStore } from "@/components/interface/store/modalStore";
 
 const contextValues = {
   fullScreenShow: false,
@@ -74,12 +86,10 @@ const PresentationContextProvider = (props: { children: any }) => {
   }, []);
 
   const setToken = useRtmStore((state) => state.setToken);
-  const setStartPrompt = usepresentationStore(
-    (state) => state.setShowStartPrompt
-  );
   const setPresentation = usepresentationStore(
     (state) => state.setPresentation
   );
+  const startPrompt = useModalStore((state) => state.startPrompt);
   const initRTM = useRtmStore((state) => state.init);
   const setUserName = useRtmStore((state) => state.setUserName);
 
@@ -109,7 +119,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       setUserUid(data.presentation.rtc.rtcUid);
 
       if (data.presentation.audio) {
-        setStartPrompt(true);
+        startPrompt();
       }
       return data.presentation;
     }
@@ -303,14 +313,19 @@ const PresentationContextProvider = (props: { children: any }) => {
             prevHostSlide: slideData.hostSlide
           };
           setSlideData(slideData);
-          rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
+          rtm?.storage.updateChannelMetadata(
+            presentation.liveId,
+            "MESSAGE",
+            [
+              {
+                key: "slideData",
+                value: JSON.stringify(slideData)
+              }
+            ],
             {
-              key: "slideData",
-              value: JSON.stringify(slideData)
+              addUserId: true
             }
-          ], {
-            addUserId: true
-          });
+          );
         }
       }
     },
@@ -345,6 +360,15 @@ const PresentationContextProvider = (props: { children: any }) => {
     };
   }, []);
 
+  const isModalOpen = useModalStore((state) => state.isOpen);
+  const modalTitle = useModalStore((state) => state.title);
+  const modalDescription = useModalStore((state) => state.description);
+  const modalContent = useModalStore((state) => state.content);
+  const modalIsLoading = useModalStore((state) => state.isLoading);
+  const modalActionText = useModalStore((state) => state.actionText);
+  const modalOnClose = useModalStore((state) => state.onClose);
+  const modalOnSubmit = useModalStore((state) => state.onSubmit);
+
   return (
     <PresentationContext.Provider
       value={{
@@ -361,12 +385,47 @@ const PresentationContextProvider = (props: { children: any }) => {
       ) : presentationQuery.isError ? (
         <PresentationNotFound />
       ) : (
-        <>
+        <AlertDialog open={isModalOpen}>
+          <AlertDialogOverlay className="backdrop-blur-sm bg-black/20" />
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-center">
+                {modalTitle}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-center">
+                {modalDescription}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            {modalIsLoading ? (
+              <div className="flex justify-center items-center">
+                <LoadingAssetBig />
+              </div>
+            ) : (
+              modalContent
+            )}
+
+            {!modalIsLoading && (
+              <AlertDialogFooter className="sm:justify-center">
+                <AlertDialogCancel
+                  onClick={modalIsLoading ? () => {} : modalOnClose}
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={modalOnSubmit}
+                  className="bg-black hover:black/20"
+                >
+                  {modalActionText}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            )}
+          </AlertDialogContent>
           {isMobilePhone && showPrompt && (
             <OrientationPrompt setShowPrompt={setShowPrompt} />
           )}
           {props.children}
-        </>
+        </AlertDialog>
       )}
     </PresentationContext.Provider>
   );
