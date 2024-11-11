@@ -9,7 +9,7 @@ import { FaFacebook } from "react-icons/fa";
 
 export default function Socials() {
   return (
-    <div className="footerIcons flex items-center maxScreenMobile:justify-between">
+    <div className="footerIcons flex items-center maxScreenMobile:justify-between maxScreenMobile:pb-4">
       <NavLink to="https://x.com/pptlinks">
         <FaTwitter className="block text-xl mr-10 maxScreenMobile:mr-0 hover:scale-[1.5]" />
       </NavLink>
