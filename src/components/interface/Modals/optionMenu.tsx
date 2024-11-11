@@ -117,7 +117,7 @@ function MainMenu({
           onClick={toggleScreenShare}
           disabled={screenShareEnabled && !iAmScreenSharing}
         >
-          <MdOutlineScreenShare />
+          <MdOutlineScreenShare className={cn(screenShareEnabled && "fill-[#05FF00]")} />
           {!screenShareEnabled ? (
             <span>Share Screen</span>
           ) : (

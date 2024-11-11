@@ -117,7 +117,7 @@ export default function Controls({
         };
       } else if (micState === MIC_STATE.CAN_SPK) {
         return {
-          style: "bg-green-500",
+          style: "bg-[#05FF00]",
           icon: <IoIosMic size={60} />,
           text: "MIC ON"
         };
@@ -132,7 +132,7 @@ export default function Controls({
     } else if (micStatus === MIC_STATE.REQ_MIC) {
       return "border-orange-500 animate-pinging";
     } else if (micStatus === MIC_STATE.CAN_SPK) {
-      return "border-green-500";
+      return "border-[#05FF00]";
     } else {
       return "border-transparent";
     }
@@ -231,6 +231,7 @@ export default function Controls({
         </div>
       )}
       <div className="flex flex-row gap-20 items-center justify-center relative w-full mb-5">
+        <div className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-20 left-5"></div>
         {/* Desktop controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
           {audioLoadingStatus === "success" && (

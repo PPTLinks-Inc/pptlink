@@ -151,13 +151,13 @@ export default function Slider({
   return (
     <div
       ref={slideContainer}
-      className={cn("w-full", hide && "!mt-0 overflow-y-hidden")}
+      className={cn("w-full h-full", hide && "!mt-0 overflow-y-hidden")}
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
     >
       <div
         id="video-container"
-        className={cn("h-[70vh] w-full hidden", hide && "block", orientation.type.includes("landscape") && "h-[100vh]")}
+        className={cn("w-full aspect-video hidden", hide && "block", orientation.type.includes("portrait") && "mt-20")}
       ></div>
       <Document
         file={file}

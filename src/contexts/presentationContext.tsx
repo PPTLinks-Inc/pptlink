@@ -39,6 +39,7 @@ import {
   AlertDialogOverlay
 } from "@/components/ui/alert-dialog";
 import { useModalStore } from "@/components/interface/store/modalStore";
+import { Button } from "@/components/ui/button";
 
 const contextValues = {
   fullScreenShow: false,
@@ -174,6 +175,9 @@ const PresentationContextProvider = (props: { children: any }) => {
               toast({
                 description: "You are no longer a co-host of this presentation"
               });
+              if (useAudioStore.getState().iAmScreenSharing) {
+                useAudioStore.getState().stopScreenShare();
+              }
               useSlideStore.setState({ lockSlide: false });
               setPresentation({ ...tempPresentation, User: "GUEST" });
             }
@@ -379,7 +383,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       }}
     >
       {presentationQuery.isLoading ? (
-        <div className="flex justify-center items-center h-screen w-full">
+        <div className="bg-black flex justify-center items-center h-screen w-full">
           <LoadingAssetBig2 />
         </div>
       ) : presentationQuery.isError ? (
@@ -387,7 +391,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       ) : (
         <AlertDialog open={isModalOpen}>
           <AlertDialogOverlay className="backdrop-blur-sm bg-black/20" />
-          <AlertDialogContent>
+          <AlertDialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB]">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-center">
                 {modalTitle}
@@ -409,12 +413,14 @@ const PresentationContextProvider = (props: { children: any }) => {
               <AlertDialogFooter className="sm:justify-center">
                 <AlertDialogCancel
                   onClick={modalIsLoading ? () => {} : modalOnClose}
+                  asChild
                 >
-                  Cancel
+                  <Button className="bg-black hover:black/20">Cancel</Button>
                 </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={modalOnSubmit}
-                  className="bg-black hover:black/20"
+                  className="bg-black hover:bg-white hover:text-black"
+                  autoFocus
                 >
                   {modalActionText}
                 </AlertDialogAction>

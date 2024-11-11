@@ -58,7 +58,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         }
 
         const screenTrack = await AgoraRTC.createScreenVideoTrack({
-            encoderConfig: "1080p_1",
+            encoderConfig: "720p",
             optimizationMode: "detail"
         }) as ILocalVideoTrack;
 
