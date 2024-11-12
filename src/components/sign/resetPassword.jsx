@@ -26,7 +26,7 @@ export default function ResetPasswordPage() {
                         className="block w-10 aspect-square"
                     />
                 </Link>
-                <p className="text-[1.7rem] font-[900] mx-auto maxSmallMobile:text-[1rem] maxSmallMobile:font-[500]">Welcome To Password Reset</p>
+                <p className="text-[1.7rem] font-[900] mx-auto maxSmallMobile:responsiveText maxSmallMobile:font-[500]">Welcome To Password Reset</p>
             </div>
             <form
                 onSubmit={(e) => {

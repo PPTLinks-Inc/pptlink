@@ -102,7 +102,7 @@ export default function NewDashboard() {
             >
               <CiSettings />
             </span>
-            <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 text-[0.9rem]">
+            <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 responsiveText">
               My Profile
             </span>
             <div className="w-[150px] aspect-square _bg-[red] rounded-[50%]">
@@ -112,7 +112,7 @@ export default function NewDashboard() {
                 className="block w-full h-full"
               />
             </div>
-            <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 text-[0.9rem] text-center">
+            <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 responsiveText text-center">
               <h1 className="text-2xl mt-2">{user ? user.username : "--"}</h1>
               <p>Legacy Paradigm Executive</p>
               <div className="flex justify-between items-center gap-4">

@@ -3,6 +3,11 @@
   transition: all 50ms ease-in-out !important;
 }
 
+.responsiveText {
+  font-size: 0.9rem;
+  line-height: 1.5rem;
+}
+
 .container {
   width: 90%;
   margin: auto;

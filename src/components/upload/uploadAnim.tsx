@@ -24,7 +24,7 @@ export default function Uploadanimation({ cancelUpload, values, errors, uploadPr
                                 <p className="text-[#ffa500] text-[1.2rem] font-light italic !maxScreenMobile:text-[0.6]">
                                     {`${values.file.name} Uploading...`}
                                 </p>
-                                <span className="block w-fit h-fit text-[#ffa500] text-[0.8rem] absolute left-auto right-0 top-[50%] translate-y-[-50%]">
+                                <span className="block w-fit h-fit text-[#ffa500] responsiveText absolute left-auto right-0 top-[50%] translate-y-[-50%]">
                                     ? kbs
                                 </span>
                             </div>

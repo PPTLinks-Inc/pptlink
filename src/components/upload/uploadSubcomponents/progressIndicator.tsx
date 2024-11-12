@@ -17,7 +17,7 @@ function ProgressIndicator() {
           <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
             1
           </span>
-          <span className="!block w-full text-[0.9rem] text-center text-white">
+          <span className="!block w-full responsiveText text-center text-white">
             Upload
           </span>
         </span>
@@ -27,7 +27,7 @@ function ProgressIndicator() {
           <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
             2
           </span>
-          <span className="!block w-full text-[0.9rem] text-center text-white">
+          <span className="!block w-full responsiveText text-center text-white">
             Information
           </span>
         </span>
@@ -37,7 +37,7 @@ function ProgressIndicator() {
           <span className="flex justify-center items-center w-[2rem] m-auto aspect-square text-center rounded-[1rem] my-4 bg-white text-black text-[.9rem]">
             3
           </span>
-          <span className="!block w-full text-[0.9rem] text-center text-white">
+          <span className="!block w-full responsiveText text-center text-white">
             Preview
           </span>
         </span>
