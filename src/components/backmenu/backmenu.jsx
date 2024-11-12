@@ -65,7 +65,7 @@ export default function Backmenu({ handleDropdown }) {
             <h2 className="text-2xl mt-4 mb-6 font-medium">Our location</h2>
             <Link
               to="/"
-              className="block text-[0.9rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] leading-[30px]"
+              className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] leading-[30px]"
             >
               You can find us at Nascomsoft in Anguwan Cashew, Off dass road,
               opposite Elim church, 740102, Yelwa, Bauchi Nigeria

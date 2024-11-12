@@ -230,13 +230,13 @@ export default function NewHome() {
             </motion.h1>
             <motion.h3
               variants={parentVarient}
-              className="text-[1rem] mb-1 font-bold"
+              className="responsiveText mb-1 font-bold"
             >
               Teach Across Africa, No Data Limits.
             </motion.h3>
             <motion.p
               variants={parentVarient}
-              className="w-full text-[0.8rem] leading-[2rem] opacity-5 mb-4 text-justify"
+              className="w-full responsiveText leading-[2rem] opacity-5 mb-4 text-justify"
             >
               Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
             </motion.p>
@@ -245,7 +245,7 @@ export default function NewHome() {
               className="mx-[auto] flex justify-left items-center gap-4 w-full maxScreenMobile:flex-col"
             >
               <button
-                className="block _w-2/5 w-fit px-8 h-[2.5rem] _bg-[black] text-[#FFFFF0] text-[1rem] border-2 border-[#FFFFF0] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
+                className="block _w-2/5 w-fit px-8 h-[2.5rem] _bg-[black] text-[#FFFFF0] responsiveText border-2 border-[#FFFFF0] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
                 onClick={() =>
                   user ? navigate("/upload") : navigate("/signin")
                 }
@@ -253,7 +253,7 @@ export default function NewHome() {
                 Present
               </button>
               <button
-                className="block _w-2/5 w-fit px-8 h-[2.5rem] bg-[#FFFFF0] text-black text-[1rem] rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
+                className="block _w-2/5 w-fit px-8 h-[2.5rem] bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:w-full maxScreenMobile:mb-3"
                 onClick={goToLibrary}
               >
                 Libraries
@@ -340,15 +340,15 @@ export default function NewHome() {
             transition: { duration: 1, type: "tween" }
           }}
           viewport={{ once: true }}
-          className="w-2/5 !mx-auto text-[0.9rem] text-center maxScreenMobile:!container maxScreenMobile:mt-4">
+          className="w-2/5 !mx-auto responsiveText text-center maxScreenMobile:!container maxScreenMobile:mt-4">
           Lorem ipsum dolor sit amet. consectetur adipisicing elit. Voluptate commodi rem, ut architecto mollitia saepe!
         </motion.h2>
 
         <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-14">
-          <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software development</span>
-          <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
-          <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
-          <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer text-[0.9rem] maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
+          <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software development</span>
+          <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
+          <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
+          <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
         </div>
 
         <div className={`w-full max-h-[30rem] overflow-x-auto mt-8`}>
@@ -447,7 +447,7 @@ export default function NewHome() {
                   <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
                     Make Amazing Presentation
                   </h4>
-                  <p className="text-[0.9rem] w-full text-ellipsis m-auto">
+                  <p className="responsiveText w-full text-ellipsis m-auto">
                     and carry your audience along.
                   </p>
                 </div>
@@ -477,7 +477,7 @@ export default function NewHome() {
                   <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
                     Host Classes with Libraries
                   </h4>
-                  <p className="text-[0.9rem] w-full text-ellipsis m-auto">
+                  <p className="responsiveText w-full text-ellipsis m-auto">
                     to create engaging learning experiences for participants.
                   </p>
                 </div>
@@ -507,7 +507,7 @@ export default function NewHome() {
                   <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
                     Tell your story visually
                   </h4>
-                  <p className="text-[0.9rem] w-full text-ellipsis m-auto">
+                  <p className="responsiveText w-full text-ellipsis m-auto">
                     to give a lasting impression.
                   </p>
                 </div>
@@ -537,7 +537,7 @@ export default function NewHome() {
                   <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
                     For Business
                   </h4>
-                  <p className="text-[0.9rem] w-full text-ellipsis m-auto">
+                  <p className="responsiveText w-full text-ellipsis m-auto">
                     present Your ideas with Confidence and Clarity.
                   </p>
                 </div>
@@ -567,7 +567,7 @@ export default function NewHome() {
                   <h4 className="text-[1.5rem] w-full text-ellipsis m-auto font-medium">
                     For Physical Presentations to Carry Everyone Alone
                   </h4>
-                  <p className="text-[0.9rem] w-full text-ellipsis m-auto">
+                  <p className="responsiveText w-full text-ellipsis m-auto">
                     backbenchers become part of the session.
                   </p>
                 </div>
@@ -595,7 +595,7 @@ export default function NewHome() {
               initial="initial"
               whileInView="inView"
               viewport={{ margin: "100px", once: true }}
-              className="w-[50%] min-h-[30rem] text-[0.8rem] mb-10 maxScreenMobile:w-full"
+              className="w-[50%] min-h-[30rem] responsiveText mb-10 maxScreenMobile:w-full"
             >
               <motion.h5
                 variants={secondVarient}
@@ -605,7 +605,7 @@ export default function NewHome() {
               </motion.h5>
               <motion.p
                 variants={secondVarient}
-                className="w-full mb-16 text-[0.9rem] font-thin"
+                className="w-full mb-16 responsiveText font-thin"
               >
                 Your voice matters! Share your thought and feedback with us and
                 be part of our community.
@@ -758,7 +758,7 @@ export default function NewHome() {
             >
               <div className="w-full mb-10">
                 <h4 className="mb-3 text-[1.1rem] font-semibold">Call Us</h4>
-                <p className="text-[0.9rem] mb-3 font-thin">
+                <p className="responsiveText mb-3 font-thin">
                   Have a question or need guidance? Call us now and lets discuss
                   how we can help you achieve your goal.
                 </p>
@@ -769,7 +769,7 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="tel:+2349068314394" className="text-[#FFA500] text-[0.9rem]">
+                  <a href="tel:+2349068314394" className="text-[#FFA500] responsiveText">
                     +2349068314394
                   </a>
                 </div>
@@ -777,7 +777,7 @@ export default function NewHome() {
 
               <div className="w-full mb-10">
                 <h4 className="mb-3 text-[1.1rem] font-semibold">Visit Us</h4>
-                <p className="text-[0.9rem] mb-3 font-thin">
+                <p className="responsiveText mb-3 font-thin">
                   We’d love to welcome you to our office. Visit us let’s discuss
                   your project.
                 </p>
@@ -788,7 +788,7 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="/" className="text-[#FFA500] text-[0.9rem]">
+                  <a href="/" className="text-[#FFA500] responsiveText">
                     Nascomsoft in Angwan Cashew, opp Elim church, 740102, Bauchi
                     Nigeria
                   </a>
@@ -797,7 +797,7 @@ export default function NewHome() {
 
               <div className="w-full mb-10">
                 <h4 className="mb-3 text-[1.1rem] font-semibold">Message Us</h4>
-                <p className="text-[0.9rem] mb-3 font-thin">
+                <p className="responsiveText mb-3 font-thin">
                   Write to us through text, on linkedin or any of our social
                   handles
                 </p>
@@ -808,7 +808,7 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="sms:+2349068314394" className="text-[#FFA500] text-[0.9rem]">
+                  <a href="sms:+2349068314394" className="text-[#FFA500] responsiveText">
                     SMS to +2349068314394
                   </a>
                 </div>
