@@ -20,7 +20,7 @@ export const useOptionsStore = create<OptionsStore>(function () {
 
                 if (err) {
                     toast({
-                        description: "Failed to start screen share",
+                        description: err.message.includes("NOT_SUPPORTED") ? "This browser does not support screen sharing" : "Failed to start screen share",
                         variant: "destructive"
                     });
                     useAudioStore.setState({ screenShareEnabled: false });

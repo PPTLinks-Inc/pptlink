@@ -160,7 +160,11 @@ export default function Slider({
     >
       <div
         id="video-container"
-        className={cn("w-full aspect-video hidden", hide && !screenShareMinimized && "block", orientation.type.includes("portrait") && "mt-20")}
+        className={cn(
+          "w-full aspect-video hidden",
+          hide && !screenShareMinimized && "block",
+          orientation.type.includes("portrait") && "mt-20"
+        )}
       ></div>
       <Document
         file={file}
@@ -171,7 +175,10 @@ export default function Slider({
         }
         loading={<FullScreenLoading progress={fileDownloadProgress} />}
         error={<LoadError />}
-        className={cn(hide && !screenShareMinimized && "hidden")}
+        className={cn(
+          orientation.type.includes("portrait") && "mt-20",
+          hide && !screenShareMinimized && "hidden"
+        )}
       >
         <swiper-container
           ref={swiperRef}
