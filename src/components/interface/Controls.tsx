@@ -27,6 +27,7 @@ import { useAudioStore } from "./store/audioStore";
 import { useRtmStore } from "./store/rtmStore";
 import { useSlideStore } from "./store/slideStore";
 import { useModalStore } from "./store/modalStore";
+import { useOptionsStore } from "./store/optionsStore";
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({
@@ -42,7 +43,7 @@ export default function Controls({
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
   });
-  
+
   const showUsersList = usepresentationStore((state) => state.showUsersList);
   const setShowUsersList = usepresentationStore(
     (state) => state.setShowUsersList
@@ -217,6 +218,12 @@ export default function Controls({
       });
   }
 
+  const screenShareEnabled = useAudioStore((state) => state.screenShareEnabled);
+  const screenShareMinimized = useAudioStore(
+    (state) => state.screenShareMinimized
+  );
+  const toggleScreenMinimize = useOptionsStore((state) => state.toggleScreenMinimize);
+
   return (
     <div
       className={`fixed z-10 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
@@ -231,7 +238,15 @@ export default function Controls({
         </div>
       )}
       <div className="flex flex-row gap-20 items-center justify-center relative w-full mb-5">
-        <div className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-20 left-5"></div>
+        {screenShareEnabled && (
+          <button onClick={toggleScreenMinimize} className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-20 left-5 cursor-pointer">
+            {screenShareMinimized ? (
+              <p className="text-white">Screen Share</p>
+            ) : (
+              <img src={presentation?.thumbnail} />
+            )}
+          </button>
+        )}
         {/* Desktop controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
           {audioLoadingStatus === "success" && (

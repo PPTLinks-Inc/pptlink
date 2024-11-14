@@ -5,8 +5,6 @@ import { usepresentationStore } from "./presentationStore";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { AGORA_APP_ID, MIC_STATE } from "@/constants/routes";
-import { AIDenoiserExtension } from "agora-extension-ai-denoiser";
-import { useOptionsStore } from "./optionsStore";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { RTMEvents } from "agora-rtm-sdk";
 import micRequest from "../assets/mic-request.mp3";
@@ -21,6 +19,7 @@ interface AudioStore {
     micState: MIC_STATE;
     screenShareEnabled: boolean;
     iAmScreenSharing: boolean;
+    screenShareMinimized: boolean;
     startScreenShare: () => Promise<void>;
     stopScreenShare: () => Promise<void>;
     setMicState: (micState: MIC_STATE) => Promise<void>;
@@ -37,7 +36,6 @@ interface AudioStore {
     }: { hostEnd: boolean }) => Promise<void>;
     fetchRtcToken: () => Promise<void>;
     startAudio: () => Promise<void>;
-    activeNoiceSuppression(audioTrack: ILocalAudioTrack): Promise<void>;
     init: () => Promise<void>;
 };
 
@@ -50,6 +48,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
     micState: MIC_STATE.MIC_OFF,
     screenShareEnabled: false,
     iAmScreenSharing: false,
+    screenShareMinimized: false,
     startScreenShare: async function () {
         const rtcClient = get().rtcClient;
 
@@ -67,7 +66,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         });
 
         screenTrack.play("video-container");
-        
+
         set((state) => ({
             audioTracks: {
                 localAudioTrack: state.audioTracks?.localAudioTrack || null,
@@ -96,7 +95,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {},
                 screeenTrack: null
             },
-            screenShareEnabled: false, iAmScreenSharing: false 
+            screenShareEnabled: false, iAmScreenSharing: false, screenShareMinimized: false
         }));
     },
     setMicState: async function (micState) {
@@ -379,50 +378,6 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             });
         }
     },
-    activeNoiceSuppression: async function (audioTrack: ILocalAudioTrack) {
-        const setNoiseProcessor = useOptionsStore.getState().setDenoiseProcessor;
-        const toggleNoiseSuppression = useOptionsStore.getState().toggleNoiseSuppression;
-        const setNoiseSuppressionAvailable = useOptionsStore.getState().setNoiseSuppressionAvailable;
-        try {
-            const denoiser = new AIDenoiserExtension({ assetsPath: "/external" });
-
-
-            if (!denoiser.checkCompatibility()) {
-                toggleNoiseSuppression(false);
-                setNoiseSuppressionAvailable(false);
-                return;
-            }
-            AgoraRTC.registerExtensions([denoiser]);
-
-            const processor = denoiser.createProcessor();
-            processor.on("loaderror", function (e: unknown) {
-                console.log("loaderror", e);
-                toggleNoiseSuppression(false);
-                setNoiseSuppressionAvailable(false);
-            });
-
-            processor.on("overload", async function () {
-                console.log("overload");
-                toggleNoiseSuppression(false);
-                await processor.disable();
-            });
-
-            audioTrack.pipe(processor).pipe(audioTrack.processorDestination);
-            await processor.enable();
-            setNoiseProcessor(processor);
-            toggleNoiseSuppression(true);
-            setNoiseSuppressionAvailable(true);
-        } catch (error) {
-            console.log(error);
-            toggleNoiseSuppression(false);
-            setNoiseSuppressionAvailable(false);
-            toast({
-                title: "Error",
-                variant: "destructive",
-                description: "Failed to activate noise Suppression",
-            });
-        }
-    },
     init: async function () {
         // try {
         set({ loadingStatus: "loading" });
@@ -529,8 +484,6 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         if (publishErr) {
             throw new Error("Failed to create audio track");
         }
-
-        // await get().activeNoiceSuppression(localAudioTrack);
 
         set((state) => ({ audioTracks: { localAudioTrack, remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {}, screeenTrack: state.audioTracks?.screeenTrack || null } }));
 
