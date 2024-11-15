@@ -62,10 +62,7 @@ export default function SupperUpload() {
   });
 
   return (
-    <section
-      ref={scrollableRef}
-      className="upload_svg_cover h-fit relative bg-[#FFFFF0]"
-    >
+    <>
       <Helmet>
         <title>{`Upload - PPTLinks `}</title>
         <meta
@@ -101,30 +98,35 @@ export default function SupperUpload() {
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
-      <div className="bottom_cover_ pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
-        {editPresentationQuery.isLoading ? (
-          <div className="flex flex-col justify-center items-center min-h-screen">
-            <LoadingAssetBig2 />
-            <p className="text-center">Fetching presentation data</p>
-          </div>
-        ) : (
-          <>
-            {/* progress indicator */}
-            <ProgressIndicator />
-            <div className="w-full min-h-screen bg-[#FFFFF0] shadow-xl relative py-20 maxScreenMobile:pt-0 md:rounded-md">
-              <FormLabelIndicator />
-              {/* first stage elements 👀👀 */}
-              <UploadStage />
-              {/* Second stage show els 👀👀 */}
-              <InformationStage />
-              {/* Third stage show els 👀👀 */}
-              <PreviewStage />
+      <section
+        ref={scrollableRef}
+        className="uploadSvgCover h-fit relative _bg-[#FFFFF0]"
+      >
+        <div className="pt-10 pb-16 w-[90%] m-auto bg-transparent h-fit z-50 maxScreenMobile:w-full">
+          {editPresentationQuery.isLoading ? (
+            <div className="flex flex-col justify-center items-center min-h-screen">
+              <LoadingAssetBig2 />
+              <p className="text-center">Fetching presentation data</p>
             </div>
-            {/* form stage tracker */}
-            <FormStageMover />
-          </>
-        )}
-      </div>
-    </section>
+          ) : (
+            <>
+              {/* progress indicator */}
+              <ProgressIndicator />
+              <div className="w-full min-h-screen bg-[#FFFFF0] shadow-xl relative py-20 maxScreenMobile:pt-0 md:rounded-md">
+                <FormLabelIndicator />
+                {/* first stage elements 👀👀 */}
+                <UploadStage />
+                {/* Second stage show els 👀👀 */}
+                <InformationStage />
+                {/* Third stage show els 👀👀 */}
+                <PreviewStage />
+              </div>
+              {/* form stage tracker */}
+              <FormStageMover />
+            </>
+          )}
+        </div>
+      </section>
+    </>
   );
 }

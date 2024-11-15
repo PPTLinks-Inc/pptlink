@@ -699,7 +699,7 @@ export default function UploadStage() {
             >
               {formValues.file && formValues.file[0]
                 ? "Change file..."
-                : "Select File"}
+                : "Browse File"}
             </span>
           )}
           {allowCheckFileStatus && processingFile && (
@@ -823,11 +823,11 @@ export default function UploadStage() {
                 onClick={() => {
                   setAddNewCategory((prev) => !prev);
                 }}
-                className="w-[40%] maxScreenMobile:text-[0.8rem] 
+                className="w-[40%] maxScreenMobile:responsiveText 
                       flex gap-1 justify-evenly items-center h-full p-2 
                       bg-black border-black rounded-tr-md rounded-br-md _maxScreenMobile:w-fit _maxScreenMobile:p-4"
               >
-                <span className="text-white text-[1rem] block w-fit h-fit italic _maxScreenMobile:hidden">
+                <span className="text-white responsiveText block w-fit h-fit italic _maxScreenMobile:hidden">
                   NEW
                 </span>
               </button>
@@ -849,7 +849,7 @@ export default function UploadStage() {
                 className="w-[40%] flex gap-1 justify-center items-center h-full p-2 bg-black border-none border-black rounded-tr-md rounded-br-md cursor-pointer"
                 onClick={updateCategories}
               >
-                <span className="text-white text-[1rem] block w-fit h-fit italic">
+                <span className="text-white responsiveText block w-fit h-fit italic">
                   ADD
                 </span>
               </button>

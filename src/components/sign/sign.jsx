@@ -16,6 +16,8 @@ import { LoadingAssetSmall2 } from "../../assets/assets";
 import "../../assets/styles/general_css.css";
 import logo_orange from "/imgs/onemorecolor.png";
 import PopUpModal from "../Models/dashboardModel";
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
 
 export default function SignPage() {
   const navigate = useNavigate();
@@ -218,6 +220,41 @@ export default function SignPage() {
 
   return (
     <>
+      <Helmet>
+        <title>{`${isSignupPage ? "Sign Up" : isResetPage ? "Forgot password" : "Sign In"} - PPTLinks `}</title>
+        <meta
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta
+          name="tags"
+          content={`PPT, Presentations, Powerpoint, PPTLinks, PPTLinksSignIn, PPTLinks${isSignupPage ? "SignUp" : isResetPage ? "Forgot password" : "SignIn"}`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.PPTLink.com/${isSignupPage ? "signup" : isResetPage ? "forgot-password" : "signin"}`} />
+        <meta property="og:title" content={`${isSignupPage ? "Sign Up" : isResetPage ? "Forgot password" : "Sign In"} - PPTLinks `} />
+        <meta
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="og:image" content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property="twitter:card" content="website" />
+        <meta
+          property="twitter:url"
+          content={`https://www.PPTLink.com/${isSignupPage ? "signup" : isResetPage ? "forgot-password" : "signin"}`}
+        />
+
+        <meta property="twitter:title" content={`${isSignupPage ? "Sign Up" : isResetPage ? "Forgot password" : "Sign In"} - PPTLinks `} />
+        <meta
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="twitter:image" content={LogoBlack} />
+      </Helmet>
       <PopUpModal
         open={modal}
         onClose={() => { }}
@@ -237,7 +274,7 @@ export default function SignPage() {
         exit="exit"
       >
         <div className="container h-full flex flex-row justify-between items-center gap-10  absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%]">
-          <div className="formwrapper relative w-[38.75rem] bg-[#FFFFF0] max-h-[38.75rem] rounded-[0.9375rem] p-10 maxScreenMobile:px-[0.125rem] !text-[0.8rem] overflow-auto maxScreenMobile:w-full maxScreenMobile:max-h-[90vh]">
+          <div className="formwrapper relative w-[38.75rem] bg-[#FFFFF0] max-h-[38.75rem] rounded-[0.9375rem] p-10 maxScreenMobile:px-[0.125rem] !responsiveText overflow-auto maxScreenMobile:w-full maxScreenMobile:max-h-[90vh]">
             <div className="flex justify-left item-center gap-2 maxScreen:z-50 maxScreenMobile:px-3">
               <Link to="/" className="block text-md mb-3 font-[600]">
                 <img

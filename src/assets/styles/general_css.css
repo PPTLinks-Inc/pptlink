@@ -3,6 +3,11 @@
   transition: all 50ms ease-in-out !important;
 }
 
+.responsiveText {
+  font-size: 0.9rem;
+  line-height: 1.5rem;
+}
+
 .container {
   width: 90%;
   margin: auto;
@@ -120,7 +125,7 @@ button,
   background-blend-mode: hard-light;
 }
 
-.upload_svg_cover::before {
+.uploadSvgCover::before {
   content: "";
   display: block;
   position: absolute;
@@ -131,7 +136,7 @@ button,
   background-color: black;
   z-index: -1;
 }
-.upload_svg_cover::after {
+.uploadSvgCover::after {
   content: "";
   display: block;
   position: absolute;
@@ -141,14 +146,14 @@ button,
   height: 100vh;
   transform: rotateZ(-50deg) translateX(80%) translateY(-100%) scaleX(1.6);
   background: black;
-  z-index: -2;
+  z-index: -1;
   transform-origin: right top;
 }
 @media screen and (max-width: 768px) {
-  .upload_svg_cover::after {
+  .uploadSvgCover::after {
     display: none !important;
   }
-  .upload_svg_cover::before {
+  .uploadSvgCover::before {
     width: 100%;
     background: black !important;
   }

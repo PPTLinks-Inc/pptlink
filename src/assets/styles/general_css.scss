@@ -36,6 +36,11 @@ $blur: blur(6px);
     transition: all 50ms ease-in-out !important;
 }
 
+.responsiveText {
+    font-size: 0.9rem;
+    line-height: 1.5rem;
+}
+
 .container {
     width: 90%;
     margin: auto;
@@ -186,7 +191,7 @@ button,
     // animation: signanim 5s ease-in-out 10ms infinite;
 }
 
-.upload_svg_cover {
+.uploadSvgCover {
     &::before {
         content: "";
         display: block;
@@ -209,7 +214,7 @@ button,
         height: 100vh;
         transform: rotateZ(-50deg) translateX(80%) translateY(-100%) scaleX(1.6);
         background: black;
-        z-index: -2;
+        z-index: -1;
         transform-origin: right top;
     }
 

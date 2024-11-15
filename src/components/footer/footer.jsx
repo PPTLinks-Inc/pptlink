@@ -16,7 +16,7 @@ export default function Footer() {
 
   return (
     <footer
-      className={`footer pt-10 text-[0.8rem] ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
+      className={`footer pt-10 responsiveText ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
     >
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
@@ -33,7 +33,7 @@ export default function Footer() {
               />
               <span className="block w-fit">PPTLINKS</span>
             </Link>
-            <p className="mb-5 text-[1.0rem]">
+            <p className="mb-5 responsiveText">
               PPTLinks is your go-to source for presentation, inspiration,
               resource and expertise. Explore our vast library, collaborate with
               our community and achieve your goal with confidence.
@@ -46,25 +46,25 @@ export default function Footer() {
               <nav className="flex flex-col justify-between align-top">
                 <Link
                   to={HOME}
-                  className="block text-[1.0rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Home
                 </Link>
                 <NavLink
                   to={"/upload"}
-                  className="block text-[1.0rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Upload
                 </NavLink>
                 <NavLink
                   to={"/signin"}
-                  className={`block !text-[1.0rem] ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
+                  className={`block !responsiveText ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign In
                 </NavLink>
                 <NavLink
                   to={SIGNUP}
-                  className={`block !text-[1.0rem] ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
+                  className={`block !responsiveText ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign Up
                 </NavLink>
@@ -77,25 +77,25 @@ export default function Footer() {
               <nav className="flex flex-col justify-between align-top">
                 <NavLink
                   to={DOCUMENT}
-                  className="block text-[1.0rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   All Documents
                 </NavLink>
                 <NavLink
                   to={ABOUT}
-                  className="block text-[1.0rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   About Us
                 </NavLink>
                 <NavLink
                   to="/"
-                  className="block text-[1.0rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   How to Use
                 </NavLink>
                 <NavLink
                   to={LEGAL}
-                  className="block text-[1.0rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Legal
                 </NavLink>
@@ -108,7 +108,7 @@ export default function Footer() {
               <nav className="flex flex-col justify-between align-top">
                 <Link
                   to="/"
-                  className="block text-[1.0rem] py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] leading-[30px]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] leading-[30px]"
                 >
                   You can find us at Nascomsoft in Anguwan Cashew, Off dass
                   road, opposite Elim church, 740102, Yelwa, Bauchi Nigeria
@@ -118,7 +118,7 @@ export default function Footer() {
           </div>
         </div>
         <p
-          className={`py-5 text-center border-t-[1px] ${pathname === "/" ? "border-black" : "border-white"} border-solid text-[1.0rem]`}
+          className={`py-5 text-center border-t-[1px] ${pathname === "/" ? "border-black" : "border-white"} border-solid responsiveText`}
         >
           &copy; PPTLinks {new Date().getFullYear()}. All rights reserved
         </p>

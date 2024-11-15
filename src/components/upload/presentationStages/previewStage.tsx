@@ -137,21 +137,21 @@ export default function PreviewStage() {
                 <li className="block w-full mb-4 px-4">
                   <span>Name</span>
                   <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                  <p className="text-[0.9rem] italic mt-2">
+                  <p className="responsiveText italic mt-2">
                     {presenterName !== "" ? presenterName : "No Name Set"}
                   </p>
                 </li>
                 <li className="block w-full mb-4 px-4">
                   <span>Bio</span>
                   <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                  <p className="text-[0.9rem] italic mt-2">
+                  <p className="responsiveText italic mt-2">
                     {bio !== "" ? bio : "No Bios Set"}
                   </p>
                 </li>
                 <li className="block w-full mb-4 px-4">
                   <span>Social Media Link</span>
                   <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                  <p className="text-[0.9rem] italic mt-2">
+                  <p className="responsiveText italic mt-2">
                     {socialLinks !== "" ? socialLinks : "No Social Link Set"}
                   </p>
                 </li>
@@ -168,28 +168,28 @@ export default function PreviewStage() {
               <li className="block w-full mb-4 px-4">
                 <span>Presentation title</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                <p className="text-[0.9rem] italic mt-2">
+                <p className="responsiveText italic mt-2">
                   {title !== "" ? title : "No Title Set"}
                 </p>
               </li>
               <li className="block w-full mb-4 px-4">
                 <span>Description</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                <p className="text-[0.9rem] italic mt-2">
+                <p className="responsiveText italic mt-2">
                   {description !== "" ? description : "No Description Set"}
                 </p>
               </li>
               <li className="block w-full mb-4 px-4">
                 <span>Privacy</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                <p className="text-[0.9rem] italic mt-2">
+                <p className="responsiveText italic mt-2">
                   {privacy !== "" ? privacy : "No Privacy Set"}
                 </p>
               </li>
               <li className="block w-full mb-4 px-4">
                 <span>Category</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                <p className="text-[0.9rem] italic mt-2">
+                <p className="responsiveText italic mt-2">
                   {selectedCategory.id !== ""
                     ? selectedCategory.name
                     : "No Category Set"}
@@ -198,7 +198,7 @@ export default function PreviewStage() {
               <li className="block w-full mb-4 px-4">
                 <span>Downloadable</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                <p className="text-[0.9rem] italic mt-2">
+                <p className="responsiveText italic mt-2">
                   {downloadable ? "Yes" : "No"}
                 </p>
               </li>
@@ -210,14 +210,14 @@ export default function PreviewStage() {
               <li className="block w-full mb-4 px-4">
                 <span>Date</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                <p className="text-[0.9rem] italic mt-2">
+                <p className="responsiveText italic mt-2">
                   {date ? `Start Date: ${formatDate(date)}` : "No Date Set"}
                 </p>
               </li>
               <li className="block w-full mb-4 px-4">
                 <span>Time</span>
                 <hr className="p-[0.8px] mt-1 bg-black w-[80%] maxScreenMobile:w-full" />
-                <p className="text-[0.9rem] italic mt-2">
+                <p className="responsiveText italic mt-2">
                   {startTime !== ""
                     ? `Start Time(${startTime})`
                     : "No Start Time Set "}
