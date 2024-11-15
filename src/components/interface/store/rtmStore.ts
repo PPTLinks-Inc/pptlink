@@ -114,7 +114,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             }
         } else if (messageData.message === "START_AUDIO") {
             if (presentation.User === "GUEST") {
-                usepresentationStore.setState((state) => ({ ...state, presentation: { ...state.presentation!, audio: true } }));
+                usepresentationStore.setState((state) => ({ ...state, presentation: { ...state.presentation!, audio: true, live: true } }));
                 useModalStore.getState().startPrompt();
             }
         } else if (messageData.message === "END_AUDIO") {
