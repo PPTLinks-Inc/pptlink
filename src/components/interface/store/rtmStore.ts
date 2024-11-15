@@ -208,8 +208,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 removeUser(data.publisher);
                 return;
             }
-            if (!u.userName) return;
-            if (u.userName === "HOST") {
+            if (data.publisher.includes("HOST")) {
                 const host = {
                     id: u.id,
                     userName: u.userName,
@@ -218,6 +217,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 set({ host });
                 return
             };
+            if (!u.userName) return;
             const user = {
                 id: u.id,
                 userName: u.userName,

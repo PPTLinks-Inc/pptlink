@@ -234,6 +234,10 @@ const PresentationContextProvider = (props: { children: any }) => {
     [users]
   );
 
+  const audioConnectionState = useAudioStore(
+    (state) => state.audioConnectionState
+  );
+
   useEffect(
     function () {
       const rtm = useRtmStore.getState().rtm;
@@ -242,8 +246,31 @@ const PresentationContextProvider = (props: { children: any }) => {
       const synced = useSlideStore.getState().synced;
       const presentation = usepresentationStore.getState().presentation;
 
-      if (rtmConnectionState === "CONNECTED") {
+      if (
+        rtmConnectionState === "CONNECTED" ||
+        audioConnectionState === "CONNECTED"
+      ) {
         if (presentation?.audio) {
+          const token = useRtmStore.getState().token;
+          const micState = useAudioStore.getState().micState;
+          rtm?.presence
+            .setState(presentation.liveId, "MESSAGE", {
+              id: token?.rtcUid || "",
+              userName:
+                presentation.User === "HOST"
+                  ? "HOST"
+                  : useRtmStore.getState().userName,
+              micState: micState,
+              audio: "true"
+            })
+            .catch(function () {
+              toast({
+                title: "Error",
+                description: "Failed to set user state",
+                variant: "destructive"
+              });
+            });
+
           rtm?.presence
             .getOnlineUsers(presentation.liveId, "MESSAGE", {
               includedState: true
@@ -260,7 +287,7 @@ const PresentationContextProvider = (props: { children: any }) => {
               const tempUsrs: UserType = {};
               for (let i = 0; i < data.occupants.length; i++) {
                 const u = data.occupants[i];
-                if (u.states.userName === "HOST") {
+                if (u.userId.includes("HOST")) {
                   const host = {
                     id: u.userId,
                     userName: u.states.userName,
@@ -286,6 +313,40 @@ const PresentationContextProvider = (props: { children: any }) => {
                 description: "Failed to update users",
                 variant: "destructive"
               });
+            });
+
+          // handle co-host
+          rtm?.storage
+            .getChannelMetadata(presentation.liveId, "MESSAGE")
+            .then(function (coHost) {
+              useRtmStore.setState({
+                coHostId: coHost?.metadata["co-host"]?.value || ""
+              });
+              const coHostId = useRtmStore.getState().coHostId;
+              if (coHostId === token?.rtcUid) {
+                const swiperRef = useSlideStore.getState().swiperRef;
+                swiperRef.swiper.allowSlideNext = true;
+                usepresentationStore.setState((state) => {
+                  if (!state.presentation) return state;
+                  return {
+                    ...state,
+                    presentation: { ...state.presentation, User: "CO-HOST" }
+                  };
+                });
+              } else if (
+                usepresentationStore.getState().presentation?.User === "CO-HOST"
+              ) {
+                if (useAudioStore.getState().iAmScreenSharing) {
+                  useAudioStore.getState().stopScreenShare();
+                }
+                usepresentationStore.setState((state) => {
+                  if (!state.presentation) return state;
+                  return {
+                    ...state,
+                    presentation: { ...state.presentation, User: "GUEST" }
+                  };
+                });
+              }
             });
         }
 
@@ -333,7 +394,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         }
       }
     },
-    [rtmConnectionState]
+    [rtmConnectionState, audioConnectionState]
   );
 
   useEffect(function () {
