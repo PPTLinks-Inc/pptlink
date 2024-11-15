@@ -14,7 +14,7 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import rotateImage from "../components/interface/assets/rotate.gif";
-import { LoadingAssetBig2 } from "../assets/assets";
+import { LoadingAssetBig, LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import { userContext } from "./userContext";
 import {
@@ -27,6 +27,19 @@ import { useAudioStore } from "@/components/interface/store/audioStore";
 import { useSlideStore } from "@/components/interface/store/slideStore";
 import { toast } from "@/hooks/use-toast";
 import { MIC_STATE } from "@/constants/routes";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogOverlay
+} from "@/components/ui/alert-dialog";
+import { useModalStore } from "@/components/interface/store/modalStore";
+import { Button } from "@/components/ui/button";
 
 const contextValues = {
   fullScreenShow: false,
@@ -74,12 +87,10 @@ const PresentationContextProvider = (props: { children: any }) => {
   }, []);
 
   const setToken = useRtmStore((state) => state.setToken);
-  const setStartPrompt = usepresentationStore(
-    (state) => state.setShowStartPrompt
-  );
   const setPresentation = usepresentationStore(
     (state) => state.setPresentation
   );
+  const startPrompt = useModalStore((state) => state.startPrompt);
   const initRTM = useRtmStore((state) => state.init);
   const setUserName = useRtmStore((state) => state.setUserName);
 
@@ -109,7 +120,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       setUserUid(data.presentation.rtc.rtcUid);
 
       if (data.presentation.audio) {
-        setStartPrompt(true);
+        startPrompt();
       }
       return data.presentation;
     }
@@ -164,6 +175,9 @@ const PresentationContextProvider = (props: { children: any }) => {
               toast({
                 description: "You are no longer a co-host of this presentation"
               });
+              if (useAudioStore.getState().iAmScreenSharing) {
+                useAudioStore.getState().stopScreenShare();
+              }
               useSlideStore.setState({ lockSlide: false });
               setPresentation({ ...tempPresentation, User: "GUEST" });
             }
@@ -220,6 +234,10 @@ const PresentationContextProvider = (props: { children: any }) => {
     [users]
   );
 
+  const audioConnectionState = useAudioStore(
+    (state) => state.audioConnectionState
+  );
+
   useEffect(
     function () {
       const rtm = useRtmStore.getState().rtm;
@@ -228,8 +246,31 @@ const PresentationContextProvider = (props: { children: any }) => {
       const synced = useSlideStore.getState().synced;
       const presentation = usepresentationStore.getState().presentation;
 
-      if (rtmConnectionState === "CONNECTED") {
+      if (
+        rtmConnectionState === "CONNECTED" ||
+        audioConnectionState === "CONNECTED"
+      ) {
         if (presentation?.audio) {
+          const token = useRtmStore.getState().token;
+          const micState = useAudioStore.getState().micState;
+          rtm?.presence
+            .setState(presentation.liveId, "MESSAGE", {
+              id: token?.rtcUid || "",
+              userName:
+                presentation.User === "HOST"
+                  ? "HOST"
+                  : useRtmStore.getState().userName,
+              micState: micState,
+              audio: "true"
+            })
+            .catch(function () {
+              toast({
+                title: "Error",
+                description: "Failed to set user state",
+                variant: "destructive"
+              });
+            });
+
           rtm?.presence
             .getOnlineUsers(presentation.liveId, "MESSAGE", {
               includedState: true
@@ -246,7 +287,7 @@ const PresentationContextProvider = (props: { children: any }) => {
               const tempUsrs: UserType = {};
               for (let i = 0; i < data.occupants.length; i++) {
                 const u = data.occupants[i];
-                if (u.states.userName === "HOST") {
+                if (u.userId.includes("HOST")) {
                   const host = {
                     id: u.userId,
                     userName: u.states.userName,
@@ -272,6 +313,40 @@ const PresentationContextProvider = (props: { children: any }) => {
                 description: "Failed to update users",
                 variant: "destructive"
               });
+            });
+
+          // handle co-host
+          rtm?.storage
+            .getChannelMetadata(presentation.liveId, "MESSAGE")
+            .then(function (coHost) {
+              useRtmStore.setState({
+                coHostId: coHost?.metadata["co-host"]?.value || ""
+              });
+              const coHostId = useRtmStore.getState().coHostId;
+              if (coHostId === token?.rtcUid) {
+                const swiperRef = useSlideStore.getState().swiperRef;
+                swiperRef.swiper.allowSlideNext = true;
+                usepresentationStore.setState((state) => {
+                  if (!state.presentation) return state;
+                  return {
+                    ...state,
+                    presentation: { ...state.presentation, User: "CO-HOST" }
+                  };
+                });
+              } else if (
+                usepresentationStore.getState().presentation?.User === "CO-HOST"
+              ) {
+                if (useAudioStore.getState().iAmScreenSharing) {
+                  useAudioStore.getState().stopScreenShare();
+                }
+                usepresentationStore.setState((state) => {
+                  if (!state.presentation) return state;
+                  return {
+                    ...state,
+                    presentation: { ...state.presentation, User: "GUEST" }
+                  };
+                });
+              }
             });
         }
 
@@ -303,18 +378,23 @@ const PresentationContextProvider = (props: { children: any }) => {
             prevHostSlide: slideData.hostSlide
           };
           setSlideData(slideData);
-          rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
+          rtm?.storage.updateChannelMetadata(
+            presentation.liveId,
+            "MESSAGE",
+            [
+              {
+                key: "slideData",
+                value: JSON.stringify(slideData)
+              }
+            ],
             {
-              key: "slideData",
-              value: JSON.stringify(slideData)
+              addUserId: true
             }
-          ], {
-            addUserId: true
-          });
+          );
         }
       }
     },
-    [rtmConnectionState]
+    [rtmConnectionState, audioConnectionState]
   );
 
   useEffect(function () {
@@ -345,6 +425,15 @@ const PresentationContextProvider = (props: { children: any }) => {
     };
   }, []);
 
+  const isModalOpen = useModalStore((state) => state.isOpen);
+  const modalTitle = useModalStore((state) => state.title);
+  const modalDescription = useModalStore((state) => state.description);
+  const modalContent = useModalStore((state) => state.content);
+  const modalIsLoading = useModalStore((state) => state.isLoading);
+  const modalActionText = useModalStore((state) => state.actionText);
+  const modalOnClose = useModalStore((state) => state.onClose);
+  const modalOnSubmit = useModalStore((state) => state.onSubmit);
+
   return (
     <PresentationContext.Provider
       value={{
@@ -355,18 +444,55 @@ const PresentationContextProvider = (props: { children: any }) => {
       }}
     >
       {presentationQuery.isLoading ? (
-        <div className="flex justify-center items-center h-screen w-full">
+        <div className="bg-black flex justify-center items-center h-screen w-full">
           <LoadingAssetBig2 />
         </div>
       ) : presentationQuery.isError ? (
         <PresentationNotFound />
       ) : (
-        <>
+        <AlertDialog open={isModalOpen}>
+          <AlertDialogOverlay className="backdrop-blur-sm bg-black/20" />
+          <AlertDialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-center">
+                {modalTitle}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-center">
+                {modalDescription}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            {modalIsLoading ? (
+              <div className="flex justify-center items-center">
+                <LoadingAssetBig />
+              </div>
+            ) : (
+              modalContent
+            )}
+
+            {!modalIsLoading && (
+              <AlertDialogFooter className="sm:justify-center">
+                <AlertDialogCancel
+                  onClick={modalIsLoading ? () => {} : modalOnClose}
+                  asChild
+                >
+                  <Button className="bg-black hover:black/20">Cancel</Button>
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={modalOnSubmit}
+                  className="bg-black hover:bg-white hover:text-black"
+                  autoFocus
+                >
+                  {modalActionText}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            )}
+          </AlertDialogContent>
           {isMobilePhone && showPrompt && (
             <OrientationPrompt setShowPrompt={setShowPrompt} />
           )}
           {props.children}
-        </>
+        </AlertDialog>
       )}
     </PresentationContext.Provider>
   );
