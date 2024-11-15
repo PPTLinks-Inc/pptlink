@@ -9,6 +9,7 @@ export interface presentationData {
     pdfLink: string;
     downloadable: boolean;
     presenter: string;
+    thumbnail: string;
     rtc: {
         rtcUid: string;
         rtcToken: string | undefined;

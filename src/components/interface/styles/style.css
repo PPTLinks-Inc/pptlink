@@ -117,13 +117,13 @@ canvas {
 
 /* if network is good therefore the class 'good' */
 .network__bar.good :nth-child(1) {
-    background-color: #22c55e;
+    background-color: #05FF00;
 }
 
 .network__bar.good :nth-child(2) {
-    background-color: #22c55e;
+    background-color: #05FF00;
 }
 
 .network__bar.good :nth-child(3) {
-    background-color: #22c55e;
+    background-color: #05FF00;
 }

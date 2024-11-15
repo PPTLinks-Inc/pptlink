@@ -89,6 +89,9 @@ export default function Slider({
   );
   const { height: windowHeight } = useWindowSize();
   const hide = useAudioStore((state) => state.screenShareEnabled);
+  const screenShareMinimized = useAudioStore(
+    (state) => state.screenShareMinimized
+  );
 
   useEffect(() => {
     // Update window height state when window is resized
@@ -151,13 +154,17 @@ export default function Slider({
   return (
     <div
       ref={slideContainer}
-      className={cn("w-full", hide && "!mt-0 overflow-y-hidden")}
+      className={cn("w-full h-full", hide && "!mt-0 overflow-y-hidden")}
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
     >
       <div
         id="video-container"
-        className={cn("h-[70vh] w-full hidden", hide && "block", orientation.type.includes("landscape") && "h-[100vh]")}
+        className={cn(
+          "w-full aspect-video hidden",
+          hide && !screenShareMinimized && "block",
+          orientation.type.includes("portrait") && "mt-20"
+        )}
       ></div>
       <Document
         file={file}
@@ -168,7 +175,10 @@ export default function Slider({
         }
         loading={<FullScreenLoading progress={fileDownloadProgress} />}
         error={<LoadError />}
-        className={cn(hide && "hidden")}
+        className={cn(
+          orientation.type.includes("portrait") && "mt-20",
+          hide && !screenShareMinimized && "hidden"
+        )}
       >
         <swiper-container
           ref={swiperRef}

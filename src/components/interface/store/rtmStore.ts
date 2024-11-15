@@ -7,6 +7,7 @@ import { Message, useMessageStore } from "./messageStore";
 import { useAudioStore } from "./audioStore";
 import { toast } from "@/hooks/use-toast";
 import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
+import { useModalStore } from "./modalStore";
 
 const statusPriority: { [key: string]: number } = {
     REQ_MIC: 1,
@@ -113,11 +114,12 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             }
         } else if (messageData.message === "START_AUDIO") {
             if (presentation.User === "GUEST") {
-                usepresentationStore.setState((state) => ({ ...state, showStartPrompt: true, presentation: { ...state.presentation!, audio: true } }));
+                usepresentationStore.setState((state) => ({ ...state, presentation: { ...state.presentation!, audio: true } }));
+                useModalStore.getState().startPrompt();
             }
         } else if (messageData.message === "END_AUDIO") {
             if (presentation.User !== "HOST") {
-                usepresentationStore.setState({ showStartPrompt: false });
+                useModalStore.setState({ isOpen: false });
                 endAudio({
                     hostEnd: true
                 });
@@ -206,8 +208,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 removeUser(data.publisher);
                 return;
             }
-            if (!u.userName) return;
-            if (u.userName === "HOST") {
+            if (data.publisher.includes("HOST")) {
                 const host = {
                     id: u.id,
                     userName: u.userName,
@@ -216,6 +217,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 set({ host });
                 return
             };
+            if (!u.userName) return;
             const user = {
                 id: u.id,
                 userName: u.userName,
