@@ -8,16 +8,16 @@
   transition: all 400ms ease-in-out !important;
 }
 
-*::-webkit-scrollbar {
+/* *::-webkit-scrollbar { */
   /* width: 0;
   height: 0; */
   /* margin-right: 1rem; */
   /* @apply w-0 h-0 md:w-[0.3rem] md:h-[0.2rem] */
-  @apply w-0 h-0;
+  /* @apply w-0 h-0; */
   /* display: none; */
-}
+/* } */
 
-*::-webkit-scrollbar-thumb {
+/* *::-webkit-scrollbar-thumb {
   @apply bg-black/50 border-2 w-1 border-white rounded-2xl;
 }
 
@@ -31,7 +31,7 @@
 
 *::-webkit-scrollbar-thumb:active {
   @apply bg-black rounded-2xl;
-}
+} */
 
 body {
   --tw-bg-opacity: 1;

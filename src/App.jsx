@@ -59,9 +59,11 @@ const Institutions = lazy(
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
-  config.headers.Authorization = `Bearer ${localStorage.getItem(
-    "accessToken"
-  )}`;
+  if (!config.url.includes("cloudinary")) {
+    config.headers.Authorization = `Bearer ${localStorage.getItem(
+      "accessToken"
+    )}`;
+  }
   return config;
 });
 
