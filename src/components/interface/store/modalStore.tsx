@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAudioStore } from "./audioStore";
 import { useRtmStore } from "./rtmStore";
 import { useSlideStore } from "./slideStore";
+import ImageViewer from "../Modals/ImageViewer";
 
 function NameForm() {
   const userName = useRtmStore((state) => state.userName);
@@ -27,6 +28,8 @@ function NameForm() {
 
 interface ModalStore {
   isOpen: boolean;
+  showBottomAction: boolean;
+  setIsOpen: (open: boolean) => void;
   title: string;
   description: string;
   content: React.ReactNode | null;
@@ -46,10 +49,15 @@ interface ModalStore {
     userId: string;
     action: "make" | "remove" | "replace";
   }) => void;
+  showImagePrompt: (images: string[]) => void;
 }
 
 export const useModalStore = create<ModalStore>((set, get) => ({
   isOpen: false,
+  showBottomAction: true,
+  setIsOpen: function (open) {
+    set({ isOpen: open });
+  },
   title: "",
   description: "",
   content: null,
@@ -62,6 +70,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
     const startAudio = useAudioStore.getState().startAudio;
     set({
       isOpen: true,
+      showBottomAction: true,
       isLoading: false,
       title:
         presentation?.User === "HOST"
@@ -78,7 +87,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
             : "Start"
           : "Join",
       onClose: () => {
-        set({ isOpen: false });
+        get().setIsOpen(false);
       },
       onSubmit: () => {
         if (presentation?.User === "HOST") {
@@ -104,12 +113,13 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   namePrompt: function () {
     set({
       isOpen: true,
+      showBottomAction: true,
       title: "Enter your name",
       description: "",
       content: <NameForm />,
       actionText: "Join",
       onClose: () => {
-        set({ isOpen: false });
+        get().setIsOpen(false);
       },
       onSubmit: () => {
         const userName = useRtmStore.getState().userName;
@@ -143,15 +153,16 @@ export const useModalStore = create<ModalStore>((set, get) => ({
     const presentation = usepresentationStore.getState().presentation;
     set({
       isOpen: true,
+      showBottomAction: true,
       title: presentation?.User === "HOST" ? "End Audio" : "Leave Audio",
       description:
         presentation?.User === "HOST"
           ? "Are you sure you want to end the audio?"
           : "Are you sure you want to leave the audio?",
       content: null,
-      actionText: presentation?.User ===  "HOST" ? "End" : "Leave",
+      actionText: presentation?.User === "HOST" ? "End" : "Leave",
       onClose: () => {
-        set({ isOpen: false });
+        get().setIsOpen(false);
       },
       onSubmit: () => {
         set({ isLoading: true });
@@ -182,12 +193,13 @@ export const useModalStore = create<ModalStore>((set, get) => ({
     const rtm = useRtmStore.getState().rtm;
     set({
       isOpen: true,
+      showBottomAction: true,
       title,
       description,
       content: null,
       actionText,
       onClose: () => {
-        set({ isOpen: false });
+        get().setIsOpen(false);
       },
       onSubmit: () => {
         set({ isLoading: true });
@@ -213,6 +225,22 @@ export const useModalStore = create<ModalStore>((set, get) => ({
             description: successMessage
           });
         });
+      }
+    });
+  },
+  showImagePrompt: function (images) {
+    set({
+      isOpen: true,
+      showBottomAction: false,
+      title: "Images",
+      description: "",
+      content: <ImageViewer images={images} />,
+      actionText: "Close",
+      onClose: () => {
+        // get().setIsOpen(false);
+      },
+      onSubmit: () => {
+        // get().setIsOpen(false);
       }
     });
   }
