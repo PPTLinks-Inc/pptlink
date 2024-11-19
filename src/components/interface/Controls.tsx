@@ -222,7 +222,9 @@ export default function Controls({
   const screenShareMinimized = useAudioStore(
     (state) => state.screenShareMinimized
   );
-  const toggleScreenMinimize = useOptionsStore((state) => state.toggleScreenMinimize);
+  const toggleScreenMinimize = useOptionsStore(
+    (state) => state.toggleScreenMinimize
+  );
 
   return (
     <div
@@ -239,7 +241,10 @@ export default function Controls({
       )}
       <div className="flex flex-row gap-20 items-center justify-center relative w-full mb-5">
         {screenShareEnabled && (
-          <button onClick={toggleScreenMinimize} className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-20 left-5 cursor-pointer">
+          <button
+            onClick={toggleScreenMinimize}
+            className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-20 left-5 cursor-pointer"
+          >
             {screenShareMinimized ? (
               <p className="text-white">Screen Share</p>
             ) : (
