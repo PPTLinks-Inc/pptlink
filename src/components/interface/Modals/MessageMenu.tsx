@@ -3,7 +3,7 @@ import { IoReturnUpBackOutline } from "react-icons/io5";
 import { IoSendOutline, IoImages } from "react-icons/io5";
 import { BsArrowDown } from "react-icons/bs";
 import Menu from "./Menu";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { Message, useMessageStore } from "../store/messageStore";
 import { useIntersection } from "react-use";
 import { useRtmStore } from "../store/rtmStore";
@@ -12,6 +12,9 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { useModalStore } from "../store/modalStore";
+import CircularProgressBar from "@/components/ui/CircularProgress";
+import { cn } from "@/lib/utils";
+import { PresentationContext } from "@/contexts/presentationContext";
 
 export default function MessageMenu({
   open,
@@ -29,26 +32,13 @@ export default function MessageMenu({
   const sendMessage = useMessageStore((state) => state.sendMessage);
   const unreadMessages = useMessageStore((state) => state.unReadMessages);
 
-  // Add this dummy message for styling
-  const dummyImageMessage: Message = {
-    id: "dummy-image-123",
-    type: "image",
-    content: "",
-    sender: "Test User",
-    senderId: "test-user-id",
-    time: "12:00 PM",
-    images: [
-      "https://res.cloudinary.com/dsmydljex/image/upload/v1731965361/chat/HNpkTtcUNp/wallpaperflare.com_wallpaper_ohdhxr.jpg",
-      "https://res.cloudinary.com/dsmydljex/image/upload/v1731965361/chat/HNpkTtcUNp/wallpaperflare.com_wallpaper_ohdhxr.jpg",
-      "https://res.cloudinary.com/dsmydljex/image/upload/v1731965361/chat/HNpkTtcUNp/wallpaperflare.com_wallpaper_ohdhxr.jpg",
-      "https://res.cloudinary.com/dsmydljex/image/upload/v1731965361/chat/HNpkTtcUNp/wallpaperflare.com_wallpaper_ohdhxr.jpg",
-      "https://res.cloudinary.com/dsmydljex/image/upload/v1731965361/chat/HNpkTtcUNp/wallpaperflare.com_wallpaper_ohdhxr.jpg",
-      "https://res.cloudinary.com/dsmydljex/image/upload/v1731965361/chat/HNpkTtcUNp/wallpaperflare.com_wallpaper_ohdhxr.jpg"
-    ]
-  };
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const [userText, setUserText] = useState("");
   const messageContainer = useRef<HTMLDivElement>(null);
+
+  const { isMobilePhone } = useContext(PresentationContext);
 
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
@@ -117,7 +107,7 @@ export default function MessageMenu({
   }
 
   function handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !isMobilePhone) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -129,37 +119,83 @@ export default function MessageMenu({
     }
   }
 
+  const fileRef = useRef<HTMLInputElement>(null);
+
   const showImagePrompt = useModalStore((state) => state.showImagePrompt);
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.currentTarget.files;
-    if (!files) return;
+    if (!files) {
+      fileRef.current!.value = "";
+      return;
+    }
 
-    const { data: signData } = await axios.get(
-      `${SERVER_URL}/api/v1/auth/signUpload/${presentation?.liveId}`
-    );
-
-    const formData = new FormData();
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      formData.append("file", file);
-      formData.append("api_key", signData.apiKey);
-      formData.append("timestamp", signData.timestamp);
-      formData.append("signature", signData.signature);
-      formData.append("folder", `chat/${presentation?.liveId}`);
-
-      const { data } = await axios.post(
-        `https://api.cloudinary.com/v1_1/${signData.cloudName}/image/upload`,
-        formData
+    try {
+      scrollToBottom();
+      setUploading(true);
+      const { data: signData } = await axios.get(
+        `${SERVER_URL}/api/v1/auth/signUpload/${presentation?.liveId}`
       );
 
-      console.log(data);
+      const formData = new FormData();
+
+      const totalFiles = files.length;
+      let uploadedFiles = 0;
+      let totalProgress = 0;
+      const images: string[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        formData.append("file", file);
+        formData.append("api_key", signData.apiKey);
+        formData.append("timestamp", signData.timestamp);
+        formData.append("signature", signData.signature);
+        formData.append("folder", `chat/${presentation?.liveId}`);
+
+        const { data } = await axios.post(
+          `https://api.cloudinary.com/v1_1/${signData.cloudName}/image/upload`,
+          formData,
+          {
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const fileProgress =
+                  (progressEvent.loaded / progressEvent.total) * 100;
+                totalProgress =
+                  (uploadedFiles * 100 + fileProgress) / totalFiles;
+                setUploadProgress(totalProgress);
+                // Update your progress UI here using totalProgress
+              }
+            }
+          }
+        );
+        images.push(data.secure_url);
+        uploadedFiles++;
+      }
+
+      const messageData: Message = {
+        id: `${presentation?.User === "HOST" ? "host.id" : tokens?.rtcUid}-${Date.now()}`,
+        type: "image",
+        content: "",
+        sender: presentation?.User === "HOST" ? "HOST" : userName,
+        senderId:
+          presentation?.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
+        time: "",
+        images
+      };
+
+      await sendMessage(messageData);
+      setUploadProgress(0);
+      setUploading(false);
+      fileRef.current!.value = "";
+    } catch (error) {
+      fileRef.current!.value = "";
+      setUploading(false);
+      alert("Error uploading image");
     }
   }
 
   return (
     <Menu right={true} open={open} onClose={onClose}>
-      <div className="left-0 right-0 z-50 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[#FF8B1C] border-x-[#FF8B1C]  border-[1px] fixed w-full bg-[#FFFFDB]">
+      <div className="left-0 right-0 z-50 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[#FF8B1C] border-x-[#FF8B1C] border-[1px] fixed w-full bg-[#FFFFDB]">
         <div className="flex items-center">
           <h4 className="text-2xl text-center text-black font-bold">
             Live Chat
@@ -203,53 +239,55 @@ export default function MessageMenu({
                     {message.content}
                   </p>
                 )}
+
+                {message.type === "image" && (
+                  <div
+                    className={cn(
+                      "grid grid-cols-2 gap-2 md:w-4/6",
+                      (message.images?.length || 0) > 2 && "grid-rows-2"
+                    )}
+                    onClick={() => {
+                      showImagePrompt(message?.images || []);
+                    }}
+                  >
+                    {message.images?.slice(0, 4).map((img, index) => (
+                      <div key={index} className="w-full relative">
+                        <img
+                          className="w-full object-cover rounded-lg"
+                          src={img.replace(
+                            "/upload/",
+                            "/upload/w_64,h_36,c_fill/"
+                          )}
+                          alt={`Image ${index + 1}`}
+                        />
+                        {index === 3 && message.images!.length > 4 && (
+                          <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-lg font-bold">
+                              +{message.images!.length - 4}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}
-          <div
-            key={dummyImageMessage.id}
-            className="w-full flex gap-3 justify-start items-start cursor-pointer"
-          >
-            <img
-              className="w-8 rounded-full"
-              src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${dummyImageMessage.senderId}`}
-              alt={`user Image`}
-            />
-            <div className="flex gap-3 flex-col w-full">
-              <div className="flex gap-3">
-                <p
-                  className="text-sm font-light"
-                  title={dummyImageMessage.sender}
-                >
-                  {dummyImageMessage.sender}
-                </p>
-                <p className="text-sm font-light">{dummyImageMessage.time}</p>
-              </div>
-              <div
-                className="grid grid-rows-2 grid-cols-2 gap-2 md:w-4/6"
-                onClick={() => {
-                  showImagePrompt(dummyImageMessage?.images || []);
-                }}
-              >
-                {dummyImageMessage.images?.slice(0, 4).map((img, index) => (
-                  <div key={index} className="w-full relative">
-                    <img
-                      className="w-full object-cover rounded-lg"
-                      src={img.replace("/upload/", "/upload/w_64,h_36,c_fill/")}
-                      alt={`Image ${index + 1}`}
-                    />
-                    {index === 3 && dummyImageMessage.images!.length > 4 && (
-                      <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
-                        <span className="text-white text-lg font-bold">
-                          +{dummyImageMessage.images!.length - 4}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+
+          {uploading && (
+            <div className="w-full flex justify-center items-center flex-col gap-3">
+              <CircularProgressBar
+                size={50}
+                progress={uploadProgress}
+                strokeWidth={5}
+                progressColor="#FF8B1C"
+                circleColor="#FFFFDB"
+              />
+              <p className="text-lg md:text-sm">Uploading...</p>
             </div>
-          </div>
+          )}
+
           <div
             ref={intersectionRef}
             className="h-10 w-full flex gap-3 justify-start items-start"
@@ -257,12 +295,14 @@ export default function MessageMenu({
         </div>
         <div className="w-full flex p-3 border-t-[1px] border-[#FF8B1C]">
           <input
+            ref={fileRef}
             type="file"
             id="image"
             className="hidden"
             accept="image/*"
             onChange={handleFileChange}
             multiple
+            disabled={uploading}
           />
           <button className="bg-white rounded-l-xl border-[1px] border-[#FF8B1C] border-r-0">
             <label
@@ -283,7 +323,6 @@ export default function MessageMenu({
               onKeyPress={handleKeyPress}
             />
             <button
-              // type="submit"
               className="rounded-lg text-center flex justify-center items-center"
               onClick={handleSendMessage}
             >

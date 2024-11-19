@@ -32,7 +32,7 @@ function ImageViewer({ images }: { images: string[] }) {
                 <img
                   src={image}
                   alt="image"
-                  className="max-w-full object-contain max-h-full transition-transform duration-250 active:scale-200"
+                  className="object-contain aspect-video w-full"
                   loading="lazy"
                 />
               </div>
