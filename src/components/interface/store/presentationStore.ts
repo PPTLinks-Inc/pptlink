@@ -15,6 +15,7 @@ interface presentationStore {
     showOptions: boolean;
     setShowOptions: (value: boolean) => void;
     makeLive: () => Promise<void>;
+    resetStore: () => void;
 }
 
 export const usepresentationStore = create<presentationStore>((set, get) => ({
@@ -63,5 +64,14 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
                 variant: "destructive"
             })
         }
+    },
+    resetStore: function () {
+        set({
+            presentation: null,
+            userName: "",
+            showUsersList: false,
+            showMessage: false,
+            showOptions: false
+        });
     }
 }));

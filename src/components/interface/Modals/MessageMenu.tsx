@@ -32,7 +32,6 @@ export default function MessageMenu({
   const sendMessage = useMessageStore((state) => state.sendMessage);
   const unreadMessages = useMessageStore((state) => state.unReadMessages);
 
-  const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const [userText, setUserText] = useState("");
@@ -122,16 +121,17 @@ export default function MessageMenu({
   const fileRef = useRef<HTMLInputElement>(null);
 
   const showImagePrompt = useModalStore((state) => state.showImagePrompt);
-  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.currentTarget.files;
-    if (!files) {
-      fileRef.current!.value = "";
-      return;
-    }
 
-    try {
+  const sendImages = useMutation({
+    mutationFn: async function (e: React.ChangeEvent<HTMLInputElement>) {
+      const files = e.target.files;
+      if (!files) {
+        fileRef.current!.value = "";
+        return;
+      }
+
       scrollToBottom();
-      setUploading(true);
+      setUploadProgress(0);
       const { data: signData } = await axios.get(
         `${SERVER_URL}/api/v1/auth/signUpload/${presentation?.liveId}`
       );
@@ -184,14 +184,13 @@ export default function MessageMenu({
 
       await sendMessage(messageData);
       setUploadProgress(0);
-      setUploading(false);
       fileRef.current!.value = "";
-    } catch (error) {
+    },
+    onError: function() {
       fileRef.current!.value = "";
-      setUploading(false);
-      alert("Error uploading image");
+      alert("Failed to upload images");
     }
-  }
+  });
 
   return (
     <Menu right={true} open={open} onClose={onClose}>
@@ -243,7 +242,7 @@ export default function MessageMenu({
                 {message.type === "image" && (
                   <div
                     className={cn(
-                      "grid grid-cols-2 gap-2 md:w-4/6",
+                      "grid grid-cols-2 gap-2 md:w-4/6 cursor-zoom-in",
                       (message.images?.length || 0) > 2 && "grid-rows-2"
                     )}
                     onClick={() => {
@@ -275,7 +274,7 @@ export default function MessageMenu({
             </div>
           ))}
 
-          {uploading && (
+          {sendImages.isPending && (
             <div className="w-full flex justify-center items-center flex-col gap-3">
               <CircularProgressBar
                 size={50}
@@ -300,9 +299,9 @@ export default function MessageMenu({
             id="image"
             className="hidden"
             accept="image/*"
-            onChange={handleFileChange}
+            onChange={(e) => !sendImages.isPending && sendImages.mutate(e)}
             multiple
-            disabled={uploading}
+            disabled={sendImages.isPending}
           />
           <button className="bg-white rounded-l-xl border-[1px] border-[#FF8B1C] border-r-0">
             <label

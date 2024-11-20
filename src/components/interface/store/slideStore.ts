@@ -23,6 +23,7 @@ interface SlideStore {
     slidesEvent: (event: RTMEvents.StorageEvent) => void;
     slideHandler: () => void;
     init: () => Promise<void>;
+    resetStore: () => void;
 }
 
 export const useSlideStore = create<SlideStore>((set, get) => ({
@@ -220,5 +221,18 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
                 }
             }
         }
+    },
+    resetStore: function () {
+        set({
+            debounceTimer: null,
+            lockSlide: false,
+            slideData: {
+                maxSlides: 0,
+                hostSlide: 0,
+                prevHostSlide: 0
+            },
+            swiperRef: null,
+            synced: false
+        });
     }
 }));

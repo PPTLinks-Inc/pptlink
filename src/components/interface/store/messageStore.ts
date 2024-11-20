@@ -24,6 +24,7 @@ interface MessageStore {
         sender,
         senderId
     }: Message) => Promise<void>;
+    resetStore: () => void;
 }
 
 export const useMessageStore = create<MessageStore>(function (set) {
@@ -38,6 +39,9 @@ export const useMessageStore = create<MessageStore>(function (set) {
 
             if (!rtm || !liveId) return;
             await rtm.publish(liveId, JSON.stringify(message));
+        },
+        resetStore: function() {
+            set({ readMessages: [], unReadMessages: [] });
         }
     }
 });
