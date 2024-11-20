@@ -50,6 +50,8 @@ interface ModalStore {
     action: "make" | "remove" | "replace";
   }) => void;
   showImagePrompt: (images: string[]) => void;
+
+  resetStore: () => void;
 }
 
 export const useModalStore = create<ModalStore>((set, get) => ({
@@ -242,6 +244,19 @@ export const useModalStore = create<ModalStore>((set, get) => ({
       onSubmit: () => {
         // get().setIsOpen(false);
       }
+    });
+  },
+  resetStore: function () {
+    set({
+      isOpen: false,
+      showBottomAction: true,
+      title: "",
+      description: "",
+      content: null,
+      actionText: "",
+      onClose: () => {},
+      onSubmit: () => {},
+      isLoading: false
     });
   }
 }));

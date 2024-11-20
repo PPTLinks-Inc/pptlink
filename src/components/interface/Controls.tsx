@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState, lazy } from "react";
 import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoIosMic } from "react-icons/io";
@@ -15,12 +15,10 @@ import { PresentationContext } from "../../contexts/presentationContext";
 import "./styles/style.css";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
-import MessageMenu from "./Modals/MessageMenu";
 import { MIC_STATE } from "../../constants/routes";
 import axios from "axios";
 import download from "./download";
 import { useMessageStore } from "./store/messageStore";
-import OptionMenu from "./Modals/optionMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usepresentationStore } from "./store/presentationStore";
 import { useAudioStore } from "./store/audioStore";
@@ -28,6 +26,9 @@ import { useRtmStore } from "./store/rtmStore";
 import { useSlideStore } from "./store/slideStore";
 import { useModalStore } from "./store/modalStore";
 import { useOptionsStore } from "./store/optionsStore";
+
+const MessageMenu = lazy(() => import("./Modals/MessageMenu"));
+const OptionMenu = lazy(() => import("./Modals/optionMenu"));
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({

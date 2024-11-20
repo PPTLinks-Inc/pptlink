@@ -44,6 +44,7 @@ interface RtmStore {
     messageListerner: (message: RTMEvents.MessageEvent) => Promise<void>;
     presencesEvent: (data: RTMEvents.PresenceEvent) => void;
     handleUserDataChange: () => (event: RTMEvents.PresenceEvent) => void;
+    resetStore: () => void;
 };
 
 const endAudio = useAudioStore.getState().endAudio;
@@ -259,5 +260,18 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             }
                 , 1000);
         }
+    },
+    resetStore: function () {
+        set({
+            userName: "",
+            token: null,
+            audio: null,
+            status: "DISCONNECTED",
+            rtm: null,
+            host: null,
+            coHostId: "",
+            users: {},
+            sortedUsers: []
+        });
     }
 }));

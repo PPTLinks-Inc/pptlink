@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useRef, useState, useContext, useEffect } from "react";
+import { useRef, useState, useContext, useEffect, lazy, Suspense } from "react";
 import { useOrientation } from "react-use";
-import Header from "./Header";
-import Slider from "./Slider";
-import Controls from "./Controls";
+// import Header from "./Header";
+// import Slider from "./Slider";
+// import Controls from "./Controls";
 import { PresentationContext } from "../../contexts/presentationContext";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import { useRtmStore } from "./store/rtmStore";
 import { useAudioStore } from "./store/audioStore";
 import { Toaster } from "@/components/ui/toaster";
 // import { motion } from "framer-motion";
+
+const Header = lazy(() => import("./Header"));
+const Slider = lazy(() => import("./Slider"));
+const Controls = lazy(() => import("./Controls"));
 
 let wakeLock: WakeLockSentinel | null = null;
 let setTimerActive: any = null;
@@ -112,7 +116,11 @@ function Interface() {
   }
 
   function handleMouseClick(e: any) {
-    if (e.target.tagName === "DIV" || e.target.tagName === "SPAN" || e.target.tagName === "VIDEO") {
+    if (
+      e.target.tagName === "DIV" ||
+      e.target.tagName === "SPAN" ||
+      e.target.tagName === "VIDEO"
+    ) {
       if (actionsActive) {
         setActionsActive(false);
         if (setTimerActive) {
@@ -137,22 +145,26 @@ function Interface() {
           <p className="text-white text-xl">Reconnecting Audio</p>
         </div>
       )}
-      <Header actionsActive={actionsActive} />
-      {/* <motion.div ref={constraintsRef} className="relative h-screen"> */}
-      <Slider
-        setIsLoaded={setIsLoaded}
-        handleMouseMove={handleMouseMove}
-        handleMouseClick={handleMouseClick}
-      />
-
-      {/* <motion.div
-          drag="y"
-          dragConstraints={constraintsRef}
-          className="cursor-grab rounded w-[200px] h-[100px] absolute bg-black top-5 left-5 z-50"
+      <Suspense
+        fallback={
+          <div className="flex flex-col justify-center items-center h-screen bg-black">
+            <LoadingAssetBig2 />
+            <p className="text-center text-white">Loading presentation interface...</p>
+          </div>
+        }
+      >
+        <Header actionsActive={actionsActive} />
+        {/* <motion.div ref={constraintsRef} className="relative h-screen"> */}
+        <Slider
+          setIsLoaded={setIsLoaded}
+          handleMouseMove={handleMouseMove}
+          handleMouseClick={handleMouseClick}
         />
-      </motion.div> */}
 
-      {loaded && <Controls containerRef={ref} actionsActive={actionsActive} />}
+        {loaded && (
+          <Controls containerRef={ref} actionsActive={actionsActive} />
+        )}
+      </Suspense>
       {status.online === true ? (
         <div
           className={`text-center fixed bottom-0 transition-all duration-500 z-40 text-white w-full bg-green-500 font-bold px-2`}
