@@ -5,28 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { userContext } from "./contexts/userContext";
 import { LoadingAssetBig2 } from "./assets/assets";
-
-// all commented imports
-
-// import Home from "./components/home/home";
-// import NotFound from "./components/404/404";
-// import List from "./components/list/list";
-// import Interface from "./components/interface/Interface";
-// import Root from "./components/root/root";
-// import Institutions from "./components/institutions/institutions";
-// import About from "./components/about-us/about";
-// import Document from "./components/document/document";
-// import SignPage from "./components/sign/sign";
-// import NewUploadPage from "./components/upload/newupload";
-// import DateTest from "./components/upload/dateTest";
-// import Library from "./components/library/library";
-// import Documentation from "./components/document/Documentation";
-// import NewDashboard from "./components/profile/newDashboard";
-// import PublicPresentation from "./components/see_more_presentation/seeMorePresentation";
-// import SupperUpload from "./components/upload/supperUpload";
-// import ResetPasswordPage from "./components/sign/resetPassword";
-
-// import "react-toastify/dist/ReactToastify.css";
 import { SERVER_URL } from "./constants/routes";
 import PresentationContextProvider from "./contexts/presentationContext";
 import PublicPresentationProvider from "./contexts/publicPresentationContext";

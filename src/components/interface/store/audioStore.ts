@@ -195,7 +195,10 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             set({
                 rtcClient: null,
                 loadingStatus: "idel",
-                audioTracks: null
+                audioTracks: null,
+                audioConnectionState: null,
+                micState: MIC_STATE.MIC_OFF,
+                networkStatus: "Unknown"
             });
         });
     },
@@ -242,6 +245,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 { params: { endOrStart: "end", userUid } }
             ));
             if (endAudioErr) {
+                console.log(endAudioErr);
                 toast({
                     title: "Error",
                     variant: "destructive",
@@ -506,58 +510,9 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             presencesEvent(data);
         });
 
-        // const [presenceErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
-        //     "id": token.rtcUid,
-        //     "userName": presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
-        //     "micState": presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF,
-        //     "audio": "true"
-        // }));
-        // if (presenceErr) {
-        //     throw new Error("Failed to set presence state");
-        // }
         if (presentation.User === "GUEST") {
            await safeAwait(rtm.subscribe(token.rtcUid));
         }
-
-        // const [presenceDataErr, data] = await safeAwait(rtm.presence.getOnlineUsers(presentation.liveId, "MESSAGE", {
-        //     includedState: true
-        // }));
-
-        // if (presenceDataErr) {
-        //     throw new Error("Failed to get online users");
-        // }
-
-        // type UserType = {
-        //     [key: string]: {
-        //         id: string;
-        //         userName: string;
-        //         micState: MIC_STATE
-        //     }
-        // };
-
-        // const tempUsrs: UserType = {};
-        // for (let i = 0; i < data.occupants.length; i++) {
-        //     const u = data.occupants[i];
-        //     if (u.states.userName === "HOST") {
-        //         const host = {
-        //             id: u.userId,
-        //             userName: u.states.userName,
-        //             micState: u.states.micState as MIC_STATE
-        //         };
-        //         useRtmStore.setState({ host });
-        //         continue
-        //     };
-        //     if (Object.keys(u.states).length === 0) continue;
-        //     if (!u.states?.audio) continue;
-        //     if (u.states?.audio !== "true") continue;
-        //     tempUsrs[u.userId] = {
-        //         id: u.userId,
-        //         userName: u.states.userName,
-        //         micState: u.states.micState as MIC_STATE
-        //     };
-        // }
-
-// useRtmStore.setState({ users: tempUsrs });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, coHost] = await safeAwait(rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE"));

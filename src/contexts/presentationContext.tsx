@@ -39,6 +39,7 @@ import {
   DialogOverlay,
   DialogTitle
 } from "@/components/ui/dialog";
+import { useMessageStore } from "@/components/interface/store/messageStore";
 
 const contextValues = {
   fullScreenShow: false,
@@ -421,15 +422,27 @@ const PresentationContextProvider = (props: { children: any }) => {
     window.addEventListener("beforeunload", beforeUnload);
 
     return function () {
-      useSlideStore.getState().setSwiperRef(null);
-      useAudioStore.getState().endAudio({ hostEnd: false });
-      useRtmStore.getState().rtm?.logout();
+      useMessageStore.getState().resetStore();
+      useModalStore.getState().resetStore();
+      useSlideStore.getState().resetStore();
+      if (usepresentationStore.getState().presentation?.audio) {
+        useAudioStore.getState().endAudio({ hostEnd: false });
+      }
+      useRtmStore
+        .getState()
+        .rtm?.logout()
+        .then(function () {
+          useRtmStore.getState().resetStore();
+        });
+      usepresentationStore.getState().resetStore();
       window.removeEventListener("beforeunload", beforeUnload);
     };
   }, []);
 
   const isModalOpen = useModalStore((state) => state.isOpen);
-  const showModalBottomAction = useModalStore((state) => state.showBottomAction);
+  const showModalBottomAction = useModalStore(
+    (state) => state.showBottomAction
+  );
   const setIsModalOpen = useModalStore((state) => state.setIsOpen);
   const modalTitle = useModalStore((state) => state.title);
   const modalDescription = useModalStore((state) => state.description);
@@ -455,10 +468,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       ) : presentationQuery.isError ? (
         <PresentationNotFound />
       ) : (
-        <Dialog
-          open={isModalOpen}
-          onOpenChange={setIsModalOpen}
-        >
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogOverlay className="backdrop-blur-sm bg-black/20" />
           <DialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB] w-full">
             <DialogHeader>
