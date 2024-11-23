@@ -1,6 +1,5 @@
 import { useContext, useState, useRef, useEffect } from "react";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
-import Ellipse from "/team/pptlink_resources/Ellipse23.png";
 import Card from "../list/card";
 import axios from "axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -10,6 +9,7 @@ import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import { userContext } from "../../contexts/userContext";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
+import { FaUser } from "react-icons/fa6";
 
 export default function NewDashboard() {
   const [currentView, setCurrentView] = useState(1);
@@ -58,37 +58,37 @@ export default function NewDashboard() {
       <Helmet>
         <title>{`Dashboard - PPTLinks `}</title>
         <meta
-          name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
-          name='tags'
+          name="tags"
           content={`PPT, Presentations, Powerpoint, PPTLinks, PPTLINKSDashboard`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-        <meta property='og:type' content='website' />
-        <meta property='og:url' content={`https://www.PPTLink.com/dashboard`} />
-        <meta property='og:title' content={`Dashboard - PPTLinks `} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.PPTLink.com/dashboard`} />
+        <meta property="og:title" content={`Dashboard - PPTLinks `} />
         <meta
-          property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
-        <meta property='og:image' content={LogoBlack} />
+        <meta property="og:image" content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
-        <meta property='twitter:card' content='website' />
+        <meta property="twitter:card" content="website" />
         <meta
-          property='twitter:url'
+          property="twitter:url"
           content={`https://www.PPTLink.com/dashboard`}
         />
 
-        <meta property='twitter:title' content={`Dashboard - PPTLinks `} />
+        <meta property="twitter:title" content={`Dashboard - PPTLinks `} />
         <meta
-          property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
-        <meta property='twitter:image' content={LogoBlack} />
+        <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
       <section
         className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-black" : "bg-black"}`}
@@ -105,12 +105,8 @@ export default function NewDashboard() {
             <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 responsiveText">
               My Profile
             </span>
-            <div className="w-[150px] aspect-square _bg-[red] rounded-[50%]">
-              <img
-                src={Ellipse}
-                alt={Ellipse}
-                className="block w-full h-full"
-              />
+            <div className="flex justify-center items-center w-[150px] aspect-square _bg-[red] rounded-[50%]">
+              <FaUser size="80" className="block" />
             </div>
             <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 responsiveText text-center">
               <h1 className="text-2xl mt-2">{user ? user.username : "--"}</h1>
@@ -182,7 +178,8 @@ export default function NewDashboard() {
           </button>
         </div>
         <div className="w-full h-fit">
-          <div className={`public_presentations container pt-12 pb-5 h-fit ${currentView == 1 ? "block" : "hidden"}`}
+          <div
+            className={`public_presentations container pt-12 pb-5 h-fit ${currentView == 1 ? "block" : "hidden"}`}
           >
             {/* search */}
             <div className="w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border border-white relative mb-5">
@@ -238,7 +235,8 @@ export default function NewDashboard() {
                 </div>
               ))}
           </div>
-          <div className={`w-full min-h-[100vh] flex flex-col justify-center items-center pt-12 _bg-[gold] ${currentView == 2 ? "block" : "hidden"}`}
+          <div
+            className={`w-full min-h-[100vh] flex flex-col justify-center items-center pt-12 _bg-[gold] ${currentView == 2 ? "block" : "hidden"}`}
           >
             {/* search */}
             <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
@@ -261,7 +259,8 @@ export default function NewDashboard() {
               <h1>No Librarey yet</h1>
             </div>
           </div>
-          <div className={`w-full min-h-[100vh] flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
+          <div
+            className={`w-full min-h-[100vh] flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
           >
             {/* search */}
             <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">

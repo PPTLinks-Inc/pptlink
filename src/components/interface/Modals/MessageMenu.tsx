@@ -1,14 +1,20 @@
 import { LuMessagesSquare } from "react-icons/lu";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-import { IoSendOutline } from "react-icons/io5";
+import { IoSendOutline, IoImages } from "react-icons/io5";
 import { BsArrowDown } from "react-icons/bs";
 import Menu from "./Menu";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { Message, useMessageStore } from "../store/messageStore";
 import { useIntersection } from "react-use";
 import { useRtmStore } from "../store/rtmStore";
 import { usepresentationStore } from "../store/presentationStore";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { SERVER_URL } from "@/constants/routes";
+import { useModalStore } from "../store/modalStore";
+import CircularProgressBar from "@/components/ui/CircularProgress";
+import { cn } from "@/lib/utils";
+import { PresentationContext } from "@/contexts/presentationContext";
 
 export default function MessageMenu({
   open,
@@ -26,8 +32,12 @@ export default function MessageMenu({
   const sendMessage = useMessageStore((state) => state.sendMessage);
   const unreadMessages = useMessageStore((state) => state.unReadMessages);
 
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [userText, setUserText] = useState("");
   const messageContainer = useRef<HTMLDivElement>(null);
+
+  const { isMobilePhone } = useContext(PresentationContext);
 
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
@@ -61,6 +71,7 @@ export default function MessageMenu({
     });
   }
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const sendUserMessage = useMutation({
     mutationFn: async function () {
       if (!presentation) return;
@@ -68,6 +79,7 @@ export default function MessageMenu({
       if (userText.trim() === "") return;
 
       const messageData: Message = {
+        id: `${presentation.User === "HOST" ? "host.id" : tokens?.rtcUid}-${Date.now()}`,
         type: "text",
         content: userText.trim(),
         sender: presentation.User === "HOST" ? "HOST" : userName,
@@ -78,12 +90,111 @@ export default function MessageMenu({
 
       await sendMessage(messageData);
       setUserText("");
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.style.overflowY = "hidden";
+      }
+    }
+  });
+
+  function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setUserText(e.target.value);
+    e.target.style.height = "auto";
+    const newHeight = e.target.scrollHeight;
+    e.target.style.height = newHeight > 112 ? "112px" : `${newHeight}px`;
+    e.target.style.overflowY = newHeight > 112 ? "auto" : "hidden";
+  }
+
+  function handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey && !isMobilePhone) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }
+
+  function handleSendMessage() {
+    if (userText.trim()) {
+      !sendUserMessage.isPending && sendUserMessage.mutate();
+    }
+  }
+
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const showImagePrompt = useModalStore((state) => state.showImagePrompt);
+
+  const sendImages = useMutation({
+    mutationFn: async function (e: React.ChangeEvent<HTMLInputElement>) {
+      const files = e.target.files;
+      if (!files) {
+        fileRef.current!.value = "";
+        return;
+      }
+
+      scrollToBottom();
+      setUploadProgress(0);
+      const { data: signData } = await axios.get(
+        `${SERVER_URL}/api/v1/auth/signUpload/${presentation?.liveId}`
+      );
+
+      const formData = new FormData();
+
+      const totalFiles = files.length;
+      let uploadedFiles = 0;
+      let totalProgress = 0;
+      const images: string[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        formData.append("file", file);
+        formData.append("api_key", signData.apiKey);
+        formData.append("timestamp", signData.timestamp);
+        formData.append("signature", signData.signature);
+        formData.append("folder", `chat/${presentation?.liveId}`);
+
+        const { data } = await axios.post(
+          `https://api.cloudinary.com/v1_1/${signData.cloudName}/image/upload`,
+          formData,
+          {
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const fileProgress =
+                  (progressEvent.loaded / progressEvent.total) * 100;
+                totalProgress =
+                  (uploadedFiles * 100 + fileProgress) / totalFiles;
+                setUploadProgress(totalProgress);
+                // Update your progress UI here using totalProgress
+              }
+            }
+          }
+        );
+        images.push(data.secure_url);
+        uploadedFiles++;
+      }
+
+      const messageData: Message = {
+        id: `${presentation?.User === "HOST" ? "host.id" : tokens?.rtcUid}-${Date.now()}`,
+        type: "image",
+        content: "",
+        sender: presentation?.User === "HOST" ? "HOST" : userName,
+        senderId:
+          presentation?.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
+        time: "",
+        images
+      };
+
+      await sendMessage(messageData);
+      setUploadProgress(0);
+      fileRef.current!.value = "";
+    },
+    onError: function() {
+      fileRef.current!.value = "";
+      alert("Failed to upload images");
     }
   });
 
   return (
     <Menu right={true} open={open} onClose={onClose}>
-      <div className="left-0 right-0 z-50 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[#FF8B1C] border-x-[#FF8B1C]  border-[1px] fixed w-full bg-[#FFFFDB]">
+      <div className="left-0 right-0 z-50 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[#FF8B1C] border-x-[#FF8B1C] border-[1px] fixed w-full bg-[#FFFFDB]">
         <div className="flex items-center">
           <h4 className="text-2xl text-center text-black font-bold">
             Live Chat
@@ -122,37 +233,102 @@ export default function MessageMenu({
                   </p>
                   <p className="text-sm font-light">{message.time}</p>
                 </div>
-                <p className="font-bold text-sm">{message.content}</p>
+                {message.type === "text" && (
+                  <p className="font-bold text-sm whitespace-pre-wrap">
+                    {message.content}
+                  </p>
+                )}
+
+                {message.type === "image" && (
+                  <div
+                    className={cn(
+                      "grid grid-cols-2 gap-2 md:w-4/6 cursor-zoom-in",
+                      (message.images?.length || 0) > 2 && "grid-rows-2"
+                    )}
+                    onClick={() => {
+                      showImagePrompt(message?.images || []);
+                    }}
+                  >
+                    {message.images?.slice(0, 4).map((img, index) => (
+                      <div key={index} className="w-full relative">
+                        <img
+                          className="w-full object-cover rounded-lg"
+                          src={img.replace(
+                            "/upload/",
+                            "/upload/w_64,h_36,c_fill/"
+                          )}
+                          alt={`Image ${index + 1}`}
+                        />
+                        {index === 3 && message.images!.length > 4 && (
+                          <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-lg font-bold">
+                              +{message.images!.length - 4}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}
-          {/*eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
+
+          {sendImages.isPending && (
+            <div className="w-full flex justify-center items-center flex-col gap-3">
+              <CircularProgressBar
+                size={50}
+                progress={uploadProgress}
+                strokeWidth={5}
+                progressColor="#FF8B1C"
+                circleColor="#FFFFDB"
+              />
+              <p className="text-lg md:text-sm">Uploading...</p>
+            </div>
+          )}
+
           <div
-            ref={intersectionRef as any}
+            ref={intersectionRef}
             className="h-10 w-full flex gap-3 justify-start items-start"
           ></div>
         </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            !sendUserMessage.isPending && sendUserMessage.mutate();
-          }}
-          className="w-full flex p-3 gap-2 border-t-[1px] border-[#FF8B1C]"
-        >
+        <div className="w-full flex p-3 border-t-[1px] border-[#FF8B1C]">
           <input
-            type="text"
-            className="bg-transparent w-full flex-grow p-4 border-[1px] border-[#FF8B1C] rounded-lg"
-            placeholder="Message"
-            value={userText}
-            onChange={(e) => setUserText(e.target.value)}
+            ref={fileRef}
+            type="file"
+            id="image"
+            className="hidden"
+            accept="image/*"
+            onChange={(e) => !sendImages.isPending && sendImages.mutate(e)}
+            multiple
+            disabled={sendImages.isPending}
           />
-          <button
-            type="submit"
-            className="bg-[#1F1F1A] flex-grow-[2] w-20 rounded-lg text-center flex justify-center items-center"
-          >
-            <IoSendOutline color="#F1F1F1" size="24" />
+          <button className="bg-white rounded-l-xl border-[1px] border-[#FF8B1C] border-r-0">
+            <label
+              htmlFor="image"
+              className="cursor-pointer w-full p-2 h-full flex justify-center items-center"
+            >
+              <IoImages size="24" />
+            </label>
           </button>
-        </form>
+          <div className="bg-white rounded-r-xl border-[1px] border-[#FF8B1C] flex w-full p-2">
+            <textarea
+              ref={textareaRef}
+              className="resize-none w-full p-2 flex-1 outline-none"
+              placeholder="Type a message"
+              rows={1} // Initially set to 1 row
+              value={userText}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+            />
+            <button
+              className="rounded-lg text-center flex justify-center items-center"
+              onClick={handleSendMessage}
+            >
+              <IoSendOutline size="24" />
+            </button>
+          </div>
+        </div>
 
         {intersection && intersection.intersectionRatio < 1 && (
           <button

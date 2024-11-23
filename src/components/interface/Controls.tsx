@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState, lazy } from "react";
 import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoIosMic } from "react-icons/io";
@@ -13,23 +13,22 @@ import { FiHome } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import { PresentationContext } from "../../contexts/presentationContext";
 import "./styles/style.css";
-import Modal from "./Modals/Modal";
-import ConfirmModal from "./Modals/confirmModal";
-import { LoadingAssetBig, LoadingAssetBig2 } from "../../assets/assets";
+import { LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
-import MessageMenu from "./Modals/MessageMenu";
 import { MIC_STATE } from "../../constants/routes";
 import axios from "axios";
 import download from "./download";
 import { useMessageStore } from "./store/messageStore";
-import OptionMenu from "./Modals/optionMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usepresentationStore } from "./store/presentationStore";
 import { useAudioStore } from "./store/audioStore";
-import { useToast } from "@/hooks/use-toast";
 import { useRtmStore } from "./store/rtmStore";
 import { useSlideStore } from "./store/slideStore";
-import { useMutation } from "@tanstack/react-query";
+import { useModalStore } from "./store/modalStore";
+import { useOptionsStore } from "./store/optionsStore";
+
+const MessageMenu = lazy(() => import("./Modals/MessageMenu"));
+const OptionMenu = lazy(() => import("./Modals/optionMenu"));
 
 // eslint-disable-next-line react/prop-types
 export default function Controls({
@@ -45,13 +44,7 @@ export default function Controls({
   const isFullscreen = useFullscreen(containerRef, fullScreenShow, {
     onClose: () => fullScreenToggle(false)
   });
-  const { toast } = useToast();
-  const endAudioPrompt = usepresentationStore((state) => state.endAudioPrompt);
-  const setEndAudioPrompt = usepresentationStore(
-    (state) => state.setEndAudioPrompt
-  );
-  const enterName = usepresentationStore((state) => state.enterName);
-  const setEnterName = usepresentationStore((state) => state.setEnterName);
+
   const showUsersList = usepresentationStore((state) => state.showUsersList);
   const setShowUsersList = usepresentationStore(
     (state) => state.setShowUsersList
@@ -60,12 +53,6 @@ export default function Controls({
   const setShowMessage = usepresentationStore((state) => state.setShowMessage);
   const showOptions = usepresentationStore((state) => state.showOptions);
   const setShowOptions = usepresentationStore((state) => state.setShowOptions);
-  const showStartPrompt = usepresentationStore(
-    (state) => state.showStartPrompt
-  );
-  const setShowStartPrompt = usepresentationStore(
-    (state) => state.setShowStartPrompt
-  );
 
   const micState = useAudioStore((state) => state.micState);
   const audioLoadingStatus = useAudioStore((state) => state.loadingStatus);
@@ -78,19 +65,6 @@ export default function Controls({
   );
   const networkStatus = useAudioStore((state) => state.networkStatus);
 
-  const endAudioFn = useAudioStore((state) => state.endAudio);
-  const startAudioFn = useAudioStore((state) => state.startAudio);
-
-  const endAudio = useMutation({
-    mutationFn: endAudioFn
-  });
-
-  const startAudio = useMutation({
-    mutationFn: startAudioFn
-  });
-
-  const userName = useRtmStore((state) => state.userName);
-  const setUserName = useRtmStore((state) => state.setUserName);
   const users = useRtmStore((state) => state.sortedUsers);
   const host = useRtmStore((state) => state.host);
 
@@ -145,7 +119,7 @@ export default function Controls({
         };
       } else if (micState === MIC_STATE.CAN_SPK) {
         return {
-          style: "bg-green-500",
+          style: "bg-[#05FF00]",
           icon: <IoIosMic size={60} />,
           text: "MIC ON"
         };
@@ -160,7 +134,7 @@ export default function Controls({
     } else if (micStatus === MIC_STATE.REQ_MIC) {
       return "border-orange-500 animate-pinging";
     } else if (micStatus === MIC_STATE.CAN_SPK) {
-      return "border-green-500";
+      return "border-[#05FF00]";
     } else {
       return "border-transparent";
     }
@@ -180,6 +154,7 @@ export default function Controls({
     [presentation]
   );
 
+  const isModalOpen = useModalStore((state) => state.isOpen);
   const styles = useMemo(() => {
     if (audioConnectionState === "RECONNECTING") {
       return "opacity-0";
@@ -187,9 +162,7 @@ export default function Controls({
     if (
       (isMobilePhone && orientation.type.includes("portrait")) ||
       actionsActive ||
-      enterName ||
-      showStartPrompt ||
-      endAudioPrompt ||
+      isModalOpen ||
       showUsersList ||
       showMessage ||
       showOptions
@@ -200,19 +173,20 @@ export default function Controls({
   }, [
     actionsActive,
     orientation,
-    enterName,
-    showStartPrompt,
     isMobilePhone,
-    endAudioPrompt,
+    isModalOpen,
     showUsersList,
     showMessage,
     audioConnectionState,
     showOptions
   ]);
 
+  const startPrompt = useModalStore((state) => state.startPrompt);
+  const endPrompt = useModalStore((state) => state.endPrompt);
+
   function actionMicButton() {
     if (audioLoadingStatus !== "success") {
-      setShowStartPrompt(true);
+      startPrompt();
       return;
     }
 
@@ -235,23 +209,6 @@ export default function Controls({
     }
   }
 
-  async function endUserAudio() {
-    if (!endAudioPrompt) {
-      setEndAudioPrompt(true);
-      return;
-    }
-    try {
-      await endAudio.mutateAsync({ hostEnd: false });
-      setEndAudioPrompt(false);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Could'nt end audio",
-        variant: "destructive"
-      });
-    }
-  }
-
   function downloadFile(url: string, filename: string) {
     axios
       .get(url, {
@@ -261,6 +218,14 @@ export default function Controls({
         download(res.data, filename);
       });
   }
+
+  const screenShareEnabled = useAudioStore((state) => state.screenShareEnabled);
+  const screenShareMinimized = useAudioStore(
+    (state) => state.screenShareMinimized
+  );
+  const toggleScreenMinimize = useOptionsStore(
+    (state) => state.toggleScreenMinimize
+  );
 
   return (
     <div
@@ -276,11 +241,24 @@ export default function Controls({
         </div>
       )}
       <div className="flex flex-row gap-20 items-center justify-center relative w-full mb-5">
+        {screenShareEnabled && (
+          <button
+            onClick={toggleScreenMinimize}
+            className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-20 left-5 cursor-pointer"
+          >
+            {screenShareMinimized ? (
+              <p className="text-white">Screen Share</p>
+            ) : (
+              <img src={presentation?.thumbnail} />
+            )}
+          </button>
+        )}
         {/* Desktop controls */}
         <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
           {audioLoadingStatus === "success" && (
             <>
-              {(presentation?.User === "HOST" || presentation?.User === "CO-HOST") && (
+              {(presentation?.User === "HOST" ||
+                presentation?.User === "CO-HOST") && (
                 <button
                   onClick={() => setShowOptions(true)}
                   className="rounded-full p-3 bg-gray-300 shadow"
@@ -351,7 +329,7 @@ export default function Controls({
                 </span>
               </div>
               <button
-                onClick={endUserAudio}
+                onClick={endPrompt}
                 className="rounded-full p-3 bg-rose-500"
               >
                 <MdCallEnd size={24} />
@@ -363,7 +341,8 @@ export default function Controls({
         <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
           {audioLoadingStatus === "success" && (
             <>
-              {(presentation?.User === "HOST" || presentation?.User === "CO-HOST") ? (
+              {presentation?.User === "HOST" ||
+              presentation?.User === "CO-HOST" ? (
                 <button
                   onClick={() => setShowOptions(true)}
                   className="rounded-full p-3 bg-gray-300 shadow"
@@ -437,7 +416,7 @@ export default function Controls({
                 </span>
               </div>
               <button
-                onClick={endUserAudio}
+                onClick={endPrompt}
                 className="rounded-full p-3 bg-rose-500"
               >
                 <MdCallEnd size={24} />
@@ -575,116 +554,6 @@ export default function Controls({
           users={users}
         />
       )}
-
-      <Modal
-        open={enterName}
-        onClose={
-          audioLoadingStatus === "loading" ? null : () => setEnterName(false)
-        }
-        color="bg-[#FFFFDB]"
-      >
-        {audioLoadingStatus === "loading" ? (
-          <LoadingAssetBig />
-        ) : (
-          <form
-            className="flex flex-col gap-5"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              if (!userName.trim() || userName.toLowerCase().includes("host"))
-                return toast({
-                  title: "Error",
-                  description: "Please enter your name",
-                  variant: "destructive"
-                });
-                if (!presentation) return;
-                try {
-                  await startAudio.mutateAsync();
-                  setEnterName(false);
-                  localStorage.setItem("userName", `"${userName}"`);
-                } catch (error) {
-                  toast({
-                    title: "Error",
-                    description: "Could'nt start audio",
-                    variant: "destructive"
-                  });
-                }
-            }}
-          >
-            <h4 className="text-2xl text-center text-black">Enter your name</h4>
-            <input
-              type="text"
-              placeholder="Enter your name"
-              className="rounded p-2 w-full text-center border-[1px] border-[#FF7A00]"
-              autoFocus
-              value={userName}
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-            />
-            <div className="flex gap-3">
-              <button
-                onClick={() => setEnterName(false)}
-                className="bg-black text-white p-2 w-full rounded"
-                type="button"
-              >
-                Cancel
-              </button>
-              <button className="bg-black text-white p-2 w-full rounded" type="submit">
-                Join
-              </button>
-            </div>
-          </form>
-        )}
-      </Modal>
-
-      <ConfirmModal
-        open={showStartPrompt}
-        onClose={startAudio.isPending ? null : () => setShowStartPrompt(false)}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (!presentation) return;
-          if (presentation.User === "HOST") {
-            try {
-              await startAudio.mutateAsync();
-            } catch (error) {
-              toast({
-                title: "Error",
-                description: "Could'nt start conversation",
-                variant: "destructive"
-              });
-              return;
-            }
-          } else setEnterName(true);
-          setShowStartPrompt(false);
-        }}
-        isLoading={startAudio.isPending}
-        message={
-          presentation?.User === "HOST"
-            ? presentation?.audio
-              ? "Rejoin"
-              : "Start"
-            : "Join"
-        }
-        actionText={
-          presentation?.User === "HOST"
-            ? presentation?.audio
-              ? "Rejoin"
-              : "Start"
-            : "Join"
-        }
-      />
-
-      <ConfirmModal
-        open={endAudioPrompt}
-        onClose={startAudio.isPending ? null : () => setEndAudioPrompt(false)}
-        onSubmit={(e) => {
-          e.preventDefault();
-          endUserAudio();
-        }}
-        isLoading={endAudio.isPending}
-        message={presentation?.User === "HOST" ? "End Audio" : "Leave Audio"}
-        actionText={presentation?.User === "HOST" ? "End" : "Leave"}
-      />
     </div>
   );
 }

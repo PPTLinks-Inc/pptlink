@@ -11,10 +11,9 @@ import {
 import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import rotateImage from "../components/interface/assets/rotate.gif";
-import { LoadingAssetBig2 } from "../assets/assets";
+import { LoadingAssetBig, LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import { userContext } from "./userContext";
 import {
@@ -27,6 +26,19 @@ import { useAudioStore } from "@/components/interface/store/audioStore";
 import { useSlideStore } from "@/components/interface/store/slideStore";
 import { toast } from "@/hooks/use-toast";
 import { MIC_STATE } from "@/constants/routes";
+import { useModalStore } from "@/components/interface/store/modalStore";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { useMessageStore } from "@/components/interface/store/messageStore";
 
 const contextValues = {
   fullScreenShow: false,
@@ -51,7 +63,10 @@ function OrientationPrompt({
         <IoCloseCircleOutline color="white" size={32} />
       </button>
       <div className="flex flex-col justify-center items-center h-full">
-        <img src={rotateImage} alt="Rotate Image" className="w-fit" />
+        <picture>
+          <source srcSet="https://res.cloudinary.com/dsmydljex/image/upload/v1732362532/assets/rotate.webp" type="image/webp" />
+          <img src="https://res.cloudinary.com/dsmydljex/image/upload/v1732362829/assets/rotate_mjjhxg.gif" alt="Rotate Image" className="w-fit" />
+        </picture>
       </div>
     </div>
   );
@@ -66,6 +81,8 @@ const PresentationContextProvider = (props: { children: any }) => {
   const [userUid, setUserUid] = useLocalStorage<string>("userUid");
   const [prevUsername] = useLocalStorage<string>("userName");
 
+  const queryClient = useQueryClient();
+
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
       return /iPhone/i.test(navigator.userAgent);
@@ -74,12 +91,10 @@ const PresentationContextProvider = (props: { children: any }) => {
   }, []);
 
   const setToken = useRtmStore((state) => state.setToken);
-  const setStartPrompt = usepresentationStore(
-    (state) => state.setShowStartPrompt
-  );
   const setPresentation = usepresentationStore(
     (state) => state.setPresentation
   );
+  const startPrompt = useModalStore((state) => state.startPrompt);
   const initRTM = useRtmStore((state) => state.init);
   const setUserName = useRtmStore((state) => state.setUserName);
 
@@ -109,7 +124,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       setUserUid(data.presentation.rtc.rtcUid);
 
       if (data.presentation.audio) {
-        setStartPrompt(true);
+        startPrompt();
       }
       return data.presentation;
     }
@@ -164,6 +179,9 @@ const PresentationContextProvider = (props: { children: any }) => {
               toast({
                 description: "You are no longer a co-host of this presentation"
               });
+              if (useAudioStore.getState().iAmScreenSharing) {
+                useAudioStore.getState().stopScreenShare();
+              }
               useSlideStore.setState({ lockSlide: false });
               setPresentation({ ...tempPresentation, User: "GUEST" });
             }
@@ -220,6 +238,10 @@ const PresentationContextProvider = (props: { children: any }) => {
     [users]
   );
 
+  const audioConnectionState = useAudioStore(
+    (state) => state.audioConnectionState
+  );
+
   useEffect(
     function () {
       const rtm = useRtmStore.getState().rtm;
@@ -228,93 +250,159 @@ const PresentationContextProvider = (props: { children: any }) => {
       const synced = useSlideStore.getState().synced;
       const presentation = usepresentationStore.getState().presentation;
 
-      if (rtmConnectionState === "CONNECTED") {
-        if (presentation?.audio) {
-          rtm?.presence
-            .getOnlineUsers(presentation.liveId, "MESSAGE", {
-              includedState: true
-            })
-            .then(function (data) {
-              type UserType = {
-                [key: string]: {
-                  id: string;
-                  userName: string;
-                  micState: MIC_STATE;
-                };
-              };
+      if (
+        rtmConnectionState === "CONNECTED" ||
+        audioConnectionState === "CONNECTED"
+      ) {
+        if (rtmConnectionState === "CONNECTED") {
+          if (presentation?.audio) {
+            const token = useRtmStore.getState().token;
+            const micState = useAudioStore.getState().micState;
+            rtm?.presence
+              .setState(presentation.liveId, "MESSAGE", {
+                id: token?.rtcUid || "",
+                userName:
+                  presentation.User === "HOST"
+                    ? "HOST"
+                    : useRtmStore.getState().userName,
+                micState: micState,
+                audio: "true",
+                revision: Date.now().toString()
+              })
+              .catch(function () {
+                toast({
+                  title: "Error",
+                  description: "Failed to set user state",
+                  variant: "destructive"
+                });
+              });
 
-              const tempUsrs: UserType = {};
-              for (let i = 0; i < data.occupants.length; i++) {
-                const u = data.occupants[i];
-                if (u.states.userName === "HOST") {
-                  const host = {
+            rtm?.presence
+              .getOnlineUsers(presentation.liveId, "MESSAGE", {
+                includedState: true
+              })
+              .then(function (data) {
+                type UserType = {
+                  [key: string]: {
+                    id: string;
+                    userName: string;
+                    micState: MIC_STATE;
+                  };
+                };
+
+                const tempUsrs: UserType = {};
+                for (let i = 0; i < data.occupants.length; i++) {
+                  const u = data.occupants[i];
+                  if (u.userId.includes("HOST")) {
+                    const host = {
+                      id: u.userId,
+                      userName: u.states.userName,
+                      micState: u.states.micState as MIC_STATE
+                    };
+                    useRtmStore.setState({ host });
+                    continue;
+                  }
+                  if (Object.keys(u.states).length === 0) continue;
+                  if (u.states.audio !== "true") continue;
+                  tempUsrs[u.userId] = {
                     id: u.userId,
                     userName: u.states.userName,
                     micState: u.states.micState as MIC_STATE
                   };
-                  useRtmStore.setState({ host });
-                  continue;
                 }
-                if (Object.keys(u.states).length === 0) continue;
-                if (u.states.audio !== "true") continue;
-                tempUsrs[u.userId] = {
-                  id: u.userId,
-                  userName: u.states.userName,
-                  micState: u.states.micState as MIC_STATE
-                };
+
+                useRtmStore.setState({ users: tempUsrs });
+              })
+              .catch(function () {
+                toast({
+                  title: "Error",
+                  description: "Failed to update users",
+                  variant: "destructive"
+                });
+              });
+
+            // handle co-host
+            rtm?.storage
+              .getChannelMetadata(presentation.liveId, "MESSAGE")
+              .then(function (coHost) {
+                useRtmStore.setState({
+                  coHostId: coHost?.metadata["co-host"]?.value || ""
+                });
+                const coHostId = useRtmStore.getState().coHostId;
+                if (coHostId === token?.rtcUid) {
+                  const swiperRef = useSlideStore.getState().swiperRef;
+                  swiperRef.swiper.allowSlideNext = true;
+                  usepresentationStore.setState((state) => {
+                    if (!state.presentation) return state;
+                    return {
+                      ...state,
+                      presentation: { ...state.presentation, User: "CO-HOST" }
+                    };
+                  });
+                } else if (
+                  usepresentationStore.getState().presentation?.User ===
+                  "CO-HOST"
+                ) {
+                  if (useAudioStore.getState().iAmScreenSharing) {
+                    useAudioStore.getState().stopScreenShare();
+                  }
+                  usepresentationStore.setState((state) => {
+                    if (!state.presentation) return state;
+                    return {
+                      ...state,
+                      presentation: { ...state.presentation, User: "GUEST" }
+                    };
+                  });
+                }
+              });
+          }
+
+          if (presentation?.User === "GUEST") {
+            rtm?.storage
+              .getChannelMetadata(presentation.liveId, "MESSAGE")
+              .then((data) => {
+                const newSlideData = JSON.parse(data.metadata.slideData.value);
+                setSlideData(newSlideData);
+                if (synced) syncSlide();
+              })
+              .catch(function () {
+                toast({
+                  title: "Error",
+                  description: "Failed to sync slides",
+                  variant: "destructive"
+                });
+              });
+          } else if (presentation?.User === "HOST") {
+            let slideData = useSlideStore.getState().slideData;
+            const swiperRef = useSlideStore.getState().swiperRef;
+            if (!swiperRef) return;
+            slideData = {
+              maxSlides:
+                swiperRef.swiper.activeIndex >= slideData.maxSlides
+                  ? swiperRef.swiper.activeIndex
+                  : slideData.maxSlides,
+              hostSlide: swiperRef.swiper.activeIndex,
+              prevHostSlide: slideData.hostSlide
+            };
+            setSlideData(slideData);
+            rtm?.storage.updateChannelMetadata(
+              presentation.liveId,
+              "MESSAGE",
+              [
+                {
+                  key: "slideData",
+                  value: JSON.stringify(slideData)
+                }
+              ],
+              {
+                addUserId: true
               }
-
-              useRtmStore.setState({ users: tempUsrs });
-            })
-            .catch(function () {
-              toast({
-                title: "Error",
-                description: "Failed to update users",
-                variant: "destructive"
-              });
-            });
-        }
-
-        if (presentation?.User === "GUEST") {
-          rtm?.storage
-            .getChannelMetadata(presentation.liveId, "MESSAGE")
-            .then((data) => {
-              const newSlideData = JSON.parse(data.metadata.slideData.value);
-              setSlideData(newSlideData);
-              if (synced) syncSlide();
-            })
-            .catch(function () {
-              toast({
-                title: "Error",
-                description: "Failed to sync slides",
-                variant: "destructive"
-              });
-            });
-        } else if (presentation?.User === "HOST") {
-          let slideData = useSlideStore.getState().slideData;
-          const swiperRef = useSlideStore.getState().swiperRef;
-          if (!swiperRef) return;
-          slideData = {
-            maxSlides:
-              swiperRef.swiper.activeIndex >= slideData.maxSlides
-                ? swiperRef.swiper.activeIndex
-                : slideData.maxSlides,
-            hostSlide: swiperRef.swiper.activeIndex,
-            prevHostSlide: slideData.hostSlide
-          };
-          setSlideData(slideData);
-          rtm?.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
-            {
-              key: "slideData",
-              value: JSON.stringify(slideData)
-            }
-          ], {
-            addUserId: true
-          });
+            );
+          }
         }
       }
     },
-    [rtmConnectionState]
+    [rtmConnectionState, audioConnectionState]
   );
 
   useEffect(function () {
@@ -338,12 +426,38 @@ const PresentationContextProvider = (props: { children: any }) => {
     window.addEventListener("beforeunload", beforeUnload);
 
     return function () {
-      useSlideStore.getState().setSwiperRef(null);
-      useAudioStore.getState().endAudio({ hostEnd: false });
-      useRtmStore.getState().rtm?.logout();
+      queryClient.removeQueries({ exact: true, queryKey: ["presentation", params.id] });
+      queryClient.removeQueries({ exact: true, queryKey: ["set-slide-on-first-load"] });
+      queryClient.removeQueries({ exact: true, queryKey: ["orientation-prompt"] });
+      useMessageStore.getState().resetStore();
+      useModalStore.getState().resetStore();
+      useSlideStore.getState().resetStore();
+      if (usepresentationStore.getState().presentation?.audio) {
+        useAudioStore.getState().endAudio({ hostEnd: false });
+      }
+      useRtmStore
+        .getState()
+        .rtm?.logout()
+        .then(function () {
+          useRtmStore.getState().resetStore();
+        });
+      usepresentationStore.getState().resetStore();
       window.removeEventListener("beforeunload", beforeUnload);
     };
   }, []);
+
+  const isModalOpen = useModalStore((state) => state.isOpen);
+  const showModalBottomAction = useModalStore(
+    (state) => state.showBottomAction
+  );
+  const setIsModalOpen = useModalStore((state) => state.setIsOpen);
+  const modalTitle = useModalStore((state) => state.title);
+  const modalDescription = useModalStore((state) => state.description);
+  const modalContent = useModalStore((state) => state.content);
+  const modalIsLoading = useModalStore((state) => state.isLoading);
+  const modalActionText = useModalStore((state) => state.actionText);
+  const modalOnClose = useModalStore((state) => state.onClose);
+  const modalOnSubmit = useModalStore((state) => state.onSubmit);
 
   return (
     <PresentationContext.Provider
@@ -355,18 +469,54 @@ const PresentationContextProvider = (props: { children: any }) => {
       }}
     >
       {presentationQuery.isLoading ? (
-        <div className="flex justify-center items-center h-screen w-full">
+        <div className="bg-black flex justify-center items-center h-screen w-full">
           <LoadingAssetBig2 />
         </div>
       ) : presentationQuery.isError ? (
         <PresentationNotFound />
       ) : (
-        <>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogOverlay className="backdrop-blur-sm bg-black/20" />
+          <DialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB] w-full">
+            <DialogHeader>
+              <DialogTitle className="text-center">{modalTitle}</DialogTitle>
+              <DialogDescription className="text-center">
+                {modalDescription}
+              </DialogDescription>
+            </DialogHeader>
+
+            {modalIsLoading ? (
+              <div className="flex justify-center items-center">
+                <LoadingAssetBig />
+              </div>
+            ) : (
+              modalContent
+            )}
+            {!modalIsLoading && showModalBottomAction && (
+              <DialogFooter className="sm:justify-center gap-4">
+                <DialogClose asChild>
+                  <Button
+                    onClick={modalIsLoading ? () => {} : modalOnClose}
+                    className="bg-black hover:black/20"
+                  >
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button
+                  onClick={modalOnSubmit}
+                  className="bg-black hover:bg-white hover:text-black"
+                  autoFocus
+                >
+                  {modalActionText}
+                </Button>
+              </DialogFooter>
+            )}
+          </DialogContent>
           {isMobilePhone && showPrompt && (
             <OrientationPrompt setShowPrompt={setShowPrompt} />
           )}
           {props.children}
-        </>
+        </Dialog>
       )}
     </PresentationContext.Provider>
   );
