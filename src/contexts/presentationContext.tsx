@@ -11,9 +11,8 @@ import {
 import { useToggle, useOrientation, useLocalStorage } from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import rotateImage from "../components/interface/assets/rotate.gif";
 import { LoadingAssetBig, LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import { userContext } from "./userContext";
@@ -64,7 +63,10 @@ function OrientationPrompt({
         <IoCloseCircleOutline color="white" size={32} />
       </button>
       <div className="flex flex-col justify-center items-center h-full">
-        <img src={rotateImage} alt="Rotate Image" className="w-fit" />
+        <picture>
+          <source srcSet="https://res.cloudinary.com/dsmydljex/image/upload/v1732362532/assets/rotate.webp" type="image/webp" />
+          <img src="https://res.cloudinary.com/dsmydljex/image/upload/v1732362829/assets/rotate_mjjhxg.gif" alt="Rotate Image" className="w-fit" />
+        </picture>
       </div>
     </div>
   );
@@ -78,6 +80,8 @@ const PresentationContextProvider = (props: { children: any }) => {
   const orientation = useOrientation();
   const [userUid, setUserUid] = useLocalStorage<string>("userUid");
   const [prevUsername] = useLocalStorage<string>("userName");
+
+  const queryClient = useQueryClient();
 
   const isMobile = useCallback(function ({ iphone = false }) {
     if (iphone) {
@@ -422,6 +426,9 @@ const PresentationContextProvider = (props: { children: any }) => {
     window.addEventListener("beforeunload", beforeUnload);
 
     return function () {
+      queryClient.removeQueries({ exact: true, queryKey: ["presentation", params.id] });
+      queryClient.removeQueries({ exact: true, queryKey: ["set-slide-on-first-load"] });
+      queryClient.removeQueries({ exact: true, queryKey: ["orientation-prompt"] });
       useMessageStore.getState().resetStore();
       useModalStore.getState().resetStore();
       useSlideStore.getState().resetStore();

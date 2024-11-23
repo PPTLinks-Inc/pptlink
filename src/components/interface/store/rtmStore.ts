@@ -191,6 +191,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
 
             set({ rtm });
         } catch (_: unknown) {
+            console.log(_);
             toast({
                 title: "Error",
                 variant: "destructive",
