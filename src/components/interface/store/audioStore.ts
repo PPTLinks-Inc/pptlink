@@ -7,7 +7,6 @@ import { toast } from "@/hooks/use-toast";
 import { AGORA_APP_ID, MIC_STATE } from "@/constants/routes";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { RTMEvents } from "agora-rtm-sdk";
-import micRequest from "../assets/mic-request.mp3";
 import safeAwait from "@/util/safeAwait";
 import { useSlideStore } from "./slideStore";
 
@@ -532,7 +531,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             rtm.addEventListener("storage", useSlideStore.getState().slidesEvent);
         }
 
-        const audio = new Audio(micRequest);
+        const audio = new Audio("https://res.cloudinary.com/dsmydljex/video/upload/v1732362719/assets/mic-request_nnca38_nj9fmv.mp3");
         audio.volume = 1;
         audio.load();
 
