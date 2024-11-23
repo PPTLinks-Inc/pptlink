@@ -2,11 +2,11 @@
 /* eslint-disable no-unused-vars */
 import { useRef, useCallback, useContext, useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import anim_img1 from "/team/pptlink_resources/presentation.png";
-import anim_img2 from "/team/pptlink_resources/hosting-monitors-server-svgrepo-com.png";
-import anim_img3 from "/team/pptlink_resources/school-svgrepo-com.png";
-import anim_img4 from "/team/pptlink_resources/presentation-education-svgrepo-com.png";
-import anim_img5 from "/team/pptlink_resources/analytics-presentation-svgrepo-com.png";
+// import anim_img1 from "/team/pptlink_resources/presentation.png";
+// import anim_img2 from "/team/pptlink_resources/hosting-monitors-server-svgrepo-com.png";
+// import anim_img3 from "/team/pptlink_resources/school-svgrepo-com.png";
+// import anim_img4 from "/team/pptlink_resources/presentation-education-svgrepo-com.png";
+// import anim_img5 from "/team/pptlink_resources/analytics-presentation-svgrepo-com.png";
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import sms from "/team/pptlink_resources/Group 33.png";
@@ -20,6 +20,7 @@ import FAQ from "./data";
 import { publicPresentation } from "../../contexts/publicPresentationContext";
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function NewHome() {
   // context
@@ -65,7 +66,6 @@ export default function NewHome() {
         behavior: "smooth"
       });
   };
-
   // framer
   const parentVarient = {
     initial: {
@@ -194,7 +194,7 @@ export default function NewHome() {
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
-      <div className="_banner relative w-full min-h-[80vh] flex justify-center items-center tall:min-h-fit bg-black text-white py-20">
+      <div className="_banner relative w-full min-h-[80vh] flex justify-center items-center tall:min-h-fit bg-black text-white py-20 maxScreen:pt-5">
         <div className="container flex justify-between gap-14 maxScreen:flex-col-reverse tall:flex-col-reverse">
           <motion.div
             initial={{ y: 100, opacity: 0 }}
@@ -220,17 +220,17 @@ export default function NewHome() {
             variants={parentVarient}
             initial="initial"
             animate="animate"
-            className="flex flex-col justify-start _pt-[3.5rem] !text-left w-full maxScreenMobile:!text-center"
+            className="flex flex-col justify-start _pt-[3.5rem] !text-left w-full maxScreenMobile:!text-lefts"
           >
             <motion.h1
               variants={parentVarient}
-              className="text-[2rem] mb-1 font-extrabold"
+              className="text-5xl mb-1 font-extrabold maxScreenMobile:text-3xl"
             >
               Your Courses, Their Future
             </motion.h1>
             <motion.h3
               variants={parentVarient}
-              className="responsiveText mb-1 font-bold"
+              className="responsiveText mb-1 font-bold maxScreen:!text-xl"
             >
               Teach Across Africa, No Data Limits.
             </motion.h3>
@@ -265,7 +265,7 @@ export default function NewHome() {
       <div className="w-full bg-[#FFFFF0] py-1"></div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
       <div className="w-full h-fit bg-black">
-        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white text-justify pt-14 pb-10">
+        <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white flex flex-col text-justify items-center pt-14 pb-10">
           <motion.h2
             initial={{ y: 100, opacity: 0 }}
             whileInView={{
@@ -274,11 +274,11 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="w-full text-4xl font-extrabold maxScreenMobile:font-bold maxScreenMobile:text-2xl maxScreenMobile:text-center">
-            Recent Presentation
+            className="w-full text-4xl font-extrabold maxScreenMobile:font-bold maxScreenMobile:text-2xl maxScreenMobile:text-center maxScreenMobile:!mt-10">
+            Recent Presentations
           </motion.h2>
 
-          <div className="scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5 maxScreenMobile:!mt-5">
+          <div className="_scrollBtns hidden maxScreenMobile:absolute maxScreenMobile:right-0 maxScreenMobile:w-fit maxScreenMobile:h-fit maxScreenMobile:bg-[transparent] maxScreenMobile:flex maxScreenMobile:gap-5">
             <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCards(true)}
@@ -292,7 +292,7 @@ export default function NewHome() {
               />
             </button>
           </div>
-          <div className="min-h-[40vh] mt-24 mb-6">
+          <div className="w-full min-h-[40vh] mt-8">
             <motion.div
               variants={containerVarient}
               initial="initial"
@@ -320,7 +320,7 @@ export default function NewHome() {
       </div>
       {/* /////////////////////////////see more////////////////////////////////////////////////// */}
 
-      <div className="w-full h-fit bg-black py-14">
+      <div className="w-full h-fit bg-black py-8">
         <motion.h2
           initial={{ y: 100, opacity: 0 }}
           whileInView={{
@@ -332,7 +332,7 @@ export default function NewHome() {
           className="container text-3xl font-extrabold text-center maxScreenMobile:text-2xl maxScreenMobile:font-bold">
           All the skills you need in one place
         </motion.h2>
-        <motion.h2
+        <motion.p
           initial={{ y: 100, opacity: 0 }}
           whileInView={{
             opacity: 1,
@@ -340,73 +340,69 @@ export default function NewHome() {
             transition: { duration: 1, type: "tween" }
           }}
           viewport={{ once: true }}
-          className="w-2/5 !mx-auto responsiveText text-center maxScreenMobile:!container maxScreenMobile:mt-4">
-          Lorem ipsum dolor sit amet. consectetur adipisicing elit. Voluptate commodi rem, ut architecto mollitia saepe!
-        </motion.h2>
+          className="w-2/5 !mx-auto responsiveText text-center  maxScreenMobile:container maxScreenMobile:mt-2">
+          Checkout all available skills you will need to kick start a carrier in the tech industry
+        </motion.p>
 
-        <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-14">
-          <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software development</span>
-          <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
-          <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
-          <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
+        <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-14 !mb-10">
+          <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software</span>
+          <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
+          <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
+          <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
         </div>
 
-        <div className={`w-full max-h-[30rem] overflow-x-auto mt-8`}>
-          <motion.div
-            variants={containerVarient}
-            initial="initial"
-            whileInView="inView"
-            viewport={{ once: true }}
-            className={`${currentView === 1 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
-            ref={scrollRef}
-          >
-            {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+        <dev className="container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 mb-16 maxScreenMobile:flex-wrap maxScreenMobile:flex-col maxScreenMobile:justify-center maxScreenMobile:items-center maxScreenMobile:overflow-x-hidden maxScreenMobile:overflow-y-hidden maxScreenMobile:h-max">
+          {(currentView === 1 ||
+            currentView === 2 ||
+            currentView === 3 ||
+            currentView === 4) && Array.from({ length: 10 }, (_, i) => i + 1).map(idx => (
+              <motion.a
+                initial={{ y: 100, opacity: 0 }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 1, type: "tween" }
+                }}
+                viewport={{ once: true }}
+                key={idx.toString()}
+                className="min-w-[20rem] grow-0 shrink-0 basis-[20rem] maxScreenMobile:!grow maxScreenMobile:min-w-[290px] maxScreenMobile:!basis-[unset] !aspect-[3/4] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/25 cursor-pointer shadow-white shadow-inner z-10"
+                href="/libraryPage"
+              >
+                <div className="z-10">
+                  <p className="text-lg font-light mb-1">Software Development</p>
+                  <h4 className="text-3xl font-bold">Mobile Development Basics</h4>
+                </div>
+                <div className="z-10">
+                  <p className="text-lg font-light mb-3">David A. Spencer</p>
+                  <div className="relative flex items-center justify-between gap-4 w-full">
+                    <span className="flex -space-x-4">
+                      {Array.from({ length: 5 }, (_, i) => i + 1).map(index => (
+                        <Avatar
+                          key={index.toString()}
+                          className="border-2 border-background block w-[2rem] h-[2rem] !rounded-[1rem]"
+                          style={{ zIndex: index + 1 }}
+                        >
+                          <AvatarImage src={"/team/baraka.jpg"} alt={"baraka"} className="object-cover" />
+                          <AvatarFallback>{"B"}</AvatarFallback>
+                        </Avatar>
+                      ))}
+                    </span>
+                    <span className="block w-fit responsiveText">25+ enrolled</span>
+                  </div>
+                </div>
+              </motion.a>
             ))}
-          </motion.div>
-
-          <motion.div
-            variants={containerVarient}
-            initial="initial"
-            whileInView="inView"
-            viewport={{ once: true }}
-            className={`${currentView === 2 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
-            ref={scrollRef}
-          >
-            {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
-            ))}
-          </motion.div>
-
-          <motion.div
-            variants={containerVarient}
-            initial="initial"
-            whileInView="inView"
-            viewport={{ once: true }}
-            className={`${currentView === 3 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
-            ref={scrollRef}
-          >
-            {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
-            ))}
-          </motion.div>
-
-          <motion.div
-            variants={containerVarient}
-            initial="initial"
-            whileInView="inView"
-            viewport={{ once: true }}
-            className={`${currentView === 4 ? "wrapAllCourses" : "hidden"} pl-6 mt-16 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth`}
-            ref={scrollRef}
-          >
-            {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
-            ))}
-          </motion.div>
-        </div>
+        </dev>
+        <NavLink
+          to="#"
+          className="block text-center text-[#FFA500] underline mt-8"
+        >
+          See more
+        </NavLink>
       </div>
+
       {/* why use PPTLINKS */}
-      <div className="why_pptlinks container w-full py-20 maxScreenMobile:py-12">
+      {/* <div className="why_pptlinks container w-full py-20 maxScreenMobile:py-12">
         <motion.h3
           initial={{ y: 100, opacity: 0 }}
           whileInView={{
@@ -421,8 +417,6 @@ export default function NewHome() {
         </motion.h3>
         <div className="wrap_circle w-full h-fit mt-20 !text-black maxScreenMobile:mt-10">
           <motion.div className="grid_anim_wrapper">
-            {/* ///////////////////////////////////////////////////// */}
-
             <motion.div
               initial={{ y: 100, opacity: 0 }}
               whileInView={{
@@ -573,10 +567,9 @@ export default function NewHome() {
                 </div>
               </div>
             </motion.div>
-            {/* ///////////////////////////////////////////////////// */}
           </motion.div>
         </div>
-      </div>
+      </div> */}
 
       <div className="max-h-fit bg-black text-white py-10">
         <div className="container">

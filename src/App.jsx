@@ -43,7 +43,9 @@ const List = lazy(() => import("./components/list/list"));
 const Interface = lazy(() => import("./components/interface/Interface"));
 const Root = lazy(() => import("./components/root/root"));
 const Library = lazy(() => import("./components/library/library"));
+const LibraryPage = lazy(() => import("./components/library/library_page"))
 const SignPage = lazy(() => import("./components/sign/sign"));
+const Pay = lazy(() => import("./components/pay/pay"));
 const About = lazy(() => import("./components/about-us/about"));
 const Document = lazy(() => import("./components/document/document"));
 const Documentation = lazy(() => import("./components/document/Documentation"));
@@ -132,6 +134,7 @@ function App() {
               <Route path="about" element={<About />} />
               <Route path="documentation" element={<Document />} />
               <Route path="library" element={<Library />} />
+              <Route path="libraryPage" element={<LibraryPage />} />
               <Route
                 path="documentation/*"
                 element={
@@ -155,6 +158,7 @@ function App() {
             <Route path="signin" element={<SignPage />} />
             <Route path="signup" element={<SignPage />} />
             <Route path="forgot-password" element={<SignPage />} />
+            <Route path="pay" element={<Pay />} />
             <Route
               path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
               element={<ResetPasswordPage />}

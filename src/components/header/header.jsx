@@ -12,6 +12,8 @@ import {
 import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
 import { motion } from "framer-motion";
+import { CiSearch } from "react-icons/ci";
+// import { Input } from "@/components/ui/input"
 
 export default function Header({ isBackMenu, handleDropdown }) {
   const location = useLocation();
@@ -74,9 +76,9 @@ export default function Header({ isBackMenu, handleDropdown }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className={`border-b-[0.1px] pt-8 pb-4 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#fffff022]"} ${!isBackMenu && "z-50"}`}
+      className={`w-full border-b-[0.1px] pt-8 pb-4 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#fffff022]"} ${!isBackMenu && "z-50"}`}
     >
-      <div className="container flex justify-between items-center">
+      <div className="container !mx-auto flex justify-between items-center">
         <motion.div
           initial={{ x: 50, opacity: 0 }}
           whileInView={{
@@ -86,7 +88,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
           }}
           viewport={{ once: true }}
           className="logo_wrapper">
-          <Link to="/" className="hlogo uppercase block w-10 h-10">
+          <Link to="/" className="uppercase block w-10 h-10">
             <img
               src={isBackMenu ? logo_black : logo_white}
               alt={isBackMenu ? logo_black : logo_white}
@@ -102,17 +104,27 @@ export default function Header({ isBackMenu, handleDropdown }) {
             transition: { duration: 1, type: "tween" }
           }}
           viewport={{ once: true }}
-          className="btnGroup1 flex flex-row justify-between items-center w-[225px]">
+          className="flex flex-row justify-between !items-center gap-10 w-fit maxScreen:gap-2">
+
+          <label htmlFor="" className="flex justify-center items-center w-fit h-fit relative overflow-y-hidden maxScreen:w-3/5 maxScreen:ml-2">
+            <span className={`block bg-black text-[#FFFFF0] text-2xl absolute top-[50%] -translate-y-[50%] left-3 ${isBackMenu && "bg-[#FFFFF0]"} maxScreenMobile:text-4xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
+            <input
+              type="text"
+              placeholder="Search for anything..."
+              className={`block w-[30rem] maxScreen:!w-full border-2 rounded-md py-2 indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-black" : "border-black text-black bg-[#FFFFF0]"} maxScreenMobile:hidden`}
+            />
+          </label>
+
           <button
             onClick={() => handlePresentationBtn()}
             type="submit"
-            className={`w-[10rem] h-[2rem] flex items-center justify-center text-[.8rem] font-medium rounded-md ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+            className={`w-[10rem] h-[2.5rem] flex items-center justify-center text-[.8rem] font-medium rounded-md ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
           >
             {buttontext()}
           </button>
 
           <button
-            className="w-[25px] aspect-square"
+            className="w-[25px] aspect-square maxScreenMobile:scale-125"
             onClick={() => handleDropdown()}
           >
             <svg
