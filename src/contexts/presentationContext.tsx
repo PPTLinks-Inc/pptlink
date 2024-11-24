@@ -477,7 +477,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       ) : (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogOverlay className="backdrop-blur-sm bg-black/20" />
-          <DialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB] w-full">
+          <DialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB] w-11/12 ">
             <DialogHeader>
               <DialogTitle className="text-center">{modalTitle}</DialogTitle>
               <DialogDescription className="text-center">

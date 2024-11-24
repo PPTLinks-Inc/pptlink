@@ -49,6 +49,7 @@ interface ModalStore {
     userId: string;
     action: "make" | "remove" | "replace";
   }) => void;
+  stopScreenShare: () => void;
   showImagePrompt: (images: string[]) => void;
 
   resetStore: () => void;
@@ -227,6 +228,38 @@ export const useModalStore = create<ModalStore>((set, get) => ({
             description: successMessage
           });
         });
+      }
+    });
+  },
+  stopScreenShare: function () {
+    const stopScreenShare = useAudioStore.getState().stopScreenShare;
+    set({
+      isOpen: true,
+      showBottomAction: true,
+      title: "Stop Screen Share",
+      description: "Are you sure you want to stop screen share?",
+      content: null,
+      actionText: "Stop",
+      onClose: () => {
+        get().setIsOpen(false);
+      },
+      onSubmit: () => {
+        set({ isLoading: true });
+        stopScreenShare()
+          .then(() => {
+            set({ isLoading: false, isOpen: false });
+            toast({
+              description: "Screen share stopped"
+            });
+          })
+          .catch(() => {
+            set({ isLoading: false });
+            toast({
+              title: "Error",
+              description: "Could'nt stop screen share",
+              variant: "destructive"
+            });
+          });
       }
     });
   },
