@@ -1,12 +1,12 @@
-import { useRef, useContext, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Card from "../list/card";
 import { useIntersection } from "react-use";
-import { publicPresentation } from "../../contexts/publicPresentationContext";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import { Helmet } from 'react-helmet';
 import LogoBlack from '../../images/Logo-Black.png';
+import usePublicPresentation from "../../hooks/usePublicPresentation";
 
 export default function PublicPresentation() {
   const scrollRef = useRef();
@@ -20,7 +20,7 @@ export default function PublicPresentation() {
     isLoading,
     presentations,
     refetch
-  } = useContext(publicPresentation);
+  } = usePublicPresentation();
 
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {

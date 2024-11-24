@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { useAudioStore } from "./audioStore";
 import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
+import { useModalStore } from "./modalStore";
 
 interface OptionsStore {
     toggleScreenMinimize: () => void;
@@ -33,17 +34,7 @@ export const useOptionsStore = create<OptionsStore>(function () {
                 return;
             }
 
-            const [err] = await safeAwait(useAudioStore.getState().stopScreenShare());
-            if (err) {
-                toast({
-                    description: "Failed to stop screen share",
-                    variant: "destructive"
-                });
-                return;
-            }
-            toast({
-                description: "Screen share stopped"
-            });
+            useModalStore.getState().stopScreenShare();
         }
     };
 });

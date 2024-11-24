@@ -17,15 +17,15 @@ import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { motion, stagger, useInView, useAnimate } from "framer-motion";
 import FAQ from "./data";
-import { publicPresentation } from "../../contexts/publicPresentationContext";
-import { Helmet } from 'react-helmet';
-import LogoBlack from '../../images/Logo-Black.png';
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
+import usePublicPresentation from "../../hooks/usePublicPresentation";
 
 export default function NewHome() {
   // context
   const scrollRef = useRef();
   const { user } = useContext(userContext);
-  const { presentations, refetch } = useContext(publicPresentation);
+  const { presentations, refetch } = usePublicPresentation();
   const [currentView, setCurrentView] = useState(1);
   const navigate = useNavigate();
 
@@ -57,13 +57,13 @@ export default function NewHome() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft - scrollAmount,
-        behavior: "smooth"
-      })
+          left: scrollContainer.scrollLeft - scrollAmount,
+          behavior: "smooth"
+        })
       : scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft + scrollAmount,
-        behavior: "smooth"
-      });
+          left: scrollContainer.scrollLeft + scrollAmount,
+          behavior: "smooth"
+        });
   };
 
   // framer
@@ -162,37 +162,34 @@ export default function NewHome() {
       <Helmet>
         <title>{`Home - PPTLinks `}</title>
         <meta
-          name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
-          name='tags'
+          name="tags"
           content={`PPT, Presentations, Powerpoint, PPTLinks`}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-        <meta property='og:type' content='website' />
-        <meta property='og:url' content={`https://www.PPTLink.com/`} />
-        <meta property='og:title' content={`Home - PPTLinks `} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.PPTLink.com/`} />
+        <meta property="og:title" content={`Home - PPTLinks `} />
         <meta
-          property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
-        <meta property='og:image' content={LogoBlack} />
+        <meta property="og:image" content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
-        <meta property='twitter:card' content='website' />
-        <meta
-          property='twitter:url'
-          content={`https://www.PPTLink.com/`}
-        />
+        <meta property="twitter:card" content="website" />
+        <meta property="twitter:url" content={`https://www.PPTLink.com/`} />
 
-        <meta property='twitter:title' content={`Home - PPTLinks `} />
+        <meta property="twitter:title" content={`Home - PPTLinks `} />
         <meta
-          property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
-        <meta property='twitter:image' content={LogoBlack} />
+        <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
       <div className="_banner relative w-full min-h-[80vh] flex justify-center items-center tall:min-h-fit bg-black text-white py-20">
         <div className="container flex justify-between gap-14 maxScreen:flex-col-reverse tall:flex-col-reverse">
@@ -204,16 +201,18 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-2xl maxScreenMobile:aspect-[2/1.5]">
+            className="banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-2xl maxScreenMobile:aspect-[2/1.5]"
+          >
             <motion.iframe
               className="w-full h-full mx-auto !border-0 rounded-2xl"
               src="https://www.youtube-nocookie.com/embed/meTNh23fYKg?si=-ibyWcdA5oWJ7TTv&amp;controls=0"
               title="YouTube video player"
               frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
-              fetchpriority="high" >
-            </motion.iframe>
+              fetchpriority="high"
+            ></motion.iframe>
           </motion.div>
 
           <motion.div
@@ -238,7 +237,11 @@ export default function NewHome() {
               variants={parentVarient}
               className="w-full responsiveText leading-[2rem] opacity-5 mb-4 text-justify"
             >
-              Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
+              Don’t let internet limitations hold you back. Our platform
+              empowers African course creators to reach their students, no
+              matter the location or connectivity. Present your courses
+              smoothly, with minimal data, and make sure your lessons reach the
+              people who need them.
             </motion.p>
             <motion.div
               variants={parentVarient}
@@ -274,7 +277,8 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="w-full text-4xl font-extrabold maxScreenMobile:font-bold maxScreenMobile:text-2xl maxScreenMobile:text-center">
+            className="w-full text-4xl font-extrabold maxScreenMobile:font-bold maxScreenMobile:text-2xl maxScreenMobile:text-center"
+          >
             Recent Presentation
           </motion.h2>
 
@@ -329,7 +333,8 @@ export default function NewHome() {
             transition: { duration: 1, type: "tween" }
           }}
           viewport={{ once: true }}
-          className="container text-3xl font-extrabold text-center maxScreenMobile:text-2xl maxScreenMobile:font-bold">
+          className="container text-3xl font-extrabold text-center maxScreenMobile:text-2xl maxScreenMobile:font-bold"
+        >
           All the skills you need in one place
         </motion.h2>
         <motion.h2
@@ -340,15 +345,41 @@ export default function NewHome() {
             transition: { duration: 1, type: "tween" }
           }}
           viewport={{ once: true }}
-          className="w-2/5 !mx-auto responsiveText text-center maxScreenMobile:!container maxScreenMobile:mt-4">
-          Lorem ipsum dolor sit amet. consectetur adipisicing elit. Voluptate commodi rem, ut architecto mollitia saepe!
+          className="w-2/5 !mx-auto responsiveText text-center maxScreenMobile:!container maxScreenMobile:mt-4"
+        >
+          Lorem ipsum dolor sit amet. consectetur adipisicing elit. Voluptate
+          commodi rem, ut architecto mollitia saepe!
         </motion.h2>
 
         <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-14">
-          <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software development</span>
-          <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
-          <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
-          <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
+          <span
+            data-allcourses="1"
+            onClick={handleView}
+            className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}
+          >
+            Software development
+          </span>
+          <span
+            data-allcourses="2"
+            onClick={handleView}
+            className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}
+          >
+            Design
+          </span>
+          <span
+            data-allcourses="3"
+            onClick={handleView}
+            className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}
+          >
+            Fashion
+          </span>
+          <span
+            data-allcourses="4"
+            onClick={handleView}
+            className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.6rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}
+          >
+            Barting
+          </span>
         </div>
 
         <div className={`w-full max-h-[30rem] overflow-x-auto mt-8`}>
@@ -361,7 +392,11 @@ export default function NewHome() {
             ref={scrollRef}
           >
             {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+              <Card
+                key={presentation.id}
+                presentation={presentation}
+                refresh={refetch}
+              />
             ))}
           </motion.div>
 
@@ -374,7 +409,11 @@ export default function NewHome() {
             ref={scrollRef}
           >
             {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+              <Card
+                key={presentation.id}
+                presentation={presentation}
+                refresh={refetch}
+              />
             ))}
           </motion.div>
 
@@ -387,7 +426,11 @@ export default function NewHome() {
             ref={scrollRef}
           >
             {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+              <Card
+                key={presentation.id}
+                presentation={presentation}
+                refresh={refetch}
+              />
             ))}
           </motion.div>
 
@@ -400,7 +443,11 @@ export default function NewHome() {
             ref={scrollRef}
           >
             {presentations.slice(0, 12).map((presentation) => (
-              <Card key={presentation.id} presentation={presentation} refresh={refetch} />
+              <Card
+                key={presentation.id}
+                presentation={presentation}
+                refresh={refetch}
+              />
             ))}
           </motion.div>
         </div>
@@ -769,7 +816,10 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="tel:+2349068314394" className="text-[#FFA500] responsiveText">
+                  <a
+                    href="tel:+2349068314394"
+                    className="text-[#FFA500] responsiveText"
+                  >
                     +2349068314394
                   </a>
                 </div>
@@ -808,7 +858,10 @@ export default function NewHome() {
                     className="block w-5 h-5 mr-5"
                     loading="lazy"
                   />
-                  <a href="sms:+2349068314394" className="text-[#FFA500] responsiveText">
+                  <a
+                    href="sms:+2349068314394"
+                    className="text-[#FFA500] responsiveText"
+                  >
                     SMS to +2349068314394
                   </a>
                 </div>
