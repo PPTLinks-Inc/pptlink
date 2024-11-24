@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useContext, useEffect, useMemo, useState, lazy } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  lazy
+} from "react";
 import { useFullscreen, useOrientation } from "react-use";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoIosMic } from "react-icons/io";
@@ -26,6 +33,7 @@ import { useRtmStore } from "./store/rtmStore";
 import { useSlideStore } from "./store/slideStore";
 import { useModalStore } from "./store/modalStore";
 import { useOptionsStore } from "./store/optionsStore";
+import { MdOutlineScreenShare } from "react-icons/md";
 
 const MessageMenu = lazy(() => import("./Modals/MessageMenu"));
 const OptionMenu = lazy(() => import("./Modals/optionMenu"));
@@ -226,25 +234,33 @@ export default function Controls({
   const toggleScreenMinimize = useOptionsStore(
     (state) => state.toggleScreenMinimize
   );
+  const toggleScreenShare = useOptionsStore((state) => state.toggleScreenShare);
+  const iAmScreenSharing = useAudioStore((state) => state.iAmScreenSharing);
 
   return (
     <div
       className={`fixed z-10 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
     >
       {audioLoadingStatus === "success" && (
-        <div
-          className={`absolute sm:bottom-5 bottom-24 left-5 network__bar ${networkStatus}`}
-        >
-          <span className="bar1"></span>
-          <span className="bar2"></span>
-          <span className="bar3"></span>
+        <div className="absolute sm:bottom-5 bottom-24 left-5 flex justify-center items-center z-10">
+          <div
+            className={`network__bar ${networkStatus}`}
+          >
+            <span className="bar1"></span>
+            <span className="bar2"></span>
+            <span className="bar3"></span>
+          </div>
+
+            {iAmScreenSharing && <button onClick={toggleScreenShare} className="rounded-full bg-[#05FF00] w-10 h-10 flex justify-center items-center">
+              <MdOutlineScreenShare size={20} />
+            </button>}
         </div>
       )}
       <div className="flex flex-row gap-20 items-center justify-center relative w-full mb-5">
         {screenShareEnabled && (
           <button
             onClick={toggleScreenMinimize}
-            className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-20 left-5 cursor-pointer"
+            className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-40 sm:bottom-20 left-5 cursor-pointer"
           >
             {screenShareMinimized ? (
               <p className="text-white">Screen Share</p>
