@@ -12,8 +12,9 @@ import {
   IoMusicalNotesOutline,
   IoOptions
 } from "react-icons/io5";
+import { MdKeyboardArrowRight } from "react-icons/md";
 // import { useOptionsStore } from "../store/optionsStore";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MIC_STATE } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAudioStore } from "../store/audioStore";
@@ -30,16 +31,6 @@ function MainMenu({
     value: "main" | "poll" | "co-host" | "slides" | "screen"
   ) => void;
 }) {
-  // const noiseSuppressionEnabled = useOptionsStore(
-  //   (state) => state.noiseSuppressionEnabled
-  // );
-  // const noiseSuppressionAvailable = useOptionsStore(
-  //   (state) => state.noiseSuppressionAvailable
-  // );
-  // const toggleNoiseSuppression = useOptionsStore(
-  //   (state) => state.toggleNoiseSuppression
-  // );
-
   const User = usepresentationStore((state) => state.presentation?.User);
   const toggleScreenShare = useOptionsStore((state) => state.toggleScreenShare);
   const screenShareEnabled = useAudioStore((state) => state.screenShareEnabled);
@@ -47,94 +38,91 @@ function MainMenu({
 
   return (
     <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
-      <div className="flex flex-col gap-7">
+      <div className="flex flex-col gap-7 overflow-auto pr-5">
         <div className="flex justify-between items-center">
-          <Label htmlFor="pen" className="text-lg font-normal">
-            Pen
+          <Label htmlFor="pen" className="text-lg font-normal flex gap-2">
+            <PiPenNibLight size="28" />
+            <span>Pen</span>
           </Label>
           <div className="flex gap-5 items-center">
-            <Label htmlFor="pen">
-              <PiPenNibLight size="28" />
-            </Label>
             <Switch id="pen" />
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <Label htmlFor="music" className="text-lg font-normal">
-            Music
+          <Label htmlFor="music" className="text-lg font-normal flex gap-2">
+            <IoMusicalNotesOutline size="28" />
+            <span>Music</span>
           </Label>
           <div className="flex gap-5 items-center">
-            <Label htmlFor="music">
-              <IoMusicalNotesOutline size="28" />
-            </Label>
             <Switch id="music" />
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <Label htmlFor="ping-audience" className="text-lg font-normal">
-            Ping audience
+          <Label
+            htmlFor="ping-audience"
+            className="text-lg font-normal flex gap-2"
+          >
+            <GoBell size="28" />
+            <span>Ping audience</span>
           </Label>
           <div className="flex gap-5 items-center">
-            <Label htmlFor="ping-audience">
-              <GoBell size="28" />
-            </Label>
             <Switch id="ping-audience" />
           </div>
         </div>
-        {/* <div className="flex justify-between items-center">
-          <Label htmlFor="noise-suppression" className="text-lg font-normal">
-            Noise suppression
-          </Label>
-          <div className="flex gap-5 items-center">
-            <Label htmlFor="noise-suppression">
-              <MdNoiseControlOff size="28" />
-            </Label>
-            <Switch
-              id="noise-suppression"
-              disabled={noiseSuppressionAvailable}
-              checked={noiseSuppressionEnabled}
-              onCheckedChange={(value) => {
-                toggleNoiseSuppression(value);
-              }}
-              className={`${!noiseSuppressionAvailable ? "cursor-not-allowed" : ""}`}
-            />
-          </div>
-        </div> */}
-      </div>
-      <div className="flex items-center justify-around">
-        <button
-          className="flex flex-col justify-center items-center disabled:!cursor-not-allowed disabled:opacity-50"
-          onClick={() => setCurrentMenuOption("co-host")}
-          disabled={User !== "HOST"}
-        >
-          <AiOutlineUsergroupAdd />
-          <span>Co-host</span>
-        </button>
-        <button
-          className={cn(
-            "flex flex-col justify-center items-center disabled:!cursor-not-allowed disabled:opacity-50"
-          )}
-          onClick={toggleScreenShare}
-          disabled={screenShareEnabled && !iAmScreenSharing}
-        >
-          <MdOutlineScreenShare className={cn(screenShareEnabled && "fill-[#05FF00]")} />
-          {!screenShareEnabled ? (
-            <span>Share Screen</span>
-          ) : (
-            <span>Stop Sharing</span>
-          )}
-        </button>
-        <button
-          className="flex flex-col justify-center items-center"
-          onClick={() => setCurrentMenuOption("slides")}
-        >
-          <RiFolderAddLine />
-          <span>Add Slides</span>
-        </button>
-        <button className="flex flex-col justify-center items-center">
-          <RiBarChart2Line />
-          <span>Poll</span>
-        </button>
+        <div>
+          <button
+            className="w-full flex justify-between items-center disabled:!cursor-not-allowed disabled:opacity-50 "
+            onClick={() => setCurrentMenuOption("co-host")}
+            disabled={User !== "HOST"}
+          >
+            <div className="flex gap-2 items-center">
+              <AiOutlineUsergroupAdd size="28" />
+              <span>Co-host</span>
+            </div>
+            <MdKeyboardArrowRight size="20" />
+          </button>
+        </div>
+        <div>
+          <button
+            className="w-full flex justify-between items-center disabled:!cursor-not-allowed disabled:opacity-50"
+            onClick={toggleScreenShare}
+            disabled={screenShareEnabled && !iAmScreenSharing}
+          >
+            <div className="flex gap-2 items-center">
+              <MdOutlineScreenShare
+                size="28"
+                className={cn(screenShareEnabled && "fill-[#05FF00]")}
+              />
+              {!screenShareEnabled ? (
+                <span>Share Screen</span>
+              ) : (
+                <span>Stop Sharing</span>
+              )}
+            </div>
+            <MdKeyboardArrowRight size="20" />
+          </button>
+        </div>
+        <div>
+          <button
+            className="w-full flex justify-between items-center disabled:!cursor-not-allowed disabled:opacity-50"
+            onClick={() => setCurrentMenuOption("slides")}
+          >
+            <div className="flex gap-2 items-center">
+              <RiFolderAddLine size="28" />
+              <span>Add Slides</span>
+            </div>
+            <MdKeyboardArrowRight size="20" />
+          </button>
+        </div>
+        <div>
+          <button className="w-full flex justify-between items-center disabled:!cursor-not-allowed disabled:opacity-50">
+            <div className="flex gap-2 items-center">
+              <RiBarChart2Line size="28" />
+              <span>Poll</span>
+            </div>
+            <MdKeyboardArrowRight size="20" />
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -161,7 +149,6 @@ function CoHostMenu({
     }
   }, []);
 
-  
   const coHostId = useRtmStore((state) => state.coHostId);
   const coHostPrompt = useModalStore((state) => state.coHostPrompt);
 
@@ -242,6 +229,12 @@ export default function OptionMenu({
   const [currentMenuOption, setCurrentMenuOption] = useState<
     "main" | "poll" | "co-host" | "slides" | "screen"
   >("main");
+
+  useEffect(function() {
+    if (!open) {
+      setCurrentMenuOption("main");
+    }
+  }, [open]);
 
   return (
     <Menu right={false} open={open} onClose={onClose} small={true}>
