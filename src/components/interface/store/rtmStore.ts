@@ -7,6 +7,7 @@ import { Message, useMessageStore } from "./messageStore";
 import { useAudioStore } from "./audioStore";
 import { toast } from "@/hooks/use-toast";
 import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
+import { useModalStore } from "./modalStore";
 
 const statusPriority: { [key: string]: number } = {
     REQ_MIC: 1,
@@ -43,6 +44,7 @@ interface RtmStore {
     messageListerner: (message: RTMEvents.MessageEvent) => Promise<void>;
     presencesEvent: (data: RTMEvents.PresenceEvent) => void;
     handleUserDataChange: () => (event: RTMEvents.PresenceEvent) => void;
+    resetStore: () => void;
 };
 
 const endAudio = useAudioStore.getState().endAudio;
@@ -113,11 +115,12 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             }
         } else if (messageData.message === "START_AUDIO") {
             if (presentation.User === "GUEST") {
-                usepresentationStore.setState((state) => ({ ...state, showStartPrompt: true, presentation: { ...state.presentation!, audio: true } }));
+                usepresentationStore.setState((state) => ({ ...state, presentation: { ...state.presentation!, audio: true, live: true } }));
+                useModalStore.getState().startPrompt();
             }
         } else if (messageData.message === "END_AUDIO") {
             if (presentation.User !== "HOST") {
-                usepresentationStore.setState({ showStartPrompt: false });
+                useModalStore.setState({ isOpen: false });
                 endAudio({
                     hostEnd: true
                 });
@@ -188,6 +191,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
 
             set({ rtm });
         } catch (_: unknown) {
+            console.log(_);
             toast({
                 title: "Error",
                 variant: "destructive",
@@ -206,8 +210,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 removeUser(data.publisher);
                 return;
             }
-            if (!u.userName) return;
-            if (u.userName === "HOST") {
+            if (data.publisher.includes("HOST")) {
                 const host = {
                     id: u.id,
                     userName: u.userName,
@@ -216,6 +219,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 set({ host });
                 return
             };
+            if (!u.userName) return;
             const user = {
                 id: u.id,
                 userName: u.userName,
@@ -257,5 +261,18 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             }
                 , 1000);
         }
+    },
+    resetStore: function () {
+        set({
+            userName: "",
+            token: null,
+            audio: null,
+            status: "DISCONNECTED",
+            rtm: null,
+            host: null,
+            coHostId: "",
+            users: {},
+            sortedUsers: []
+        });
     }
 }));

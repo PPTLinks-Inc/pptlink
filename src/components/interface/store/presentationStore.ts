@@ -8,21 +8,14 @@ interface presentationStore {
     presentation: presentationData | null;
     setPresentation: (value: presentationData) => void;
     userName: string,
-    showEnterNamePrompt: boolean;
-    setShowEnterNamePrompt: (value: boolean) => void;
     showUsersList: boolean;
     setShowUsersList: (value: boolean) => void;
     showMessage: boolean;
     setShowMessage: (value: boolean) => void;
     showOptions: boolean;
     setShowOptions: (value: boolean) => void;
-    showStartPrompt: boolean;
-    setShowStartPrompt: (value: boolean) => void;
-    endAudioPrompt: boolean;
-    setEndAudioPrompt: (value: boolean) => void;
-    enterName: boolean;
-    setEnterName: (value: boolean) => void;
     makeLive: () => Promise<void>;
+    resetStore: () => void;
 }
 
 export const usepresentationStore = create<presentationStore>((set, get) => ({
@@ -31,10 +24,6 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
         set({ presentation: value });
     },
     userName: "",
-    showEnterNamePrompt: false,
-    setShowEnterNamePrompt: function (value) {
-        set({ showEnterNamePrompt: value });
-    },
     showUsersList: false,
     setShowUsersList: function (value) {
         set({ showUsersList: value });
@@ -46,18 +35,6 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
     showOptions: false,
     setShowOptions: function (value) {
         set({ showOptions: value });
-    },
-    showStartPrompt: false,
-    setShowStartPrompt: function (value) {
-        set({ showStartPrompt: value });
-    },
-    endAudioPrompt: false,
-    setEndAudioPrompt: function (value) {
-        set({ endAudioPrompt: value });
-    },
-    enterName: false,
-    setEnterName: function (value) {
-        set({ enterName: value });
     },
     makeLive: async function () {
         try {
@@ -87,5 +64,14 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
                 variant: "destructive"
             })
         }
+    },
+    resetStore: function () {
+        set({
+            presentation: null,
+            userName: "",
+            showUsersList: false,
+            showMessage: false,
+            showOptions: false
+        });
     }
 }));
