@@ -13,7 +13,7 @@ import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { LoadingAssetBig, LoadingAssetBig2 } from "../assets/assets";
+import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import { userContext } from "./userContext";
 import {
@@ -27,24 +27,14 @@ import { useSlideStore } from "@/components/interface/store/slideStore";
 import { toast } from "@/hooks/use-toast";
 import { MIC_STATE } from "@/constants/routes";
 import { useModalStore } from "@/components/interface/store/modalStore";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogTitle
-} from "@/components/ui/dialog";
 import { useMessageStore } from "@/components/interface/store/messageStore";
 
 const contextValues = {
   fullScreenShow: false,
   fullScreenToggle: () => {},
   isIphone: false,
-  isMobilePhone: false
+  isMobilePhone: false,
+  containerRef: null
 } as unknown as PresentationContextI;
 
 export const PresentationContext = createContext(contextValues);
@@ -64,8 +54,15 @@ function OrientationPrompt({
       </button>
       <div className="flex flex-col justify-center items-center h-full">
         <picture>
-          <source srcSet="https://res.cloudinary.com/dsmydljex/image/upload/v1732362532/assets/rotate.webp" type="image/webp" />
-          <img src="https://res.cloudinary.com/dsmydljex/image/upload/v1732362829/assets/rotate_mjjhxg.gif" alt="Rotate Image" className="w-fit" />
+          <source
+            srcSet="https://res.cloudinary.com/dsmydljex/image/upload/v1732362532/assets/rotate.webp"
+            type="image/webp"
+          />
+          <img
+            src="https://res.cloudinary.com/dsmydljex/image/upload/v1732362829/assets/rotate_mjjhxg.gif"
+            alt="Rotate Image"
+            className="w-fit"
+          />
         </picture>
       </div>
     </div>
@@ -426,9 +423,18 @@ const PresentationContextProvider = (props: { children: any }) => {
     window.addEventListener("beforeunload", beforeUnload);
 
     return function () {
-      queryClient.removeQueries({ exact: true, queryKey: ["presentation", params.id] });
-      queryClient.removeQueries({ exact: true, queryKey: ["set-slide-on-first-load"] });
-      queryClient.removeQueries({ exact: true, queryKey: ["orientation-prompt"] });
+      queryClient.removeQueries({
+        exact: true,
+        queryKey: ["presentation", params.id]
+      });
+      queryClient.removeQueries({
+        exact: true,
+        queryKey: ["set-slide-on-first-load"]
+      });
+      queryClient.removeQueries({
+        exact: true,
+        queryKey: ["orientation-prompt"]
+      });
       useMessageStore.getState().resetStore();
       useModalStore.getState().resetStore();
       useSlideStore.getState().resetStore();
@@ -446,19 +452,6 @@ const PresentationContextProvider = (props: { children: any }) => {
     };
   }, []);
 
-  const isModalOpen = useModalStore((state) => state.isOpen);
-  const showModalBottomAction = useModalStore(
-    (state) => state.showBottomAction
-  );
-  const setIsModalOpen = useModalStore((state) => state.setIsOpen);
-  const modalTitle = useModalStore((state) => state.title);
-  const modalDescription = useModalStore((state) => state.description);
-  const modalContent = useModalStore((state) => state.content);
-  const modalIsLoading = useModalStore((state) => state.isLoading);
-  const modalActionText = useModalStore((state) => state.actionText);
-  const modalOnClose = useModalStore((state) => state.onClose);
-  const modalOnSubmit = useModalStore((state) => state.onSubmit);
-
   return (
     <PresentationContext.Provider
       value={{
@@ -475,48 +468,12 @@ const PresentationContextProvider = (props: { children: any }) => {
       ) : presentationQuery.isError ? (
         <PresentationNotFound />
       ) : (
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogOverlay className="backdrop-blur-sm bg-black/20" />
-          <DialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB] w-11/12 ">
-            <DialogHeader>
-              <DialogTitle className="text-center">{modalTitle}</DialogTitle>
-              <DialogDescription className="text-center">
-                {modalDescription}
-              </DialogDescription>
-            </DialogHeader>
-
-            {modalIsLoading ? (
-              <div className="flex justify-center items-center">
-                <LoadingAssetBig />
-              </div>
-            ) : (
-              modalContent
-            )}
-            {!modalIsLoading && showModalBottomAction && (
-              <DialogFooter className="sm:justify-center gap-4">
-                <DialogClose asChild>
-                  <Button
-                    onClick={modalIsLoading ? () => {} : modalOnClose}
-                    className="bg-black hover:black/20"
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
-                <Button
-                  onClick={modalOnSubmit}
-                  className="bg-black hover:bg-white hover:text-black"
-                  autoFocus
-                >
-                  {modalActionText}
-                </Button>
-              </DialogFooter>
-            )}
-          </DialogContent>
+        <>
           {isMobilePhone && showPrompt && (
             <OrientationPrompt setShowPrompt={setShowPrompt} />
           )}
           {props.children}
-        </Dialog>
+        </>
       )}
     </PresentationContext.Provider>
   );
