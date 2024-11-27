@@ -219,14 +219,14 @@ export default function Card({ presentation, refresh }) {
       <motion.div
         variants={containerVarient}
         // whileHover="hover"
-        className="card rounded-2xl p-5 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
+        className="card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
       >
         <Link to={`/${presentation.liveId}`}>
-          <div className="card_img rounded-2xl border-[1px] border-solid border-slate-200">
+          <div className="card_img rounded-lg border-[1px] border-solid border-slate-200">
             <img
               src={presentation.thumbnail}
               alt={`${presentation.name} presentation thumbnail`}
-              className="w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-2xl object-cover"
+              className="block w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-md object-cover text-center"
               loading="lazy"
             />
           </div>
@@ -254,7 +254,7 @@ export default function Card({ presentation, refresh }) {
                 aria-expanded={open ? "true" : undefined}
                 onClick={handleClick}
               >
-                <FaEllipsisV className="text-xl text-[#FFA500] cursor-pointer rotate-90" />
+                <FaEllipsisV className="text-xl _text-[#FFA500] text-slate-200 cursor-pointer rotate-90" />
               </Button>
               <Menu
                 id="basic-menu"

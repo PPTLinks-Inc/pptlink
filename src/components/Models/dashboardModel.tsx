@@ -21,6 +21,11 @@ export default function PopUpModal({
 }) {
   return (
     <Modal open={open} onClose={onClose || (() => {})} color="bg-[#FFFFF0]">
+      <img
+        src="/team/pptlink_resources/Icon_metro-notification.svg"
+        alt={"icon"}
+        className="absolute !top-0 !left-0 scale-[0.7]"
+      />
       <form
         className="flex flex-col justify-evenly items-center gap-3 max-w-[20rem]"
         onSubmit={onSubmit}

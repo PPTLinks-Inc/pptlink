@@ -13,6 +13,7 @@ import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
 import { motion } from "framer-motion";
 import { CiSearch } from "react-icons/ci";
+import { HiMenu } from "react-icons/hi";
 // import { Input } from "@/components/ui/input"
 
 export default function Header({ isBackMenu, handleDropdown }) {
@@ -40,18 +41,18 @@ export default function Header({ isBackMenu, handleDropdown }) {
 
   const navigate = useNavigate();
 
-  const handlePresentationBtn = () => {
-    if (!user) return navigate("/signin");
-    if (user && user.presentations < 1 || getDashboardLocation) return navigate(UPLOAD);
-    if (user.presentations > 0) return navigate(DASHBOARD);
-  };
+  // const handlePresentationBtn = () => {
+  //   if (!user) return navigate("/signin");
+  //   if (user && user.presentations < 1 || getDashboardLocation) return navigate(UPLOAD);
+  //   if (user.presentations > 0) return navigate(DASHBOARD);
+  // };
 
-  const buttontext = () => {
-    if (!user) return "Sign in";
-    if (user && user.presentations < 1) return "Upload";
-    if (user.presentations > 0 && getDashboardLocation) return "Upload";
-    if (user.presentations > 0) return "Dashboard";
-  };
+  // const buttontext = () => {
+  //   if (!user) return "Sign in";
+  //   if (user && user.presentations < 1) return "Upload";
+  //   if (user.presentations > 0 && getDashboardLocation) return "Upload";
+  //   if (user.presentations > 0) return "Dashboard";
+  // };
   const containertVarients = {
     hidden: {
       opacity: !getPathNameDoc() && 0
@@ -76,7 +77,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className={`w-full border-b-[0.1px] pt-8 pb-4 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#fffff022]"} ${!isBackMenu && "z-50"}`}
+      className={`w-full border-b-[0.1px] pt-8 pb-3 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#fffff022]"} ${!isBackMenu && "z-50"}`}
     >
       <div className="container !mx-auto flex justify-between items-center">
         <motion.div
@@ -88,11 +89,13 @@ export default function Header({ isBackMenu, handleDropdown }) {
           }}
           viewport={{ once: true }}
           className="logo_wrapper">
-          <Link to="/" className="uppercase block w-10 h-10">
+          <Link to="/" className="uppercase w-fit h-fit flex items-center justify-center gap-2">
             <img
               src={isBackMenu ? logo_black : logo_white}
               alt={isBackMenu ? logo_black : logo_white}
+              className="block w-8 aspect-square"
             />
+            <span className={`text-sm font-light ${isBackMenu ? "text-black" : "text-white"}`}>PPTLINKS</span>
           </Link>
         </motion.div>
 
@@ -104,43 +107,45 @@ export default function Header({ isBackMenu, handleDropdown }) {
             transition: { duration: 1, type: "tween" }
           }}
           viewport={{ once: true }}
-          className="flex flex-row justify-between !items-center gap-10 w-fit maxScreen:gap-2">
+          className="w-3/5 flex flex-row justify-between !items-center gap-4 maxScreen:gap-2 maxScreenMobile:justify-end">
 
-          <label htmlFor="" className="flex justify-center items-center w-fit h-fit relative overflow-y-hidden maxScreen:w-3/5 maxScreen:ml-2">
-            <span className={`block bg-black text-[#FFFFF0] text-2xl absolute top-[50%] -translate-y-[50%] left-3 ${isBackMenu && "bg-[#FFFFF0]"} maxScreenMobile:text-4xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
+          <span className={`hidden bg-[#FFFFF0] p-1 text-black ${isBackMenu && "bg-black text-[#FFFFF0]"} text-2xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm maxScreenMobile:!block`}><CiSearch /></span>
+
+          <label htmlFor="" className="flex justify-center items-center w-3/5 h-fit relative overflow-y-hidden maxScreen:ml-2 mr-6 maxScreenMobile:hidden">
+            <span className={`block bg-black text-[#FFFFF0] text-xl absolute top-[50%] -translate-y-[50%] left-3 ${isBackMenu && "bg-[#FFFFF0]"} maxScreenMobile:text-3xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
             <input
               type="text"
               placeholder="Search for anything..."
-              className={`block w-[30rem] maxScreen:!w-full border-2 rounded-md py-2 indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-black" : "border-black text-black bg-[#FFFFF0]"} maxScreenMobile:hidden`}
+              className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-black" : "border-black text-black bg-[#FFFFF0]"}`}
             />
           </label>
-
           <button
+            className="block w-fit px-6 py-[0.18rem] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
+          // onClick={() =>
+          //   user ? navigate("/upload") : navigate("/signin")
+          // }
+          >
+            Sign In
+          </button>
+          <button
+            className="block w-fit px-6 py-[0.18rem] bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
+          // onClick={goToLibrary}
+          >
+            Create Now
+          </button>
+          {/* <button
             onClick={() => handlePresentationBtn()}
             type="submit"
             className={`w-[10rem] h-[2.5rem] flex items-center justify-center text-[.8rem] font-medium rounded-md ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
           >
             {buttontext()}
-          </button>
+          </button> */}
 
           <button
-            className="w-[25px] aspect-square maxScreenMobile:scale-125"
+            className="block w-fit md:hidden"
             onClick={() => handleDropdown()}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="!w-full !h-full"
-              viewBox="0 0 36 31.365"
-            >
-              <path
-                id="Icon_open-menu"
-                data-name="Icon open-menu"
-                d="M0,0V4.5H36V0ZM0,13.365v4.5H36v-4.5Zm0,13.5v4.5H36v-4.5Z"
-                strokeLinecap="rounded"
-                stroke="#FFFFF0"
-                fill={isBackMenu ? "black" : "#FFFFF0"}
-              />
-            </svg>
+            <span className="block text-5xl"><HiMenu /></span>
           </button>
         </motion.div>
       </div>

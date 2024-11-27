@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import initiative from "/team/pptlink_resources/initiative.png";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
@@ -65,7 +65,7 @@ export default function LibraryPage() {
                     <span className="block w-fit responsiveTex text-white">25+ enrolled</span>
                 </div>
                 <div className="flex justify-between items-center gap-3 py-4">
-                    <button className="flex justify-between items-center gap-3 py-4 `w-fit px-3 text-black font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Enroll Now</button>
+                    <Link to="/pay" className="flex justify-between items-center gap-3 py-4 `w-fit px-3 text-black font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Enroll Now</Link>
                     <span className="text-[#FFA500] font-bold text-xl">$45,330</span>
                 </div>
             </div>
