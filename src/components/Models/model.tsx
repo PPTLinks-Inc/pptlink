@@ -21,9 +21,8 @@ export default function Modal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`${color} rounded-md shadow relative transition-all  border-2 border-black scale-100 opacity-100`}
+        className={`${color} rounded-md shadow relative transition-all  border-1 border-black/25 scale-100 opacity-100`}
       >
-        <img src="/team/pptlink_resources/Icon_metro-notification.svg" alt={"icon"} className="absolute !top-0 !left-0 scale-[0.7]" />
         {children}
       </div>
     </div>,
