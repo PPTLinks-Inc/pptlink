@@ -29,14 +29,7 @@ export default function Root() {
       ? true
       : false
   );
-  useEffect(() => {
-    setPage({ ...page, dropdown: false });
-
-    if (mainScrollRef.current) {
-      mainScrollRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [location.pathname]);
-
+  // states
   const [page, setPage] = useState({
     dropdown: false,
 
@@ -46,6 +39,14 @@ export default function Root() {
     submitPending: false,
     submitErrors: []
   });
+  // effects
+  useEffect(() => {
+    setPage({ ...page, dropdown: false });
+
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location.pathname]);
 
   const handleDropdown = () => {
     setPage((prev) => ({ ...prev, dropdown: !prev.dropdown }));
@@ -114,11 +115,10 @@ export default function Root() {
 
     return (
       <button
-        className={`px-7 rounded-xl py-1 ${
-          color === "black"
+        className={`px-7 rounded-xl py-1 ${color === "black"
             ? " bg-black text-slate-200"
             : "bg-slate-200 text-black"
-        }`}
+          }`}
         onClick={() => handleClick()}
       >
         Present
@@ -130,16 +130,15 @@ export default function Root() {
     <div
       className={`w-full min-h-screen bg-[#FFFFF0] relative flex-col tall:w-[1440px] tall:m-auto ${page.dropdown ? "overflow-y-hidden" : "overflow-y-auto"}`}
     >
-      <Backmenu handleDropdown={handleDropdown} />
+      <Backmenu backmenu={page.dropdown} handleDropdown={handleDropdown} />
       <div
-        className={`h-fit flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
-          page.dropdown
+        className={`h-fit flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${page.dropdown
             ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
             : "transition-transform translate-y-0 ease-in-out top-0"
-        }`}
+          }`}
         ref={mainScrollRef}
       >
-        <Header isBackMenu={false} handleDropdown={handleDropdown} />
+        <Header isBackMenu={false} backmenu={page.dropdown} handleDropdown={handleDropdown} />
         <Outlet />
         <MovingEllipses />
         {!getlocation && <Footer />}

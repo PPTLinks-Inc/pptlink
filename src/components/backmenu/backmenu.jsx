@@ -7,7 +7,7 @@ import { userContext } from "../../contexts/userContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 // eslint-disable-next-line react/prop-types
-export default function Backmenu({ handleDropdown }) {
+export default function Backmenu({ backmenu, handleDropdown }) {
   const { user, setUser } = useContext(userContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ export default function Backmenu({ handleDropdown }) {
   };
 
   return (
-    <div className="w-full h-screen absolute maxScreenMobile:overflow-auto _pt-[5.5rem]">
+    <div className={`w-full h-screen absolute maxScreenMobile:overflow-auto ${backmenu && "scaleIn"}`}>
       <Header isBackMenu={true} handleDropdown={handleDropdown} />
 
       <div className="w-full h-[90vh]">
