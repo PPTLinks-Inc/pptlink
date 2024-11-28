@@ -12,19 +12,19 @@ import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { motion, stagger, useInView, useAnimate } from "framer-motion";
 import FAQ from "./data";
-import { publicPresentation } from "../../contexts/publicPresentationContext";
-import { Helmet } from 'react-helmet';
-import LogoBlack from '../../images/Logo-Black.png';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaCirclePlay } from "react-icons/fa6";
 import Modal from "../Models/model";
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
+import usePublicPresentation from "../../hooks/usePublicPresentation";
 
 export default function NewHome() {
   // context
   const scrollRef = useRef();
   const scrollRefTwo = useRef();
   const { user } = useContext(userContext);
-  const { presentations, refetch } = useContext(publicPresentation);
+  const { presentations, refetch } = usePublicPresentation();
   const [currentView, setCurrentView] = useState(1);
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
@@ -862,7 +862,7 @@ export default function NewHome() {
               <h3 className="text-[3rem] font-black break-all leading-[4rem] maxScreenMobile:text-[2rem]">
                 Frequently <br /> Asked <br /> Questions.
               </h3>
-            </motion.div>
+            </motion.div >
 
             <div className="accurdion w-3/5 maxScreenMobile:w-full" ref={scope}>
               {FAQ.map((_, id) => (
@@ -878,9 +878,9 @@ export default function NewHome() {
                 </AccordionWrapper>
               ))}
             </div>
-          </div>
-        </div>
-      </motion.section>
+          </div >
+        </div >
+      </motion.section >
     </>
   );
 }

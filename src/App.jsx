@@ -7,7 +7,6 @@ import { userContext } from "./contexts/userContext";
 import { LoadingAssetBig2 } from "./assets/assets";
 import { SERVER_URL } from "./constants/routes";
 import PresentationContextProvider from "./contexts/presentationContext";
-import PublicPresentationProvider from "./contexts/publicPresentationContext";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
@@ -88,22 +87,10 @@ function App() {
         >
           <Routes location={location} key={location.key}>
             <Route path="/" element={<Root />}>
-              <Route
-                exact
-                path="/"
-                element={
-                  <PublicPresentationProvider>
-                    <Home />
-                  </PublicPresentationProvider>
-                }
-              />
+              <Route exact path="/" element={<Home />} />
               <Route
                 path="public_presentation"
-                element={
-                  <PublicPresentationProvider>
-                    <PublicPresentation />
-                  </PublicPresentationProvider>
-                }
+                element={<PublicPresentation />}
               />
 
               <Route path="*" element={<NotFound />} />
