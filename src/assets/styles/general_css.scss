@@ -54,6 +54,10 @@ button,
     cursor: pointer !important;
 }
 
+*::-webkit-scrollbar { 
+    display: none; 
+}
+
 .parent_page_wrapper {
     &::before {
         height: 100svh;

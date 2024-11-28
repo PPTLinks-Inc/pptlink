@@ -109,7 +109,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
           viewport={{ once: true }}
           className="w-3/5 flex flex-row justify-between !items-center gap-4 maxScreen:gap-2 maxScreenMobile:justify-end">
 
-          <span className={`hidden bg-[#FFFFF0] p-1 text-black ${isBackMenu && "bg-black text-[#FFFFF0]"} text-2xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm maxScreenMobile:!block`}><CiSearch /></span>
+          <span className={`hidden bg-[#FFFFF0] p-1 text-black ${isBackMenu && "border-black"} text-2xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm maxScreenMobile:!block`}><CiSearch /></span>
 
           <label htmlFor="" className="flex justify-center items-center w-3/5 h-fit relative overflow-y-hidden maxScreen:ml-2 mr-6 maxScreenMobile:hidden">
             <span className={`block bg-black text-[#FFFFF0] text-xl absolute top-[50%] -translate-y-[50%] left-3 ${isBackMenu && "bg-[#FFFFF0]"} maxScreenMobile:text-3xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
@@ -119,27 +119,18 @@ export default function Header({ isBackMenu, handleDropdown }) {
               className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-black" : "border-black text-black bg-[#FFFFF0]"}`}
             />
           </label>
-          <button
-            className="block w-fit px-6 py-[0.18rem] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
-          // onClick={() =>
-          //   user ? navigate("/upload") : navigate("/signin")
-          // }
+          <Link
+            to={user ? "/dashboard" : "/signin"}
+            className="flex justify-center items-center w-fit px-6 py-[0.18rem] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
           >
-            Sign In
-          </button>
-          <button
-            className="block w-fit px-6 py-[0.18rem] bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
-          // onClick={goToLibrary}
+            {user ? "Dashboard" : "Sign In"}
+          </Link>
+          <Link
+            to="/upload"
+            className="flex justify-center items-center w-fit px-6 py-[0.18rem] bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
           >
             Create Now
-          </button>
-          {/* <button
-            onClick={() => handlePresentationBtn()}
-            type="submit"
-            className={`w-[10rem] h-[2.5rem] flex items-center justify-center text-[.8rem] font-medium rounded-md ${!isBackMenu ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
-          >
-            {buttontext()}
-          </button> */}
+          </Link>
 
           <button
             className="block w-fit md:hidden"
