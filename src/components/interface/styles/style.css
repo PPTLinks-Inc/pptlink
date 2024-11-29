@@ -71,6 +71,7 @@ canvas {
     align-items: baseline;
     justify-content: space-between;
     scale: 0.5;
+    margin-bottom: 1rem;
 }
 
 .network__bar>span {

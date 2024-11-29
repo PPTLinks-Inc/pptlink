@@ -8,7 +8,13 @@ import {
   useContext,
   useEffect
 } from "react";
-import { useToggle, useOrientation, useLocalStorage } from "react-use";
+import {
+  useToggle,
+  useOrientation,
+  useLocalStorage,
+  useMount,
+  useUnmount
+} from "react-use";
 import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -402,55 +408,51 @@ const PresentationContextProvider = (props: { children: any }) => {
     [rtmConnectionState, audioConnectionState]
   );
 
-  useEffect(function () {
-    function beforeUnload(e?: BeforeUnloadEvent) {
-      if (!e) {
-        useSlideStore.getState().setSwiperRef(null);
-        useAudioStore.getState().endAudio({ hostEnd: false });
-        useRtmStore.getState().rtm?.logout();
-        return; // No need to show confirmation message
-      }
-      e.preventDefault();
-      const confirmationMessage =
-        "You are about to leave the presentation. Are you sure?";
-      if (window.confirm(confirmationMessage)) {
-        useSlideStore.getState().setSwiperRef(null);
-        useAudioStore.getState().endAudio({ hostEnd: false });
-        useRtmStore.getState().rtm?.logout();
-      }
-      return confirmationMessage;
-    }
-    window.addEventListener("beforeunload", beforeUnload);
+  const beforeUnload = useCallback(function beforeUnload(
+    e?: BeforeUnloadEvent
+  ) {
+    if ((usepresentationStore.getState().presentation?.audio || usepresentationStore.getState().presentation?.live) && e) {
+      const confirmationMessage = "Are you sure you want to leave?";
 
-    return function () {
-      queryClient.removeQueries({
-        exact: true,
-        queryKey: ["presentation", params.id]
-      });
-      queryClient.removeQueries({
-        exact: true,
-        queryKey: ["set-slide-on-first-load"]
-      });
-      queryClient.removeQueries({
-        exact: true,
-        queryKey: ["orientation-prompt"]
-      });
-      useMessageStore.getState().resetStore();
-      useModalStore.getState().resetStore();
-      useSlideStore.getState().resetStore();
-      if (usepresentationStore.getState().presentation?.audio) {
-        useAudioStore.getState().endAudio({ hostEnd: false });
-      }
-      useRtmStore
-        .getState()
-        .rtm?.logout()
-        .then(function () {
-          useRtmStore.getState().resetStore();
-        });
-      usepresentationStore.getState().resetStore();
-      window.removeEventListener("beforeunload", beforeUnload);
-    };
+      console.log("beforeunload");
+
+      e.preventDefault();
+      e.returnValue = confirmationMessage;
+    }
   }, []);
+
+  useMount(function () {
+    window.addEventListener("beforeunload", beforeUnload);
+  });
+
+  useUnmount(function () {
+    queryClient.removeQueries({
+      exact: true,
+      queryKey: ["presentation", params.id]
+    });
+    queryClient.removeQueries({
+      exact: true,
+      queryKey: ["set-slide-on-first-load"]
+    });
+    queryClient.removeQueries({
+      exact: true,
+      queryKey: ["orientation-prompt"]
+    });
+    useMessageStore.getState().resetStore();
+    useModalStore.getState().resetStore();
+    useSlideStore.getState().resetStore();
+    if (usepresentationStore.getState().presentation?.audio) {
+      useAudioStore.getState().endAudio({ hostEnd: false });
+    }
+    useRtmStore
+      .getState()
+      .rtm?.logout()
+      .then(function () {
+        useRtmStore.getState().resetStore();
+      });
+    usepresentationStore.getState().resetStore();
+    window.removeEventListener("beforeunload", beforeUnload);
+  });
 
   return (
     <PresentationContext.Provider
