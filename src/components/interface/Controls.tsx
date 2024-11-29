@@ -192,7 +192,14 @@ export default function Controls({
   const startPrompt = useModalStore((state) => state.startPrompt);
   const endPrompt = useModalStore((state) => state.endPrompt);
 
+  function hapticFeedback() {
+    if (navigator.vibrate) {
+      navigator.vibrate([70]);
+    }
+  }
+
   function actionMicButton() {
+    // hapticFeedback();
     if (audioLoadingStatus !== "success") {
       startPrompt();
       return;
@@ -363,6 +370,7 @@ export default function Controls({
               {presentation?.User === "HOST" ||
               presentation?.User === "CO-HOST" ? (
                 <button
+                  onMouseDown={hapticFeedback}
                   onClick={() => setShowOptions(true)}
                   className="rounded-full p-3 bg-gray-300 shadow"
                 >
@@ -372,6 +380,7 @@ export default function Controls({
                 <button
                   disabled={!presentation?.downloadable}
                   className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
+                  onMouseDown={hapticFeedback}
                   onClick={() =>
                     downloadFile(
                       presentation?.pdfLink || "",
@@ -393,6 +402,7 @@ export default function Controls({
               <div className="relative">
                 <button
                   className="rounded-full p-3 bg-gray-300 shadow"
+                  onMouseDown={hapticFeedback}
                   onClick={() => setShowUsersList(true)}
                 >
                   <FaRegUser size={18} />
@@ -426,6 +436,7 @@ export default function Controls({
               <div className="relative">
                 <button
                   className="rounded-full p-3 bg-gray-300 shadow"
+                  onMouseDown={hapticFeedback}
                   onClick={() => setShowMessage(true)}
                 >
                   <LuMessagesSquare size={18} />
