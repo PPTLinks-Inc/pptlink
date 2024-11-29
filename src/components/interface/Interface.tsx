@@ -201,7 +201,7 @@ function Interface() {
         )}
       </DialogContent>
       <div
-        className={`bg-black w-full ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
+        className={`bg-black w-full addScrollBar ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
       >
         {audioConnectionState === "RECONNECTING" && (
           <div className="flex flex-col justify-center items-center h-screen w-full bg-black">
