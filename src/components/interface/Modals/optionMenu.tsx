@@ -40,8 +40,8 @@ function MainMenu({
     <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
       <div className="flex flex-col gap-7 overflow-auto pr-5">
         <div className="flex justify-between items-center">
-          <Label htmlFor="pen" className="text-lg font-normal flex gap-2">
-            <PiPenNibLight size="28" />
+          <Label htmlFor="pen" className="flex gap-2 items-center">
+            <PiPenNibLight size="24" />
             <span>Pen</span>
           </Label>
           <div className="flex gap-5 items-center">
@@ -49,8 +49,8 @@ function MainMenu({
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <Label htmlFor="music" className="text-lg font-normal flex gap-2">
-            <IoMusicalNotesOutline size="28" />
+          <Label htmlFor="music" className="flex gap-2 items-center">
+            <IoMusicalNotesOutline size="24" />
             <span>Music</span>
           </Label>
           <div className="flex gap-5 items-center">
@@ -60,9 +60,9 @@ function MainMenu({
         <div className="flex justify-between items-center">
           <Label
             htmlFor="ping-audience"
-            className="text-lg font-normal flex gap-2"
+            className="flex gap-2 items-center"
           >
-            <GoBell size="28" />
+            <GoBell size="24" />
             <span>Ping audience</span>
           </Label>
           <div className="flex gap-5 items-center">
@@ -76,8 +76,8 @@ function MainMenu({
             disabled={User !== "HOST"}
           >
             <div className="flex gap-2 items-center">
-              <AiOutlineUsergroupAdd size="28" />
-              <span>Co-host</span>
+              <AiOutlineUsergroupAdd size="24" />
+              <span className="text-sm font-medium">Co-host</span>
             </div>
             <MdKeyboardArrowRight size="20" />
           </button>
@@ -90,13 +90,13 @@ function MainMenu({
           >
             <div className="flex gap-2 items-center">
               <MdOutlineScreenShare
-                size="28"
+                size="24"
                 className={cn(screenShareEnabled && "fill-[#05FF00]")}
               />
               {!screenShareEnabled ? (
-                <span>Share Screen</span>
+                <span className="text-sm font-medium">Share Screen</span>
               ) : (
-                <span>Stop Sharing</span>
+                <span className="text-sm font-medium">Stop Sharing</span>
               )}
             </div>
             <MdKeyboardArrowRight size="20" />
@@ -108,8 +108,8 @@ function MainMenu({
             onClick={() => setCurrentMenuOption("slides")}
           >
             <div className="flex gap-2 items-center">
-              <RiFolderAddLine size="28" />
-              <span>Add Slides</span>
+              <RiFolderAddLine size="24" />
+              <span className="text-sm font-medium">Add Slides</span>
             </div>
             <MdKeyboardArrowRight size="20" />
           </button>
@@ -117,8 +117,8 @@ function MainMenu({
         <div>
           <button className="w-full flex justify-between items-center disabled:!cursor-not-allowed disabled:opacity-50">
             <div className="flex gap-2 items-center">
-              <RiBarChart2Line size="28" />
-              <span>Poll</span>
+              <RiBarChart2Line size="24" />
+              <span className="text-sm font-medium">Poll</span>
             </div>
             <MdKeyboardArrowRight size="20" />
           </button>
@@ -238,8 +238,8 @@ export default function OptionMenu({
 
   return (
     <Menu right={false} open={open} onClose={onClose} small={true}>
-      <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-r-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
-        <div className="flex items-center">
+      <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-r-[1px] border-[#FF8B1C] fixed w-full pr-9 md:pr-12 bg-[#FFFFDB]">
+        <div className="flex items-center w-full">
           {currentMenuOption === "main" ? (
             <>
               <h4 className="text-2xl text-center text-black font-bold">
@@ -251,7 +251,6 @@ export default function OptionMenu({
             </>
           ) : (
             <button
-              className="mr-8"
               onClick={() => setCurrentMenuOption("main")}
             >
               <IoIosArrowBack size="28" />

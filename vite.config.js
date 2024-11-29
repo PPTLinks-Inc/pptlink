@@ -33,7 +33,7 @@ const plugins = [
       }
     ]
   }),
-  // basicSsl()
+  basicSsl()
 ];
 export default defineConfig({
   plugins: plugins,
