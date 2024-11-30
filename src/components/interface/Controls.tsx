@@ -112,23 +112,23 @@ export default function Controls({
               : presentation?.User === "HOST" && !presentation?.audio
                 ? "START"
                 : "JOIN";
-        return { style: "bg-gray-300", icon: <IoIosMic size={60} />, text };
+        return { style: "bg-gray-300", icon: <IoIosMic size={46} />, text };
       } else if (micState === MIC_STATE.REQ_MIC) {
         return {
           style: "bg-orange-500",
-          icon: <PiHandWaving size={60} />,
+          icon: <PiHandWaving size={46} />,
           text: "REQUESTING"
         };
       } else if (micState === MIC_STATE.MIC_MUTED) {
         return {
           style: "bg-rose-500",
-          icon: <IoIosMic size={60} />,
+          icon: <IoIosMic size={46} />,
           text: "MIC MUTED"
         };
       } else if (micState === MIC_STATE.CAN_SPK) {
         return {
           style: "bg-[#05FF00]",
-          icon: <IoIosMic size={60} />,
+          icon: <IoIosMic size={46} />,
           text: "MIC ON"
         };
       }
@@ -192,7 +192,14 @@ export default function Controls({
   const startPrompt = useModalStore((state) => state.startPrompt);
   const endPrompt = useModalStore((state) => state.endPrompt);
 
+  function hapticFeedback() {
+    if (navigator.vibrate) {
+      navigator.vibrate([70]);
+    }
+  }
+
   function actionMicButton() {
+    // hapticFeedback();
     if (audioLoadingStatus !== "success") {
       startPrompt();
       return;
@@ -242,25 +249,28 @@ export default function Controls({
       className={`fixed z-10 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
     >
       {audioLoadingStatus === "success" && (
-        <div className="absolute sm:bottom-5 bottom-24 left-5 flex justify-center items-center z-10">
-          <div
-            className={`network__bar ${networkStatus}`}
-          >
+        <div className="absolute md:bottom-5 bottom-24 left-1 md:left-5 flex justify-center items-center z-10">
+          <div className={`network__bar ${networkStatus}`}>
             <span className="bar1"></span>
             <span className="bar2"></span>
             <span className="bar3"></span>
           </div>
 
-            {iAmScreenSharing && <button onClick={toggleScreenShare} className="rounded-full bg-[#05FF00] w-10 h-10 flex justify-center items-center">
+          {iAmScreenSharing && (
+            <button
+              onClick={toggleScreenShare}
+              className="rounded-full bg-[#05FF00] w-10 h-10 flex justify-center items-center"
+            >
               <MdOutlineScreenShare size={20} />
-            </button>}
+            </button>
+          )}
         </div>
       )}
-      <div className="flex flex-row gap-20 items-center justify-center relative w-full mb-5">
+      <div className="flex gap-20 items-center justify-center relative w-full mb-5">
         {screenShareEnabled && (
           <button
             onClick={toggleScreenMinimize}
-            className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-40 sm:bottom-20 left-5 cursor-pointer"
+            className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-40 md:bottom-20 md:left-5 left-1 cursor-pointer"
           >
             {screenShareMinimized ? (
               <p className="text-white">Screen Share</p>
@@ -270,7 +280,7 @@ export default function Controls({
           </button>
         )}
         {/* Desktop controls */}
-        <div className="flex-row items-center gap-5 flex-wrap sm:flex hidden">
+        <div className="items-center gap-5 flex-wrap sm:flex hidden">
           {audioLoadingStatus === "success" && (
             <>
               {(presentation?.User === "HOST" ||
@@ -354,21 +364,23 @@ export default function Controls({
           )}
         </div>
         {/* mobile controls */}
-        <div className="flex-row items-center gap-5 flex-wrap sm:hidden flex">
+        <div className=" items-center gap-6 flex-wrap sm:hidden flex">
           {audioLoadingStatus === "success" && (
             <>
               {presentation?.User === "HOST" ||
               presentation?.User === "CO-HOST" ? (
                 <button
+                  onMouseDown={hapticFeedback}
                   onClick={() => setShowOptions(true)}
                   className="rounded-full p-3 bg-gray-300 shadow"
                 >
-                  <BsThreeDots size={24} />
+                  <BsThreeDots size={18} />
                 </button>
               ) : presentation?.downloadable ? (
                 <button
                   disabled={!presentation?.downloadable}
                   className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
+                  onMouseDown={hapticFeedback}
                   onClick={() =>
                     downloadFile(
                       presentation?.pdfLink || "",
@@ -377,22 +389,23 @@ export default function Controls({
                   }
                 >
                   <IoCloudDownloadOutline
-                    size={24}
+                    size={18}
                     color={presentation?.downloadable ? "black" : "bg-gray-400"}
                   />
                 </button>
               ) : (
                 <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
-                  <FiHome size={24} />
+                  <FiHome size={18} />
                 </a>
               )}
 
               <div className="relative">
                 <button
                   className="rounded-full p-3 bg-gray-300 shadow"
+                  onMouseDown={hapticFeedback}
                   onClick={() => setShowUsersList(true)}
                 >
-                  <FaRegUser size={24} />
+                  <FaRegUser size={18} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
                   {users.length + (host ? 1 : 0)}
@@ -423,9 +436,10 @@ export default function Controls({
               <div className="relative">
                 <button
                   className="rounded-full p-3 bg-gray-300 shadow"
+                  onMouseDown={hapticFeedback}
                   onClick={() => setShowMessage(true)}
                 >
-                  <LuMessagesSquare size={24} />
+                  <LuMessagesSquare size={18} />
                 </button>
                 <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
                   {unReadMessagesCount}
@@ -435,18 +449,18 @@ export default function Controls({
                 onClick={endPrompt}
                 className="rounded-full p-3 bg-rose-500"
               >
-                <MdCallEnd size={24} />
+                <MdCallEnd size={18} />
               </button>
             </>
           )}
         </div>
-        <div className="absolute sm:bottom-5 bottom-24 right-5 flex gap-4">
+        <div className="absolute md:bottom-5 bottom-24 right-2 md:right-5 flex gap-4">
           {!synced && presentation?.live && presentation?.User === "GUEST" && (
             <button
               onClick={syncSlide}
               className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
             >
-              <IoSync color="white" size={32} />
+              <IoSync color="white" size={28} />
             </button>
           )}
           {document.fullscreenEnabled && (
@@ -455,9 +469,9 @@ export default function Controls({
               className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
             >
               {isFullscreen ? (
-                <RxExitFullScreen color="white" size={32} />
+                <RxExitFullScreen color="white" size={28} />
               ) : (
-                <RxEnterFullScreen color="white" size={32} />
+                <RxEnterFullScreen color="white" size={28} />
               )}
             </button>
           )}
