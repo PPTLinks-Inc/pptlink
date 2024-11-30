@@ -62,7 +62,7 @@ button,
     overflow-x: scroll;
     -ms-scroll-snap-type: x mandatory !important;
     scroll-snap-type: x mandatory !important;
-} 
+}
 
 .parent_page_wrapper {
     &::before {
@@ -790,5 +790,7 @@ label.toggle__label {
 }
 
 .scaleIn {
+    // @include is_mediaQuery_MaxWidth_Yes {
     animation: scaleInAnim 0.3s ease-in-out 1 forwards;
+    // }
 }

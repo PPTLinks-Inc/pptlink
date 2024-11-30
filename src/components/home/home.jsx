@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useRef, useCallback, useContext, useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import sms from "/team/pptlink_resources/Group 33.png";
@@ -126,7 +126,7 @@ export default function NewHome() {
     }
   };
 
-  const goToLibrary = () => navigate("/library");
+  // const goToLibrary = () => navigate("/library");
 
   const [scope, animate] = useAnimate();
   const isInView = useInView(scope, { once: true });
@@ -268,20 +268,18 @@ export default function NewHome() {
                 variants={parentVarient}
                 className="mx-[auto] flex justify-left items-center gap-4 w-full _maxScreenMobile:flex-col"
               >
-                <button
+                <Link
+                  to="#"
                   className="block w-fit px-6 py-1 bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
-                  onClick={goToLibrary}
                 >
                   Create Now
-                </button>
-                <button
+                </Link>
+                <Link
+                  to="/signin"
                   className={`block w-fit px-6 py-1 _bg-[black] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
-                  onClick={() =>
-                    user ? navigate("/upload") : navigate("/signin")
-                  }
                 >
                   Sign In
-                </button>
+                </Link>
               </motion.div>
             </motion.div>
           </div>
