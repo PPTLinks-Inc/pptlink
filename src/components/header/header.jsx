@@ -121,7 +121,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
           </label>
           <Link
             to={user ? "/dashboard" : "/signin"}
-            className="flex justify-center items-center w-fit px-6 py-[0.18rem] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
+            className={`flex justify-center items-center w-fit px-6 py-[0.18rem] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap ${getDashboardLocation && "hidden"}`}
           >
             {user ? "Dashboard" : "Sign In"}
           </Link>
