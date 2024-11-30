@@ -275,7 +275,7 @@ export default function NewHome() {
                   Create Now
                 </button>
                 <button
-                  className="block w-fit px-6 py-1 _bg-[black] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
+                  className={`block w-fit px-6 py-1 _bg-[black] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
                   onClick={() =>
                     user ? navigate("/upload") : navigate("/signin")
                   }
