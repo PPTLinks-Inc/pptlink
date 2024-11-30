@@ -441,14 +441,14 @@ export default function NewHome() {
           </NavLink>
         </div>
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
-        <div className="max-h-fit bg-black text-white py-10">
+        <div className="max-h-fit bg-black text-white pt-8">
           <div className="container">
             <motion.h3
               variants={secondVarient}
               initial="initial"
               whileInView="inView"
               viewport={{ margin: "100px", once: true }}
-              className="text-5xl mb-10 uppercase font-[500]"
+              className="text-5xl mb-8 uppercase font-[500]"
             >
               Get in touch
             </motion.h3>
@@ -458,17 +458,17 @@ export default function NewHome() {
                 initial="initial"
                 whileInView="inView"
                 viewport={{ margin: "100px", once: true }}
-                className="w-[50%] min-h-[30rem] responsiveText mb-10 maxScreenMobile:w-full"
+                className="w-[50%] min-h-[30rem] text-sm maxScreenMobile:w-full"
               >
                 <motion.h5
                   variants={secondVarient}
-                  className="mb-3 text-[1.2rem] font-semibold"
+                  className="mb-2 text-xl font-semibold"
                 >
-                  Send a Message
+                  Send a message
                 </motion.h5>
                 <motion.p
                   variants={secondVarient}
-                  className="w-full mb-16 responsiveText font-thin"
+                  className="w-full mb-4 responsiveText font-thin"
                 >
                   Your voice matters! Share your thought and feedback with us and
                   be part of our community.
@@ -490,7 +490,7 @@ export default function NewHome() {
                         onChange={(e) => {
                           setValues({ ...values, msgName: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-1 text-white indent-4"
+                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
                         placeholder="Enter fullname"
                         required
                       />
@@ -510,7 +510,7 @@ export default function NewHome() {
                         onChange={(e) => {
                           setValues({ ...values, msgEmail: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-1 text-white indent-4"
+                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
                         placeholder="Enter email"
                         required
                       />
@@ -533,7 +533,7 @@ export default function NewHome() {
                         onChange={(e) => {
                           setValues({ ...values, msgPhone: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-1 text-white indent-4"
+                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
                         placeholder="Enter phone number"
                         required
                       />
@@ -552,7 +552,7 @@ export default function NewHome() {
                         onChange={(e) => {
                           setValues({ ...values, msgReason: e.target.value });
                         }}
-                        className="bg-black border-[1px] border-white rounded-md text-white block w-full py-[0.25rem]"
+                        className="bg-black border-[1px] border-white rounded-md text-white block w-full py-[0.5rem]"
                       >
                         <option value="" disabled>
                           Reason for writing?
@@ -631,9 +631,9 @@ export default function NewHome() {
                 viewport={{ margin: "100px", once: true }}
                 className="w-2/5 min-h-[30rem] maxScreenMobile:w-full relative parallel_lines"
               >
-                <div className="w-full mb-10">
+                <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Call Us</h4>
-                  <p className="responsiveText mb-3 font-thin">
+                  <p className="text-sm mb-3 font-thin">
                     Have a question or need guidance? Call us now and lets discuss
                     how we can help you achieve your goal.
                   </p>
@@ -644,15 +644,15 @@ export default function NewHome() {
                       className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="tel:+2349068314394" className="text-[#FFA500] responsiveText">
+                    <a href="tel:+2349068314394" className="text-[#FFA500] text-sm">
                       +2349068314394
                     </a>
                   </div>
                 </div>
 
-                <div className="w-full mb-10">
+                <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Visit Us</h4>
-                  <p className="responsiveText mb-3 font-thin">
+                  <p className="text-sm mb-3 font-thin">
                     We’d love to welcome you to our office. Visit us let’s discuss
                     your project.
                   </p>
@@ -663,16 +663,16 @@ export default function NewHome() {
                       className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="/" className="text-[#FFA500] responsiveText">
+                    <a href="/" className="text-[#FFA500] text-sm">
                       Nascomsoft in Angwan Cashew, opp Elim church, 740102, Bauchi
                       Nigeria
                     </a>
                   </div>
                 </div>
 
-                <div className="w-full mb-10">
+                <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Message Us</h4>
-                  <p className="responsiveText mb-3 font-thin">
+                  <p className="text-sm mb-3 font-thin">
                     Write to us through text, on linkedin or any of our social
                     handles
                   </p>
@@ -683,7 +683,7 @@ export default function NewHome() {
                       className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="sms:+2349068314394" className="text-[#FFA500] responsiveText">
+                    <a href="sms:+2349068314394" className="text-[#FFA500] text-sm">
                       SMS to +2349068314394
                     </a>
                   </div>
@@ -692,7 +692,7 @@ export default function NewHome() {
             </div>
           </div>
 
-          <div className="container flex justify-between align-top maxScreenMobile:flex-col">
+          <div className="container flex justify-between align-top maxScreenMobile:flex-col py-8">
             <motion.div
               className="w-2/5 pr-5 maxScreenMobile:w-full max-h-fit"
               variants={secondVarient}
