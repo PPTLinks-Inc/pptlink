@@ -18,29 +18,14 @@ import { HiMenu } from "react-icons/hi";
 
 export default function Header({ isBackMenu, handleDropdown }) {
   const location = useLocation();
-  const [getlocation] = useState(
-    useLocation().pathname === "/document"
-      ? true
-      : useLocation().pathname === "/newupload"
-        ? true
-        : false
-  );
+  const [getlocation] = useState(useLocation().pathname === "/document");
   const [getDashboardLocation] = useState(useLocation().pathname === "/dashboard");
+  const [getUploadLocation] = useState(useLocation().pathname === "/upload");
 
-  const getPathName = () => {
-    return location.pathname === "/" ? true : false;
-  };
-  const getPathNameDoc = () => {
-    return location.pathname.split("/")[1] === "documentation"
-      ? true
-      : false;
-  };
-
+  const getPathName = () => location.pathname === "/" ? true : false;
+  const getPathNameDoc = () => location.pathname.split("/")[1] === "documentation" ? true : false;
   // context
-  const { user, setUser } = useContext(userContext);
-
-  const navigate = useNavigate();
-
+  const { user } = useContext(userContext);
   // const handlePresentationBtn = () => {
   //   if (!user) return navigate("/signin");
   //   if (user && user.presentations < 1 || getDashboardLocation) return navigate(UPLOAD);
@@ -107,13 +92,13 @@ export default function Header({ isBackMenu, handleDropdown }) {
             transition: { duration: 1, type: "tween" }
           }}
           viewport={{ once: true }}
-          className="w-3/5 flex flex-row justify-between !items-center gap-4 maxScreen:gap-2 maxScreenMobile:justify-end">
+          className="w-3/5 flex flex-row justify-end !items-center gap-4 maxScreen:gap-4 maxScreenMobile:justify-end">
 
           <span className={`hidden bg-[#FFFFF0] p-1 text-black ${isBackMenu && "border-black"} text-[1.3rem] 
           !border-[0.1px] maxScreenMobile:rounded-sm maxScreenMobile:!block`}><CiSearch /></span>
 
-          <label htmlFor="searchAnything" className="flex justify-center items-center w-3/5 h-fit relative overflow-y-hidden maxScreen:ml-2 mr-6 maxScreenMobile:hidden">
-            <span className={`block bg-black text-[#FFFFF0] text-xl absolute top-[50%] -translate-y-[50%] left-3 ${isBackMenu && "bg-[#FFFFF0]"} maxScreenMobile:text-3xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
+          <label htmlFor="searchAnything" className="flex justify-center items-center w-3/5 h-fit relative overflow-y-hidden maxScreenMobile:hidden">
+            <span className={`block text-xl absolute top-[50%] -translate-y-[50%] left-3 maxScreenMobile:text-3xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
             <input
               type="text"
               id="searchAnything"
@@ -122,20 +107,14 @@ export default function Header({ isBackMenu, handleDropdown }) {
             />
           </label>
           <Link
-            to={user ? "/dashboard" : "/signin"}
-            className={`flex justify-center items-center w-fit px-6 py-[0.18rem] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap ${getDashboardLocation && "hidden"}`}
+            to={!user ? "/signin" : getUploadLocation ? "/dashboard" : getDashboardLocation ? "/upload" : "/dashboard"}
+            className={`flex justify-center items-center w-fit px-6 py-[0.18rem] bg-[#FFFFF0] border-[0.5px] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap ${!isBackMenu ? "border-[#FFFFF0]" : "border-black text-black"}`}
           >
-            {user ? "Dashboard" : "Sign In"}
-          </Link>
-          <Link
-            to="/upload"
-            className="flex justify-center items-center w-fit px-6 py-[0.18rem] bg-[#1f1f1d] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
-          >
-            Create Now
+            {!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}
           </Link>
 
           <button
-            className="block w-fit md:hidden"
+            className="block w-fit _md:hidden"
             onClick={() => handleDropdown()}
           >
             <span className="block text-[2.5rem]"><HiMenu /></span>
