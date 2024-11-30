@@ -89,13 +89,13 @@ export default function Header({ isBackMenu, handleDropdown }) {
           }}
           viewport={{ once: true }}
           className="logo_wrapper">
-          <Link to="/" className="uppercase w-fit h-fit flex items-center justify-center gap-2">
+          <Link to="/" className="w-fit h-fit flex items-center justify-center gap-2">
             <img
               src={isBackMenu ? logo_black : logo_white}
               alt={isBackMenu ? logo_black : logo_white}
               className="block w-8 aspect-square"
             />
-            <span className={`text-sm font-light ${isBackMenu ? "text-black" : "text-white"}`}>PPTLINKS</span>
+            <span className={`text-4xl font-semibold ${isBackMenu ? "text-black" : "text-white"}`}><span className="_text-[#FFA500]">PPT</span>Links</span>
           </Link>
         </motion.div>
 
@@ -109,12 +109,14 @@ export default function Header({ isBackMenu, handleDropdown }) {
           viewport={{ once: true }}
           className="w-3/5 flex flex-row justify-between !items-center gap-4 maxScreen:gap-2 maxScreenMobile:justify-end">
 
-          <span className={`hidden bg-[#FFFFF0] p-1 text-black ${isBackMenu && "border-black"} text-2xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm maxScreenMobile:!block`}><CiSearch /></span>
+          <span className={`hidden bg-[#FFFFF0] p-1 text-black ${isBackMenu && "border-black"} text-[1.3rem] 
+          !border-[0.1px] maxScreenMobile:rounded-sm maxScreenMobile:!block`}><CiSearch /></span>
 
-          <label htmlFor="" className="flex justify-center items-center w-3/5 h-fit relative overflow-y-hidden maxScreen:ml-2 mr-6 maxScreenMobile:hidden">
+          <label htmlFor="searchAnything" className="flex justify-center items-center w-3/5 h-fit relative overflow-y-hidden maxScreen:ml-2 mr-6 maxScreenMobile:hidden">
             <span className={`block bg-black text-[#FFFFF0] text-xl absolute top-[50%] -translate-y-[50%] left-3 ${isBackMenu && "bg-[#FFFFF0]"} maxScreenMobile:text-3xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
             <input
               type="text"
+              id="searchAnything"
               placeholder="Search for anything..."
               className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-black" : "border-black text-black bg-[#FFFFF0]"}`}
             />
@@ -127,7 +129,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
           </Link>
           <Link
             to="/upload"
-            className="flex justify-center items-center w-fit px-6 py-[0.18rem] bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
+            className="flex justify-center items-center w-fit px-6 py-[0.18rem] bg-[#1f1f1d] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap"
           >
             Create Now
           </Link>
@@ -136,7 +138,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
             className="block w-fit md:hidden"
             onClick={() => handleDropdown()}
           >
-            <span className="block text-5xl"><HiMenu /></span>
+            <span className="block text-[2.5rem]"><HiMenu /></span>
           </button>
         </motion.div>
       </div>
