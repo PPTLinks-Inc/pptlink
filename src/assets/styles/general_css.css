@@ -25,6 +25,11 @@ button,
   display: none;
 }
 
+.snap_scrolling {
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory !important;
+}
+
 .parent_page_wrapper::before {
   height: 100svh;
 }

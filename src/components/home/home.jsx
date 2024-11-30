@@ -225,8 +225,8 @@ export default function NewHome() {
           />
           <meta property='twitter:image' content={LogoBlack} />
         </Helmet>
-        <div className="_banner relative w-full min-h-[80vh] flex justify-center items-center tall:min-h-fit bg-black text-white py-10 maxScreen:pt-5">
-          <div className="container flex justify-between gap-14 maxScreen:flex-col-reverse tall:flex-col-reverse cursor-pointer">
+        <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-black text-white py-20 maxScreen:pt-5">
+          <div className="container flex justify-between gap-14 maxScreenMobile:gap-4 maxScreen:flex-col-reverse tall:flex-col-reverse cursor-pointer">
             <motion.div
               initial={{ y: 100, opacity: 0 }}
               whileInView={{
@@ -236,7 +236,7 @@ export default function NewHome() {
               }}
               viewport={{ once: true }}
               onClick={() => setOpen(true)}
-              className={`banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-black/80 before:absolute before:top-0 before:left-0 before:w-full before:h-full`}>
+              className={`banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-black/80 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
               <span className="block text-5xl text-[#FFFFF0] z-10"><FaCirclePlay /></span>
             </motion.div>
 
@@ -260,7 +260,7 @@ export default function NewHome() {
               </motion.h3>
               <motion.p
                 variants={parentVarient}
-                className="w-full responsiveText leading-[2rem] opacity-5 mb-8 md:text-justify"
+                className="w-full responsiveText leading-[2rem] opacity-5 mb-1 md:text-justify"
               >
                 Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
               </motion.p>
@@ -286,10 +286,9 @@ export default function NewHome() {
             </motion.div>
           </div>
         </div>
-        {/* <div className="w-full bg-[#FFFFF0] py-1"></div> */}
-        {/* /////////////////////////////see more////////////////////////////////////////////////// */}
+        {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
         <div className="w-full h-fit bg-black">
-          <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white flex flex-col text-justify items-center pt-4 pb-10">
+          <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white flex flex-col text-justify items-center">
             <motion.h2
               initial={{ y: 100, opacity: 0 }}
               whileInView={{
@@ -298,32 +297,32 @@ export default function NewHome() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="w-full text-4xl font-extrabold maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center maxScreenMobile:!mt-10">
+              className="w-full text-4xl font-extrabold mb-8 maxScreenMobile:mb-4 maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center">
               Popular Presentations
             </motion.h2>
 
-            <div className="hidden maxScreenMobile:flex gap-5 justify-end w-[90%] mx-auto h-fit bg-[transparent] pt-8">
-              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <div className="hidden maxScreenMobile:flex gap-5 justify-end w-[90%] mx-auto mb-4 h-fit bg-[transparent]">
+              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
                 <FaCaretLeft
                   onClick={() => scrollCards(true)}
-                  className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
                 />
               </button>
-              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
                 <FaCaretRight
                   onClick={() => scrollCards(false)}
-                  className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
                 />
               </button>
             </div>
 
-            <div className="w-full min-h-[40vh] mt-8">
+            <div className="w-full min-h-[40vh]">
               <motion.div
                 variants={containerVarient}
                 initial="initial"
                 whileInView="inView"
                 viewport={{ once: true }}
-                className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+                className="cards_wrapper w-full mb-10 scroll-smooth"
                 ref={scrollRef}
               >
                 {presentations.slice(0, 12).map((presentation) => (
@@ -343,8 +342,9 @@ export default function NewHome() {
             </NavLink>
           </div>
         </div>
-        {/* /////////////////////////////see more////////////////////////////////////////////////// */}
+        {/* ////////////////////////////End Popular Presentations////////////////////////////////////////////////// */}
 
+        {/* ////////////////////////////All the skills you need in one place////////////////////////////////////////////////// */}
         <div className="w-full h-fit bg-black py-8 relative">
           <motion.h2
             initial={{ y: 100, opacity: 0 }}
@@ -354,7 +354,7 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="container text-3xl font-extrabold text-center maxScreenMobile:text-2xl maxScreenMobile:font-bold">
+            className="container text-4xl font-extrabold text-center maxScreenMobile:text-3xl maxScreenMobile:font-bold">
             All the skills you need in one place
           </motion.h2>
           <motion.p
@@ -365,11 +365,11 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="w-2/5 !mx-auto responsiveText text-center  maxScreenMobile:container maxScreenMobile:mt-2">
+            className="w-2/5 mx-auto text-sm text-center  maxScreenMobile:w-[90%]">
             Checkout all available skills you will need to kick start a carrier in the tech industry
           </motion.p>
 
-          <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-14 maxScreenMobile:!mb-0">
+          <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-4">
             <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software</span>
             <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
             <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
@@ -377,21 +377,21 @@ export default function NewHome() {
           </div>
 
           <div className="_hidden flex justify-between items-center  gap-5 maxScreenMobile:justify-end w-[90%] mx-auto h-fit bg-[transparent] py-4">
-            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCardsTwo(true)}
-                className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+                className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
-            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] _translate-x-[2rem] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] _hover:scale-y-[1.3] _hover:scale-x-[1.3] _hover:bg-[rgba(0,0,0,0.5)] hover:bg-[#FFA500]">
+            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
               <FaCaretRight
                 onClick={() => scrollCardsTwo(false)}
-                className="text-[1.5rem] _text-[#FFA500] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+                className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
           </div>
 
-          <dev ref={scrollRefTwo} className="container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-16 _maxScreenMobile:flex-wrap _maxScreenMobile:flex-col _maxScreenMobile:justify-center _maxScreenMobile:items-center _maxScreenMobile:overflow-x-hidden _maxScreenMobile:overflow-y-hidden _maxScreenMobile:h-max">
+          <dev ref={scrollRefTwo} className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-16">
             {(currentView === 1 ||
               currentView === 2 ||
               currentView === 3 ||
@@ -405,7 +405,7 @@ export default function NewHome() {
                   }}
                   viewport={{ once: true }}
                   key={idx.toString()}
-                  className="min-w-[18rem] grow-0 shrink-0 basis-[15rem] _maxScreenMobile:!grow _maxScreenMobile:min-w-[290px] _maxScreenMobile:!basis-[unset] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/25 cursor-pointer shadow-white shadow-inner z-10"
+                  className="min-w-[18rem] grow-0 shrink-0 basis-[15rem] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/25 cursor-pointer shadow-white shadow-inner z-10"
                   href="/libraryPage"
                 >
                   <div className="z-10">
@@ -440,16 +440,15 @@ export default function NewHome() {
             See more
           </NavLink>
         </div>
-
-        {/* why use PPTLINKS */}
-        <div className="max-h-fit bg-black text-white py-10">
+        {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
+        <div className="max-h-fit bg-black text-white pt-8">
           <div className="container">
             <motion.h3
               variants={secondVarient}
               initial="initial"
               whileInView="inView"
               viewport={{ margin: "100px", once: true }}
-              className="text-5xl mb-10 uppercase font-[500]"
+              className="text-5xl mb-8 uppercase font-[500]"
             >
               Get in touch
             </motion.h3>
@@ -459,17 +458,17 @@ export default function NewHome() {
                 initial="initial"
                 whileInView="inView"
                 viewport={{ margin: "100px", once: true }}
-                className="w-[50%] min-h-[30rem] responsiveText mb-10 maxScreenMobile:w-full"
+                className="w-[50%] min-h-[30rem] text-sm maxScreenMobile:w-full"
               >
                 <motion.h5
                   variants={secondVarient}
-                  className="mb-3 text-[1.2rem] font-semibold"
+                  className="mb-2 text-xl font-semibold"
                 >
-                  Send a Message
+                  Send a message
                 </motion.h5>
                 <motion.p
                   variants={secondVarient}
-                  className="w-full mb-16 responsiveText font-thin"
+                  className="w-full mb-4 responsiveText font-thin"
                 >
                   Your voice matters! Share your thought and feedback with us and
                   be part of our community.
@@ -479,7 +478,7 @@ export default function NewHome() {
                     <div className="w-[50%] maxScreenMobile:w-full">
                       <label
                         htmlFor="name"
-                        className="block w-full underline underline-offset-2 text-md"
+                        className="block w-full text-sm mb-2"
                       >
                         Name:
                       </label>
@@ -491,14 +490,15 @@ export default function NewHome() {
                         onChange={(e) => {
                           setValues({ ...values, msgName: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-b-[1px] border-solid border-white py-2"
+                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
+                        placeholder="Enter fullname"
                         required
                       />
                     </div>
                     <div className="w-[50%] maxScreenMobile:w-full">
                       <label
                         htmlFor="email"
-                        className="block w-full underline underline-offset-2 text-md"
+                        className="block w-full text-sm mb-2"
                       >
                         Email Address:
                       </label>
@@ -510,16 +510,17 @@ export default function NewHome() {
                         onChange={(e) => {
                           setValues({ ...values, msgEmail: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-b-[1px] border-solid border-white py-2"
+                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
+                        placeholder="Enter email"
                         required
                       />
                     </div>
                   </div>
-                  <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
+                  <div className="flex justify-between items-end gap-4 mb-8 maxScreenMobile:flex-col">
                     <div className="w-[50%] maxScreenMobile:w-full">
                       <label
                         htmlFor="phone"
-                        className="block w-full underline underline-offset-2 text-md"
+                        className="block w-full text-sm mb-2"
                       >
                         Phone Number:
                       </label>
@@ -532,63 +533,73 @@ export default function NewHome() {
                         onChange={(e) => {
                           setValues({ ...values, msgPhone: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-b-[1px] border-solid border-white py-2"
+                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
+                        placeholder="Enter phone number"
                         required
                       />
                     </div>
-                    <select
-                      id="countries"
-                      value={values.msgReason}
-                      onChange={(e) => {
-                        setValues({ ...values, msgReason: e.target.value });
-                      }}
-                      className="bg-black border-b border-white text-white block w-[50%] maxScreenMobile:w-full py-[1.1rem]"
-                    >
-                      <option value="" disabled>
-                        Reason for writing?
-                      </option>
-                      <option value="Perfomance issues">
-                        Slow platform and frequent lags
-                      </option>
 
-                      <option value="Technical bugs">Frequent crashes</option>
+                    <div className="w-[50%] h-fit maxScreenMobile:w-full">
+                      <label
+                        htmlFor="reason"
+                        className="block w-full text-sm mb-2"
+                      >
+                        Choose reason:
+                      </label>
+                      <select
+                        id="reason"
+                        value={values.msgReason}
+                        onChange={(e) => {
+                          setValues({ ...values, msgReason: e.target.value });
+                        }}
+                        className="bg-black border-[1px] border-white rounded-md text-white block w-full py-[0.5rem]"
+                      >
+                        <option value="" disabled>
+                          Reason for writing?
+                        </option>
+                        <option value="Perfomance issues">
+                          Slow platform and frequent lags
+                        </option>
 
-                      <option value="Interface design issues">
-                        Difficulty in navigation and design
-                      </option>
+                        <option value="Technical bugs">Frequent crashes</option>
 
-                      <option value="Compatibility issues">
-                        Poor compatibility with operating systems or device
-                      </option>
+                        <option value="Interface design issues">
+                          Difficulty in navigation and design
+                        </option>
 
-                      <option value="UPload/Download problems">
-                        Problems uploading or downloading file
-                      </option>
+                        <option value="Compatibility issues">
+                          Poor compatibility with operating systems or device
+                        </option>
 
-                      <option value="Features request">
-                        Missing essential features
-                      </option>
+                        <option value="UPload/Download problems">
+                          Problems uploading or downloading file
+                        </option>
 
-                      <option value="Customer Support">
-                        Slow or unhelpful customer support
-                      </option>
+                        <option value="Features request">
+                          Missing essential features
+                        </option>
 
-                      <option value="Account Management">
-                        Difficulties with account settings or access
-                      </option>
+                        <option value="Customer Support">
+                          Slow or unhelpful customer support
+                        </option>
 
-                      <option value="Security Concerns">
-                        Concerns about data security and privacy
-                      </option>
+                        <option value="Account Management">
+                          Difficulties with account settings or access
+                        </option>
 
-                      <option value="Other">Other messages</option>
-                    </select>
+                        <option value="Security Concerns">
+                          Concerns about data security and privacy
+                        </option>
+
+                        <option value="Other">Other messages</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className=" mb-8">
                     <label
                       htmlFor="message"
-                      className="block w-full underline underline-offset-2 text-md"
+                      className="block w-full text-sm mb-2"
                     >
                       Message:
                     </label>
@@ -601,12 +612,12 @@ export default function NewHome() {
                       onChange={(e) => {
                         setValues({ ...values, msg: e.target.value });
                       }}
-                      className="block w-full !h-32 bg-transparent border-b-[1px] border-solid border-white py-2 resize-none"
+                      className="block w-full !h-32 bg-transparent border-[1px] border-solid border-white rounded-md py-1 indent-4 resize-none text-white"
                     ></textarea>
                   </div>
                   <button
                     type="submit"
-                    className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-md maxScreenMobile:w-full"
+                    className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-md"
                   >
                     {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                   </button>
@@ -620,9 +631,9 @@ export default function NewHome() {
                 viewport={{ margin: "100px", once: true }}
                 className="w-2/5 min-h-[30rem] maxScreenMobile:w-full relative parallel_lines"
               >
-                <div className="w-full mb-10">
+                <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Call Us</h4>
-                  <p className="responsiveText mb-3 font-thin">
+                  <p className="text-sm mb-3 font-thin">
                     Have a question or need guidance? Call us now and lets discuss
                     how we can help you achieve your goal.
                   </p>
@@ -630,18 +641,18 @@ export default function NewHome() {
                     <img
                       src={callus}
                       alt={callus}
-                      className="block w-5 h-5 mr-5"
+                      className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="tel:+2349068314394" className="text-[#FFA500] responsiveText">
+                    <a href="tel:+2349068314394" className="text-[#FFA500] text-sm">
                       +2349068314394
                     </a>
                   </div>
                 </div>
 
-                <div className="w-full mb-10">
+                <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Visit Us</h4>
-                  <p className="responsiveText mb-3 font-thin">
+                  <p className="text-sm mb-3 font-thin">
                     We’d love to welcome you to our office. Visit us let’s discuss
                     your project.
                   </p>
@@ -649,19 +660,19 @@ export default function NewHome() {
                     <img
                       src={location}
                       alt={location}
-                      className="block w-5 h-5 mr-5"
+                      className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="/" className="text-[#FFA500] responsiveText">
+                    <a href="/" className="text-[#FFA500] text-sm">
                       Nascomsoft in Angwan Cashew, opp Elim church, 740102, Bauchi
                       Nigeria
                     </a>
                   </div>
                 </div>
 
-                <div className="w-full mb-10">
+                <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Message Us</h4>
-                  <p className="responsiveText mb-3 font-thin">
+                  <p className="text-sm mb-3 font-thin">
                     Write to us through text, on linkedin or any of our social
                     handles
                   </p>
@@ -669,10 +680,10 @@ export default function NewHome() {
                     <img
                       src={sms}
                       alt={sms}
-                      className="block w-5 h-5 mr-5"
+                      className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="sms:+2349068314394" className="text-[#FFA500] responsiveText">
+                    <a href="sms:+2349068314394" className="text-[#FFA500] text-sm">
                       SMS to +2349068314394
                     </a>
                   </div>
@@ -681,9 +692,9 @@ export default function NewHome() {
             </div>
           </div>
 
-          <div className="container flex justify-between align-top maxScreenMobile:flex-col">
+          <div className="container flex justify-between align-top maxScreenMobile:flex-col py-8">
             <motion.div
-              className="wrapAccurdion w-2/5 pr-5 maxScreenMobile:w-full max-h-fit"
+              className="w-2/5 pr-5 maxScreenMobile:w-full max-h-fit"
               variants={secondVarient}
               initial="initial"
               whileInView="inView"
@@ -695,17 +706,17 @@ export default function NewHome() {
               </h3>
             </motion.div >
 
-            <div className="accurdion w-3/5 maxScreenMobile:w-full" ref={scope}>
+            <div className="w-3/5 maxScreenMobile:w-full" ref={scope}>
               {FAQ.map((_, id) => (
                 <AccordionWrapper
                   key={id}
                   title={_.title}
                   className="transition-all duration-300"
                 >
-                  <h3 className="!text-8 font-semibold leading-[28px] mb-[15px]">
+                  <h3 className="w-full text-lg font-semibold mb-[15px]">
                     {_.h3}
                   </h3>
-                  <p className="!text-8">{_.p}</p>
+                  <p className="w-full text-md">{_.p}</p>
                 </AccordionWrapper>
               ))}
             </div>
