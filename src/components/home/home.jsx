@@ -225,7 +225,7 @@ export default function NewHome() {
           />
           <meta property='twitter:image' content={LogoBlack} />
         </Helmet>
-        <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-black text-white py-20 maxScreen:pt-5">
+        <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-black text-white py-6">
           <div className="container flex justify-between gap-14 maxScreenMobile:gap-4 maxScreen:flex-col-reverse tall:flex-col-reverse cursor-pointer">
             <motion.div
               initial={{ y: 100, opacity: 0 }}
@@ -248,19 +248,19 @@ export default function NewHome() {
             >
               <motion.h1
                 variants={parentVarient}
-                className="text-5xl mb-1 font-extrabold maxScreenMobile:text-4xl"
+                className="text-5xl mb-3 font-extrabold maxScreenMobile:text-4xl"
               >
                 Your Courses, Their Future
               </motion.h1>
               <motion.h3
                 variants={parentVarient}
-                className="responsiveText mb-1 font-bold maxScreen:!text-2xl"
+                className="responsiveText mb-3 font-bold maxScreen:!text-2xl"
               >
                 Teach Across Africa, No Data Limits.
               </motion.h3>
               <motion.p
                 variants={parentVarient}
-                className="w-full responsiveText leading-[2rem] opacity-5 mb-1 md:text-justify"
+                className="w-full responsiveText leading-[2rem] opacity-5 mb-3 md:text-justify"
               >
                 Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
               </motion.p>
@@ -285,7 +285,7 @@ export default function NewHome() {
           </div>
         </div>
         {/* ////////////////////////////All the skills you need in one place////////////////////////////////////////////////// */}
-        <div className="w-full h-fit bg-black py-8 relative">
+        <div className="w-full h-fit bg-black py-6 relative text-[#FFFFF0]">
           <motion.h2
             initial={{ y: 100, opacity: 0 }}
             whileInView={{
@@ -294,7 +294,7 @@ export default function NewHome() {
               transition: { duration: 1, type: "tween" }
             }}
             viewport={{ once: true }}
-            className="container text-4xl font-extrabold text-center maxScreenMobile:text-3xl maxScreenMobile:font-bold">
+            className="container text-4xl font-extrabold text-center maxScreenMobile:text-3xl maxScreenMobile:font-bold !mb-2">
             All the skills you need in one place
           </motion.h2>
           <motion.p
@@ -309,14 +309,14 @@ export default function NewHome() {
             Checkout all available skills you will need to kick start a carrier in the tech industry
           </motion.p>
 
-          <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-4">
+          <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-6">
             <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software</span>
             <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
             <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
             <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
           </div>
 
-          <div className="_hidden flex justify-between items-center  gap-5 maxScreenMobile:justify-end w-[90%] mx-auto h-fit bg-[transparent] py-4">
+          <div className="_hidden flex justify-end items-center  gap-5 maxScreenMobile:justify-end container mx-auto h-fit bg-[transparent] py-4">
             <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
               <FaCaretLeft
                 onClick={() => scrollCardsTwo(true)}
@@ -331,7 +331,7 @@ export default function NewHome() {
             </button>
           </div>
 
-          <dev ref={scrollRefTwo} className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-16">
+          <dev ref={scrollRefTwo} className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-6">
             {(currentView === 1 ||
               currentView === 2 ||
               currentView === 3 ||
@@ -375,16 +375,15 @@ export default function NewHome() {
           </dev>
           <NavLink
             to="#"
-            className="block text-center text-[#FFA500] underline mt-8"
+            className="block text-center text-[#FFA500] underline"
           >
             See more
           </NavLink>
         </div>
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
-
         {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
         <div className="w-full h-fit bg-black">
-          <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white flex flex-col text-justify items-center">
+          <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
             <motion.h2
               initial={{ y: 100, opacity: 0 }}
               whileInView={{
@@ -393,7 +392,7 @@ export default function NewHome() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="w-full text-4xl font-extrabold mb-8 maxScreenMobile:mb-4 maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center">
+              className="w-full text-4xl font-extrabold mb-6 maxScreenMobile:mb-4 maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center">
               Popular Presentations
             </motion.h2>
 
@@ -418,7 +417,7 @@ export default function NewHome() {
                 initial="initial"
                 whileInView="inView"
                 viewport={{ once: true }}
-                className="cards_wrapper w-full mb-10 scroll-smooth"
+                className="cards_wrapper w-full scroll-smooth"
                 ref={scrollRef}
               >
                 {presentations.slice(0, 12).map((presentation) => (
@@ -432,7 +431,7 @@ export default function NewHome() {
             </div>
             <NavLink
               to="/public_presentation"
-              className="block text-center text-[#FFA500] underline"
+              className="block text-center text-[#FFA500] underline mt-6"
             >
               See more
             </NavLink>
