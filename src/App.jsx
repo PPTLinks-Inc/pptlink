@@ -35,6 +35,7 @@ const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 const Institutions = lazy(
   () => import("./components/institutions/institutions")
 );
+const CodeTest = lazy(() => import("./components/codeTest/codeTest"));
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
@@ -126,6 +127,7 @@ function App() {
             <Route path="signup" element={<SignPage />} />
             <Route path="forgot-password" element={<SignPage />} />
             <Route path="pay" element={<Pay />} />
+            <Route path="codetest" element={<CodeTest />} />
             <Route
               path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
               element={<ResetPasswordPage />}
