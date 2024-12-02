@@ -116,15 +116,15 @@ export default function Header({ isBackMenu, handleDropdown }) {
             <span className="block text-sm maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}</span>
             {!user ? "Sign In" : getUploadLocation ?
               <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span> : getDashboardLocation ?
-                <span className="hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3"><FaFileUpload /></span> :
-                <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span>}
+                <span className={`hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><FaFileUpload /></span> :
+                <span className={`hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><CiUser /></span>}
           </Link>
 
           <button
             className="block w-fit _md:hidden"
             onClick={() => handleDropdown()}
           >
-            <span className="block text-[2.5rem] text-[#FFFFF0]"><HiMenu /></span>
+            <span className={`block text-[2.5rem] text-[#FFFFF0] ${isBackMenu && "text-black"}`}><HiMenu /></span>
           </button>
         </motion.div>
       </div>
