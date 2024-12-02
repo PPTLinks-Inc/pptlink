@@ -284,64 +284,6 @@ export default function NewHome() {
             </motion.div>
           </div>
         </div>
-        {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
-        <div className="w-full h-fit bg-black">
-          <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white flex flex-col text-justify items-center">
-            <motion.h2
-              initial={{ y: 100, opacity: 0 }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-                transition: { duration: 1, type: "tween" }
-              }}
-              viewport={{ once: true }}
-              className="w-full text-4xl font-extrabold mb-8 maxScreenMobile:mb-4 maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center">
-              Popular Presentations
-            </motion.h2>
-
-            <div className="hidden maxScreenMobile:flex gap-5 justify-end w-[90%] mx-auto mb-4 h-fit bg-[transparent]">
-              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-                <FaCaretLeft
-                  onClick={() => scrollCards(true)}
-                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
-                />
-              </button>
-              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-                <FaCaretRight
-                  onClick={() => scrollCards(false)}
-                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
-                />
-              </button>
-            </div>
-
-            <div className="w-full min-h-[40vh]">
-              <motion.div
-                variants={containerVarient}
-                initial="initial"
-                whileInView="inView"
-                viewport={{ once: true }}
-                className="cards_wrapper w-full mb-10 scroll-smooth"
-                ref={scrollRef}
-              >
-                {presentations.slice(0, 12).map((presentation) => (
-                  <Card
-                    key={presentation.id}
-                    presentation={presentation}
-                    refresh={refetch}
-                  />
-                ))}
-              </motion.div>
-            </div>
-            <NavLink
-              to="/public_presentation"
-              className="block text-center text-[#FFA500] underline"
-            >
-              See more
-            </NavLink>
-          </div>
-        </div>
-        {/* ////////////////////////////End Popular Presentations////////////////////////////////////////////////// */}
-
         {/* ////////////////////////////All the skills you need in one place////////////////////////////////////////////////// */}
         <div className="w-full h-fit bg-black py-8 relative">
           <motion.h2
@@ -439,6 +381,64 @@ export default function NewHome() {
           </NavLink>
         </div>
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
+
+        {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
+        <div className="w-full h-fit bg-black">
+          <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-white flex flex-col text-justify items-center">
+            <motion.h2
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, type: "tween" }
+              }}
+              viewport={{ once: true }}
+              className="w-full text-4xl font-extrabold mb-8 maxScreenMobile:mb-4 maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center">
+              Popular Presentations
+            </motion.h2>
+
+            <div className="hidden maxScreenMobile:flex gap-5 justify-end w-[90%] mx-auto mb-4 h-fit bg-[transparent]">
+              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+                <FaCaretLeft
+                  onClick={() => scrollCards(true)}
+                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+                />
+              </button>
+              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+                <FaCaretRight
+                  onClick={() => scrollCards(false)}
+                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+                />
+              </button>
+            </div>
+
+            <div className="w-full min-h-[40vh]">
+              <motion.div
+                variants={containerVarient}
+                initial="initial"
+                whileInView="inView"
+                viewport={{ once: true }}
+                className="cards_wrapper w-full mb-10 scroll-smooth"
+                ref={scrollRef}
+              >
+                {presentations.slice(0, 12).map((presentation) => (
+                  <Card
+                    key={presentation.id}
+                    presentation={presentation}
+                    refresh={refetch}
+                  />
+                ))}
+              </motion.div>
+            </div>
+            <NavLink
+              to="/public_presentation"
+              className="block text-center text-[#FFA500] underline"
+            >
+              See more
+            </NavLink>
+          </div>
+        </div>
+        {/* ////////////////////////////End Popular Presentations////////////////////////////////////////////////// */}
         <div className="max-h-fit bg-black text-white pt-8">
           <div className="container">
             <motion.h3

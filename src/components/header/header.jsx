@@ -14,6 +14,8 @@ import logo_black from "/imgs/BLACK.png";
 import { motion } from "framer-motion";
 import { CiSearch } from "react-icons/ci";
 import { HiMenu } from "react-icons/hi";
+import { CiUser } from "react-icons/ci";
+import { FaFileUpload } from "react-icons/fa";
 // import { Input } from "@/components/ui/input"
 
 export default function Header({ isBackMenu, handleDropdown }) {
@@ -74,13 +76,13 @@ export default function Header({ isBackMenu, handleDropdown }) {
           }}
           viewport={{ once: true }}
           className="logo_wrapper">
-          <Link to="/" className="w-fit h-fit flex items-center justify-center gap-2">
+          <Link to="/" className="w-fit h-fit !flex !items-center !justify-center gap-2">
             <img
               src={isBackMenu ? logo_black : logo_white}
               alt={isBackMenu ? logo_black : logo_white}
               className="block w-8 aspect-square"
             />
-            <span className={`text-4xl font-semibold ${isBackMenu ? "text-black" : "text-white"}`}><span className="_text-[#FFA500]">PPT</span>Links</span>
+            <span className={`block w-fit h-fit text-2xl md:text-3xl font-semibold ${isBackMenu ? "text-black" : "text-white"}`}><span className="_text-[#FFA500]">PPT</span>Links</span>
           </Link>
         </motion.div>
 
@@ -106,11 +108,16 @@ export default function Header({ isBackMenu, handleDropdown }) {
               className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-black" : "border-black text-black bg-[#FFFFF0]"}`}
             />
           </label>
+
           <Link
             to={!user ? "/signin" : getUploadLocation ? "/dashboard" : getDashboardLocation ? "/upload" : "/dashboard"}
-            className={`flex justify-center items-center w-fit px-6 py-[0.18rem] bg-[#FFFFF0] border-[0.5px] text-black responsiveText rounded-md maxScreenMobile:mb-3 maxScreenMobile:hidden text-nowrap ${!isBackMenu ? "border-[#FFFFF0]" : "border-black text-black"}`}
+            className={`${!user && "!hidden"} flex justify-center items-center w-fit md:px-6 md:py-[0.18rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-black md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-black md:text-black"}`}
           >
-            {!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}
+            <span className="block maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}</span>
+            {!user ? "Sign In" : getUploadLocation ?
+              <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span> : getDashboardLocation ?
+                <span className="hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3"><FaFileUpload /></span> :
+                <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span>}
           </Link>
 
           <button
