@@ -82,7 +82,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
               alt={isBackMenu ? logo_black : logo_white}
               className="block w-8 aspect-square"
             />
-            <span className={`block w-fit h-fit text-2xl md:text-3xl font-semibold ${isBackMenu ? "text-black" : "text-white"}`}><span className="_text-[#FFA500]">PPT</span>Links</span>
+            <span className={`block w-fit h-fit text-2xl md:text-3xl font-semibold ${isBackMenu ? "text-black" : "text-[#FFFFF0]"}`}>PPTLinks</span>
           </Link>
         </motion.div>
 
@@ -111,9 +111,9 @@ export default function Header({ isBackMenu, handleDropdown }) {
 
           <Link
             to={!user ? "/signin" : getUploadLocation ? "/dashboard" : getDashboardLocation ? "/upload" : "/dashboard"}
-            className={`${!user && "!hidden"} flex justify-center items-center w-fit md:px-6 md:py-[0.18rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-black md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-black md:text-black"}`}
+            className={`${!user && "!hidden"} flex justify-center items-center w-fit md:px-6 md:py-[0.35rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-black md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-black md:text-black"}`}
           >
-            <span className="block maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}</span>
+            <span className="block text-sm maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}</span>
             {!user ? "Sign In" : getUploadLocation ?
               <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span> : getDashboardLocation ?
                 <span className="hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3"><FaFileUpload /></span> :
@@ -124,7 +124,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
             className="block w-fit _md:hidden"
             onClick={() => handleDropdown()}
           >
-            <span className="block text-[2.5rem]"><HiMenu /></span>
+            <span className="block text-[2.5rem] text-[#FFFFF0]"><HiMenu /></span>
           </button>
         </motion.div>
       </div>
