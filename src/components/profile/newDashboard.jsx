@@ -93,9 +93,9 @@ export default function NewDashboard() {
       <section
         className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-black" : "bg-black"}`}
       >
-        <div className={`w-full h-fit pt-20`}>
+        <div className={`w-full h-fit pt-6`}>
           <div
-            className={`container relative h-fit py-10 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}
+            className={`container relative h-fit py-6 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}
           >
             <span
               className={`absolute top-8 right-8 text-2xl font-bold ${currentView !== 3 ? "text-[#FFA500]" : ""}`}

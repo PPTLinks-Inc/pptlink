@@ -72,7 +72,7 @@ export default function Footer() {
             </div>
             <div>
               <h3 className="font-black mb-5 text-[1.2rem] maxScreenMobile:mt-5">
-                Dcoumentation
+                Documentation
               </h3>
               <nav className="flex flex-col justify-between align-top">
                 <NavLink
