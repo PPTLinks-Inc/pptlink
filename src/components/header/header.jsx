@@ -16,6 +16,7 @@ import { CiSearch } from "react-icons/ci";
 import { HiMenu } from "react-icons/hi";
 import { CiUser } from "react-icons/ci";
 import { FaFileUpload } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 // import { Input } from "@/components/ui/input"
 
 export default function Header({ isBackMenu, handleDropdown }) {
@@ -124,7 +125,8 @@ export default function Header({ isBackMenu, handleDropdown }) {
             className="block w-fit _md:hidden"
             onClick={() => handleDropdown()}
           >
-            <span className={`block text-[2.5rem] text-[#FFFFF0] ${isBackMenu && "text-black"}`}><HiMenu /></span>
+            <span className={`block text-[2.5rem] text-[#FFFFF0] ${isBackMenu && "hidden"}`}><HiMenu /></span>
+            <span className={`hidden text-[2.5rem] text-[#FFFFF0] ${isBackMenu && "text-black !block"}`}><IoClose /></span>
           </button>
         </motion.div>
       </div>

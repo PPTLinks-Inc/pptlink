@@ -94,7 +94,7 @@ export default function NewHome() {
   };
   const containerVarient = {
     initial: {
-      y: 50,
+      y: 30,
       opacity: 0
     },
     inView: {
@@ -248,19 +248,19 @@ export default function NewHome() {
             >
               <motion.h1
                 variants={parentVarient}
-                className="text-5xl mb-3 font-extrabold maxScreenMobile:text-4xl"
+                className="text-5xl mb-1 md:mb-3 font-extrabold maxScreenMobile:text-4xl"
               >
                 Your Courses, Their Future
               </motion.h1>
               <motion.h3
                 variants={parentVarient}
-                className="responsiveText mb-3 font-bold maxScreen:!text-2xl"
+                className="responsiveText mb-1 md:mb-3 font-bold maxScreen:!text-2xl"
               >
                 Teach Across Africa, No Data Limits.
               </motion.h3>
               <motion.p
                 variants={parentVarient}
-                className="w-full responsiveText leading-[2rem] opacity-5 mb-3 md:text-justify"
+                className="w-full responsiveText leading-[2rem] opacity-5 mb-1 md:mb-3 md:text-justify"
               >
                 Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
               </motion.p>
@@ -331,22 +331,15 @@ export default function NewHome() {
             </button>
           </div>
 
-          <dev ref={scrollRefTwo} className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-6">
+          <dev ref={scrollRefTwo} className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-6 scroll-smooth">
             {(currentView === 1 ||
               currentView === 2 ||
               currentView === 3 ||
               currentView === 4) && Array.from({ length: 10 }, (_, i) => i + 1).map(idx => (
-                <motion.a
-                  initial={{ y: 100, opacity: 0 }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 1, type: "tween" }
-                  }}
-                  viewport={{ once: true }}
+                <NavLink
                   key={idx.toString()}
-                  className="min-w-[18rem] grow-0 shrink-0 basis-[15rem] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/25 cursor-pointer shadow-white shadow-inner z-10"
-                  href="/libraryPage"
+                  className="snap_scrolling_child min-w-[18rem] grow-0 shrink-0 basis-[15rem] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/25 cursor-pointer shadow-white shadow-inner z-10"
+                  to="/libraryPage"
                 >
                   <div className="z-10">
                     <p className="text-md font-light mb-1">Software Development</p>
@@ -370,7 +363,7 @@ export default function NewHome() {
                       <span className="block w-fit responsiveText">25+ enrolled</span>
                     </div>
                   </div>
-                </motion.a>
+                </NavLink>
               ))}
           </dev>
           <NavLink
