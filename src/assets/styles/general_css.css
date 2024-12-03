@@ -26,8 +26,10 @@ button,
 }
 
 .snap_scrolling {
-  overflow-x: scroll;
   scroll-snap-type: x mandatory !important;
+}
+.snap_scrolling_child {
+  scroll-snap-align: start !important;
 }
 
 .parent_page_wrapper::before {
