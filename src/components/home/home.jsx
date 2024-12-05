@@ -94,7 +94,7 @@ export default function NewHome() {
   };
   const containerVarient = {
     initial: {
-      y: 30,
+      y: 20,
       opacity: 0
     },
     inView: {
@@ -183,13 +183,7 @@ export default function NewHome() {
         ></motion.iframe>
       </Modal>
 
-      <motion.section
-        className={`parent_page_wrapper w-full max-h-fit`}
-        variants={containertVarients}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-      >
+      <section className={`parent_page_wrapper w-full max-h-fit`}>
         <Helmet>
           <title>{`Home - PPTLinks `}</title>
           <meta
@@ -228,7 +222,7 @@ export default function NewHome() {
         <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-black text-white py-6">
           <div className="container flex justify-between gap-14 maxScreenMobile:gap-4 maxScreen:flex-col-reverse tall:flex-col-reverse cursor-pointer">
             <motion.div
-              initial={{ y: 100, opacity: 0 }}
+              initial={{ y: 50, opacity: 0 }}
               whileInView={{
                 opacity: 1,
                 y: 0,
@@ -287,22 +281,22 @@ export default function NewHome() {
         {/* ////////////////////////////All the skills you need in one place////////////////////////////////////////////////// */}
         <div className="w-full h-fit bg-black py-6 relative text-[#FFFFF0]">
           <motion.h2
-            initial={{ y: 100, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             whileInView={{
               opacity: 1,
               y: 0,
-              transition: { duration: 1, type: "tween" }
+              transition: { duration: 0.5, type: "tween" }
             }}
             viewport={{ once: true }}
             className="container text-4xl font-extrabold text-center maxScreenMobile:text-3xl maxScreenMobile:font-bold !mb-2">
             All the skills you need in one place
           </motion.h2>
           <motion.p
-            initial={{ y: 100, opacity: 0 }}
+            initial={{ y: 30, opacity: 0 }}
             whileInView={{
               opacity: 1,
               y: 0,
-              transition: { duration: 1, type: "tween" }
+              transition: { duration: 0.5, type: "tween" }
             }}
             viewport={{ once: true }}
             className="w-2/5 mx-auto text-sm text-center  maxScreenMobile:w-[90%]">
@@ -331,7 +325,16 @@ export default function NewHome() {
             </button>
           </div>
 
-          <dev ref={scrollRefTwo} className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-6 scroll-smooth">
+          <motion.dev
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 1, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            ref={scrollRefTwo}
+            className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-6 scroll-smooth">
             {(currentView === 1 ||
               currentView === 2 ||
               currentView === 3 ||
@@ -365,7 +368,7 @@ export default function NewHome() {
                   </div>
                 </NavLink>
               ))}
-          </dev>
+          </motion.dev>
           <NavLink
             to="#"
             className="block text-center text-[#FFA500] underline"
@@ -378,7 +381,7 @@ export default function NewHome() {
         <div className="w-full h-fit bg-black">
           <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
             <motion.h2
-              initial={{ y: 100, opacity: 0 }}
+              initial={{ y: 10, opacity: 0 }}
               whileInView={{
                 opacity: 1,
                 y: 0,
@@ -444,10 +447,10 @@ export default function NewHome() {
             </motion.h3>
             <div className="wrap_contacts w-full flex justify-between items-center flex-wrap maxScreenMobile:flex-col-reverse">
               <motion.div
-                variants={secondVarient}
-                initial="initial"
-                whileInView="inView"
-                viewport={{ margin: "100px", once: true }}
+                // variants={secondVarient}
+                // initial="initial"
+                // whileInView="inView"
+                // viewport={{ margin: "100px", once: true }}
                 className="w-[50%] min-h-[30rem] text-sm maxScreenMobile:w-full"
               >
                 <motion.h5
@@ -712,7 +715,7 @@ export default function NewHome() {
             </div>
           </div >
         </div >
-      </motion.section >
+      </section >
     </>
   );
 }
