@@ -220,7 +220,7 @@ export default function NewHome() {
           <meta property='twitter:image' content={LogoBlack} />
         </Helmet>
         <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-black text-white py-6">
-          <div className="container flex justify-between gap-14 maxScreenMobile:gap-4 maxScreen:flex-col-reverse tall:flex-col-reverse cursor-pointer">
+          <div className="container flex justify-between gap-20 maxScreenMobile:gap-4 maxScreen:flex-col-reverse _tall:flex-col-reverse cursor-pointer !pt-16">
             <motion.div
               initial={{ y: 50, opacity: 0 }}
               whileInView={{
@@ -279,7 +279,7 @@ export default function NewHome() {
           </div>
         </div>
         {/* ////////////////////////////All the skills you need in one place////////////////////////////////////////////////// */}
-        <div className="w-full h-fit bg-black py-6 relative text-[#FFFFF0]">
+        <div className="w-full h-fit bg-black py-6 relative text-[#FFFFF0] !pt-16">
           <motion.h2
             initial={{ y: 20, opacity: 0 }}
             whileInView={{
@@ -378,7 +378,7 @@ export default function NewHome() {
         </div>
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
         {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
-        <div className="w-full h-fit bg-black">
+        <div className="w-full h-fit bg-black !pt-16">
           <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
             <motion.h2
               initial={{ y: 10, opacity: 0 }}
@@ -435,7 +435,7 @@ export default function NewHome() {
         </div>
         {/* ////////////////////////////End Popular Presentations////////////////////////////////////////////////// */}
         <div className="max-h-fit bg-black text-white pt-8">
-          <div className="container">
+          <div className="container !pt-16">
             <motion.h3
               variants={secondVarient}
               initial="initial"
@@ -685,7 +685,7 @@ export default function NewHome() {
             </div>
           </div>
 
-          <div className="container flex justify-between align-top maxScreenMobile:flex-col py-8">
+          <div className="container flex justify-between align-top maxScreenMobile:flex-col py-8 !pt-16">
             <motion.div
               className="w-2/5 pr-5 maxScreenMobile:w-full max-h-fit"
               variants={secondVarient}
