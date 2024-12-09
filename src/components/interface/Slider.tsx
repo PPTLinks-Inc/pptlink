@@ -38,7 +38,7 @@ declare global {
 
 function FullScreenLoading({ progress }: { progress: number }) {
   return (
-    <div className="w-full h-screen flex items-center justify-center z-50 absolute bg-black inset-0">
+    <div className="w-full h-screen flex flex-col gap-5 items-center justify-center z-30 absolute bg-black inset-0">
       <progress id="interface-loader" max={100} value={progress}></progress>
     </div>
   );

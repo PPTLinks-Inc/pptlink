@@ -244,7 +244,6 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 { params: { endOrStart: "end", userUid } }
             ));
             if (endAudioErr) {
-                console.log(endAudioErr);
                 toast({
                     title: "Error",
                     variant: "destructive",
@@ -529,6 +528,19 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
 
         if (presentation.User === "HOST" && coHostId !== "") {
             rtm.addEventListener("storage", useSlideStore.getState().slidesEvent);
+        }
+
+        const presentationData = JSON.parse(storageData?.metadata["all-presentations"]?.value || "[]");
+        usepresentationStore.setState((state) => {
+            if (!state.presentation) return state;
+            return { ...state, allPresentationData: presentationData };
+        });
+
+        for (const presentation of presentationData) {
+            if (presentation.presenting) {
+                usepresentationStore.getState().loadPresentation(presentation.url, presentation.liveId);
+                break;
+            }
         }
 
         const audio = new Audio("https://res.cloudinary.com/dsmydljex/video/upload/v1732362719/assets/mic-request_nnca38_nj9fmv.mp3");

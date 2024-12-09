@@ -246,7 +246,7 @@ export default function Controls({
 
   return (
     <div
-      className={`fixed z-10 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
+      className={`fixed z-50 bottom-5 right-0 left-0 h-30 flex justify-right items-center justify-center ${styles}`}
     >
       {audioLoadingStatus === "success" && (
         <div className="absolute md:bottom-5 bottom-24 left-1 md:left-5 flex justify-center items-center z-10">

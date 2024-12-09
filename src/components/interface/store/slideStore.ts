@@ -58,6 +58,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
     slidesEvent: function (event) {
         const slideData = { ...get().slideData };
         const swiperRef = get().swiperRef;
+        if (!swiperRef) return;
         if (event.data.metadata.slideData) {
             const newSlideData = JSON.parse(
                 event.data.metadata.slideData.value
@@ -203,7 +204,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
                         hostSlide: swiperRef.swiper.activeIndex,
                         prevHostSlide: slideData.hostSlide
                     };
-                    set({ slideData });
+                    set({ slideData, lockSlide: false });
                     const [err] = await safeAwait(rtm?.storage.setChannelMetadata(presentation.liveId, "MESSAGE", [
                         {
                             key: "slideData",
@@ -219,6 +220,43 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
                         });
                     }
                 }
+            }
+        }
+    },
+    resetSlideData: async function () {
+        const presentation = usepresentationStore.getState().presentation;
+        const rtm = useRtmStore.getState().rtm;
+        const slideData = {
+            maxSlides: 0,
+            hostSlide: 0,
+            prevHostSlide: 0
+        };
+        if (presentation && rtm) {
+            if (presentation.User === "HOST" && presentation.live) {
+                await rtm.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
+                    {
+                        key: "slideData",
+                        value: JSON.stringify(slideData),
+                        revision: -1
+                    }
+                ], {
+                    addUserId: true,
+                });
+            } else {
+                rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE").then((data) => {
+                    const newSlideData = JSON.parse(
+                        data.metadata.slideData.value
+                    );
+                    set({ slideData: newSlideData, synced: true });
+                    get().syncSlide();
+
+                }).catch(function () {
+                    toast({
+                        title: "Error",
+                        description: "Failed to sync slides",
+                        variant: "destructive"
+                    });
+                });
             }
         }
     },

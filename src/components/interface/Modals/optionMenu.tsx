@@ -213,6 +213,285 @@ function CoHostMenu({
   );
 }
 
+function AddSlideMenu() {
+  const { userQuery, setUser } = useUser();
+  const { data: user } = userQuery;
+
+  const presentationQuery = useUserPresentations({
+    enabled: !!user
+  });
+
+  const intersectionRef = useRef(null);
+  const intersection = useIntersection(intersectionRef, {
+    root: null,
+    rootMargin: "100px",
+    threshold: 1
+  });
+
+  useEffect(
+    function () {
+      if (intersection && intersection?.isIntersecting) {
+        if (presentationQuery.hasNextPage) presentationQuery.fetchNextPage();
+      }
+    },
+    [intersection, intersection?.isIntersecting, presentationQuery]
+  );
+
+  function OpenLoginWindow() {
+    const signInWindow = window.open(
+      "/signin",
+      "_blank",
+      "width=500,height=600"
+    );
+
+    // Set up a message event listener
+    function handleMessage(event: MessageEvent) {
+      // Validate the event's origin for security
+      if (event.origin !== window.location.origin) {
+        console.warn("Untrusted origin:", event.origin);
+        return;
+      }
+
+      // Update user data
+      if (event.data.type === "SIGN_IN") {
+        setAuthFetchToken(event.data.token);
+        setUser(event.data.payload);
+        signInWindow?.close(); // Optionally close the sign-in window
+        window.removeEventListener("message", handleMessage);
+      }
+    }
+
+    window.addEventListener("message", handleMessage);
+  }
+
+  const addPresentation = usepresentationStore(
+    (state) => state.addPresentation
+  );
+  const removePresentation = usepresentationStore(
+    (state) => state.removePresentation
+  );
+  const currentPresentation = usepresentationStore(
+    (state) => state.currentPresentation
+  );
+  const allPresentationData = usepresentationStore(
+    (state) => state.allPresentationData
+  );
+  const originalPresentationData = usepresentationStore(
+    (state) => state.presentation
+  );
+
+  const loadPresentation = usepresentationStore(
+    (state) => state.loadPresentation
+  );
+
+  function handleAddPresentation(presentation: UploadPresentation) {
+    const presentationAdded = allPresentationData.find(
+      (data) => data.liveId === presentation.liveId
+    );
+
+    const rtm = useRtmStore.getState().rtm!;
+    if (presentationAdded) {
+      rtm?.publish(
+        originalPresentationData!.liveId,
+        `present-${presentationAdded.liveId}`
+      );
+      safeAwait(
+        rtm.storage.setChannelMetadata(
+          originalPresentationData!.liveId,
+          "MESSAGE",
+          [
+            {
+              key: "slideData",
+              value: JSON.stringify({
+                maxSlides: 0,
+                hostSlide: 0,
+                prevHostSlide: 0
+              })
+            },
+            {
+              key: "all-presentations",
+              value: JSON.stringify(
+                allPresentationData.map((data) => {
+                  if (data.liveId === presentationAdded.liveId) {
+                    return {
+                      ...data,
+                      presenting: true
+                    }
+                  }
+
+                  return {
+                    ...data,
+                    presenting: false
+                  };
+                })
+              )
+            }
+          ],
+          { addUserId: true }
+        )
+      );
+      useSlideStore.setState({ lockSlide: false });
+      loadPresentation(presentationAdded.url, presentationAdded.liveId);
+      return;
+    }
+
+    if (originalPresentationData?.liveId === presentation.liveId) {
+      rtm?.publish(
+        originalPresentationData!.liveId,
+        `present-${originalPresentationData.liveId}`
+      );
+      safeAwait(
+        rtm.storage.setChannelMetadata(
+          originalPresentationData!.liveId,
+          "MESSAGE",
+          [
+            {
+              key: "slideData",
+              value: JSON.stringify({
+                maxSlides: 0,
+                hostSlide: 0,
+                prevHostSlide: 0
+              })
+            }
+          ],
+          { addUserId: true }
+        )
+      );
+      loadPresentation(
+        originalPresentationData.pdfLink,
+        originalPresentationData.liveId
+      );
+      return;
+    }
+
+    addPresentation({
+      url: presentation.pdfLink,
+      liveId: presentation.liveId
+    });
+  }
+
+  function handleRemovePresentation(liveId: string) {
+    const rtm = useRtmStore.getState().rtm!;
+    const originalPresentationData = usepresentationStore.getState().presentation!;
+    rtm?.publish(
+      originalPresentationData.liveId,
+      `present-${originalPresentationData.liveId}`
+    );
+    removePresentation(liveId);
+  }
+
+  function presentingStyle(presentation: UploadPresentation) {
+    const presentationAdded = allPresentationData.find(
+      (data) => data.liveId === presentation.liveId
+    );
+    return {
+      text:
+        originalPresentationData?.liveId === presentation.liveId &&
+        originalPresentationData?.liveId !== currentPresentation?.liveId
+          ? "Present Original"
+          : currentPresentation?.liveId === presentation.liveId
+            ? "Presenting"
+            : presentationAdded
+              ? "Present"
+              : "Add +",
+      presenting: currentPresentation?.liveId === presentation.liveId,
+      presentationAdded
+    };
+  }
+
+  return (
+    <div className="text-sm p-3 flex flex-col gap-4 overflow-y-auto h-full pt-20">
+      {!user && (
+        <div>
+          <p className="text-center text-lg font-bold">
+            You need to be logged in to add slides
+          </p>
+          <Button
+            onClick={OpenLoginWindow}
+            className="bg-black text-white mx-auto block mt-3 md:w-20 w-full p-2 rounded-lg"
+          >
+            Login
+          </Button>
+        </div>
+      )}
+
+      {presentationQuery?.data && user && (
+        <>
+          {presentationQuery.data.pages.flat().map((presentation) => (
+            <div
+              key={presentation.id}
+              className="flex border p-3 gap-4 rounded-lg border-[#FF8B1C]"
+            >
+              <img
+                src={presentation.thumbnail}
+                alt={`${presentation.name}`}
+                className="rounded-lg object-cover aspect-video w-1/3"
+              />
+              <div className="flex flex-col gap-2 w-full">
+                <p className="font-bold">{presentation.name}</p>
+                <p>
+                  <span className="font-bold">Presenter:</span>{" "}
+                  {presentation.presenterName}
+                </p>
+                <p>
+                  <span className="font-bold">Category:</span>{" "}
+                  {presentation.category.name}
+                </p>
+                <div className="flex w-full gap-4">
+                  {presentingStyle(presentation).presentationAdded && (
+                    <Button
+                      className="w-full border-rose-500 bg-[#FFFFDB] text-rose-500 hover:bg-rose-500 hover:text-white"
+                      variant="outline"
+                      onClick={() => {
+                        handleRemovePresentation(presentation.liveId);
+                      }}
+                    >
+                      Remove -
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => {
+                      handleAddPresentation(presentation);
+                    }}
+                    className="bg-black text-white w-full rounded-lg disabled:!cursor-not-allowed disabled:bg-gray-500"
+                    disabled={presentingStyle(presentation).presenting}
+                  >
+                    {presentingStyle(presentation).text}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {presentationQuery.isLoading && (
+        <div className="flex justify-center">
+          <LoadingAssetSmall />
+        </div>
+      )}
+
+      {presentationQuery.isError ||
+        (presentationQuery.isFetchNextPageError && (
+          <div className="flex justify-center flex-col items-center gap-3">
+            <p className="text-whte">Failed to fetch</p>
+            <Button
+              onClick={() => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (presentationQuery as any).fetchNextPage();
+              }}
+              className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-black text-white"
+            >
+              Load more
+            </Button>
+          </div>
+        ))}
+
+      <div ref={intersectionRef}></div>
+    </div>
+  );
+}
+
 export default function OptionMenu({
   open,
   onClose,
