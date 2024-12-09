@@ -17,6 +17,7 @@ import { HiMenu } from "react-icons/hi";
 import { CiUser } from "react-icons/ci";
 import { FaFileUpload } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
+import { FiUploadCloud } from "react-icons/fi";
 // import { Input } from "@/components/ui/input"
 
 export default function Header({ isBackMenu, handleDropdown }) {
@@ -117,8 +118,8 @@ export default function Header({ isBackMenu, handleDropdown }) {
             <span className="block text-sm maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}</span>
             {!user ? "Sign In" : getUploadLocation ?
               <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span> : getDashboardLocation ?
-                <span className={`hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><FaFileUpload /></span> :
-                <span className={`hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><CiUser /></span>}
+                <span className={`hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><FiUploadCloud /></span> :
+                <span className={`hidden p-1 maxScreenMobile:block w-fit h-fit text-3xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><CiUser /></span>}
           </Link>
 
           <button
