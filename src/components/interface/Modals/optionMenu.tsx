@@ -14,7 +14,7 @@ import {
 } from "react-icons/io5";
 import { MdKeyboardArrowRight } from "react-icons/md";
 // import { useOptionsStore } from "../store/optionsStore";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MIC_STATE } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAudioStore } from "../store/audioStore";
@@ -23,6 +23,16 @@ import { usepresentationStore } from "../store/presentationStore";
 import { useOptionsStore } from "../store/optionsStore";
 import { cn } from "@/lib/utils";
 import { useModalStore } from "../store/modalStore";
+import { setAuthFetchToken } from "@/lib/axios";
+import { useSlideStore } from "../store/slideStore";
+import safeAwait from "@/util/safeAwait";
+import { Button } from "@/components/ui/button";
+import { LoadingAssetSmall } from "@/assets/assets";
+import { useIntersection } from "react-use";
+import useUserPresentation, {
+  UploadPresentation
+} from "@/hooks/useUserPresentation";
+import useUser from "@/hooks/useUser";
 
 function MainMenu({
   setCurrentMenuOption
@@ -58,10 +68,7 @@ function MainMenu({
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <Label
-            htmlFor="ping-audience"
-            className="flex gap-2 items-center"
-          >
+          <Label htmlFor="ping-audience" className="flex gap-2 items-center">
             <GoBell size="24" />
             <span>Ping audience</span>
           </Label>
@@ -217,7 +224,7 @@ function AddSlideMenu() {
   const { userQuery, setUser } = useUser();
   const { data: user } = userQuery;
 
-  const presentationQuery = useUserPresentations({
+  const presentationQuery = useUserPresentation({
     enabled: !!user
   });
 
@@ -291,6 +298,7 @@ function AddSlideMenu() {
 
     const rtm = useRtmStore.getState().rtm!;
     if (presentationAdded) {
+      // MARK: Add error handler
       rtm?.publish(
         originalPresentationData!.liveId,
         `present-${presentationAdded.liveId}`
@@ -316,7 +324,7 @@ function AddSlideMenu() {
                     return {
                       ...data,
                       presenting: true
-                    }
+                    };
                   }
 
                   return {
@@ -372,7 +380,8 @@ function AddSlideMenu() {
 
   function handleRemovePresentation(liveId: string) {
     const rtm = useRtmStore.getState().rtm!;
-    const originalPresentationData = usepresentationStore.getState().presentation!;
+    const originalPresentationData =
+      usepresentationStore.getState().presentation!;
     rtm?.publish(
       originalPresentationData.liveId,
       `present-${originalPresentationData.liveId}`
@@ -509,15 +518,18 @@ export default function OptionMenu({
     "main" | "poll" | "co-host" | "slides" | "screen"
   >("main");
 
-  useEffect(function() {
-    if (!open) {
-      setCurrentMenuOption("main");
-    }
-  }, [open]);
+  useEffect(
+    function () {
+      if (!open) {
+        setCurrentMenuOption("main");
+      }
+    },
+    [open]
+  );
 
   return (
     <Menu right={false} open={open} onClose={onClose} small={true}>
-      <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-r-[1px] border-[#FF8B1C] fixed w-full pr-9 md:pr-12 bg-[#FFFFDB]">
+      <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-r-[1px] border-[#FF8B1C] fixed w-full pr-9 md:pr-12 bg-[#FFFFDB] z-10">
         <div className="flex items-center w-full">
           {currentMenuOption === "main" ? (
             <>
@@ -529,9 +541,7 @@ export default function OptionMenu({
               </div>
             </>
           ) : (
-            <button
-              onClick={() => setCurrentMenuOption("main")}
-            >
+            <button onClick={() => setCurrentMenuOption("main")}>
               <IoIosArrowBack size="28" />
             </button>
           )}
@@ -557,6 +567,8 @@ export default function OptionMenu({
       )}
 
       {currentMenuOption === "co-host" && <CoHostMenu users={users} />}
+
+      {currentMenuOption === "slides" && <AddSlideMenu />}
     </Menu>
   );
 }

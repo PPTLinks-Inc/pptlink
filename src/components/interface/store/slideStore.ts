@@ -210,7 +210,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
                             key: "slideData",
                             value: JSON.stringify(slideData)
                         }
-                    ]));
+                    ], { addUserId: true }));
 
                     if (err) {
                         toast({

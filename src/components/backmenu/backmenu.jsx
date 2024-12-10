@@ -1,24 +1,20 @@
-import { useContext } from "react";
 import Socials from "../social/socials";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../header/header";
 import { ABOUT, LEGAL, UPLOAD } from "../../constants/routes";
-import { userContext } from "../../contexts/userContext";
-import { useQueryClient } from "@tanstack/react-query";
+import useUser from "../../hooks/useUser";
 
 // eslint-disable-next-line react/prop-types
 export default function Backmenu({ backmenu, handleDropdown }) {
-  const { user, setUser } = useContext(userContext);
+  const { userQuery, logOut } = useUser();
+  const user = userQuery.data;
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const handlePresentationBtn = () => {
     if (!user) return navigate('/signin');
 
     if (user) {
-      queryClient.clear();
-      localStorage.removeItem("accessToken");
-      setUser(null);
+      logOut();
       return navigate('/signin');
     }
   };

@@ -23,7 +23,6 @@ import "./styles/style.css";
 import { LoadingAssetBig2 } from "../../assets/assets";
 import Menu from "./Modals/Menu";
 import { MIC_STATE } from "../../constants/routes";
-import axios from "axios";
 import download from "./download";
 import { useMessageStore } from "./store/messageStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,6 +33,7 @@ import { useSlideStore } from "./store/slideStore";
 import { useModalStore } from "./store/modalStore";
 import { useOptionsStore } from "./store/optionsStore";
 import { MdOutlineScreenShare } from "react-icons/md";
+import { standardFetch } from "@/lib/axios";
 
 const MessageMenu = lazy(() => import("./Modals/MessageMenu"));
 const OptionMenu = lazy(() => import("./Modals/optionMenu"));
@@ -225,7 +225,7 @@ export default function Controls({
   }
 
   function downloadFile(url: string, filename: string) {
-    axios
+    standardFetch
       .get(url, {
         responseType: "blob"
       })

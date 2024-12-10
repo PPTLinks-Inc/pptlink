@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useUploadStore } from "@/store/uploadStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { userContext } from "@/contexts/userContext";
 import PopUpModal from "@/components/Models/dashboardModel";
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { LoadingAssetBig, LoadingAssetSmall } from "@/assets/assets";
 import { useSearchParams } from "react-router-dom";
+import { authFetch } from "@/lib/axios";
+import useUser from "@/hooks/useUser";
 
 const schema = z.object({
   title: z.string().min(2, { message: "Title is too short" }),
@@ -75,7 +75,8 @@ const schema = z.object({
 });
 
 export default function UploadStage() {
-  const { user } = useContext(userContext);
+  const { userQuery } = useUser();
+  const user = userQuery.data;
   const currentView = useUploadStore((state) => state.currentView);
   const setCurrentView = useUploadStore((state) => state.setCurrentView);
   const addCategory = useUploadStore((state) => state.addCategory);
@@ -126,7 +127,7 @@ export default function UploadStage() {
         formData.append("edit", searchParams.get("edit")!);
       }
 
-      const { data } = await axios.post(
+      const { data } = await authFetch.post(
         `${SERVER_URL}/api/v1/ppt/upload`,
         formData,
         {
@@ -158,7 +159,7 @@ export default function UploadStage() {
 
   const cancelPendingUploadMutation = useMutation({
     mutationFn: async function () {
-      await axios.delete(`${SERVER_URL}/api/v1/ppt/presentation/cancel-upload`);
+      await authFetch.delete(`${SERVER_URL}/api/v1/ppt/presentation/cancel-upload`);
     },
     onSuccess: function () {
       setProcessingFile(false);
@@ -202,7 +203,7 @@ export default function UploadStage() {
     queryKey: ["categories"],
     refetchOnWindowFocus: false,
     queryFn: async () => {
-      const { data } = await axios.get("/api/v1/ppt/categories");
+      const { data } = await authFetch.get("/api/v1/ppt/categories");
 
       setCategories(data);
 
@@ -426,7 +427,7 @@ export default function UploadStage() {
 
   const checkFileStatusMutation = useMutation({
     mutationFn: async function () {
-      const { data } = await axios.get(
+      const { data } = await authFetch.get(
         `${SERVER_URL}/api/v1/ppt/presentation/upload-status`
       );
       return data;

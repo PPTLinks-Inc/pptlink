@@ -1,20 +1,19 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Card from "../list/card";
-import axios from "axios";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { CiSettings } from "react-icons/ci";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
-import { userContext } from "../../contexts/userContext";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { FaUser } from "react-icons/fa6";
+import useUserPresentation from "../../hooks/useUserPresentation";
+import useUser from "../../hooks/useUser";
 
 export default function NewDashboard() {
   const [currentView, setCurrentView] = useState(1);
-  const { user } = useContext(userContext);
-  // const navigate = useNavigate();
+  const { userQuery } = useUser();
+  const user = userQuery.data;
 
   const handleView = (e) => {
     setCurrentView(parseInt(e.target.dataset.view));
@@ -27,23 +26,8 @@ export default function NewDashboard() {
     threshold: 1
   });
 
-  const presentationQuery = useInfiniteQuery({
-    enabled: currentView === 1,
-    queryKey: ["upload-presentations"],
-    queryFn: async ({ pageParam }) => {
-      const { data } = await axios.get(
-        `/api/v1/ppt/presentations?noPerPage=20&pageNo=${pageParam}`
-      );
-      return data.presentations;
-    },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length !== 20) {
-        return undefined;
-      }
-      return allPages.length + 1;
-    }
-  });
+  const presentationQuery = useUserPresentation({ enabled: currentView === 1 });
+
   useEffect(
     function () {
       if (intersection && intersection?.isIntersecting) {

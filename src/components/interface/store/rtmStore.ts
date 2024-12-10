@@ -8,6 +8,7 @@ import { useAudioStore } from "./audioStore";
 import { toast } from "@/hooks/use-toast";
 import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import { useModalStore } from "./modalStore";
+import safeAwait from "@/util/safeAwait";
 
 const statusPriority: { [key: string]: number } = {
     REQ_MIC: 1,
@@ -141,6 +142,45 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                 toast({ description: "Your microphone is muted by the host" });
             }
             useAudioStore.getState().setMicState(messageData.message);
+        } else if (messageData.message.toString().startsWith("present")) {
+            const liveId = messageData.message.toString().split("-")[1];
+            const allPresentationData = usepresentationStore.getState().allPresentationData;
+            const originalPresentation = usepresentationStore.getState().presentation;
+
+            if (originalPresentation?.liveId === liveId) {
+                await safeAwait(usepresentationStore.getState().loadPresentation(originalPresentation.pdfLink, originalPresentation.liveId));
+                return;
+            }
+
+            const presentationPresent = allPresentationData.find((presentation) => presentation.liveId === liveId);
+            if (presentationPresent) {
+                await safeAwait(usepresentationStore.getState().loadPresentation(presentationPresent.url, presentationPresent.liveId));
+                return;
+            }
+
+            const rtm = get().rtm;
+
+            if (rtm) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const [_, storageData] = await safeAwait(rtm.storage.getChannelMetadata(originalPresentation!.liveId, "MESSAGE"));
+                const presentationData = JSON.parse(storageData?.metadata["all-presentations"]?.value || "[]");
+                usepresentationStore.setState((state) => {
+                    if (!state.presentation) return state;
+                    return { ...state, allPresentationData: presentationData };
+                });
+
+                const presentationPresent = usepresentationStore.getState().allPresentationData.find((presentation) => presentation.liveId === liveId);
+                if (presentationPresent) {
+                    await safeAwait(usepresentationStore.getState().loadPresentation(presentationPresent.url, presentationPresent.liveId));
+                    return;
+                }
+            }
+
+            toast({
+                description: "Presentation not found",
+                title: "Error",
+                variant: "destructive"
+            });
         } else if (typeof messageData.message === "string") {
             const message = JSON.parse(messageData.message) as Message;
             message.time = new Date().toLocaleTimeString("en-UK", {

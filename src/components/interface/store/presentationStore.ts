@@ -1,8 +1,26 @@
 import { create } from "zustand";
 import { presentationData } from "../types";
-import axios from "axios";
 import { useRtmStore } from "./rtmStore";
 import { toast } from "@/hooks/use-toast";
+import { DBSchema, openDB, IDBPDatabase } from "idb";
+import { authFetch, standardFetch } from "@/lib/axios";
+import { useSlideStore } from "./slideStore";
+
+type loadingType = "loading" | "loading-more" | "loaded" | "error";
+
+interface MyDB extends DBSchema {
+    pdfs: {
+        key: string;
+        value: {
+            key: string;
+            blob: Blob;
+            date: Date;
+        };
+        indexes: {
+            date: Date;
+        };
+    };
+}
 
 interface presentationStore {
     currentPresentation: {
@@ -19,6 +37,7 @@ interface presentationStore {
     removePresentation: (liveId: string) => Promise<void>;
     presentation: presentationData | null;
     setPresentation: (value: presentationData) => void;
+    initPdfDB: () => Promise<IDBPDatabase<MyDB>>;
     userName: string,
     showUsersList: boolean;
     setShowUsersList: (value: boolean) => void;
@@ -55,6 +74,7 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
             if (file) {
                 const pdfUrl = URL.createObjectURL(file.blob);
                 set({ currentPresentation: { pdfFile: pdfUrl, liveId, pdfLink: url } });
+                useSlideStore.setState({ lockSlide: false });
             } else {
                 const response = await standardFetch.get(url, {
                     responseType: "blob", onDownloadProgress: function (progressEvent) {
@@ -66,10 +86,12 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
                 const blob = response.data;
                 const pdfUrl = URL.createObjectURL(blob);
                 set({ currentPresentation: { pdfFile: pdfUrl, liveId, pdfLink: url } });
-                
+                useSlideStore.setState({ lockSlide: false });
+
                 await db.put("pdfs", { blob, date: new Date(), key: liveId });
             }
         } catch (err) {
+            console.log(err);
             set({ currentPresentation: null, loadingStatus: "error" });
         }
     },
@@ -93,7 +115,7 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
                     key: "all-presentations",
                     value: JSON.stringify(data)
                 }
-            ]);
+            ], { addUserId: true });
             set({ allPresentationData: data });
         }
     },
@@ -107,7 +129,7 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
                     key: "all-presentations",
                     value: JSON.stringify(newPresentationData)
                 }
-            ]);
+            ], { addUserId: true });
 
             const originalPresentation = get().presentation!;
 
@@ -116,6 +138,14 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
             }
             set({ allPresentationData: newPresentationData });
         }
+    },
+    initPdfDB: async function () {
+        return openDB<MyDB>("PDFStore", 1, {
+            upgrade(db) {
+                const pdfsStore = db.createObjectStore("pdfs", { keyPath: "key" });
+                pdfsStore.createIndex("date", "date");
+            }
+        });
     },
     presentation: null,
     setPresentation: function (value) {
@@ -139,7 +169,7 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
             const presentations = get().presentation;
             const rtm = useRtmStore.getState().rtm;
             if (!presentations) throw new Error("No presentation data");
-            await axios.put(
+            await authFetch.put(
                 `/api/v1/ppt/presentations/make-live/${presentations.id}`
             );
             await rtm?.publish(presentations.liveId, "LIVE");

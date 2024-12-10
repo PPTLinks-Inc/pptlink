@@ -9,12 +9,12 @@ import { useIntersection } from "react-use";
 import { useRtmStore } from "../store/rtmStore";
 import { usepresentationStore } from "../store/presentationStore";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { useModalStore } from "../store/modalStore";
 import CircularProgressBar from "@/components/ui/CircularProgress";
 import { cn } from "@/lib/utils";
 import { PresentationContext } from "@/contexts/presentationContext";
+import { authFetch, standardFetch } from "@/lib/axios";
 
 export default function MessageMenu({
   open,
@@ -132,7 +132,7 @@ export default function MessageMenu({
 
       scrollToBottom();
       setUploadProgress(0);
-      const { data: signData } = await axios.get(
+      const { data: signData } = await authFetch.get(
         `${SERVER_URL}/api/v1/auth/signUpload/${presentation?.liveId}`
       );
 
@@ -151,7 +151,7 @@ export default function MessageMenu({
         formData.append("signature", signData.signature);
         formData.append("folder", `chat/${presentation?.liveId}`);
 
-        const { data } = await axios.post(
+        const { data } = await standardFetch.post(
           `https://api.cloudinary.com/v1_1/${signData.cloudName}/image/upload`,
           formData,
           {

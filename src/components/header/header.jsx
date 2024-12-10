@@ -1,23 +1,16 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { userContext } from "../../contexts/userContext";
-import {
-  DASHBOARD,
-  UPLOAD
-} from "../../constants/routes";
 import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
 import { motion } from "framer-motion";
 import { CiSearch } from "react-icons/ci";
 import { HiMenu } from "react-icons/hi";
 import { CiUser } from "react-icons/ci";
-import { FaFileUpload } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { FiUploadCloud } from "react-icons/fi";
+import useUser from "../../hooks/useUser";
 // import { Input } from "@/components/ui/input"
 
 export default function Header({ isBackMenu, handleDropdown }) {
@@ -29,19 +22,9 @@ export default function Header({ isBackMenu, handleDropdown }) {
   const getPathName = () => location.pathname === "/" ? true : false;
   const getPathNameDoc = () => location.pathname.split("/")[1] === "documentation" ? true : false;
   // context
-  const { user } = useContext(userContext);
-  // const handlePresentationBtn = () => {
-  //   if (!user) return navigate("/signin");
-  //   if (user && user.presentations < 1 || getDashboardLocation) return navigate(UPLOAD);
-  //   if (user.presentations > 0) return navigate(DASHBOARD);
-  // };
+  const { userQuery } = useUser();
+  const user = userQuery.data;
 
-  // const buttontext = () => {
-  //   if (!user) return "Sign in";
-  //   if (user && user.presentations < 1) return "Upload";
-  //   if (user.presentations > 0 && getDashboardLocation) return "Upload";
-  //   if (user.presentations > 0) return "Dashboard";
-  // };
   const containertVarients = {
     hidden: {
       opacity: !getPathNameDoc() && 0
