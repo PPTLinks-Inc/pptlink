@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
 
-import {
-  createContext,
-  useCallback,
-  useState,
-  useContext,
-  useEffect
-} from "react";
+import { createContext, useCallback, useState, useEffect } from "react";
 import {
   useToggle,
   useOrientation,
@@ -15,13 +9,11 @@ import {
   useMount,
   useUnmount
 } from "react-use";
-import axios from "axios";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
-import { userContext } from "./userContext";
 import {
   PresentationContextI,
   presentationData
@@ -34,6 +26,9 @@ import { toast } from "@/hooks/use-toast";
 import { MIC_STATE } from "@/constants/routes";
 import { useModalStore } from "@/components/interface/store/modalStore";
 import { useMessageStore } from "@/components/interface/store/messageStore";
+import { authFetch } from "@/lib/axios";
+import useUser from "@/hooks/useUser";
+import { RTMEvents } from "agora-rtm-sdk";
 
 const contextValues = {
   fullScreenShow: false,
@@ -76,7 +71,8 @@ function OrientationPrompt({
 }
 
 const PresentationContextProvider = (props: { children: any }) => {
-  const { user } = useContext(userContext);
+  const { userQuery } = useUser();
+  const user = userQuery.data;
   const params = useParams();
   const [showPrompt, setShowPrompt] = useState(true);
   const [fullScreenShow, fullScreenToggle] = useToggle(false);
@@ -108,7 +104,7 @@ const PresentationContextProvider = (props: { children: any }) => {
     refetchOnMount: false,
     queryFn: async () => {
       setUserName(prevUsername || user?.username || "");
-      const { data } = await axios.get<{
+      const { data } = await authFetch.get<{
         sucess: boolean;
         presentation: presentationData;
       }>(`/api/v1/ppt/presentations/present/${params.id}`, {
@@ -116,6 +112,10 @@ const PresentationContextProvider = (props: { children: any }) => {
       });
 
       setPresentation(data.presentation);
+
+      await usepresentationStore
+        .getState()
+        .loadPresentation(data.presentation.pdfLink, data.presentation.liveId);
 
       setToken({
         rtmToken: data.presentation.rtc.rtmToken,
@@ -138,15 +138,8 @@ const PresentationContextProvider = (props: { children: any }) => {
   const rtmConnectionState = useRtmStore((state) => state.status);
   const initSlide = useSlideStore((state) => state.init);
 
-  const setSlideQuery = useQuery({
-    queryKey: ["set-slide-on-first-load"],
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    enabled: rtmConnectionState === "CONNECTED" && swiperRef !== null,
-    queryFn: async function () {
-      await initSlide();
-
+  useEffect(
+    function () {
       const presentation = usepresentationStore.getState().presentation;
       const setPresentation = usepresentationStore.getState().setPresentation;
       const rtm = useRtmStore.getState().rtm;
@@ -154,60 +147,60 @@ const PresentationContextProvider = (props: { children: any }) => {
       const slidesEvent = useSlideStore.getState().slidesEvent;
       const setMicState = useAudioStore.getState().setMicState;
 
-      if (!presentation) return;
-      if (presentation.User === "GUEST" || presentation.User === "CO-HOST") {
-        rtm?.addEventListener("storage", function (e) {
-          if (
-            e.data.metadata["co-host"] &&
-            e.data.metadata["co-host"].value !== useRtmStore.getState().coHostId
-          ) {
-            useRtmStore.setState({
-              coHostId: e.data.metadata["co-host"].value
+      function storageHandler(e: RTMEvents.StorageEvent) {
+        if (
+          e.data.metadata["co-host"] &&
+          e.data.metadata["co-host"].value !== useRtmStore.getState().coHostId
+        ) {
+          useRtmStore.setState({
+            coHostId: e.data.metadata["co-host"].value
+          });
+          useRtmStore.getState().setSortedUsers();
+
+          const tempPresentation = usepresentationStore.getState()
+            .presentation as presentationData;
+          if (e.data.metadata["co-host"].value === token?.rtcUid) {
+            const swiperRef = useSlideStore.getState().swiperRef;
+            swiperRef.swiper.allowSlideNext = true;
+            toast({
+              description: "You are now a co-host of this presentation"
             });
-            useRtmStore.getState().setSortedUsers();
-
-            const tempPresentation = usepresentationStore.getState()
-              .presentation as presentationData;
-            if (e.data.metadata["co-host"].value === token?.rtcUid) {
-              const swiperRef = useSlideStore.getState().swiperRef;
-              swiperRef.swiper.allowSlideNext = true;
-              toast({
-                description: "You are now a co-host of this presentation"
-              });
-              setPresentation({ ...tempPresentation, User: "CO-HOST" });
-              if (useAudioStore.getState().micState === MIC_STATE.REQ_MIC) {
-                setMicState(MIC_STATE.MIC_MUTED);
-              }
-            } else if (tempPresentation.User === "CO-HOST") {
-              toast({
-                description: "You are no longer a co-host of this presentation"
-              });
-              if (useAudioStore.getState().iAmScreenSharing) {
-                useAudioStore.getState().stopScreenShare();
-              }
-              useSlideStore.setState({ lockSlide: false });
-              setPresentation({ ...tempPresentation, User: "GUEST" });
+            setPresentation({ ...tempPresentation, User: "CO-HOST" });
+            if (useAudioStore.getState().micState === MIC_STATE.REQ_MIC) {
+              setMicState(MIC_STATE.MIC_MUTED);
             }
+          } else if (tempPresentation.User === "CO-HOST") {
+            toast({
+              description: "You are no longer a co-host of this presentation"
+            });
+            if (useAudioStore.getState().iAmScreenSharing) {
+              useAudioStore.getState().stopScreenShare();
+            }
+            useSlideStore.setState({ lockSlide: false });
+            setPresentation({ ...tempPresentation, User: "GUEST" });
           }
+        }
 
-          slidesEvent(e);
+        slidesEvent(e);
+      }
+
+      if (rtmConnectionState === "CONNECTED" && swiperRef !== null) {
+        initSlide().then(function () {
+          if (!presentation) return;
+          if (
+            presentation.User === "GUEST" ||
+            presentation.User === "CO-HOST"
+          ) {
+            rtm?.addEventListener("storage", storageHandler);
+          }
         });
       }
-      return true;
-    }
-  });
 
-  useEffect(
-    function () {
-      if (setSlideQuery.isError) {
-        toast({
-          title: "Error",
-          description: "Failed to initialize slide",
-          variant: "destructive"
-        });
-      }
+      return function () {
+        rtm?.removeEventListener("storage", storageHandler);
+      };
     },
-    [setSlideQuery.isError]
+    [rtmConnectionState, swiperRef]
   );
 
   const presentation = usepresentationStore((state) => state.presentation);
@@ -411,7 +404,11 @@ const PresentationContextProvider = (props: { children: any }) => {
   const beforeUnload = useCallback(function beforeUnload(
     e?: BeforeUnloadEvent
   ) {
-    if ((usepresentationStore.getState().presentation?.audio || usepresentationStore.getState().presentation?.live) && e) {
+    if (
+      (usepresentationStore.getState().presentation?.audio ||
+        usepresentationStore.getState().presentation?.live) &&
+      e
+    ) {
       const confirmationMessage = "Are you sure you want to leave?";
 
       console.log("beforeunload");

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useContext, useMemo, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { register } from "swiper/element/bundle";
 import { pdfjs, Document, Page } from "react-pdf";
 import { useOrientation, useWindowSize } from "react-use";
@@ -38,7 +38,7 @@ declare global {
 
 function FullScreenLoading({ progress }: { progress: number }) {
   return (
-    <div className="w-full h-screen flex items-center justify-center z-50 absolute bg-black inset-0">
+    <div className="w-full h-screen flex flex-col gap-5 items-center justify-center z-30 absolute bg-black inset-0">
       <progress id="interface-loader" max={100} value={progress}></progress>
     </div>
   );
@@ -64,34 +64,34 @@ function LoadError() {
 }
 
 export default function Slider({
-  setIsLoaded,
   handleMouseClick,
   handleMouseMove
 }: {
-  setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   handleMouseClick: (e: any) => void;
   handleMouseMove: () => void;
 }) {
-  const swiperRef = useRef<any>(null);
   const slideContainer = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState(0);
-  const [fileDownloadProgress, setFileDownloadProgress] = useState(0);
   const [maxWidth, setMaxWidth] = useState(0);
   const { isMobilePhone, fullScreenShow } = useContext(PresentationContext);
   const setSwiperRef = useSlideStore((state) => state.setSwiperRef);
-  const presentation = usepresentationStore((state) => state.presentation);
-  const orientation = useOrientation();
-  const file = useMemo(
-    function () {
-      return presentation?.pdfLink;
-    },
-    [presentation?.pdfLink]
+  const presentation = usepresentationStore(
+    (state) => state.currentPresentation
   );
+  const orientation = useOrientation();
+  const fileDownloadProgress = usepresentationStore(
+    (state) => state.loadProgress
+  );
+
   const { height: windowHeight } = useWindowSize();
   const hide = useAudioStore((state) => state.screenShareEnabled);
   const screenShareMinimized = useAudioStore(
     (state) => state.screenShareMinimized
   );
+  const setPdfLoadingStatus = usepresentationStore(
+    (state) => state.setLoadingStatus
+  );
+  const pdfLoadingStatus = usepresentationStore((state) => state.loadingStatus);
 
   useEffect(() => {
     // Update window height state when window is resized
@@ -99,11 +99,6 @@ export default function Slider({
     window.addEventListener("resize", adjustWidth);
     return () => window.removeEventListener("resize", adjustWidth);
   }, []);
-
-  useEffect(() => {
-    if (!swiperRef.current) return;
-    setSwiperRef(swiperRef.current);
-  }, [swiperRef.current]);
 
   function adjustWidth() {
     const aspectRatio = 16 / 9; // Adjust this value to match the aspect ratio of your element
@@ -120,7 +115,7 @@ export default function Slider({
     numPages: number;
   }) {
     setNumPages(nextNumPages);
-    setIsLoaded(true);
+    setPdfLoadingStatus("loaded");
   }
 
   useEffect(
@@ -158,6 +153,13 @@ export default function Slider({
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
     >
+      {(pdfLoadingStatus === "loading" ||
+        pdfLoadingStatus === "loading-more") && (
+        <FullScreenLoading progress={fileDownloadProgress} />
+      )}
+
+      {pdfLoadingStatus === "error" && <LoadError />}
+
       <div
         id="video-container"
         className={cn(
@@ -167,13 +169,9 @@ export default function Slider({
         )}
       ></div>
       <Document
-        file={file}
+        file={presentation?.pdfFile}
         onLoadSuccess={onDocumentLoadSuccess}
         options={options}
-        onLoadProgress={({ loaded, total }) =>
-          setFileDownloadProgress((loaded / total) * 100)
-        }
-        loading={<FullScreenLoading progress={fileDownloadProgress} />}
         error={<LoadError />}
         className={cn(
           orientation.type.includes("portrait") && "mt-20",
@@ -181,7 +179,7 @@ export default function Slider({
         )}
       >
         <swiper-container
-          ref={swiperRef}
+          ref={setSwiperRef}
           slides-per-view="1"
           navigation={isMobilePhone ? false : true}
           keyboard="true"

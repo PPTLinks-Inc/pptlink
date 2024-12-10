@@ -2,13 +2,13 @@ import RTC, { ConnectionState, IAgoraRTCClient, ILocalAudioTrack, ILocalVideoTra
 import { create } from "zustand";
 import { useRtmStore } from "./rtmStore";
 import { usepresentationStore } from "./presentationStore";
-import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { AGORA_APP_ID, MIC_STATE } from "@/constants/routes";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { RTMEvents } from "agora-rtm-sdk";
 import safeAwait from "@/util/safeAwait";
 import { useSlideStore } from "./slideStore";
+import { authFetch } from "@/lib/axios";
 
 interface AudioStore {
     rtcClient: IAgoraRTCClient | null;
@@ -177,7 +177,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 key: "co-host",
                 value: value
             }
-        ]));
+        ], { addUserId: true }));
 
         if (err) {
             toast({
@@ -238,13 +238,12 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                     description: `There was a problem ${presentation.User === "HOST" ? "ending" : "leaving"} the call`,
                 });
             }
-            const [endAudioErr] = await safeAwait(axios.put(
+            const [endAudioErr] = await safeAwait(authFetch.put(
                 `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
                 {},
                 { params: { endOrStart: "end", userUid } }
             ));
             if (endAudioErr) {
-                console.log(endAudioErr);
                 toast({
                     title: "Error",
                     variant: "destructive",
@@ -264,7 +263,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         const presentation = usepresentationStore.getState().presentation;
         const userUid = useRtmStore.getState().token?.rtcUid;
         if (!presentation) throw new Error();
-        const { data } = await axios.get<{
+        const { data } = await authFetch.get<{
             rtcToken: string;
         }>(`/api/v1/ppt/presentations/present/token/${presentation.liveId}`, {
             params: { userUid }
@@ -313,7 +312,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                         return;
                     }
                 } else {
-                    const axiosPromise = axios.put<{
+                    const axiosPromise = authFetch.put<{
                         rtcToken: string;
                     }>(
                         `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
@@ -510,13 +509,13 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         });
 
         if (presentation.User === "GUEST") {
-           await safeAwait(rtm.subscribe(token.rtcUid));
+            await safeAwait(rtm.subscribe(token.rtcUid));
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_, coHost] = await safeAwait(rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE"));
+        const [_, storageData] = await safeAwait(rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE"));
 
-        useRtmStore.setState({ coHostId: coHost?.metadata["co-host"]?.value || "" });
+        useRtmStore.setState({ coHostId: storageData?.metadata["co-host"]?.value || "" });
         const coHostId = useRtmStore.getState().coHostId;
         if (coHostId === token.rtcUid) {
             const swiperRef = useSlideStore.getState().swiperRef;
@@ -529,6 +528,19 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
 
         if (presentation.User === "HOST" && coHostId !== "") {
             rtm.addEventListener("storage", useSlideStore.getState().slidesEvent);
+        }
+
+        const presentationData = JSON.parse(storageData?.metadata["all-presentations"]?.value || "[]");
+        usepresentationStore.setState((state) => {
+            if (!state.presentation) return state;
+            return { ...state, allPresentationData: presentationData };
+        });
+
+        for (const presentation of presentationData) {
+            if (presentation.presenting) {
+                usepresentationStore.getState().loadPresentation(presentation.url, presentation.liveId);
+                break;
+            }
         }
 
         const audio = new Audio("https://res.cloudinary.com/dsmydljex/video/upload/v1732362719/assets/mic-request_nnca38_nj9fmv.mp3");

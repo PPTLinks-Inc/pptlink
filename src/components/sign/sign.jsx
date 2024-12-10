@@ -1,9 +1,6 @@
-import { useContext, useState } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { userContext } from "../../contexts/userContext";
-// import { Helmet } from "react-helmet";
 import { useMutation } from "@tanstack/react-query";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import play from "/team/pptlink_resources/presentation-play-svgrepo-com.png";
@@ -18,10 +15,13 @@ import logo_orange from "/imgs/onemorecolor.png";
 import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
+import { standardFetch } from "../../lib/axios";
+import useUser from "../../hooks/useUser";
+import { setAuthFetchToken } from "../../lib/axios";
 
 export default function SignPage() {
   const navigate = useNavigate();
-  const { setUser } = useContext(userContext);
+  const { setUser } = useUser();
   const [passwordErr, setPasswordErr] = useState(null);
   const [emailErr, setEmailErr] = useState(null);
   const [fullNameErr, setFullNameErr] = useState(null);
@@ -47,30 +47,46 @@ export default function SignPage() {
 
   const signin = useMutation({
     mutationFn: () => {
-      return axios.post("/api/v1/auth/login", {
+      return standardFetch.post("/api/v1/auth/login", {
         email: values.email,
         password: values.password
       });
     },
     onSuccess: ({ data }) => {
-      setUser(data.user);
-      localStorage.setItem("accessToken", data.token);
-      navigate("/");
+      if (window.opener) {
+        window.opener.postMessage(
+          { type: "SIGN_IN", payload: data.user, token: data.token },
+          window.location.origin // Ensure only trusted origins receive the message
+        );
+        window.close();
+      } else {
+        setUser(data.user);
+        setAuthFetchToken(data.token);
+        navigate("/");
+      }
     }
   });
 
   const signup = useMutation({
     mutationFn: () => {
-      return axios.post("/api/v1/auth/register", {
+      return standardFetch.post("/api/v1/auth/register", {
         email: values.email,
         password: values.password,
         username: values.fullName
       });
     },
     onSuccess: ({ data }) => {
-      setUser(data.user);
-      localStorage.setItem("accessToken", data.token);
-      navigate("/");
+      if (window.opener) {
+        window.opener.postMessage(
+          { type: "SIGN_IN", payload: data.user, token: data.token },
+          window.location.origin // Ensure only trusted origins receive the message
+        );
+        window.close();
+      } else {
+        setUser(data.user);
+        setAuthFetchToken(data.token);
+        navigate("/");
+      }
     }
   });
 
@@ -91,10 +107,7 @@ export default function SignPage() {
         setEmailErr(null);
       }
       if (emailErr) return;
-      if (
-        emailErr === null &&
-        values.email.length !== 0
-      ) {
+      if (emailErr === null && values.email.length !== 0) {
         // handle axios FOR RESET PASSWORD ✔ here
         setModal(true);
       }
@@ -233,8 +246,14 @@ export default function SignPage() {
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://www.PPTLink.com/${isSignupPage ? "signup" : isResetPage ? "forgot-password" : "signin"}`} />
-        <meta property="og:title" content={`${isSignupPage ? "Sign Up" : isResetPage ? "Forgot password" : "Sign In"} - PPTLinks `} />
+        <meta
+          property="og:url"
+          content={`https://www.PPTLink.com/${isSignupPage ? "signup" : isResetPage ? "forgot-password" : "signin"}`}
+        />
+        <meta
+          property="og:title"
+          content={`${isSignupPage ? "Sign Up" : isResetPage ? "Forgot password" : "Sign In"} - PPTLinks `}
+        />
         <meta
           property="og:description"
           content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
@@ -248,7 +267,10 @@ export default function SignPage() {
           content={`https://www.PPTLink.com/${isSignupPage ? "signup" : isResetPage ? "forgot-password" : "signin"}`}
         />
 
-        <meta property="twitter:title" content={`${isSignupPage ? "Sign Up" : isResetPage ? "Forgot password" : "Sign In"} - PPTLinks `} />
+        <meta
+          property="twitter:title"
+          content={`${isSignupPage ? "Sign Up" : isResetPage ? "Forgot password" : "Sign In"} - PPTLinks `}
+        />
         <meta
           property="twitter:description"
           content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
@@ -257,7 +279,7 @@ export default function SignPage() {
       </Helmet>
       <PopUpModal
         open={modal}
-        onClose={() => { }}
+        onClose={() => {}}
         onSubmit={(e) => {
           switchPage(e);
         }}
@@ -285,13 +307,25 @@ export default function SignPage() {
                 {/* PPTLINKS */}
               </Link>
               <p className="mb-5 text-[.7rem]">
-                {isSignupPage ? "Create Account" : isResetPage ? "Welcome To Reset" : "Welcome Back"}
+                {isSignupPage
+                  ? "Create Account"
+                  : isResetPage
+                    ? "Welcome To Reset"
+                    : "Welcome Back"}
               </p>
             </div>
             <h1 className="text-center text-3xl font-[400] mb-10">
-              {isSignupPage ? "Sign Up" : isResetPage ? "Forgot Password" : "Sign In"}
+              {isSignupPage
+                ? "Sign Up"
+                : isResetPage
+                  ? "Forgot Password"
+                  : "Sign In"}
             </h1>
-            <form onSubmit={handleSubmition} autoComplete="false" className="maxScreenMobile:px-3">
+            <form
+              onSubmit={handleSubmition}
+              autoComplete="false"
+              className="maxScreenMobile:px-3"
+            >
               {" "}
               {/* sign up */}
               {signin.isError && (
@@ -423,7 +457,10 @@ export default function SignPage() {
                       type={values.showPassword ? "text" : "password"}
                       value={values.confirmPassword}
                       onChange={(e) =>
-                        setValues({ ...values, confirmPassword: e.target.value })
+                        setValues({
+                          ...values,
+                          confirmPassword: e.target.value
+                        })
                       }
                       id="confirmpassword"
                       name="confirmpassword"
@@ -460,7 +497,7 @@ export default function SignPage() {
                     : "Don't have an account?"}{" "}
                 {/* href={isSignupPage ? "/signin" : "/signup"} */}
                 <a onClick={switchPage} className="text-[#FFA500]">
-                  {(isSignupPage || isResetPage) ? "Sign In" : "SIgn Up"}
+                  {isSignupPage || isResetPage ? "Sign In" : "SIgn Up"}
                 </a>
               </p>
               <Link
@@ -473,7 +510,9 @@ export default function SignPage() {
             <div className="w-full mt-3 flex flex-col items-center justify-between gap-2 maxScreenMobile:px-3">
               <span className="flex w-full justify-center items-center mb-2">
                 <hr className="block w-[35%] h-[0.1px] bg-black" />
-                <span className="block w-fit text-center mx-1 font-bold">Or</span>
+                <span className="block w-fit text-center mx-1 font-bold">
+                  Or
+                </span>
                 <hr className="block w-[35%] h-[0.1px] bg-black" />
               </span>
 
@@ -557,8 +596,8 @@ export default function SignPage() {
                 designed to excel in challenging network environments, replace
                 traditional projectors in classrooms, boardrooms, and seminars,
                 and provide flawless performance for both live and virtual
-                audiences with robust security and seamless integration with other
-                software and devices.
+                audiences with robust security and seamless integration with
+                other software and devices.
               </p>
             </div>
           </div>

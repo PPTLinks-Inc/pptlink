@@ -10,10 +10,10 @@ import PreviewStage from "./presentationStages/previewStage";
 import { useUploadStore } from "@/store/uploadStore";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { LoadingAssetBig2 } from "@/assets/assets";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
+import { authFetch } from "@/lib/axios";
 
 export default function SupperUpload() {
   const scrollableRef = useRef<HTMLDivElement>(null);
@@ -37,7 +37,7 @@ export default function SupperUpload() {
   const editPresentationQuery = useQuery({
     queryKey: ["editPresentation", searchParams.get("edit")],
     queryFn: async () => {
-      const { data } = await axios.get(
+      const { data } = await authFetch.get(
         `/api/v1/ppt/presentations/${searchParams.get("edit")}`
       );
 

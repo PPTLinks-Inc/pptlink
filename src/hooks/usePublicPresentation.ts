@@ -1,11 +1,11 @@
+import { standardFetch } from "@/lib/axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
 
 export default function usePublicPresentation() {
     const publicPresentationsQuery = useInfiniteQuery({
         queryKey: ["public-presentations"],
         queryFn: async ({ pageParam }) => {
-            const { data } = await axios.get(
+            const { data } = await standardFetch.get(
                 `/api/v1/ppt/presentations?noPerPage=12&pageNo=${pageParam}&public=true`
             );
             return data.presentations;

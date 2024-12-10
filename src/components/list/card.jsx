@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext, useState } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,17 +12,18 @@ import { FaRegBookmark } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa6";
 import { IoShareSocialOutline, IoCopyOutline } from "react-icons/io5";
 import { MdOutlineReportProblem } from "react-icons/md";
-import { userContext } from "../../contexts/userContext";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import PopUpModal from "../Models/dashboardModel";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "../../lib/axios";
+import useUser from "../../hooks/useUser";
 
 export default function Card({ presentation, refresh }) {
 
-  const { user } = useContext(userContext);
+  const { userQuery } = useUser();
+  const user = userQuery.data;
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -45,7 +46,7 @@ export default function Card({ presentation, refresh }) {
 
   const deletePresentation = useMutation({
     mutationFn: async function (id) {
-      const { data } = await axios.delete(`/api/v1/ppt/presentations/${id}`);
+      const { data } = await authFetch.delete(`/api/v1/ppt/presentations/${id}`);
       return data;
     },
     onSuccess: function () {
@@ -66,7 +67,7 @@ export default function Card({ presentation, refresh }) {
   const bookmarkPresentation = useMutation({
     mutationFn: async function (id) {
       setBookmarked((prev) => !prev);
-      const { data } = await axios.get(
+      const { data } = await authFetch.get(
         `/api/v1/ppt/presentations/bookmark/${id}/toggle`
       );
       return data;
