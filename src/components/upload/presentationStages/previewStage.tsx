@@ -3,10 +3,10 @@ import formatDate from "@/lib/formatDate";
 import { useEffect } from "react";
 import { LoadingAssetBig } from "@/assets/assets";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
+import { authFetch } from "@/lib/axios";
 
 export default function PreviewStage() {
   const currentView = useUploadStore((state) => state.currentView);
@@ -33,7 +33,7 @@ export default function PreviewStage() {
       setIsSaving(true);
 
       if (!searchParams.has("edit")) {
-        const { data } = await axios.post(
+        const { data } = await authFetch.post(
           `${SERVER_URL}/api/v1/ppt/presentations/save`,
           {
             title,
@@ -52,7 +52,7 @@ export default function PreviewStage() {
 
         return data.liveId;
       } else {
-        await axios.put(
+        await authFetch.put(
           `${SERVER_URL}/api/v1/ppt/presentations/update`,
           {
             id: searchParams.get("edit"),

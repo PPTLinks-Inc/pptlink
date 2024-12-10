@@ -23,6 +23,7 @@ import {
   DialogOverlay,
   DialogTitle
 } from "@/components/ui/dialog";
+import { usepresentationStore } from "./store/presentationStore";
 // import { motion } from "framer-motion";
 
 const Header = lazy(() => import("./Header"));
@@ -33,7 +34,6 @@ let wakeLock: WakeLockSentinel | null = null;
 let setTimerActive: any = null;
 
 function Interface() {
-  const [loaded, setIsLoaded] = useState(false);
   const [actionsActive, setActionsActive] = useState(true);
   const { isMobilePhone, fullScreenShow } = useContext(PresentationContext);
   const orientation = useOrientation();
@@ -158,7 +158,9 @@ function Interface() {
 
   const containerRef = useRef<HTMLElement | null>(null);
 
-  useEffect(function() {
+  const pdfLoadingStatus = usepresentationStore((state) => state.loadingStatus);
+
+  useEffect(function () {
     containerRef.current = document.body;
   }, []);
 
@@ -221,12 +223,12 @@ function Interface() {
         >
           <Header actionsActive={actionsActive} />
           <Slider
-            setIsLoaded={setIsLoaded}
             handleMouseMove={handleMouseMove}
             handleMouseClick={handleMouseClick}
           />
 
-          {loaded && (
+          {(pdfLoadingStatus === "loaded" ||
+            pdfLoadingStatus === "loading-more") && (
             <Controls
               actionsActive={actionsActive}
               containerRef={containerRef}

@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useRef, useCallback, useContext, useState, useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useRef, useCallback, useState, useEffect } from "react";
+import { Link, NavLink } from "react-router-dom";
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import sms from "/team/pptlink_resources/Group 33.png";
 import AccordionWrapper from "../accordion/accordion";
 import Card from "../list/card";
-import { userContext } from "../../contexts/userContext";
 import { LoadingAssetSmall } from "../../assets/assets";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { motion, stagger, useInView, useAnimate } from "framer-motion";
@@ -18,15 +17,16 @@ import Modal from "../Models/model";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import usePublicPresentation from "../../hooks/usePublicPresentation";
+import useUser from "../../hooks/useUser";
 
 export default function NewHome() {
   // context
   const scrollRef = useRef();
   const scrollRefTwo = useRef();
-  const { user } = useContext(userContext);
+  const { userQuery } = useUser();
+  const user = userQuery.data;
   const { presentations, refetch } = usePublicPresentation();
   const [currentView, setCurrentView] = useState(1);
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const handleView = (e) => {
@@ -325,7 +325,7 @@ export default function NewHome() {
             </button>
           </div>
 
-          <motion.dev
+          <motion.div
             initial={{ y: 30, opacity: 0 }}
             whileInView={{
               opacity: 1,
@@ -368,7 +368,7 @@ export default function NewHome() {
                   </div>
                 </NavLink>
               ))}
-          </motion.dev>
+          </motion.div>
           <NavLink
             to="#"
             className="block text-center text-[#FFA500] underline"

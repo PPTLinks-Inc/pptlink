@@ -1,26 +1,21 @@
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useContext, useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { userContext } from "./contexts/userContext";
 import { LoadingAssetBig2 } from "./assets/assets";
-import { SERVER_URL } from "./constants/routes";
 import PresentationContextProvider from "./contexts/presentationContext";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
-
-axios.defaults.baseURL = SERVER_URL;
+import useUser from "./hooks/useUser";
+import { setAuthFetchToken } from "./lib/axios";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
 const NotFound = lazy(() => import("./components/404/404"));
-const List = lazy(() => import("./components/list/list"));
 const Interface = lazy(() => import("./components/interface/Interface"));
 const Root = lazy(() => import("./components/root/root"));
 const Library = lazy(() => import("./components/library/library"));
-const LibraryPage = lazy(() => import("./components/library/library_page"))
+const LibraryPage = lazy(() => import("./components/library/library_page"));
 const SignPage = lazy(() => import("./components/sign/sign"));
 const Pay = lazy(() => import("./components/pay/pay"));
 const About = lazy(() => import("./components/about-us/about"));
@@ -32,46 +27,17 @@ const PublicPresentation = lazy(
 );
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
-const Institutions = lazy(
-  () => import("./components/institutions/institutions")
-);
 const CodeTest = lazy(() => import("./components/codeTest/codeTest"));
 
-// Add a request interceptor
-axios.interceptors.request.use(function (config) {
-  if (!config.url.includes("cloudinary")) {
-    config.headers.Authorization = `Bearer ${localStorage.getItem(
-      "accessToken"
-    )}`;
-  }
-  return config;
-});
-
-// Add a response interceptor
-// never remove this interceptor, breaks login if removed
-axios.interceptors.response.use(function (response) {
-  if (response.data.token) {
-    localStorage.setItem("accessToken", response.data.token);
-  }
-  return response;
-});
-
 function App() {
-  const { setUser } = useContext(userContext);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const handleDropdownID = (id) => {
     setActiveDropdown((prevState) => (prevState === id ? null : id));
   };
-  useQuery({
-    queryKey: ["user"],
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    queryFn: async () => {
-      const { data } = await axios.get("/api/v1/auth/user");
-      setUser(data.user);
-      return data.user;
-    }
-  });
+
+  setAuthFetchToken(localStorage.getItem("accessToken"));
+
+  useUser();
 
   const location = useLocation();
 
@@ -97,8 +63,6 @@ function App() {
               <Route path="*" element={<NotFound />} />
               {/* <Route path="dashboard" element={<Dashboard />} /> */}
               <Route path="dashboard" element={<NewDashboard />} />
-              <Route path="institutions" element={<List />} />
-              <Route path="institutions/:id" element={<Institutions />} />
               <Route path="about" element={<About />} />
               <Route path="documentation" element={<Document />} />
               <Route path="library" element={<Library />} />
