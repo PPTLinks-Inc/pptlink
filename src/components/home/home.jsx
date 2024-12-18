@@ -220,7 +220,7 @@ export default function NewHome() {
           <meta property='twitter:image' content={LogoBlack} />
         </Helmet>
         <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-black text-white py-6">
-          <div className="container flex justify-between gap-20 maxScreenMobile:gap-4 maxScreen:flex-col-reverse _tall:flex-col-reverse cursor-pointer !pt-16">
+          <div className="container flex justify-between gap-20 maxScreenMobile:gap-4 maxScreen:flex-col-reverse _tall:flex-col-reverse !pt-16">
             <motion.div
               initial={{ y: 50, opacity: 0 }}
               whileInView={{
@@ -230,7 +230,7 @@ export default function NewHome() {
               }}
               viewport={{ once: true }}
               onClick={() => setOpen(true)}
-              className={`banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-black/80 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
+              className={`cursor-pointer banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-black/80 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
               <span className="block text-5xl text-[#FFFFF0] z-10"><FaCirclePlay /></span>
             </motion.div>
 

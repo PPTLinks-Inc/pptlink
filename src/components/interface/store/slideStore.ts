@@ -47,7 +47,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         const swiperRef = get().swiperRef;
         const slideData = get().slideData;
 
-        if (!presentation?.live) return;
+        if (presentation?.status === "NOT_LIVE") return;
         swiperRef.swiper.allowSlideNext = true;
         swiperRef.swiper.slideTo(slideData.hostSlide, 1000, true);
         set({ synced: true });
@@ -120,7 +120,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
         const presentation = usepresentationStore.getState().presentation;
         const rtm = useRtmStore.getState().rtm;
         let slideData = { ...get().slideData };
-        if ((presentation?.User === "HOST" && presentation?.live) || (presentation?.User === "CO-HOST" && presentation?.live && presentation?.audio)) {
+        if ((presentation?.User === "HOST" && presentation.status !== "NOT_LIVE") || (presentation.User === "CO-HOST" && presentation.status === "AUDIO")) {
             slideData = {
                 maxSlides:
                     swiperRef.swiper.activeIndex >= slideData.maxSlides
@@ -140,8 +140,8 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
             ], {
                 addUserId: true,
             });
-        } else if (presentation?.User === "GUEST" || presentation?.User === "CO-HOST") {
-            if (!presentation.live) {
+        } else if (presentation.User === "GUEST" || presentation.User === "CO-HOST") {
+            if (presentation.status === "NOT_LIVE") {
                 return;
             }
 
@@ -178,7 +178,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
             const rtm = useRtmStore.getState().rtm;
             if (presentation && rtm) {
                 if (presentation.User === "GUEST") {
-                    if (presentation.live) {
+                    if (presentation.status !== "NOT_LIVE") {
                         rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE").then((data) => {
                             const newSlideData = JSON.parse(
                                 data.metadata.slideData.value
@@ -232,7 +232,7 @@ export const useSlideStore = create<SlideStore>((set, get) => ({
             prevHostSlide: 0
         };
         if (presentation && rtm) {
-            if (presentation.User === "HOST" && presentation.live) {
+            if (presentation.User === "HOST" && presentation.status !== "NOT_LIVE") {
                 await rtm.storage.updateChannelMetadata(presentation.liveId, "MESSAGE", [
                     {
                         key: "slideData",

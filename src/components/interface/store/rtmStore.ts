@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import { useModalStore } from "./modalStore";
 import safeAwait from "@/util/safeAwait";
+import retryWithBackoff from "@/util/retryWithBackoff";
 
 const statusPriority: { [key: string]: number } = {
     REQ_MIC: 1,
@@ -41,6 +42,7 @@ interface RtmStore {
     sortedUsers: User[];
     setSortedUsers: () => void;
     removeUser: (uid: IAgoraRTCRemoteUser["uid"]) => void;
+    reconnect: () => Promise<void>;
     init: () => Promise<void>;
     messageListerner: (message: RTMEvents.MessageEvent) => Promise<void>;
     presencesEvent: (data: RTMEvents.PresenceEvent) => void;
@@ -104,15 +106,11 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
         if (!presentation) return;
         if (messageData.message === "LIVE") {
             if (presentation.User === "GUEST") {
-                let audio = presentation.audio;
-                let live = presentation.live;
-                if (audio && live) {
+                if (presentation.status === "AUDIO") {
                     await endAudio({ hostEnd: true });
-                    audio = false;
-                    live = false;
                 }
 
-                usepresentationStore.setState({ presentation: { ...presentation, live, audio } });
+                usepresentationStore.setState({ presentation: { ...presentation, status: "NOT_LIVE" } });
             }
         } else if (messageData.message === "START_AUDIO") {
             if (presentation.User === "GUEST") {
@@ -192,51 +190,50 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             addMessage(message);
         }
     },
+    reconnect: async function () {
+        const rtm = get().rtm;
+        const token = get().token?.rtmToken;
+        if (!rtm || !token) return;
+
+        await retryWithBackoff(rtm.login({ token }));
+    },
     init: async function () {
-        try {
-            const token = get().token;
-            if (!token) throw new Error("Token is required");
-            const presentation = usepresentationStore.getState().presentation;
-            if (!presentation) throw new Error("Presentation is required");
+        const token = get().token;
+        if (!token) throw new Error("Token is required");
+        const presentation = usepresentationStore.getState().presentation;
+        if (!presentation) throw new Error("Presentation is required");
 
-            const rtm = new AgoraRTM.RTM(
-                AGORA_APP_ID,
-                presentation.User === "HOST"
-                    ? `HOST${token.rtcUid}`
-                    : token.rtcUid
-            );
+        const rtm = new AgoraRTM.RTM(
+            AGORA_APP_ID,
+            presentation.User === "HOST"
+                ? `HOST${token.rtcUid}`
+                : token.rtcUid
+        );
 
-            rtm.addEventListener("status", function (data) {
-                set({ status: data.state });
-            });
+        rtm.addEventListener("status", function (data) {
+            set({ status: data.state });
+        });
 
-            rtm.addEventListener("message", function (message: RTMEvents.MessageEvent) {
-                get().messageListerner(message);
-            });
-            const rtmToken = get().token?.rtmToken;
-            if (!rtmToken) throw new Error("RTM Login Failed");
-            await rtm.login({
-                token: rtmToken,
-            });
+        rtm.addEventListener("message", function (message: RTMEvents.MessageEvent) {
+            get().messageListerner(message);
+        });
+        const rtmToken = get().token?.rtmToken;
+        if (!rtmToken) throw new Error("RTM Login Failed");
+        await retryWithBackoff(rtm.login({
+            token: rtmToken,
+        }));
 
-            await rtm.subscribe(presentation.liveId, {
-                withMetadata: true,
-                withMessage: true,
-                withPresence: true
-            });
+        safeAwait(retryWithBackoff(rtm.subscribe(presentation.liveId, {
+            withMetadata: true,
+            withMessage: true,
+            withPresence: true
+        })));
 
-            await rtm.presence.setState(presentation.liveId, "MESSAGE", {
-                "audio": "false"
-            });
+        safeAwait(retryWithBackoff(rtm.presence.setState(presentation.liveId, "MESSAGE", {
+            "audio": "false"
+        })));
 
-            set({ rtm });
-        } catch (_: unknown) {
-            toast({
-                title: "Error",
-                variant: "destructive",
-                description: "Failed to Connect"
-            });
-        }
+        set({ rtm });
     },
     presencesEvent: function (data: RTMEvents.PresenceEvent) {
         const removeUser = get().removeUser;

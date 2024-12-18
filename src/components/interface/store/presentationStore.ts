@@ -8,6 +8,26 @@ import { useSlideStore } from "./slideStore";
 
 type loadingType = "loading" | "loading-more" | "loaded" | "error";
 
+function initialPresentationData(): presentationData {
+    return {
+        id: "",
+        name: "",
+        User: "GUEST",
+        status: "NOT_LIVE",
+        liveId: "",
+        pptLink: "",
+        pdfLink: "",
+        downloadable: false,
+        presenter: "",
+        thumbnail: "",
+        rtc: {
+            rtcUid: "",
+            rtcToken: "",
+            rtmToken: ""
+        }
+    }
+}
+
 interface MyDB extends DBSchema {
     pdfs: {
         key: string;
@@ -35,7 +55,7 @@ interface presentationStore {
     loadPresentation: (url: string, liveId: string) => Promise<void>;
     addPresentation: ({ url, liveId }: { url: string; liveId: string }) => Promise<void>;
     removePresentation: (liveId: string) => Promise<void>;
-    presentation: presentationData | null;
+    presentation: presentationData;
     setPresentation: (value: presentationData) => void;
     initPdfDB: () => Promise<IDBPDatabase<MyDB>>;
     userName: string,
@@ -147,7 +167,7 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
             }
         });
     },
-    presentation: null,
+    presentation: initialPresentationData(),
     setPresentation: function (value) {
         set({ presentation: value });
     },
@@ -177,14 +197,14 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
 
             const presentation = get().presentation;
             if (!presentation) return;
-            const live = presentation.live;
+            const live = presentation.status === "LIVE";
 
             if (!live) {
                 toast({ description: "Presentation is now live" });
             } else {
                 toast({ description: "Presentation is no longer live" });
             }
-            set({ presentation: { ...presentation, live: !live } });
+            set({ presentation: { ...presentation, status: !live ? "LIVE" : "NOT_LIVE" } });
         } catch (_) {
             toast({
                 description: "An error occurred",
@@ -195,7 +215,7 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
     },
     resetStore: function () {
         set({
-            presentation: null,
+            presentation: initialPresentationData(),
             userName: "",
             showUsersList: false,
             showMessage: false,
