@@ -11,7 +11,7 @@ import {
 } from "react-use";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { LoaderFunctionArgs, useParams, useLoaderData } from "react-router-dom";
 import { LoadingAssetBig2 } from "../assets/assets";
 import PresentationNotFound from "../components/interface/404";
 import {
@@ -39,6 +39,20 @@ const contextValues = {
 } as unknown as PresentationContextI;
 
 export const PresentationContext = createContext(contextValues);
+
+export async function presentationLoader({ params }: LoaderFunctionArgs<any>) {
+  const { data } = await authFetch.get<{
+    sucess: boolean;
+    presentation: presentationData;
+  }>(`/api/v1/ppt/presentations/present/${params.id}`, {
+    params: { userUid: localStorage.getItem("TheUserUid") },
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    }
+  });
+
+  return data;
+}
 
 function OrientationPrompt({
   setShowPrompt
@@ -77,7 +91,7 @@ const PresentationContextProvider = (props: { children: any }) => {
   const [showPrompt, setShowPrompt] = useState(true);
   const [fullScreenShow, fullScreenToggle] = useToggle(false);
   const orientation = useOrientation();
-  const [userUid, setUserUid] = useLocalStorage<string>("userUid");
+  // const [userUid, setUserUid] = useLocalStorage<string>("userUid");
   const [prevUsername] = useLocalStorage<string>("userName");
 
   const queryClient = useQueryClient();
@@ -97,6 +111,11 @@ const PresentationContextProvider = (props: { children: any }) => {
   const initRTM = useRtmStore((state) => state.init);
   const setUserName = useRtmStore((state) => state.setUserName);
 
+  const data = useLoaderData() as {
+    sucess: boolean;
+    presentation: presentationData;
+  };
+
   const presentationQuery = useQuery<presentationData>({
     queryKey: ["presentation", params.id],
     refetchOnReconnect: false,
@@ -104,29 +123,26 @@ const PresentationContextProvider = (props: { children: any }) => {
     refetchOnMount: false,
     queryFn: async () => {
       setUserName(prevUsername || user?.username || "");
-      const { data } = await authFetch.get<{
-        sucess: boolean;
-        presentation: presentationData;
-      }>(`/api/v1/ppt/presentations/present/${params.id}`, {
-        params: { userUid }
-      });
-
       setPresentation(data.presentation);
-
-      await usepresentationStore
-        .getState()
-        .loadPresentation(data.presentation.pdfLink, data.presentation.liveId);
 
       setToken({
         rtmToken: data.presentation.rtc.rtmToken,
         rtcUid: data.presentation.rtc.rtcUid,
         rtcToken: data.presentation.rtc.rtcToken || ""
       });
-      await initRTM();
+      await Promise.all([
+        usepresentationStore
+          .getState()
+          .loadPresentation(
+            data.presentation.pdfLink,
+            data.presentation.liveId
+          ),
+        initRTM()
+      ]);
 
-      setUserUid(data.presentation.rtc.rtcUid);
+      localStorage.setItem("TheUserUid", data.presentation.rtc.rtcUid);
 
-      if (data.presentation.audio) {
+      if (data.presentation.status === "AUDIO") {
         startPrompt();
       }
       return data.presentation;
@@ -251,7 +267,7 @@ const PresentationContextProvider = (props: { children: any }) => {
         audioConnectionState === "CONNECTED"
       ) {
         if (rtmConnectionState === "CONNECTED") {
-          if (presentation?.audio) {
+          if (presentation?.status === "AUDIO") {
             const token = useRtmStore.getState().token;
             const micState = useAudioStore.getState().micState;
             rtm?.presence
@@ -405,8 +421,8 @@ const PresentationContextProvider = (props: { children: any }) => {
     e?: BeforeUnloadEvent
   ) {
     if (
-      (usepresentationStore.getState().presentation?.audio ||
-        usepresentationStore.getState().presentation?.live) &&
+      (usepresentationStore.getState().presentation?.status === "AUDIO" ||
+        usepresentationStore.getState().presentation?.status === "LIVE") &&
       e
     ) {
       const confirmationMessage = "Are you sure you want to leave?";
@@ -438,7 +454,7 @@ const PresentationContextProvider = (props: { children: any }) => {
     useMessageStore.getState().resetStore();
     useModalStore.getState().resetStore();
     useSlideStore.getState().resetStore();
-    if (usepresentationStore.getState().presentation?.audio) {
+    if (usepresentationStore.getState().presentation?.status === "AUDIO") {
       useAudioStore.getState().endAudio({ hostEnd: false });
     }
     useRtmStore

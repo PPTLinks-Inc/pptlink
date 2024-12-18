@@ -77,7 +77,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
       isLoading: false,
       title:
         presentation?.User === "HOST"
-          ? presentation?.audio
+          ? presentation.status === "AUDIO"
             ? "Rejoin Audio"
             : "Start Audio"
           : "Join Audio",
@@ -85,7 +85,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
       content: null,
       actionText:
         presentation?.User === "HOST"
-          ? presentation?.audio
+          ? presentation.status === "AUDIO"
             ? "Rejoin"
             : "Start"
           : "Join",

@@ -1,8 +1,8 @@
-import { Route, Routes, useLocation } from "react-router-dom";
-import { useState, lazy, Suspense } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 import { LoadingAssetBig2 } from "./assets/assets";
-import PresentationContextProvider from "./contexts/presentationContext";
+import PresentationContextProvider, { presentationLoader } from "./contexts/presentationContext";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,26 +20,91 @@ const SignPage = lazy(() => import("./components/sign/sign"));
 const Pay = lazy(() => import("./components/pay/pay"));
 const About = lazy(() => import("./components/about-us/about"));
 const Document = lazy(() => import("./components/document/document"));
-const Documentation = lazy(() => import("./components/document/Documentation"));
 const NewDashboard = lazy(() => import("./components/profile/newDashboard"));
 const PublicPresentation = lazy(
   () => import("./components/see_more_presentation/seeMorePresentation")
 );
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
-const CodeTest = lazy(() => import("./components/codeTest/codeTest"));
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        path: "/",
+        element: <Home />
+      },
+      {
+        path: "public_presentation",
+        element: <PublicPresentation />
+      },
+      {
+        path: "dashboard",
+        element: <NewDashboard />
+      },
+      {
+        path: "about",
+        element: <About />
+      },
+      {
+        path: "documentation",
+        element: <Document />
+      },
+      {
+        path: "upload",
+        element: <SupperUpload />
+      },
+      {
+        path: "library",
+        element: <Library />
+      },
+      {
+        path: "libraryPage",
+        element: <LibraryPage /> 
+      }
+    ]
+  },
+  {
+    path: "/:id",
+    element: (
+      <PresentationContextProvider>
+        <Interface />
+      </PresentationContextProvider>
+    ),
+    loader: presentationLoader
+  },
+  {
+    path: "/signin",
+    element: <SignPage />
+  },
+  {
+    path: "/signup",
+    element: <SignPage />
+  },
+  {
+    path: "/forgot-password",
+    element: <SignPage />
+  },
+  {
+    path: "/pay",
+    element: <Pay />
+  },
+  {
+    path: "/reset/:token",
+    element: <ResetPasswordPage />
+  }
+]);
 
 function App() {
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const handleDropdownID = (id) => {
-    setActiveDropdown((prevState) => (prevState === id ? null : id));
-  };
 
   setAuthFetchToken(localStorage.getItem("accessToken"));
 
   useUser();
 
-  const location = useLocation();
+  // const location = useLocation();
 
   return (
     <ErrorBoundary>
@@ -52,54 +117,8 @@ function App() {
             </div>
           }
         >
-          <Routes location={location} key={location.key}>
-            <Route path="/" element={<Root />}>
-              <Route exact path="/" element={<Home />} />
-              <Route
-                path="public_presentation"
-                element={<PublicPresentation />}
-              />
-
-              <Route path="*" element={<NotFound />} />
-              {/* <Route path="dashboard" element={<Dashboard />} /> */}
-              <Route path="dashboard" element={<NewDashboard />} />
-              <Route path="about" element={<About />} />
-              <Route path="documentation" element={<Document />} />
-              <Route path="library" element={<Library />} />
-              <Route path="libraryPage" element={<LibraryPage />} />
-              <Route
-                path="documentation/*"
-                element={
-                  <Documentation
-                    activeDropdown={activeDropdown}
-                    handleDropdownID={handleDropdownID}
-                  />
-                }
-              />
-              <Route path="upload" element={<SupperUpload />} />
-            </Route>
-            <Route
-              path="/:id"
-              element={
-                <PresentationContextProvider>
-                  <Interface />
-                </PresentationContextProvider>
-              }
-            />
-
-            <Route path="signin" element={<SignPage />} />
-            <Route path="signup" element={<SignPage />} />
-            <Route path="forgot-password" element={<SignPage />} />
-            <Route path="pay" element={<Pay />} />
-            <Route path="codetest" element={<CodeTest />} />
-            <Route
-              path={`reset/${"sdfsdfasdasdfadsfdsfdgsdfgsdfasdfdgsdzfdsgffgdhfghgfhgfbngfhgfhghgfhfcgjfgchjfg"}`}
-              element={<ResetPasswordPage />}
-            />
-            {/* <Route path="datetest" element={<DateTest />} /> */}
-          </Routes>
+          <RouterProvider router={router} />
         </Suspense>
-        {/* </Router> */}
       </AnimatePresence>
       <Toaster />
     </ErrorBoundary>

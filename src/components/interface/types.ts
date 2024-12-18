@@ -2,9 +2,8 @@ export interface presentationData {
     id: string;
     name: string;
     User: "HOST" | "GUEST" | "CO-HOST";
-    live: boolean;
+    status: "NOT_LIVE" | "LIVE" | "AUDIO";
     liveId: string;
-    audio: boolean;
     pptLink: string;
     pdfLink: string;
     downloadable: boolean;
