@@ -345,7 +345,6 @@ const PresentationContextProvider = (props: { children: any }) => {
                   const swiperRef = useSlideStore.getState().swiperRef;
                   swiperRef.swiper.allowSlideNext = true;
                   usepresentationStore.setState((state) => {
-                    if (!state.presentation) return state;
                     return {
                       ...state,
                       presentation: { ...state.presentation, User: "CO-HOST" }
@@ -359,7 +358,6 @@ const PresentationContextProvider = (props: { children: any }) => {
                     useAudioStore.getState().stopScreenShare();
                   }
                   usepresentationStore.setState((state) => {
-                    if (!state.presentation) return state;
                     return {
                       ...state,
                       presentation: { ...state.presentation, User: "GUEST" }

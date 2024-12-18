@@ -13,6 +13,7 @@ import { setAuthFetchToken } from "./lib/axios";
 const Home = lazy(() => import("./components/home/home"));
 const NotFound = lazy(() => import("./components/404/404"));
 const Interface = lazy(() => import("./components/interface/Interface"));
+const InterfaceNotFound = lazy(() => import("./components/interface/404"));
 const Root = lazy(() => import("./components/root/root"));
 const Library = lazy(() => import("./components/library/library"));
 const LibraryPage = lazy(() => import("./components/library/library_page"));
@@ -74,6 +75,7 @@ const router = createBrowserRouter([
         <Interface />
       </PresentationContextProvider>
     ),
+    errorElement: <InterfaceNotFound />,
     loader: presentationLoader
   },
   {

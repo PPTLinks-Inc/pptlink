@@ -1,4 +1,4 @@
-export default async function<T>(promise: Promise<T>, retries: number = 5, delay: number = 1000): Promise<T> {
+export default async function retryWithBackoff<T>(promise: Promise<T>, retries: number = 5, delay: number = 1000): Promise<T> {
     for (let i = 0; i < retries; i++) {
         try {
             return await promise;
@@ -9,3 +9,4 @@ export default async function<T>(promise: Promise<T>, retries: number = 5, delay
     }
     throw new Error("Unreachable");
 }
+

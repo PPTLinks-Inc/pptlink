@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect, lazy, Suspense, useRef } from "react";
 import { useOrientation } from "react-use";
-// import Header from "./Header";
-// import Slider from "./Slider";
-// import Controls from "./Controls";
 import { PresentationContext } from "../../contexts/presentationContext";
 import { LoadingAssetBig, LoadingAssetBig2 } from "../../assets/assets";
 import { useRtmStore } from "./store/rtmStore";
@@ -25,7 +20,6 @@ import {
 } from "@/components/ui/dialog";
 import { usepresentationStore } from "./store/presentationStore";
 import safeAwait from "@/util/safeAwait";
-// import { motion } from "framer-motion";
 
 const Header = lazy(() => import("./Header"));
 const Slider = lazy(() => import("./Slider"));
@@ -77,7 +71,10 @@ function Interface() {
           offline: true
         });
 
-        if (rtmConnectionState === "FAILED" || rtmConnectionState === "DISCONNECTED") {
+        if (
+          rtmConnectionState === "FAILED" ||
+          rtmConnectionState === "DISCONNECTED"
+        ) {
           safeAwait(useRtmStore.getState().reconnect());
         }
       }
@@ -169,6 +166,17 @@ function Interface() {
     containerRef.current = document.body;
   }, []);
 
+  const rtmConnectionStateMessage =
+    rtmConnectionState === "RECONNECTING"
+      ? "Slides are reconnecting"
+      : rtmConnectionState === "DISCONNECTED"
+        ? "Slides are disconnected"
+        : rtmConnectionState === "FAILED"
+          ? "Slides are disconnected"
+          : rtmConnectionState === "CONNECTED"
+            ? "Slides are connected"
+            : "Slides are connecting";
+
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <DialogOverlay className="backdrop-blur-sm bg-black/20" />
@@ -211,7 +219,7 @@ function Interface() {
         className={`bg-black w-full addScrollBar ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
       >
         {audioConnectionState === "RECONNECTING" && (
-          <div className="flex flex-col justify-center items-center h-screen w-full bg-black">
+          <div className="absolute inset-0 z-50 flex flex-col justify-center items-center h-screen w-full bg-black">
             <LoadingAssetBig2 />
             <p className="text-white text-xl">Reconnecting Audio</p>
           </div>
@@ -244,14 +252,14 @@ function Interface() {
           <div
             className={`text-center fixed bottom-0 transition-all duration-500 z-40 text-white w-full bg-green-500 font-bold px-2`}
           >
-            Back online
+            Slides are connected
           </div>
         ) : (
           status.offline === true && (
             <div
               className={`fixed bottom-0 text-center transition-all duration-500 z-50 text-white w-full bg-rose-500 font-bold px-2`}
             >
-              {rtmConnectionState}
+              {rtmConnectionStateMessage}
             </div>
           )
         )}
