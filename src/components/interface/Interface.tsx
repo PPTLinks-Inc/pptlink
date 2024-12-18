@@ -24,6 +24,7 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import { usepresentationStore } from "./store/presentationStore";
+import safeAwait from "@/util/safeAwait";
 // import { motion } from "framer-motion";
 
 const Header = lazy(() => import("./Header"));
@@ -75,6 +76,10 @@ function Interface() {
           online: false,
           offline: true
         });
+
+        if (rtmConnectionState === "FAILED" || rtmConnectionState === "DISCONNECTED") {
+          safeAwait(useRtmStore.getState().reconnect());
+        }
       }
     },
     [rtmConnectionState]

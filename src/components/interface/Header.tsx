@@ -45,7 +45,7 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
       )}
       {presentation?.User === "HOST" ? (
         <SplitButton
-          primaryLabel={presentation.live ? "End Live" : "Go Live"}
+          primaryLabel={presentation.status !== "NOT_LIVE" ? "End Live" : "Go Live"}
           options={["Edit", "Delete"]}
           onPrimaryClick={() => togglePresentationLive.mutate()}
           onOptionClick={(option) => console.log(option)}
@@ -57,7 +57,7 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
             )
           }
           backgroundColor={
-            presentation.live
+            presentation.status !== "NOT_LIVE"
               ? "bg-rose-500 hover:bg-rose-600"
               : "bg-green-500 hover:bg-green-600"
           }

@@ -256,7 +256,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
 
 
         if (presentation.User === "HOST" || hostEnd) {
-            usepresentationStore.setState({ presentation: { ...presentation, audio: false } });
+            usepresentationStore.setState({ presentation: { ...presentation, status: "LIVE" } });
         }
     },
     fetchRtcToken: async function () {
@@ -280,7 +280,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         try {
             const presentation = usepresentationStore.getState().presentation;
             const tokens = useRtmStore.getState().token;
-            if (!presentation?.live) {
+            if (presentation.status === "NOT_LIVE") {
                 toast({
                     title: "Error",
                     variant: "destructive",
@@ -352,7 +352,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
 
 
 
-            if (presentation.User === "HOST" && !presentation.audio) {
+            if (presentation.User === "HOST" && presentation.status !== "AUDIO") {
                 const rtm = useRtmStore.getState().rtm;
                 if (!rtm) {
                     toast({
@@ -372,7 +372,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                     return;
                 }
             }
-            usepresentationStore.setState((state) => ({ presentation: { ...state.presentation!, audio: true } }));
+            usepresentationStore.setState((state) => ({ presentation: { ...state.presentation, status: "AUDIO" } }));
         } catch (err) {
             toast({
                 title: "Error",

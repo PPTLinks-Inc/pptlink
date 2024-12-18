@@ -107,9 +107,9 @@ export default function Controls({
         const text =
           audioLoadingStatus === "success"
             ? "MIC OFF"
-            : presentation?.User === "HOST" && presentation?.audio
+            : presentation?.User === "HOST" && presentation.status === "AUDIO"
               ? "REJOIN"
-              : presentation?.User === "HOST" && !presentation?.audio
+              : presentation?.User === "HOST" && presentation.status !== "AUDIO"
                 ? "START"
                 : "JOIN";
         return { style: "bg-gray-300", icon: <IoIosMic size={46} />, text };
@@ -312,7 +312,7 @@ export default function Controls({
               </button>
             </>
           )}
-          {(presentation?.audio || presentation?.User === "HOST") && (
+          {(presentation.status === "AUDIO" || presentation?.User === "HOST") && (
             <div className="flex flex-col items-center justify-center relative">
               <button
                 className={`${micStyle?.style} rounded-full p-3 shadow ${audioLoadingStatus === "loading" && "!cursor-not-allowed"}`}
@@ -413,7 +413,7 @@ export default function Controls({
               </div>
             </>
           )}
-          {(presentation?.audio || presentation?.User === "HOST") && (
+          {(presentation.status === "AUDIO" || presentation.User === "HOST") && (
             <div className="flex flex-col items-center justify-center relative">
               <button
                 className={`${micStyle?.style} rounded-full p-3 shadow`}
@@ -455,7 +455,7 @@ export default function Controls({
           )}
         </div>
         <div className="absolute md:bottom-5 bottom-24 right-2 md:right-5 flex gap-4">
-          {!synced && presentation?.live && presentation?.User === "GUEST" && (
+          {!synced && presentation.status !== "NOT_LIVE" && presentation?.User === "GUEST" && (
             <button
               onClick={syncSlide}
               className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
