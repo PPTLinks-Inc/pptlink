@@ -167,7 +167,7 @@ export default function Slider({
       {pdfLoadingStatus === "error" && <LoadError />}
 
       {iAmScreenSharing && (
-        <div className="w-full aspect-video flex items-center justify-center z-30 bg-[#E7E7E7] border border-white">
+        <div className={cn("w-full aspect-video hidden items-center justify-center z-30 bg-[#E7E7E7] border border-white", hide && !screenShareMinimized && "flex" )}>
           <div className="bg[#FFFFDB] border border-[#FF7A00] bg-[#FFFFDB] flex flex-col items-center justify-center p-5 gap-5 rounded-lg">
             <p>Your screen Is currently being shared</p>
             <Button onClick={toogleScreenShare}><MdOutlineStopScreenShare /> Stop Sharing</Button>
