@@ -197,7 +197,7 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
 
             const presentation = get().presentation;
             if (!presentation) return;
-            const live = presentation.status === "LIVE";
+            const live = presentation.status === "LIVE" || presentation.status === "AUDIO";
 
             if (!live) {
                 toast({ description: "Presentation is now live" });
