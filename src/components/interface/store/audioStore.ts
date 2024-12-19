@@ -9,6 +9,7 @@ import { RTMEvents } from "agora-rtm-sdk";
 import safeAwait from "@/util/safeAwait";
 import { useSlideStore } from "./slideStore";
 import { authFetch } from "@/lib/axios";
+import retryWithBackoff from "@/util/retryWithBackoff";
 
 interface AudioStore {
     rtcClient: IAgoraRTCClient | null;
@@ -117,6 +118,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             return;
         }
         const [presenceErr] = await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
+            id: tokens?.rtcUid || "",
+            userName: presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
             "micState": micState,
             "audio": "true",
         }));
@@ -504,8 +507,59 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         });
 
         if (presentation.User === "GUEST") {
-            await safeAwait(rtm.subscribe(token.rtcUid));
+            safeAwait(retryWithBackoff(rtm.subscribe(token.rtcUid)));
         }
+
+        await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
+            id: token?.rtcUid || "",
+            userName: presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
+            micState: get().micState,
+            audio: "true"
+        }));
+
+        rtm?.presence
+            .getOnlineUsers(presentation.liveId, "MESSAGE", {
+                includedState: true
+            })
+            .then(function (data) {
+                type UserType = {
+                    [key: string]: {
+                        id: string;
+                        userName: string;
+                        micState: MIC_STATE;
+                    };
+                };
+
+                const tempUsrs: UserType = {};
+                for (let i = 0; i < data.occupants.length; i++) {
+                    const u = data.occupants[i];
+                    if (u.userId.includes("HOST")) {
+                        const host = {
+                            id: u.userId,
+                            userName: u.states.userName,
+                            micState: u.states.micState as MIC_STATE
+                        };
+                        useRtmStore.setState({ host });
+                        continue;
+                    }
+                    if (Object.keys(u.states).length === 0) continue;
+                    if (u.states.audio !== "true") continue;
+                    tempUsrs[u.userId] = {
+                        id: u.userId,
+                        userName: u.states.userName,
+                        micState: u.states.micState as MIC_STATE
+                    };
+                }
+
+                useRtmStore.setState({ users: tempUsrs });
+            })
+            .catch(function () {
+                toast({
+                    title: "Error",
+                    description: "Failed to update users",
+                    variant: "destructive"
+                });
+            });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, storageData] = await safeAwait(rtm.storage.getChannelMetadata(presentation.liveId, "MESSAGE"));
