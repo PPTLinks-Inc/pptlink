@@ -14,6 +14,9 @@ import { useSlideStore } from "./store/slideStore";
 import { usepresentationStore } from "./store/presentationStore";
 import { cn } from "@/lib/utils";
 import { useAudioStore } from "./store/audioStore";
+import { Button } from "../ui/button";
+import { MdOutlineStopScreenShare } from "react-icons/md";
+import { useOptionsStore } from "./store/optionsStore";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -88,6 +91,9 @@ export default function Slider({
   const screenShareMinimized = useAudioStore(
     (state) => state.screenShareMinimized
   );
+  const iAmScreenSharing = useAudioStore((state) => state.iAmScreenSharing);
+  const toogleScreenShare = useOptionsStore((state) => state.toggleScreenShare);
+
   const setPdfLoadingStatus = usepresentationStore(
     (state) => state.setLoadingStatus
   );
@@ -160,14 +166,23 @@ export default function Slider({
 
       {pdfLoadingStatus === "error" && <LoadError />}
 
-      <div
+      {iAmScreenSharing && (
+        <div className="w-full aspect-video flex items-center justify-center z-30 bg-[#E7E7E7] border border-white">
+          <div className="bg[#FFFFDB] border border-[#FF7A00] bg-[#FFFFDB] flex flex-col items-center justify-center p-5 gap-5 rounded-lg">
+            <p>Your screen Is currently being shared</p>
+            <Button onClick={toogleScreenShare}><MdOutlineStopScreenShare /> Stop Sharing</Button>
+          </div>
+        </div>
+      )}
+
+      {!iAmScreenSharing &&  (<div
         id="video-container"
         className={cn(
           "w-full aspect-video hidden",
           hide && !screenShareMinimized && "block",
           orientation.type.includes("portrait") && "mt-20"
         )}
-      ></div>
+      ></div>)}
       <Document
         file={presentation?.pdfFile}
         onLoadSuccess={onDocumentLoadSuccess}
