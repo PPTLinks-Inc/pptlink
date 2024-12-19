@@ -32,7 +32,7 @@ import { useRtmStore } from "./store/rtmStore";
 import { useSlideStore } from "./store/slideStore";
 import { useModalStore } from "./store/modalStore";
 import { useOptionsStore } from "./store/optionsStore";
-import { MdOutlineScreenShare } from "react-icons/md";
+import { MdOutlineStopScreenShare } from "react-icons/md";
 import { standardFetch } from "@/lib/axios";
 
 const MessageMenu = lazy(() => import("./Modals/MessageMenu"));
@@ -261,7 +261,7 @@ export default function Controls({
               onClick={toggleScreenShare}
               className="rounded-full bg-[#05FF00] w-10 h-10 flex justify-center items-center"
             >
-              <MdOutlineScreenShare size={20} />
+              <MdOutlineStopScreenShare size={20} />
             </button>
           )}
         </div>

@@ -65,7 +65,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             await get().stopScreenShare();
         });
 
-        screenTrack.play("video-container");
+        // screenTrack.play("video-container");
 
         set((state) => ({
             audioTracks: {
