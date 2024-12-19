@@ -510,12 +510,13 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             safeAwait(retryWithBackoff(rtm.subscribe(token.rtcUid)));
         }
 
-        await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", {
+        const currentUser = {
             id: token?.rtcUid || "",
             userName: presentation.User === "HOST" ? "HOST" : useRtmStore.getState().userName,
             micState: get().micState,
             audio: "true"
-        }));
+        };
+        await safeAwait(rtm.presence.setState(presentation.liveId, "MESSAGE", currentUser));
 
         rtm?.presence
             .getOnlineUsers(presentation.liveId, "MESSAGE", {
@@ -531,6 +532,9 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 };
 
                 const tempUsrs: UserType = {};
+                if (presentation.User === "CO-HOST" || presentation.User === "GUEST") {
+                    tempUsrs[currentUser.id] = currentUser;
+                }
                 for (let i = 0; i < data.occupants.length; i++) {
                     const u = data.occupants[i];
                     if (u.userId.includes("HOST")) {
