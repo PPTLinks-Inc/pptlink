@@ -105,7 +105,12 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
         const presentation = usepresentationStore.getState().presentation;
         if (!presentation) return;
         if (messageData.message === "LIVE") {
-            if (presentation.User === "GUEST") {
+            if (presentation.User !== "HOST") {
+                if (presentation.status === "NOT_LIVE") {
+                    usepresentationStore.setState({ presentation: { ...presentation, status: "LIVE" } });
+                    return;
+                }
+
                 if (presentation.status === "AUDIO") {
                     await endAudio({ hostEnd: true });
                 }
