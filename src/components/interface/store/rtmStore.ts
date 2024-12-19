@@ -62,7 +62,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
         set({ token });
     },
     audio: null,
-    status: "DISCONNECTED",
+    status: "CONNECTING",
     rtm: null,
     host: null,
     coHostId: "",
