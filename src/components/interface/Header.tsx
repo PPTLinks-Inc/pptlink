@@ -8,6 +8,7 @@ import { LoadingAssetSmall2 } from "../../assets/assets";
 import { usepresentationStore } from "./store/presentationStore";
 import { useMutation } from "@tanstack/react-query";
 import SplitButton from "@/components/ui/split-button";
+import { cn } from "@/lib/utils";
 
 export default function Header({ actionsActive }: { actionsActive: boolean }) {
   const { fullScreenShow, isMobilePhone } = useContext(PresentationContext);
@@ -41,11 +42,15 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
       <ShareAPI />
       {((orientation.type.includes("portrait") && isMobilePhone) ||
         (!isMobilePhone && !fullScreenShow)) && (
-        <p className="text-white text-lg">PPTLINKS</p>
+        <p className={cn("text-white text-lg", presentation?.User !== "HOST" && "absolute left-1/2 transform -translate-x-1/2")}>
+          PPTLINKS
+        </p>
       )}
       {presentation?.User === "HOST" ? (
         <SplitButton
-          primaryLabel={presentation.status !== "NOT_LIVE" ? "End Live" : "Go Live"}
+          primaryLabel={
+            presentation.status !== "NOT_LIVE" ? "End Live" : "Go Live"
+          }
           options={["Edit", "Delete"]}
           onPrimaryClick={() => togglePresentationLive.mutate()}
           onOptionClick={(option) => console.log(option)}

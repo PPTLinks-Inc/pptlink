@@ -273,9 +273,9 @@ export default function Controls({
             className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-40 md:bottom-20 md:left-5 left-1 cursor-pointer"
           >
             {screenShareMinimized ? (
-              <p className="text-white">Screen Share</p>
+              <p className="text-white rounded">Screen Share</p>
             ) : (
-              <img src={presentation?.thumbnail} />
+              <img src={presentation?.thumbnail} className="rounded" />
             )}
           </button>
         )}
