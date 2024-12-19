@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { DBSchema, openDB, IDBPDatabase } from "idb";
 import { authFetch, standardFetch } from "@/lib/axios";
 import { useSlideStore } from "./slideStore";
+import { useAudioStore } from "./audioStore";
 
 type loadingType = "loading" | "loading-more" | "loaded" | "error";
 
@@ -198,6 +199,10 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
             const presentation = get().presentation;
             if (!presentation) return;
             const live = presentation.status === "LIVE" || presentation.status === "AUDIO";
+
+            if (presentations.status === "AUDIO") {
+                useAudioStore.getState().endAudio({ hostEnd: true });
+            }
 
             if (!live) {
                 toast({ description: "Presentation is now live" });

@@ -10,6 +10,7 @@ import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import { useModalStore } from "./modalStore";
 import safeAwait from "@/util/safeAwait";
 import retryWithBackoff from "@/util/retryWithBackoff";
+import { useSlideStore } from "./slideStore";
 
 const statusPriority: { [key: string]: number } = {
     REQ_MIC: 1,
@@ -108,6 +109,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             if (presentation.User !== "HOST") {
                 if (presentation.status === "NOT_LIVE") {
                     usepresentationStore.setState({ presentation: { ...presentation, status: "LIVE" } });
+                    useSlideStore.setState({ synced: true });
                     return;
                 }
 
