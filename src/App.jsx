@@ -2,7 +2,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 import { LoadingAssetBig2 } from "./assets/assets";
-import PresentationContextProvider, { presentationLoader } from "./contexts/presentationContext";
+import PresentationContextProvider, {
+  presentationLoader
+} from "./contexts/presentationContext";
 import "./assets/styles/general_css.css";
 import ErrorBoundary from "./ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
@@ -28,80 +30,90 @@ const PublicPresentation = lazy(
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Root />,
+      errorElement: <NotFound />,
+      children: [
+        {
+          path: "/",
+          element: <Home />
+        },
+        {
+          path: "public_presentation",
+          element: <PublicPresentation />
+        },
+        {
+          path: "dashboard",
+          element: <NewDashboard />
+        },
+        {
+          path: "about",
+          element: <About />
+        },
+        {
+          path: "documentation",
+          element: <Document />
+        },
+        {
+          path: "upload",
+          element: <SupperUpload />
+        },
+        {
+          path: "library",
+          element: <Library />
+        },
+        {
+          path: "libraryPage",
+          element: <LibraryPage />
+        }
+      ]
+    },
+    {
+      path: "/:id",
+      element: (
+        <PresentationContextProvider>
+          <Interface />
+        </PresentationContextProvider>
+      ),
+      errorElement: <InterfaceNotFound />,
+      loader: presentationLoader
+    },
+    {
+      path: "/signin",
+      element: <SignPage />
+    },
+    {
+      path: "/signup",
+      element: <SignPage />
+    },
+    {
+      path: "/forgot-password",
+      element: <SignPage />
+    },
+    {
+      path: "/pay",
+      element: <Pay />
+    },
+    {
+      path: "/reset/:token",
+      element: <ResetPasswordPage />
+    }
+  ],
   {
-    path: "/",
-    element: <Root />,
-    errorElement: <NotFound />,
-    children: [
-      {
-        path: "/",
-        element: <Home />
-      },
-      {
-        path: "public_presentation",
-        element: <PublicPresentation />
-      },
-      {
-        path: "dashboard",
-        element: <NewDashboard />
-      },
-      {
-        path: "about",
-        element: <About />
-      },
-      {
-        path: "documentation",
-        element: <Document />
-      },
-      {
-        path: "upload",
-        element: <SupperUpload />
-      },
-      {
-        path: "library",
-        element: <Library />
-      },
-      {
-        path: "libraryPage",
-        element: <LibraryPage /> 
-      }
-    ]
-  },
-  {
-    path: "/:id",
-    element: (
-      <PresentationContextProvider>
-        <Interface />
-      </PresentationContextProvider>
-    ),
-    errorElement: <InterfaceNotFound />,
-    loader: presentationLoader
-  },
-  {
-    path: "/signin",
-    element: <SignPage />
-  },
-  {
-    path: "/signup",
-    element: <SignPage />
-  },
-  {
-    path: "/forgot-password",
-    element: <SignPage />
-  },
-  {
-    path: "/pay",
-    element: <Pay />
-  },
-  {
-    path: "/reset/:token",
-    element: <ResetPasswordPage />
+    future: {
+      v7_relativeSplatPath: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+      v7_skipActionErrorRevalidation: true
+    }
   }
-]);
+);
 
 function App() {
-
   setAuthFetchToken(localStorage.getItem("accessToken"));
 
   useUser();
@@ -109,7 +121,8 @@ function App() {
   // const location = useLocation();
 
   return (
-    <ErrorBoundary>
+    // <ErrorBoundary>
+    <>
       <AnimatePresence exit>
         {/* <Router> */}
         <Suspense
@@ -119,11 +132,17 @@ function App() {
             </div>
           }
         >
-          <RouterProvider router={router} />
+          <RouterProvider
+            router={router}
+            future={{
+              v7_startTransition: true
+            }}
+          />
         </Suspense>
       </AnimatePresence>
       <Toaster />
-    </ErrorBoundary>
+    </>
+    // </ErrorBoundary>
   );
 }
 
