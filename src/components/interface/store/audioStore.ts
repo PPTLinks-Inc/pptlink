@@ -65,8 +65,6 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             await get().stopScreenShare();
         });
 
-        // screenTrack.play("video-container");
-
         set((state) => ({
             audioTracks: {
                 localAudioTrack: state.audioTracks?.localAudioTrack || null,
@@ -228,19 +226,28 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         }
         if (presentation.User === "HOST") {
             const userUid = useRtmStore.getState().token?.rtcUid;
-            const [publishErr] = await safeAwait(rtm.publish(presentation.liveId, "END_AUDIO"));
-            if (publishErr) {
+            const [endAudioErr] = await safeAwait(Promise.all([
+                rtm.storage.setChannelMetadata(presentation.liveId, "MESSAGE", [
+                    {
+                        key: "all-presentations",
+                        value: JSON.stringify([])
+                    }
+                ], { addUserId: true }),
+                rtm.publish(presentation.liveId, "END_AUDIO"),
+                authFetch.put(
+                    `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
+                    {},
+                    { params: { endOrStart: "end", userUid } }
+                )
+            ]));
+
+            if (endAudioErr) {
                 toast({
                     title: "Error",
                     variant: "destructive",
                     description: `There was a problem ${presentation.User === "HOST" ? "ending" : "leaving"} the call`,
                 });
             }
-            const [endAudioErr] = await safeAwait(authFetch.put(
-                `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
-                {},
-                { params: { endOrStart: "end", userUid } }
-            ));
             if (endAudioErr) {
                 toast({
                     title: "Error",

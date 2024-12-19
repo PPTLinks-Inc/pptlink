@@ -14,7 +14,7 @@ import {
 } from "react-icons/io5";
 import { MdKeyboardArrowRight } from "react-icons/md";
 // import { useOptionsStore } from "../store/optionsStore";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MIC_STATE } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAudioStore } from "../store/audioStore";
@@ -48,31 +48,31 @@ function MainMenu({
   return (
     <div className="p-3 flex flex-col justify-between gap-2 pt-20 pb-10 h-full">
       <div className="flex flex-col gap-7 overflow-auto pr-5">
-        <div className="flex justify-between items-center">
-          <Label htmlFor="pen" className="flex gap-2 items-center">
+        <div className="flex justify-between items-center !cursor-not-allowed">
+          <Label htmlFor="pen" className="flex gap-2 items-center text-gray-300">
             <PiPenNibLight size="24" />
             <span>Pen</span>
           </Label>
           <div className="flex gap-5 items-center">
-            <Switch id="pen" />
+            <Switch id="pen" disabled />
           </div>
         </div>
-        <div className="flex justify-between items-center">
-          <Label htmlFor="music" className="flex gap-2 items-center">
+        <div className="flex justify-between items-center !cursor-not-allowed">
+          <Label htmlFor="music" className="flex gap-2 items-center text-gray-300">
             <IoMusicalNotesOutline size="24" />
             <span>Music</span>
           </Label>
           <div className="flex gap-5 items-center">
-            <Switch id="music" />
+            <Switch id="music" disabled />
           </div>
         </div>
-        <div className="flex justify-between items-center">
-          <Label htmlFor="ping-audience" className="flex gap-2 items-center">
+        <div className="flex justify-between items-center !cursor-not-allowed">
+          <Label htmlFor="ping-audience" className="flex gap-2 items-center text-gray-300">
             <GoBell size="24" />
             <span>Ping audience</span>
           </Label>
           <div className="flex gap-5 items-center">
-            <Switch id="ping-audience" />
+            <Switch id="ping-audience" disabled />
           </div>
         </div>
         <div>
@@ -126,7 +126,7 @@ function MainMenu({
           </button>
         </div>
         <div>
-          <button className="w-full flex justify-between items-center disabled:!cursor-not-allowed disabled:opacity-50">
+          <button disabled className="w-full flex justify-between items-center disabled:!cursor-not-allowed disabled:text-gray-300">
             <div className="flex gap-2 items-center">
               <RiBarChart2Line size="24" />
               <span className="text-sm font-medium">Poll</span>
@@ -412,6 +412,30 @@ function AddSlideMenu() {
     };
   }
 
+  const sortedPresentation = useMemo(function() {
+    return presentationQuery.data?.pages.flat().sort((a, b) => {
+      // Sort the original presentation to the top
+      if (a.liveId === originalPresentationData.liveId) return -1;
+      if (b.liveId === originalPresentationData.liveId) return 1;
+
+      // Sort the current presentation to the top
+      if (a.liveId === currentPresentation?.liveId) return -1;
+      if (b.liveId === currentPresentation?.liveId) return 1;
+
+      // Sort the added presentation to the top
+      const aPresentation = allPresentationData.find(
+        (data) => data.liveId === a.liveId
+      );
+      const bPresentation = allPresentationData.find(
+        (data) => data.liveId === b.liveId
+      );
+      if (aPresentation) return -1;
+      if (bPresentation) return 1;
+
+      return 0;
+    });
+  }, [presentationQuery.data, originalPresentationData, currentPresentation, allPresentationData]);
+
   return (
     <div className="text-sm p-3 flex flex-col gap-4 overflow-y-auto h-full pt-20">
       {!user && (
@@ -428,9 +452,9 @@ function AddSlideMenu() {
         </div>
       )}
 
-      {presentationQuery?.data && user && (
+      {sortedPresentation && user && (
         <>
-          {presentationQuery.data.pages.flat().map((presentation) => (
+          {sortedPresentation.map((presentation) => (
             <div
               key={presentation.id}
               className="flex border p-3 gap-4 rounded-lg border-[#FF8B1C]"
