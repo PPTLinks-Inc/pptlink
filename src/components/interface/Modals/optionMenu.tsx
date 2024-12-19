@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { IoIosArrowBack } from "react-icons/io";
 import { RiBarChart2Line, RiFolderAddLine } from "react-icons/ri";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { MdOutlineScreenShare /*  MdNoiseControlOff */ } from "react-icons/md";
+import { MdOutlineScreenShare, MdOutlineStopScreenShare } from "react-icons/md";
 import { GoBell } from "react-icons/go";
 import { PiPenNibLight } from "react-icons/pi";
 import {
@@ -21,7 +21,6 @@ import { useAudioStore } from "../store/audioStore";
 import { useRtmStore } from "../store/rtmStore";
 import { usepresentationStore } from "../store/presentationStore";
 import { useOptionsStore } from "../store/optionsStore";
-import { cn } from "@/lib/utils";
 import { useModalStore } from "../store/modalStore";
 import { setAuthFetchToken } from "@/lib/axios";
 import { useSlideStore } from "../store/slideStore";
@@ -96,14 +95,19 @@ function MainMenu({
             disabled={screenShareEnabled && !iAmScreenSharing}
           >
             <div className="flex gap-2 items-center">
-              <MdOutlineScreenShare
-                size="24"
-                className={cn(screenShareEnabled && "fill-[#05FF00]")}
-              />
               {!screenShareEnabled ? (
-                <span className="text-sm font-medium">Share Screen</span>
+                <>
+                  <MdOutlineScreenShare size="24" />
+                  <span className="text-sm font-medium">Share Screen</span>
+                </>
               ) : (
-                <span className="text-sm font-medium">Stop Sharing</span>
+                <>
+                  <MdOutlineStopScreenShare
+                    size="20"
+                    className="fill-[#05FF00]"
+                  />
+                  <span className="text-sm font-medium">Stop Sharing</span>
+                </>
               )}
             </div>
             <MdKeyboardArrowRight size="20" />
