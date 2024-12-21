@@ -3,19 +3,19 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import ReactDOM from "react-dom";
 
 interface ImageViewerProps {
+  startingIndex: number;
   images: string[];
   thumbnailImages: string[];
-  isOpen: boolean;
   onClose: () => void;
 }
 
 const ImageViewer: React.FC<ImageViewerProps> = ({
+  startingIndex,
   images,
   thumbnailImages,
-  isOpen,
   onClose
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(startingIndex);
   const [zoom, setZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const thumbnailRefs = useRef<(HTMLImageElement | null)[]>([]);
@@ -36,20 +36,12 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
       }
     };
 
-    if (isOpen) {
       document.addEventListener("keydown", handleKeyDown);
-    } else {
-      document.removeEventListener("keydown", handleKeyDown);
-    }
 
     return () => {
-      setZoom(1); // Reset zoom when closing
-      resetPosition(); // Reset position when closing
-      setCurrentIndex(0); // Reset index when closing
-      setPreloadedImages(new Set()); // Reset preloaded images when closing
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  });
 
   useEffect(() => {
     if (zoom === 1) {
@@ -79,8 +71,6 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
     },
     [images, preloadedImages]
   );
-
-  if (!isOpen) return null;
 
   function updateImageTransform() {
     if (imageRef.current) {

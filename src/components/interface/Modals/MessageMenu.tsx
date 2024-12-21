@@ -46,6 +46,19 @@ export default function MessageMenu({
     threshold: 1
   });
 
+  const [imageView, setImageView] = useState<string[]>([]);
+  const thumbnailImages = useMemo(
+    function () {
+      return imageView.map((img) =>
+        img.replace("/upload/", "/upload/w_34,h_34/")
+      );
+    },
+    [imageView]
+  );
+  const imageStartingIndex = useRef(0);
+
+  const messageArr = useMemo(() => Object.values(messages), [messages]);
+
   useEffect(
     function () {
       if (unreadMessages.length > 0 && open) {
@@ -85,15 +98,21 @@ export default function MessageMenu({
         sender: presentation.User === "HOST" ? "HOST" : userName,
         senderId:
           presentation.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
-        time: ""
+        time: new Date().toLocaleTimeString("en-UK", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        }),
+        sendingStatus: "sending"
       };
 
-      await sendMessage(messageData);
       setUserText("");
       if (textareaRef.current) {
+        textareaRef.current.focus();
         textareaRef.current.style.height = "auto";
         textareaRef.current.style.overflowY = "hidden";
       }
+      await sendMessage(messageData);
     }
   });
 
@@ -176,8 +195,13 @@ export default function MessageMenu({
         sender: presentation?.User === "HOST" ? "HOST" : userName,
         senderId:
           presentation?.User === "HOST" ? "host.id" : tokens?.rtcUid || "",
-        time: "",
-        images
+        time: new Date().toLocaleTimeString("en-UK", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        }),
+        images,
+        sendingStatus: "sending"
       };
 
       await sendMessage(messageData);
@@ -190,19 +214,16 @@ export default function MessageMenu({
     }
   });
 
-  const [imageView, setImageView] = useState<string[]>([]);
-  const thumbnailImages = useMemo(function() {
-    return imageView.map((img) =>(img.replace("/upload/", "/upload/w_34,h_34/")))
-  }, [imageView]);
-
   return (
     <>
-      <ImageViewer
-        images={imageView}
-        thumbnailImages={thumbnailImages}
-        isOpen={imageView.length > 0}
-        onClose={() => setImageView([])}
-      />
+      {imageView.length > 0 && (
+        <ImageViewer
+          images={imageView}
+          thumbnailImages={thumbnailImages}
+          startingIndex={imageStartingIndex.current}
+          onClose={() => setImageView([])}
+        />
+      )}
       <Menu right={true} open={open} onClose={onClose}>
         <div className="left-0 right-0 z-50 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[#FF8B1C] border-x-[#FF8B1C] border-[1px] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
@@ -226,7 +247,7 @@ export default function MessageMenu({
             ref={messageContainer}
             className="w-full p-3 pt-24 flex flex-col gap-5 overflow-y-auto h-full sm"
           >
-            {messages.map((message) => (
+            {messageArr.map((message) => (
               <div
                 key={message.content}
                 className="w-full flex gap-3 justify-start items-start"
@@ -252,25 +273,26 @@ export default function MessageMenu({
                   {message.type === "image" && (
                     <div
                       className={cn(
-                        "grid grid-cols-2 gap-2 md:w-4/6 cursor-zoom-in",
+                        "grid grid-cols-2 gap-2 md:w-4/6",
                         (message.images?.length || 0) > 2 && "grid-rows-2"
                       )}
-                      onClick={() => {
-                        setImageView(message.images || []);
-                      }}
                     >
                       {message.images?.slice(0, 4).map((img, index) => (
                         <div key={index} className="w-full relative">
                           <img
-                            className="w-full object-cover rounded-lg"
+                            className="w-full object-cover rounded-lg cursor-pointer"
                             src={img.replace(
                               "/upload/",
                               "/upload/w_64,h_36,c_fill/"
                             )}
                             alt={`Image ${index + 1}`}
+                            onClick={() => {
+                              setImageView(message.images || []);
+                              imageStartingIndex.current = index;
+                            }}
                           />
                           {index === 3 && message.images!.length > 4 && (
-                            <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                            <div className="pointer-events-none absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
                               <span className="text-white text-lg font-bold">
                                 +{message.images!.length - 4}
                               </span>
@@ -279,6 +301,12 @@ export default function MessageMenu({
                         </div>
                       ))}
                     </div>
+                  )}
+                  {message.sendingStatus === "sending" && (
+                    <p className="text-sm font-light">Sending...</p>
+                  )}
+                  {message.sendingStatus === "failed" && (
+                    <p className="text-sm font-light">Failed</p>
                   )}
                 </div>
               </div>
