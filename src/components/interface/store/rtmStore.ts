@@ -188,11 +188,16 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             });
         } else if (typeof messageData.message === "string") {
             const message = JSON.parse(messageData.message) as Message;
+            if (messageData.publisher.includes(get().token!.rtcUid) || messageData.publisher === get().token!.rtcUid) {
+                return;
+            }
+
             message.time = new Date().toLocaleTimeString("en-UK", {
                 hour: "2-digit",
                 minute: "2-digit",
                 hour12: true
             });
+            message.sendingStatus = "success";
             const addMessage = useMessageStore.getState().addUnreadMessage;
             addMessage(message);
         }
