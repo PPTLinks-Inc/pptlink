@@ -42,9 +42,9 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
       <ShareAPI />
       {((orientation.type.includes("portrait") && isMobilePhone) ||
         (!isMobilePhone && !fullScreenShow)) && (
-        <p className={cn("text-white text-lg", presentation?.User !== "HOST" && "absolute left-1/2 transform -translate-x-1/2")}>
-          PPTLINKS
-        </p>
+        <a href="/" className={cn("text-white text-lg hover:underline", presentation?.User !== "HOST" && "absolute left-1/2 transform -translate-x-1/2")}>
+          PPTLinks
+        </a>
       )}
       {presentation?.User === "HOST" ? (
         <SplitButton
