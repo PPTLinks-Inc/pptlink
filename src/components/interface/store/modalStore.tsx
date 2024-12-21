@@ -5,7 +5,6 @@ import { toast } from "@/hooks/use-toast";
 import { useAudioStore } from "./audioStore";
 import { useRtmStore } from "./rtmStore";
 import { useSlideStore } from "./slideStore";
-import ImageViewer from "../Modals/ImageViewer";
 
 function NameForm() {
   const userName = useRtmStore((state) => state.userName);
@@ -50,7 +49,6 @@ interface ModalStore {
     action: "make" | "remove" | "replace";
   }) => void;
   stopScreenShare: () => void;
-  showImagePrompt: (images: string[]) => void;
 
   resetStore: () => void;
 }
@@ -260,22 +258,6 @@ export const useModalStore = create<ModalStore>((set, get) => ({
               variant: "destructive"
             });
           });
-      }
-    });
-  },
-  showImagePrompt: function (images) {
-    set({
-      isOpen: true,
-      showBottomAction: false,
-      title: "Images",
-      description: "",
-      content: <ImageViewer images={images} />,
-      actionText: "Close",
-      onClose: () => {
-        // get().setIsOpen(false);
-      },
-      onSubmit: () => {
-        // get().setIsOpen(false);
       }
     });
   },
