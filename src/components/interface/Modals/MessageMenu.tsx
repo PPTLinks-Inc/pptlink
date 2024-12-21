@@ -3,7 +3,7 @@ import { IoReturnUpBackOutline } from "react-icons/io5";
 import { IoSendOutline, IoImages } from "react-icons/io5";
 import { BsArrowDown } from "react-icons/bs";
 import Menu from "./Menu";
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useState, useContext, useMemo } from "react";
 import { Message, useMessageStore } from "../store/messageStore";
 import { useIntersection } from "react-use";
 import { useRtmStore } from "../store/rtmStore";
@@ -191,11 +191,15 @@ export default function MessageMenu({
   });
 
   const [imageView, setImageView] = useState<string[]>([]);
+  const thumbnailImages = useMemo(function() {
+    return imageView.map((img) =>(img.replace("/upload/", "/upload/w_34,h_34/")))
+  }, [imageView]);
 
   return (
     <>
       <ImageViewer
         images={imageView}
+        thumbnailImages={thumbnailImages}
         isOpen={imageView.length > 0}
         onClose={() => setImageView([])}
       />
