@@ -230,7 +230,7 @@ export default function NewHome() {
               }}
               viewport={{ once: true }}
               onClick={() => setOpen(true)}
-              className={`cursor-pointer banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-black/80 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
+              className={`cursor-pointer banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-black/50 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
               <span className="block text-5xl text-[#FFFFF0] z-10"><FaCirclePlay /></span>
             </motion.div>
 
@@ -263,7 +263,7 @@ export default function NewHome() {
                 className="mx-[auto] flex justify-left items-center gap-4 w-full _maxScreenMobile:flex-col"
               >
                 <Link
-                  to="#"
+                  to="create"
                   className="block w-fit px-6 py-1 bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
                 >
                   Create Now

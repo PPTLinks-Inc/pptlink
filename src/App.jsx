@@ -24,11 +24,10 @@ const Pay = lazy(() => import("./components/pay/pay"));
 const About = lazy(() => import("./components/about-us/about"));
 const Document = lazy(() => import("./components/document/document"));
 const NewDashboard = lazy(() => import("./components/profile/newDashboard"));
-const PublicPresentation = lazy(
-  () => import("./components/see_more_presentation/seeMorePresentation")
-);
+const PublicPresentation = lazy(() => import("./components/see_more_presentation/seeMorePresentation"));
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
+const CreatePath = lazy(() => import("./components/createNew/createPath"));
 
 const router = createBrowserRouter(
   [
@@ -100,6 +99,9 @@ const router = createBrowserRouter(
     {
       path: "/reset/:token",
       element: <ResetPasswordPage />
+    }, {
+      path: "create",
+      element: <CreatePath />
     }
   ],
   {
