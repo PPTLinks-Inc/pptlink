@@ -21,7 +21,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-black inset-0">
+        <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-primaryTwo inset-0">
           <p className="text-slate-200 text-3xl text-center">
             Something terrible happened.
           </p>
@@ -32,7 +32,7 @@ class ErrorBoundary extends React.Component {
             {this.state.error.toString()}
           </p>
           <button
-            className="bg-slate-200 text-black p-3 mt-3 rounded-md"
+            className="bg-slate-200 text-primaryTwo p-3 mt-3 rounded-md"
             onClick={() => location.reload()}
           >
             Reload

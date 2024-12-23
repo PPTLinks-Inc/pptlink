@@ -253,7 +253,7 @@ export default function InformationStage() {
   return (
     <div className={`w-full h-fit ${currentView === 2 ? "block" : "hidden"}`}>
       {/* Presenter&apos;s Name */}
-      <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black maxScreenMobile:pt-12">
+      <div className="w-[90%] h-fit m-auto mt-6 text-lg text-primaryTwo maxScreenMobile:pt-12">
         <label htmlFor="presenterName" className="block mb-2">
           <sup className="w-full text-xl font-bold">*</sup>
           Presenter&apos;s Name
@@ -271,7 +271,7 @@ export default function InformationStage() {
         )}
       </div>
       {/* Bio */}
-      <div className="w-[90%] h-fit m-auto mt-10 text-lg text-black">
+      <div className="w-[90%] h-fit m-auto mt-10 text-lg text-primaryTwo">
         <label htmlFor="BioOptional" className="block mb-2">
           <sup className="w-full text-xl font-bold"></sup>Bio (Optional)
         </label>
@@ -287,7 +287,7 @@ export default function InformationStage() {
         )}
       </div>
       {/* Social Media Link */}
-      <div className="w-[90%] h-fit m-auto mt-6 text-lg text-black">
+      <div className="w-[90%] h-fit m-auto mt-6 text-lg text-primaryTwo">
         <label htmlFor="socialMediaLink" className="block mb-2">
           <sup className="w-full text-xl font-bold"></sup>Social Media Link
           (Optional)
@@ -304,7 +304,7 @@ export default function InformationStage() {
       </div>
       {/* time of presentation */}
       <span
-        className={`bg-black rounded-tr-md rounded-br-md text-[#ffa500] w-fit p-4 mt-8 mb-6 text-xl font-medium flex justify-between items-center gap-2 ${(errors.date?.message || errors.startTime?.message || errors.endTime?.message) && "!border-t-2 !border-r-2 !border-b-2 !border-[red]"}`}
+        className={`bg-primaryTwo rounded-tr-md rounded-br-md text-[#ffa500] w-fit p-4 mt-8 mb-6 text-xl font-medium flex justify-between items-center gap-2 ${(errors.date?.message || errors.startTime?.message || errors.endTime?.message) && "!border-t-2 !border-r-2 !border-b-2 !border-[red]"}`}
       >
         <label htmlFor="setToggleDateTime">Time of Presentation</label>
         <span>
@@ -325,7 +325,7 @@ export default function InformationStage() {
       {values.selectDateTime && (
         <div className="flex maxScreenMobile:flex-col justify-between w-[90%] m-auto relative">
           {/* 1 */}
-          <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black relative">
+          <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-primaryTwo relative">
             <div className="w-full relative">
               <label htmlFor="DateSelectionID" className="block mb-2">
                 <span className="w-full text-xl font-bold">*</span>Date
@@ -355,7 +355,7 @@ export default function InformationStage() {
                           <label
                             aria-label="Open Date Picker"
                             htmlFor="DateSelectionIDTwo"
-                            className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+                            className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-primaryTwo border-none rounded-tl-md rounded-bl-md"
                           >
                             <span className="_text-[#ffa500] !text-white">
                               <SlCalender />
@@ -384,7 +384,7 @@ export default function InformationStage() {
           </div>
 
           {/* 2 */}
-          <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black relative">
+          <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-primaryTwo relative">
             <div className="w-full relative">
               <label htmlFor="StartTime" className="block mb-2">
                 <span className="w-full text-xl font-bold">*</span>Start Time
@@ -411,7 +411,7 @@ export default function InformationStage() {
                   htmlFor="StartTimeId"
                   // onClick={() => setToggleStartTime(!toggleStartTime)}
                   onClick={handleClickStartTime}
-                  className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+                  className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-primaryTwo border-none rounded-tl-md rounded-bl-md"
                 >
                   <img
                     src={Icon_awesome_clock}
@@ -441,7 +441,7 @@ export default function InformationStage() {
           </div>
 
           {/* 3 */}
-          <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-black">
+          <div className="w-[30%] maxScreenMobile:w-full flex _justify-center items-center h-fit mt-6 text-lg text-primaryTwo">
             <div className="w-full relative">
               <label htmlFor="EndTime" className="block mb-2">
                 <span className="w-full text-xl font-bold">*</span>End Time
@@ -469,7 +469,7 @@ export default function InformationStage() {
                   htmlFor="EndTimeId"
                   // onClick={() => setToggleEndTime(!toggleEndTime)}
                   onClick={handleClickEndTime}
-                  className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-black border-none rounded-tl-md rounded-bl-md"
+                  className="absolute top-0 left-auto right-0 bottom-0 w-[35%] _pointer-events-none flex gap-8 justify-center items-center h-full p-1 bg-primaryTwo border-none rounded-tl-md rounded-bl-md"
                 >
                   <img
                     src={Icon_awesome_clock}

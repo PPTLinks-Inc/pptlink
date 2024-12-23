@@ -37,7 +37,7 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
 
   return (
     <header
-      className={`bg-black w-full flex justify-between items-center sm:px-10 z-10 ${style}`}
+      className={`bg-primaryTwo w-full flex justify-between items-center sm:px-10 z-10 ${style}`}
     >
       <ShareAPI />
       {((orientation.type.includes("portrait") && isMobilePhone) ||

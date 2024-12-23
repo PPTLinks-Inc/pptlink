@@ -30,8 +30,8 @@ export default function PopUpModal({
         className="flex flex-col justify-evenly items-center gap-3 max-w-[20rem]"
         onSubmit={onSubmit}
       >
-        <h3 className="mx-auto font-light text-black pt-3">NOTIFICATION</h3>
-        <p className="w-2/3 mx-auto text-md text-black text-center mb-2">
+        <h3 className="mx-auto font-light text-primaryTwo pt-3">NOTIFICATION</h3>
+        <p className="w-2/3 mx-auto text-md text-primaryTwo text-center mb-2">
           {message}
         </p>
         {isLoading ? (
@@ -40,14 +40,14 @@ export default function PopUpModal({
           </div>
         ) : (
           <div
-            className={`flex border-t-[2px] border-black w-full ${oneButton && "justify-center items-center"}`}
+            className={`flex border-t-[2px] border-primaryTwo w-full ${oneButton && "justify-center items-center"}`}
           >
             <div
-              className={`w-[calc(100%/2)] p-1 border-r-[1px] border-black ${oneButton && "hidden"}`}
+              className={`w-[calc(100%/2)] p-1 border-r-[1px] border-primaryTwo ${oneButton && "hidden"}`}
             >
               <button
                 onClick={onClose || (() => {})}
-                className={`bg-[#FFFFF0]  border-[0.1px] border-black py-2 px-4 w-full rounded-bl text-black hover:shadow-md hover:font-extrabold`}
+                className={`bg-[#FFFFF0]  border-[0.1px] border-primaryTwo py-2 px-4 w-full rounded-bl text-primaryTwo hover:shadow-md hover:font-extrabold`}
                 type="button"
               >
                 Cancel
@@ -55,10 +55,10 @@ export default function PopUpModal({
             </div>
 
             <div
-              className={`${oneButton ? "w-full border-l-0" : "w-[calc(100%/2)] border-l-[1px]"} p-1 border-black`}
+              className={`${oneButton ? "w-full border-l-0" : "w-[calc(100%/2)] border-l-[1px]"} p-1 border-primaryTwo`}
             >
               <button
-                className={`bg-[#FFFFF0]  border-[0.1px] border-black py-2 px-4 w-full rounded-br text-black hover:shadow-md hover:font-extrabold ${oneButton && "font-bold rounded-bl"}`}
+                className={`bg-[#FFFFF0]  border-[0.1px] border-primaryTwo py-2 px-4 w-full rounded-br text-primaryTwo hover:shadow-md hover:font-extrabold ${oneButton && "font-bold rounded-bl"}`}
                 type="submit"
               >
                 {actionText}

@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 
 function PresentationNotFound() {
   return (
-    <section className="bg-black ">
+    <section className="bg-primaryTwo ">
       <div className="container min-h-screen px-6 py-12 mx-auto lg:flex lg:items-center lg:gap-12">
         <div className="wf-ull lg:w-1/2">
           <p className="text-sm font-medium text-slate-500">404 error</p>
@@ -58,7 +58,7 @@ export default function ErrorComponent() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-black inset-0">
+    <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-primaryTwo inset-0">
       <p className="text-slate-200 text-3xl text-center">
         Something terrible happened.
       </p>
@@ -66,7 +66,7 @@ export default function ErrorComponent() {
         Reload the page to try again.
       </p>
       <button
-        className="bg-slate-200 text-black p-3 mt-3 rounded-md"
+        className="bg-slate-200 text-primaryTwo p-3 mt-3 rounded-md"
         onClick={() => location.reload()}
       >
         Reload

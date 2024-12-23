@@ -272,7 +272,7 @@ export default function Card({ presentation, refresh }) {
                   }
                 }}
               >
-                <div className="w-full h-full _bg-black _text-white">
+                <div className="w-full h-full _bg-primaryTwo _text-white">
                   {user && user.id === presentation.User.id && (
                     <>
                       <MenuItem

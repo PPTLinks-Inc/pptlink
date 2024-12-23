@@ -211,7 +211,7 @@ export default function Home() {
           />
           <meta property='twitter:image' content={LogoBlack} />
         </Helmet>
-        <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-black text-white py-6">
+        <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-primaryTwo text-white py-6">
           <div className="container flex justify-between gap-20 maxScreenMobile:gap-4 maxScreen:flex-col-reverse _tall:flex-col-reverse !pt-16">
             <motion.div
               initial={{ y: 50, opacity: 0 }}
@@ -222,7 +222,7 @@ export default function Home() {
               }}
               viewport={{ once: true }}
               onClick={() => setOpen(true)}
-              className={`cursor-pointer banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-black/50 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
+              className={`cursor-pointer banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-primaryTwo/50 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
               <span className="block text-5xl text-[#FFFFF0] z-10"><FaCirclePlay /></span>
             </motion.div>
 
@@ -257,7 +257,7 @@ export default function Home() {
                 <Link
                   onClick={handleCreateClick}
                   to="#"
-                  className="block w-fit px-6 py-1 bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
+                  className="block w-fit px-6 py-1 bg-[#FFFFF0] text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
                 >
                   Create Now
                 </Link>
@@ -272,7 +272,7 @@ export default function Home() {
           </div>
         </div>
         {/* ////////////////////////////All the skills you need in one place////////////////////////////////////////////////// */}
-        <div className="w-full h-fit bg-black py-6 relative text-[#FFFFF0] !pt-16">
+        <div className="w-full h-fit bg-primaryTwo py-6 relative text-[#FFFFF0] !pt-16">
           <motion.h2
             initial={{ y: 20, opacity: 0 }}
             whileInView={{
@@ -334,7 +334,7 @@ export default function Home() {
               currentView === 4) && Array.from({ length: 10 }, (_, i) => i + 1).map(idx => (
                 <NavLink
                   key={idx.toString()}
-                  className="snap_scrolling_child min-w-[18rem] grow-0 shrink-0 basis-[15rem] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/25 cursor-pointer shadow-white shadow-inner z-10"
+                  className="snap_scrolling_child min-w-[18rem] grow-0 shrink-0 basis-[15rem] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-primaryTwo/25 cursor-pointer shadow-white shadow-inner z-10"
                   to="/libraryPage"
                 >
                   <div className="z-10">
@@ -371,7 +371,7 @@ export default function Home() {
         </div>
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
         {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
-        <div className="w-full h-fit bg-black !pt-16">
+        <div className="w-full h-fit bg-primaryTwo !pt-16">
           <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
             <motion.h2
               initial={{ y: 10, opacity: 0 }}
@@ -427,7 +427,7 @@ export default function Home() {
           </div>
         </div>
         {/* ////////////////////////////End Popular Presentations////////////////////////////////////////////////// */}
-        <div className="max-h-fit bg-black text-white pt-8">
+        <div className="max-h-fit bg-primaryTwo text-white pt-8">
           <div className="container !pt-16">
             <motion.h3
               variants={secondVarient}
@@ -538,7 +538,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgReason: e.target.value });
                         }}
-                        className="bg-black border-[1px] border-white rounded-md text-white block w-full py-[0.5rem]"
+                        className="bg-primaryTwo border-[1px] border-white rounded-md text-white block w-full py-[0.5rem]"
                       >
                         <option value="" disabled>
                           Reason for writing?
@@ -603,7 +603,7 @@ export default function Home() {
                   </div>
                   <button
                     type="submit"
-                    className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-black text-[.8rem] font-medium rounded-md"
+                    className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-primaryTwo text-[.8rem] font-medium rounded-md"
                   >
                     {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                   </button>
@@ -687,7 +687,7 @@ export default function Home() {
               viewport={{ margin: "100px", once: true }}
             >
               <p className="mb-1">FAQs</p>
-              <h3 className="text-[3rem] font-black break-all leading-[4rem] maxScreenMobile:text-[2rem]">
+              <h3 className="text-[3rem] font-primaryTwo break-all leading-[4rem] maxScreenMobile:text-[2rem]">
                 Frequently <br /> Asked <br /> Questions.
               </h3>
             </motion.div >

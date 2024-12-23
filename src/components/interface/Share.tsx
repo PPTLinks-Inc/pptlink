@@ -26,18 +26,18 @@ function ShareAPI() {
 
   return (
     <div className="flex justify-between items-center p-2">
-      <p className="text-lg bg-slate-400 text-black p-2 flex items-center rounded-md gap-1">
+      <p className="text-lg bg-slate-400 text-primaryTwo p-2 flex items-center rounded-md gap-1">
         {shareAvailable ? (
           <button
             onClick={shareLink}
-            className="bg-blue-500 text-black p-2 rounded-md"
+            className="bg-blue-500 text-primaryTwo p-2 rounded-md"
           >
             <CiShare2 />
           </button>
         ) : (
           <button
             onClick={copyLink}
-            className="bg-blue-500 text-black p-2 rounded-md"
+            className="bg-blue-500 text-primaryTwo p-2 rounded-md"
           >
             <FaRegCopy />
           </button>

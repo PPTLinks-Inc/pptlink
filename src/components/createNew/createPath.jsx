@@ -45,7 +45,7 @@ export default function CreatePath() {
     };
 
     return (
-        <div className="bg-black w-full h-screen !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
+        <div className="bg-primaryTwo w-full h-screen !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
             <Helmet>
                 <title>{`Create - PPTLinks `}</title>
                 <meta
@@ -186,7 +186,7 @@ export default function CreatePath() {
                         <select
                             id="category"
                             name="category"
-                            className={`bg-black border-[1px] ${create.category !== "" ? "border-[#FFA500]" : "border-white"} rounded-md text-white !text-sm block w-full py-4 indent-4`}
+                            className={`bg-primaryTwo border-[1px] ${create.category !== "" ? "border-[#FFA500]" : "border-white"} rounded-md text-white !text-sm block w-full py-4 indent-4`}
                             value={create.category}
                             onChange={handleInputChange}
                         >
@@ -295,7 +295,7 @@ export default function CreatePath() {
                                 <h6 className="text-md font-semibold text-center mb-2">Upload an image</h6>
                                 <p className="text-sm text-center">Aspect-ratio 16:9</p>
                             </div>
-                            <button htmlFor="file" className="w-fit h-fit py-1 px-4 bg-black border-[1px] border-white rounded-md flex justify-between items-center gap-2" onClick={() => document.getElementById('file').click()}>
+                            <button htmlFor="file" className="w-fit h-fit py-1 px-4 bg-primaryTwo border-[1px] border-white rounded-md flex justify-between items-center gap-2" onClick={() => document.getElementById('file').click()}>
                                 <span>Upload</span>
                                 <MdOutlineFileUpload />
                             </button>
@@ -327,8 +327,8 @@ export default function CreatePath() {
 
             <footer className="w-full h-fit pb-8 pt-3 maxScreenMobile:mt-auto maxScreenMobile:mb-0 maxScreenMobile:justify-self-end">
                 <div className="container flex justify-between items-center">
-                    <button className={`${stage === 1 ? "hidden" : "block"} py-2 px-8 bg-black border-[1px] border-white rounded-md`} onClick={() => IncrementDecrementStage("decrement")}>Previous</button>
-                    <button className="block py-2 px-8 bg-black border-[1px] border-white rounded-md ml-auto" onClick={() => IncrementDecrementStage("increment")}>Next</button>
+                    <button className={`${stage === 1 ? "hidden" : "block"} py-2 px-8 bg-primaryTwo border-[1px] border-white rounded-md`} onClick={() => IncrementDecrementStage("decrement")}>Previous</button>
+                    <button className="block py-2 px-8 bg-primaryTwo border-[1px] border-white rounded-md ml-auto" onClick={() => IncrementDecrementStage("increment")}>Next</button>
                 </div>
             </footer>
         </div>

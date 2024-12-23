@@ -15,7 +15,7 @@ export default function Modal({
   return createPortal(
     <div
       onClick={onClose || (() => {})}
-      className={`z-30 fixed inset-0 flex justify-center items-center transition-colors backdrop-blur-sm ${open ? "visible bg-black/20" : "invisible"}`}
+      className={`z-30 fixed inset-0 flex justify-center items-center transition-colors backdrop-blur-sm ${open ? "visible bg-primaryTwo/20" : "invisible"}`}
     >
       <div
         onClick={(e) => e.stopPropagation()}

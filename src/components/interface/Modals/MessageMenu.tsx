@@ -227,7 +227,7 @@ export default function MessageMenu({
       <Menu right={true} open={open} onClose={onClose}>
         <div className="left-0 right-0 z-50 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[#FF8B1C] border-x-[#FF8B1C] border-[1px] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
-            <h4 className="text-2xl text-center text-black font-bold">
+            <h4 className="text-2xl text-center text-primaryTwo font-bold">
               Live Chat
             </h4>
             <div className="w-fit">
@@ -292,7 +292,7 @@ export default function MessageMenu({
                             }}
                           />
                           {index === 3 && message.images!.length > 4 && (
-                            <div className="pointer-events-none absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                            <div className="pointer-events-none absolute inset-0 bg-primaryTwo/50 rounded-lg flex items-center justify-center">
                               <span className="text-white text-lg font-bold">
                                 +{message.images!.length - 4}
                               </span>

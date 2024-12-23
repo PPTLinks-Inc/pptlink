@@ -1,5 +1,5 @@
 body {
-    background-color: black;
+    background-color: primaryTwo;
 }
 
 video {
@@ -10,7 +10,7 @@ video {
 canvas {
     display: block;
     margin: 0 auto;
-    background-color: black;
+    background-color: primaryTwo;
 }
 
 @keyframes pinging {
@@ -29,7 +29,7 @@ canvas {
 #interface-loader[value] {
     --color: rgb(226 232 240);
     /* the progress color */
-    --background: black;
+    --background: primaryTwo;
     /* the background color */
 
     -webkit-appearance: none;
@@ -62,7 +62,7 @@ canvas {
     height: 100vh;
     display: flex;
     justify-content: center;
-    background-color: black;
+    background-color: primaryTwo;
 } */
 .network__bar {
     height: 50px;

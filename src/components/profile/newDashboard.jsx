@@ -5,7 +5,7 @@ import { CiSettings } from "react-icons/ci";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-Black.png";
+import LogoBlack from "../../images/Logo-black.png";
 import { FaUser } from "react-icons/fa6";
 import useUserPresentation from "../../hooks/useUserPresentation";
 import useUser from "../../hooks/useUser";
@@ -75,7 +75,7 @@ export default function NewDashboard() {
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
       <section
-        className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-black" : "bg-black"}`}
+        className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-primaryTwo" : "bg-primaryTwo"}`}
       >
         <div className={`w-full h-fit pt-6`}>
           <div
@@ -122,17 +122,17 @@ export default function NewDashboard() {
       </section>
 
       <section
-        className={`py-5 h-fit ${currentView === 3 ? "bg-[#FFFFF0] text-black" : "bg-black text-white"}`}
+        className={`py-5 h-fit ${currentView === 3 ? "bg-[#FFFFF0] text-primaryTwo" : "bg-primaryTwo text-white"}`}
       >
         <div
-          className={`${currentView == 3 ? "bg-[#FFFFF0] container_" : "bg-black"} h-fit flex justify-evenly items-center border-b-2 ${currentView === 3 ? "border-b-black" : "border-b-white"}`}
+          className={`${currentView == 3 ? "bg-[#FFFFF0] container_" : "bg-primaryTwo"} h-fit flex justify-evenly items-center border-b-2 ${currentView === 3 ? "border-b-primaryTwo" : "border-b-white"}`}
         >
           <button
             onClick={handleView}
             data-view="1"
             className={
               currentView === 1
-                ? `block w-[8rem] ${currentView === 3 ? "text-black" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-black" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[black]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-black bg-black"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${currentView === 3 ? "text-primaryTwo" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-primaryTwo" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[primaryTwo]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-primaryTwo bg-primaryTwo"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -143,7 +143,7 @@ export default function NewDashboard() {
             data-view="2"
             className={
               currentView === 2
-                ? `block w-[8rem] ${currentView === 3 ? "text-black" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-black" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[black]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-black bg-black"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${currentView === 3 ? "text-primaryTwo" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-primaryTwo" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[primaryTwo]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-primaryTwo bg-primaryTwo"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -154,7 +154,7 @@ export default function NewDashboard() {
             data-view="3"
             className={
               currentView === 3
-                ? `block w-[8rem] ${currentView === 3 ? "text-black" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-black" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[black]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-black bg-black"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${currentView === 3 ? "text-primaryTwo" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-primaryTwo" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[primaryTwo]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-primaryTwo bg-primaryTwo"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -171,7 +171,7 @@ export default function NewDashboard() {
                 type="text"
                 name="searcher"
                 placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-black text-white"
+                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
               />
               <img
                 src={searchImg}
@@ -212,7 +212,7 @@ export default function NewDashboard() {
                   <p className="text-whte">Failed to fetch</p>
                   <button
                     onClick={() => presentationQuery.fetchNextPage()}
-                    className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-black text-white"
+                    className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
                   >
                     Load more
                   </button>
@@ -228,7 +228,7 @@ export default function NewDashboard() {
                 type="text"
                 name="searcher"
                 placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-black text-white"
+                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
               />
               <img
                 src={searchImg}
@@ -252,7 +252,7 @@ export default function NewDashboard() {
                 type="text"
                 name="searcher"
                 placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-black text-white"
+                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
               />
               <img
                 src={searchImg}

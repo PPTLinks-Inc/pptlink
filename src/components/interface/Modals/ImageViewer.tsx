@@ -191,9 +191,9 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
   }
 
   const portalContent = (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-primaryTwo bg-opacity-80 flex items-center justify-center z-50">
       <button
-        className="z-50 absolute top-2 right-2 text-white text-4xl bg-black bg-opacity-50 p-2 rounded-full cursor-pointer"
+        className="z-50 absolute top-2 right-2 text-white text-4xl bg-primaryTwo bg-opacity-50 p-2 rounded-full cursor-pointer"
         onClick={onClose}
       >
         &times;
@@ -233,7 +233,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
       </div>
 
       {/* Fixed thumbnails container with updated padding */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black bg-opacity-50 p-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-primaryTwo bg-opacity-50 p-4">
         <div className="flex justify-start md:justify-center overflow-x-auto gap-2 max-w-full scrollbar-hide px-4">
           {thumbnailImages.map((image, index) => (
             <img
@@ -249,26 +249,26 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
       </div>
 
       <button
-        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white text-2xl p-2 rounded-full cursor-pointer"
+        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-primaryTwo bg-opacity-50 text-white text-2xl p-2 rounded-full cursor-pointer"
         onClick={handlePrev}
       >
         &#10094;
       </button>
       <button
-        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white text-2xl p-2 rounded-full cursor-pointer"
+        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-primaryTwo bg-opacity-50 text-white text-2xl p-2 rounded-full cursor-pointer"
         onClick={handleNext}
       >
         &#10095;
       </button>
       <div className="absolute bottom-24 left-2 flex gap-2">
         <button
-          className="bg-black bg-opacity-50 text-white p-5 rounded-full cursor-pointer"
+          className="bg-primaryTwo bg-opacity-50 text-white p-5 rounded-full cursor-pointer"
           onClick={handleZoomIn}
         >
           +
         </button>
         <button
-          className="bg-black bg-opacity-50 text-white p-5 rounded-full cursor-pointer"
+          className="bg-primaryTwo bg-opacity-50 text-white p-5 rounded-full cursor-pointer"
           onClick={handleZoomOut}
         >
           -

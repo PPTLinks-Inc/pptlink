@@ -62,7 +62,8 @@ module.exports = {
           3: "hsl(var(--chart-3))",
           4: "hsl(var(--chart-4))",
           5: "hsl(var(--chart-5))"
-        }
+        },
+        primaryTwo: "#212A37"
       },
       boxShadow: {
         altShadow: "0px 0px 15px rgba(255,166,0,0.53)"

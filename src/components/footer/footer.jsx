@@ -17,7 +17,7 @@ export default function Footer() {
 
   return (
     <footer
-      className={`footer pt-10 responsiveText ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-black" : "text-slate-200 bg-black black_underline"} relative`}
+      className={`footer pt-10 responsiveText ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-primaryTwo" : "text-slate-200 bg-primaryTwo black_underline"} relative`}
     >
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
@@ -43,73 +43,73 @@ export default function Footer() {
           </div>
           <div className="footerrft w-3/5 flex justify-between align-top maxScreenMobile:flex-col maxScreenMobile:w-full">
             <div>
-              <h3 className="font-black mb-5 text-[1.2rem]">Quick Links</h3>
+              <h3 className="font-primaryTwo mb-5 text-[1.2rem]">Quick Links</h3>
               <nav className="flex flex-col justify-between align-top">
                 <Link
                   to={HOME}
-                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Home
                 </Link>
                 <NavLink
                   to={"/upload"}
-                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Upload
                 </NavLink>
                 <NavLink
                   to={"/signin"}
-                  className={`block !responsiveText ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
+                  className={`block !responsiveText ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign In
                 </NavLink>
                 <NavLink
                   to={SIGNUP}
-                  className={`block !responsiveText ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
+                  className={`block !responsiveText ${user && "hidden"} py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]`}
                 >
                   Sign Up
                 </NavLink>
               </nav>
             </div>
             <div>
-              <h3 className="font-black mb-5 text-[1.2rem] maxScreenMobile:mt-5">
+              <h3 className="font-primaryTwo mb-5 text-[1.2rem] maxScreenMobile:mt-5">
                 Documentation
               </h3>
               <nav className="flex flex-col justify-between align-top">
                 <NavLink
                   to={DOCUMENT}
-                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   All Documents
                 </NavLink>
                 <NavLink
                   to={ABOUT}
-                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   About Us
                 </NavLink>
                 <NavLink
                   to="/"
-                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   How to Use
                 </NavLink>
                 <NavLink
                   to={LEGAL}
-                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Legal
                 </NavLink>
               </nav>
             </div>
             <div className=" w-[300px]">
-              <h3 className="font-black mb-5 text-[1.2rem] maxScreenMobile:mt-5">
+              <h3 className="font-primaryTwo mb-5 text-[1.2rem] maxScreenMobile:mt-5">
                 Location
               </h3>
               <nav className="flex flex-col justify-between align-top">
                 <Link
                   to="/"
-                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-black before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] leading-[30px]"
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] leading-[30px]"
                 >
                   You can find us at Nascomsoft in Anguwan Cashew, Off dass
                   road, opposite Elim church, 740102, Yelwa, Bauchi Nigeria

@@ -179,7 +179,7 @@ function Interface() {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-      <DialogOverlay className="backdrop-blur-sm bg-black/20" />
+      <DialogOverlay className="backdrop-blur-sm bg-primaryTwo/20" />
       <DialogContent className="border-[1px] border-[#FF8B1C] bg-[#FFFFDB] w-11/12 rounded-md ">
         <DialogHeader>
           <DialogTitle className="text-center">{modalTitle}</DialogTitle>
@@ -200,14 +200,14 @@ function Interface() {
             <DialogClose asChild>
               <Button
                 onClick={modalIsLoading ? () => {} : modalOnClose}
-                className="bg-black hover:black/20"
+                className="bg-primaryTwo hover:primaryTwo/20"
               >
                 Cancel
               </Button>
             </DialogClose>
             <Button
               onClick={modalOnSubmit}
-              className="bg-black hover:bg-white hover:text-black"
+              className="bg-primaryTwo hover:bg-white hover:text-primaryTwo"
               autoFocus
             >
               {modalActionText}
@@ -216,17 +216,17 @@ function Interface() {
         )}
       </DialogContent>
       <div
-        className={`bg-black w-full addScrollBar ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
+        className={`bg-primaryTwo w-full addScrollBar ${isMobilePhone && !orientation.type.includes("portrait") && "relative"}`}
       >
         {audioConnectionState === "RECONNECTING" && (
-          <div className="absolute inset-0 z-50 flex flex-col justify-center items-center h-screen w-full bg-black">
+          <div className="absolute inset-0 z-50 flex flex-col justify-center items-center h-screen w-full bg-primaryTwo">
             <LoadingAssetBig2 />
             <p className="text-white text-xl">Reconnecting Audio</p>
           </div>
         )}
         <Suspense
           fallback={
-            <div className="flex flex-col justify-center items-center h-screen bg-black">
+            <div className="flex flex-col justify-center items-center h-screen bg-primaryTwo">
               <LoadingAssetBig2 />
               <p className="text-center text-white">
                 Loading presentation interface...

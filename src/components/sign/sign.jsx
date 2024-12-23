@@ -14,7 +14,7 @@ import "../../assets/styles/general_css.css";
 import logo_orange from "/imgs/onemorecolor.png";
 import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-Black.png";
+import LogoBlack from "../../images/Logo-black.png";
 import { standardFetch } from "../../lib/axios";
 import useUser from "../../hooks/useUser";
 import { setAuthFetchToken } from "../../lib/axios";
@@ -407,12 +407,12 @@ export default function SignPage() {
                   <div className="relative w-full h-fit">
                     {values.showPassword ? (
                       <AiFillEyeInvisible
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     ) : (
                       <AiFillEye
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     )}
@@ -446,12 +446,12 @@ export default function SignPage() {
                   <div className="relative w-full h-fit">
                     {values.showPassword ? (
                       <AiFillEyeInvisible
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     ) : (
                       <AiFillEye
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     )}
@@ -479,7 +479,7 @@ export default function SignPage() {
               </div>
               <button
                 disabled={signin.isPending || signup.isPending}
-                className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
+                className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-primaryTwo rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
               >
                 {signin.isPending || signup.isPending ? (
                   <LoadingAssetSmall2 />
@@ -511,16 +511,16 @@ export default function SignPage() {
             </form>
             <div className="w-full mt-3 flex flex-col items-center justify-between gap-2 maxScreenMobile:px-3">
               <span className="flex w-full justify-center items-center mb-2">
-                <hr className="block w-[35%] h-[0.1px] bg-black" />
+                <hr className="block w-[35%] h-[0.1px] bg-primaryTwo" />
                 <span className="block w-fit text-center mx-1 font-bold">
                   Or
                 </span>
-                <hr className="block w-[35%] h-[0.1px] bg-black" />
+                <hr className="block w-[35%] h-[0.1px] bg-primaryTwo" />
               </span>
 
               <button
                 disabled
-                className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+                className="flex items-center justify-center w-3/5 border-[1px] border-primaryTwo text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -540,7 +540,7 @@ export default function SignPage() {
               </button>
               <button
                 disabled
-                className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+                className="flex items-center justify-center w-3/5 border-[1px] border-primaryTwo text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
