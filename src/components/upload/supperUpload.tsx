@@ -116,7 +116,7 @@ export default function SupperUpload() {
                 <FormLabelIndicator />
                 {/* first stage elements 👀👀 */}
                 <UploadStage />
-                {/* Second stage show els 👀👀 */}
+                {/* Second stage show els 👀👀 */} 
                 <InformationStage />
                 {/* Third stage show els 👀👀 */}
                 <PreviewStage />

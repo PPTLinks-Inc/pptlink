@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiVideoOn } from "react-icons/ci";
 import { PiPresentationLight } from "react-icons/pi";
 import { CiImageOn } from "react-icons/ci";
@@ -10,6 +10,7 @@ import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 
 export default function CreatePath() {
+    const navigate = useNavigate();
     const [stage, setStage] = useState(1);
     const [create, setCreate] = useState({
         type: "",
@@ -43,6 +44,11 @@ export default function CreatePath() {
             file: e.target.files[0],
         });
     };
+
+    const handleSinglePresentation = () => {
+        setCreate({ ...create, type: "Presentation" });
+        navigate("/upload");
+    }
 
     return (
         <div className="bg-primaryTwo w-full h-screen !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
@@ -146,7 +152,7 @@ export default function CreatePath() {
                                 }
                             }}
                             viewport={{ once: true }}
-                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Presentation" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, type: "Presentation" })}>
+                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Presentation" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => handleSinglePresentation()}>
                             <span className="block text-3xl mb-2"><PiPresentationLight /></span>
                             <div>
                                 <h6 className="text-md font-semibold mb-2">Presentation</h6>
