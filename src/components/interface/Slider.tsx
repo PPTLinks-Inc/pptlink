@@ -41,7 +41,7 @@ declare global {
 
 function FullScreenLoading({ progress }: { progress: number }) {
   return (
-    <div className="w-full h-screen flex flex-col gap-5 items-center justify-center z-30 absolute bg-black inset-0">
+    <div className="w-full h-screen flex flex-col gap-5 items-center justify-center z-30 absolute bg-primaryTwo inset-0">
       <progress id="interface-loader" max={100} value={progress}></progress>
     </div>
   );
@@ -49,7 +49,7 @@ function FullScreenLoading({ progress }: { progress: number }) {
 
 function LoadError() {
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-black inset-0">
+    <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-primaryTwo inset-0">
       <p className="text-slate-200 text-3xl text-center">
         Error Loading Presentation File.
       </p>
@@ -57,7 +57,7 @@ function LoadError() {
         This could be due to an outdated browser or a poor network connection.
       </p>
       <button
-        className="bg-slate-200 text-black p-3 mt-3 rounded-md"
+        className="bg-slate-200 text-primaryTwo p-3 mt-3 rounded-md"
         onClick={() => location.reload()}
       >
         Reload

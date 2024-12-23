@@ -41,7 +41,7 @@ export default function Root() {
     >
       <Backmenu backmenu={dropdown} handleDropdown={handleDropdown} />
       <div
-        className={`h-fit flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-black"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
+        className={`h-fit flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-primaryTwo"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
           dropdown
             ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
             : "transition-transform translate-y-0 ease-in-out top-0"

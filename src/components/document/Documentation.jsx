@@ -28,7 +28,7 @@ function Documentation({ activeDropdown, handleDropdownID }) {
 
 
   return (
-    <main className="bg-black md:relative">
+    <main className="bg-primaryTwo md:relative">
       <Helmet>
         <title>{`Documentation - PPTLinks `}</title>
         <meta
@@ -64,7 +64,7 @@ function Documentation({ activeDropdown, handleDropdownID }) {
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
-      <div className=" absolute top-0 hero-background bg-black_">
+      <div className=" absolute top-0 hero-background bg-primaryTwo_">
         <img
           src={heroSection}
           alt=""
@@ -82,7 +82,7 @@ function Documentation({ activeDropdown, handleDropdownID }) {
       </div>
       <div className="hide_scroll w-full h-screen relative flex container mx-auto items-start gap-4 md:gap-6">
         <aside
-          className={`sticky_grid text-black h-screen py-6 px-3 bg-body backdrop-blur-lg bg-opacity-50 left-0 top-0 md:flex-[0.4] z-[100]   ${nav ? "-translate-x-full" : "translate-x-0"} transition-all duration-1000 md:text-white md:sticky md:h-auto md:p-0 md:bg-opacity-100 md:bg-transparent md:backdrop-blur-0   md:translate-x-0`}
+          className={`sticky_grid text-primaryTwo h-screen py-6 px-3 bg-body backdrop-blur-lg bg-opacity-50 left-0 top-0 md:flex-[0.4] z-[100]   ${nav ? "-translate-x-full" : "translate-x-0"} transition-all duration-1000 md:text-white md:sticky md:h-auto md:p-0 md:bg-opacity-100 md:bg-transparent md:backdrop-blur-0   md:translate-x-0`}
         >
           <ul className=" flex flex-col gap-4 md:gap-0 relative md:static">
             <button
@@ -103,7 +103,7 @@ function Documentation({ activeDropdown, handleDropdownID }) {
 
           </ul>{" "}
         </aside>
-        <section className="flex-[1.8] relative z-[51] bg-body text-black rounded-tl-xl pt-12 p-5 documentation ">
+        <section className="flex-[1.8] relative z-[51] bg-body text-primaryTwo rounded-tl-xl pt-12 p-5 documentation ">
           <Routes>
             <Route path="/what_is_pptLinks" element={<Pptlinks />} />
             <Route path="/getting_started" element={<Start />} />

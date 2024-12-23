@@ -17,11 +17,11 @@ export default function Modal({
   return createPortal(
     <div
       onClick={onClose || (() => {})}
-      className="z-30 fixed inset-0 flex justify-center items-center transition-colors backdrop-blur-sm bg-black/20"
+      className="z-30 fixed inset-0 flex justify-center items-center transition-colors backdrop-blur-sm bg-primaryTwo/20"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`${color} rounded-md shadow relative transition-all  border-1 border-black/25 scale-100 opacity-100`}
+        className={`${color} rounded-md shadow relative transition-all  border-1 border-primaryTwo/25 scale-100 opacity-100`}
       >
         {children}
       </div>

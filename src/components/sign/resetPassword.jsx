@@ -58,12 +58,12 @@ export default function ResetPasswordPage() {
                         <div className="relative w-full h-fit">
                             {values.showPassword ? (
                                 <AiFillEyeInvisible
-                                    className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                                    className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                                     onClick={showPassword}
                                 />
                             ) : (
                                 <AiFillEye
-                                    className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                                    className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                                     onClick={showPassword}
                                 />
                             )}
@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
                 </div>
                 <button
                     disabled={false}
-                    className="flex justify-center items-center w-3/5 m-auto mt-8 mb-2 bg-black rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
+                    className="flex justify-center items-center w-3/5 m-auto mt-8 mb-2 bg-primaryTwo rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
                 >
                     {false ? (
                         <LoadingAssetSmall2 />

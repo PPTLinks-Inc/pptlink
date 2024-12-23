@@ -58,9 +58,9 @@ function ChapterDropdown({
                     id="chapter"
                     className="absolute z-50 w-5 aspect-square left-1/2 -translate-x-1/2 opacity-0 peer chapter"
                   /> */}
-            <div className="w-5 h-5 bg-transparent border-2 border-black md:border-white rounded-full grid place-content-center">
+            <div className="w-5 h-5 bg-transparent border-2 border-primaryTwo md:border-white rounded-full grid place-content-center">
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black md:border-white peer-checked:bg-white chapter-child ${isActive && "bg-black md:bg-white"}`}
+                className={`w-3 h-3 rounded-full border-2 border-primaryTwo md:border-white peer-checked:bg-white chapter-child ${isActive && "bg-primaryTwo md:bg-white"}`}
               ></div>
             </div>
           </div>

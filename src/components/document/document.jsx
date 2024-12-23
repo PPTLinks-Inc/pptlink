@@ -142,7 +142,7 @@ export default function Document() {
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
-      <section className="bg-black">
+      <section className="bg-primaryTwo">
         <div className="container min-h-fit py-10 flex flex-col justify-between items-center">
           <h1 className="text-5xl font-[400] uppercase mb-5">DOCUMENTATION</h1>
           <div className="w-[150px] aspect-square mb-5">
@@ -163,7 +163,7 @@ export default function Document() {
               type="text"
               name="searcher"
               placeholder="Search for Articles & Contents"
-              className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-black text-white"
+              className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
             />
             <img
               src={searchImg}
@@ -178,7 +178,7 @@ export default function Document() {
           {sections.map((section, index) => (
             <div
               key={index}
-              className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-black rounded-md p-3 text-center text-[.8rem] flex flex-col justify-between items-center"
+              className="w-full min-h-[250px] bg-[#ffffff36] border border-[#FFA500] text-primaryTwo rounded-md p-3 text-center text-[.8rem] flex flex-col justify-between items-center"
             >
               <div className="w-20 aspect-square mb-3">
                 <img

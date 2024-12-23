@@ -270,7 +270,7 @@ export default function Controls({
         {screenShareEnabled && (
           <button
             onClick={toggleScreenMinimize}
-            className="bg-black border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-40 md:bottom-20 md:left-5 left-1 cursor-pointer"
+            className="bg-primaryTwo border-[1px] border-[#FF8B1C] w-32 rounded aspect-video absolute bottom-40 md:bottom-20 md:left-5 left-1 cursor-pointer"
           >
             {screenShareMinimized ? (
               <p className="text-white rounded">Screen Share</p>
@@ -307,7 +307,7 @@ export default function Controls({
               >
                 <IoCloudDownloadOutline
                   size={24}
-                  color={presentation?.downloadable ? "black" : "bg-gray-400"}
+                  color={presentation?.downloadable ? "primaryTwo" : "bg-gray-400"}
                 />
               </button>
             </>
@@ -325,7 +325,7 @@ export default function Controls({
                   micStyle?.icon
                 )}
               </button>
-              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">
+              <span className="rounded mt-1 p-1 bg-primaryTwo/50 text-white absolute -bottom-9 w-28 text-center">
                 {micStyle?.text}
               </span>
             </div>
@@ -390,7 +390,7 @@ export default function Controls({
                 >
                   <IoCloudDownloadOutline
                     size={18}
-                    color={presentation?.downloadable ? "black" : "bg-gray-400"}
+                    color={presentation?.downloadable ? "primaryTwo" : "bg-gray-400"}
                   />
                 </button>
               ) : (
@@ -426,7 +426,7 @@ export default function Controls({
                   micStyle?.icon
                 )}
               </button>
-              <span className="rounded mt-1 p-1 bg-black/50 text-white absolute -bottom-9 w-28 text-center">
+              <span className="rounded mt-1 p-1 bg-primaryTwo/50 text-white absolute -bottom-9 w-28 text-center">
                 {micStyle?.text}
               </span>
             </div>
@@ -458,7 +458,7 @@ export default function Controls({
           {!synced && presentation.status !== "NOT_LIVE" && presentation?.User === "GUEST" && (
             <button
               onClick={syncSlide}
-              className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+              className="shadow bg-primaryTwo rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
             >
               <IoSync color="white" size={28} />
             </button>
@@ -466,7 +466,7 @@ export default function Controls({
           {document.fullscreenEnabled && (
             <button
               onClick={() => fullScreenToggle()}
-              className="shadow bg-black rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+              className="shadow bg-primaryTwo rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
             >
               {isFullscreen ? (
                 <RxExitFullScreen color="white" size={28} />
@@ -487,7 +487,7 @@ export default function Controls({
       >
         <div className="left-0 right-0 rounded-t-xl p-5 pb-1 flex items-center justify-between border-b-[1px] border-x-[1px] border-[#FF8B1C] fixed w-full bg-[#FFFFDB]">
           <div className="flex items-center">
-            <h4 className="text-2xl text-center text-black font-bold">
+            <h4 className="text-2xl text-center text-primaryTwo font-bold">
               Live Audience
             </h4>
             <div className="relative w-fit">

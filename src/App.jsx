@@ -128,7 +128,7 @@ function App() {
         {/* <Router> */}
         <Suspense
           fallback={
-            <div className="flex justify-center items-center h-screen bg-black">
+            <div className="flex justify-center items-center h-screen bg-primaryTwo">
               <LoadingAssetBig2 />
             </div>
           }
