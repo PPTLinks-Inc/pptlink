@@ -445,7 +445,7 @@ function AddSlideMenu() {
           </p>
           <Button
             onClick={OpenLoginWindow}
-            className="bg-black text-white mx-auto block mt-3 md:w-20 w-full p-2 rounded-lg"
+            className="bg-primaryTwo text-white mx-auto block mt-3 md:w-20 w-full p-2 rounded-lg"
           >
             Login
           </Button>
@@ -490,7 +490,7 @@ function AddSlideMenu() {
                     onClick={() => {
                       handleAddPresentation(presentation);
                     }}
-                    className="bg-black text-white w-full rounded-lg disabled:!cursor-not-allowed disabled:bg-gray-500"
+                    className="bg-primaryTwo text-white w-full rounded-lg disabled:!cursor-not-allowed disabled:bg-gray-500"
                     disabled={presentingStyle(presentation).presenting}
                   >
                     {presentingStyle(presentation).text}
@@ -517,7 +517,7 @@ function AddSlideMenu() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (presentationQuery as any).fetchNextPage();
               }}
-              className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-black text-white"
+              className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
             >
               Load more
             </Button>
@@ -561,7 +561,7 @@ export default function OptionMenu({
         <div className="flex items-center w-full">
           {currentMenuOption === "main" ? (
             <>
-              <h4 className="text-2xl text-center text-black font-bold">
+              <h4 className="text-2xl text-center text-primaryTwo font-bold">
                 Options
               </h4>
               <div className="rounded-full p-3">
@@ -575,12 +575,12 @@ export default function OptionMenu({
           )}
 
           {currentMenuOption === "co-host" && (
-            <h4 className="text-2xl text-center text-black font-bold">
+            <h4 className="text-2xl text-center text-primaryTwo font-bold">
               Choose Co-host
             </h4>
           )}
           {currentMenuOption === "slides" && (
-            <h4 className="text-2xl text-center text-black font-bold">
+            <h4 className="text-2xl text-center text-primaryTwo font-bold">
               Add Slides
             </h4>
           )}

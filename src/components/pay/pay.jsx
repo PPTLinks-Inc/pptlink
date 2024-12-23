@@ -15,7 +15,7 @@ import { useState } from "react";
 // import logo_orange from "/imgs/onemorecolor.png";
 // import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-Black.png";
+import LogoprimaryTwo from "../../images/Logo-primaryTwo.png";
 import { RiVisaLine } from "react-icons/ri";
 import { FaStripe } from "react-icons/fa";
 import { FaPaypal } from "react-icons/fa";
@@ -47,7 +47,7 @@ export default function Pay() {
                     property='og:description'
                     content='Make your powerpoint presentations payment for a course'
                 />
-                <meta property='og:image' content={LogoBlack} />
+                <meta property='og:image' content={LogoprimaryTwo} />
 
                 {/* meta tags to display information on twitter  */}
                 <meta property='twitter:card' content='website' />
@@ -61,11 +61,11 @@ export default function Pay() {
                     property='twitter:description'
                     content='Make your powerpoint presentations payment for a course'
                 />
-                <meta property='twitter:image' content={LogoBlack} />
+                <meta property='twitter:image' content={LogoprimaryTwo} />
             </Helmet>
-            <section className="absolute top-0 left-0 right-0 bottom-0 bg-black w-full h-full overflow-y-hidden maxScreenMobile:overflow-y-auto">
+            <section className="absolute top-0 left-0 right-0 bottom-0 bg-primaryTwo w-full h-full overflow-y-hidden maxScreenMobile:overflow-y-auto">
                 <form onSubmit={(e) => { e.preventDefault(); alert("Submitted Successfully...") }} className="w-full h-full _grid _grid-cols-2 _grid-rows-1 flex justify-between items-center gap-0 maxScreenMobile:flex-col  maxScreenMobile:h-fit">
-                    <div className={`w-[60%] h-full bg-black overflow-y-auto maxScreenMobile:!w-full maxScreenMobile:!h-fit ${toggleSwitch && "!bg-[#3c0a0a]"}`}>
+                    <div className={`w-[60%] h-full bg-primaryTwo overflow-y-auto maxScreenMobile:!w-full maxScreenMobile:!h-fit ${toggleSwitch && "!bg-[#3c0a0a]"}`}>
                         <div className="container !text-white py-16">
                             <h3 className="text-2xl font-semibold _uppercase my-4">Checkout</h3>
                             <p className="py-3">Personal details</p>
@@ -77,7 +77,7 @@ export default function Pay() {
                                         id="address"
                                         name="address"
                                         placeholder="Address Line"
-                                        className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                        className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                     />
                                 </label>
                                 <label htmlFor="address" className="block !w-full h-fit">
@@ -87,7 +87,7 @@ export default function Pay() {
                                         id="city"
                                         name="city"
                                         placeholder="City"
-                                        className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                        className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                     />
                                 </label>
                                 <label htmlFor="address" className="block !w-full h-fit">
@@ -97,7 +97,7 @@ export default function Pay() {
                                         id="state"
                                         name="state"
                                         placeholder="State"
-                                        className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                        className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                     />
                                 </label>
                                 <label htmlFor="address" className="block !w-full h-fit">
@@ -109,7 +109,7 @@ export default function Pay() {
                                         id="postal-code"
                                         name="postal-code"
                                         placeholder="Postal Code"
-                                        className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                        className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                     />
                                 </label>
                             </div>
@@ -132,7 +132,7 @@ export default function Pay() {
                                         id="card-no"
                                         name="card-no"
                                         placeholder="Scan on card please..."
-                                        className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                        className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                     />
                                 </label>
                                 <div className="w-full grid grid-cols-2 grid-rows-1 gap-2 pb-4 maxScreenMobile:grid-cols-1 maxScreenMobile:grid-rows-2">
@@ -145,7 +145,7 @@ export default function Pay() {
                                             id="expirarity"
                                             name="expirarity"
                                             placeholder="20/23"
-                                            className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                            className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                         />
                                     </label>
                                     <label htmlFor="address" className="block !w-full h-fit">
@@ -157,7 +157,7 @@ export default function Pay() {
                                             id="card-cvc"
                                             name="card-cvc"
                                             placeholder="555"
-                                            className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                            className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                         />
                                     </label>
                                 </div>
@@ -168,7 +168,7 @@ export default function Pay() {
                                         id="card-holder-name"
                                         name="card-holder-name"
                                         placeholder="Scan on card please..."
-                                        className={`block w-full border-[0.5px] bg-black border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
+                                        className={`block w-full border-[0.5px] bg-primaryTwo border-[#FFFFF0] rounded-md py-2 indent-2 text-sm`}
                                     />
                                 </label>
                             </div>
@@ -185,7 +185,7 @@ export default function Pay() {
                     <div className="w-[40%] h-full pb-10 bg-[#FFFFF0] maxScreenMobile:!w-full maxScreenMobile:h-fit">
                         <div className="container py-16">
                             <h3 className="text-2xl font-semibold _uppercase my-4">Summery</h3>
-                            <div className="mt-10 w-full h-fit pb-5 border-b-2 border-b-black text-gray-600">
+                            <div className="mt-10 w-full h-fit pb-5 border-b-2 border-b-primaryTwo text-gray-600">
                                 <span className="flex justify-between items-center">
                                     <span>Price</span>
                                     <span>$48,887.99</span>
@@ -200,7 +200,7 @@ export default function Pay() {
                                 <span>$0.00</span>
                             </span>
                         </div>
-                        <button type="submit" className={`container bg-black text-white text-lg text-center block py-4 border-0 rounded-md ${toggleSwitch && "!bg-[#3c0a0a]"}`}>Checkout</button>
+                        <button type="submit" className={`container bg-primaryTwo text-white text-lg text-center block py-4 border-0 rounded-md ${toggleSwitch && "!bg-[#3c0a0a]"}`}>Checkout</button>
                     </div>
                 </form>
             </section>

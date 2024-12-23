@@ -61,7 +61,7 @@ function OrientationPrompt({
 }) {
   return (
     <div
-      className="bg-black absolute w-screen h-full z-50"
+      className="bg-primaryTwo absolute w-screen h-full z-50"
       onClick={() => setShowPrompt(false)}
     >
       <button className="absolute right-5 top-5">
@@ -475,7 +475,7 @@ const PresentationContextProvider = (props: { children: any }) => {
       }}
     >
       {presentationQuery.isLoading ? (
-        <div className="bg-black flex justify-center items-center h-screen w-full">
+        <div className="bg-primaryTwo flex justify-center items-center h-screen w-full">
           <LoadingAssetBig2 />
         </div>
       ) : presentationQuery.isError ? (

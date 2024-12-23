@@ -159,7 +159,9 @@ export default function UploadStage() {
 
   const cancelPendingUploadMutation = useMutation({
     mutationFn: async function () {
-      await authFetch.delete(`${SERVER_URL}/api/v1/ppt/presentation/cancel-upload`);
+      await authFetch.delete(
+        `${SERVER_URL}/api/v1/ppt/presentation/cancel-upload`
+      );
     },
     onSuccess: function () {
       setProcessingFile(false);
@@ -609,7 +611,7 @@ export default function UploadStage() {
           />
         )}
         <div
-          className={`flex flex-col gap-2 justify-center items-center w-full h-full absolute top-0 left-0 pointer-events-none _maxScreenMobile:bg-black`}
+          className={`flex flex-col gap-2 justify-center items-center w-full h-full absolute top-0 left-0 pointer-events-none _maxScreenMobile:bg-primaryTwo`}
         >
           {!processingFile ? (
             <span className="block w-[5rem] aspect-square">
@@ -674,7 +676,7 @@ export default function UploadStage() {
             <LoadingAssetBig />
           )}
           <span
-            className={`w-fit h-fit ${uploadMutation.isSuccess || pdfUrl !== "" ? "text-[green]" : uploadMutation.isError || errors.file?.message ? "text-[red]" : "text-black"}`}
+            className={`w-fit h-fit ${uploadMutation.isSuccess || pdfUrl !== "" ? "text-[green]" : uploadMutation.isError || errors.file?.message ? "text-[red]" : "text-primaryTwo"}`}
           >
             {serverConnected ? (
               errors.file?.message ? (
@@ -715,7 +717,7 @@ export default function UploadStage() {
             </button>
           )}
           {processingFile && (
-            <p className="text-black">File Processing. Please wait...</p>
+            <p className="text-primaryTwo">File Processing. Please wait...</p>
           )}
         </div>
         {/* {uploadValuesErrors.fileError && (
@@ -723,7 +725,7 @@ export default function UploadStage() {
                 )} */}
       </div>
       {/* Title */}
-      <div className="w-[90%] h-fit m-auto mt-8 text-lg text-black">
+      <div className="w-[90%] h-fit m-auto mt-8 text-lg text-primaryTwo">
         <label htmlFor="title" className="block mb-2">
           <sup className="w-full text-xl font-bold">*</sup>Title
         </label>
@@ -738,7 +740,7 @@ export default function UploadStage() {
         )}
       </div>
       {/* Description (Optional) */}
-      <div className="w-[90%] h-fit m-auto mt-8 text-lg text-black">
+      <div className="w-[90%] h-fit m-auto mt-8 text-lg text-primaryTwo">
         <label htmlFor="textarea" className="block mb-2">
           <sup className="w-full text-xl font-bold"></sup>Description (Optional)
         </label>
@@ -758,7 +760,7 @@ export default function UploadStage() {
       </div>
       {/* Privacy/Downloadable */}
       <div className="flex justify-between w-[90%] m-auto mt-6">
-        <div className="w-[48%] h-fit mt-6 text-lg text-black">
+        <div className="w-[48%] h-fit mt-6 text-lg text-primaryTwo">
           <label htmlFor="publicSelector" className="block mb-2">
             <sup className="w-full text-xl font-bold">*</sup>Privacy
           </label>
@@ -776,7 +778,7 @@ export default function UploadStage() {
           )}
         </div>
 
-        <div className="w-[48%] h-fit mt-6 text-lg text-black">
+        <div className="w-[48%] h-fit mt-6 text-lg text-primaryTwo">
           <label htmlFor="downloadSelector" className="block mb-2">
             <sup className="w-full text-xl font-bold">*</sup>Downloadable
           </label>
@@ -797,7 +799,7 @@ export default function UploadStage() {
       </div>
       {/* Add Category */}
       <div className="flex justify-between w-[90%] m-auto mt-6">
-        <div className="w-[48%] maxScreenMobile:w-full mr-auto flex flex-col justify-center items-center h-fit mt-6 text-lg text-black">
+        <div className="w-[48%] maxScreenMobile:w-full mr-auto flex flex-col justify-center items-center h-fit mt-6 text-lg text-primaryTwo">
           <div className="w-full relative">
             <label htmlFor="categorySelector" className="block mb-2">
               <sup className="w-full text-xl font-bold">*</sup>Category
@@ -806,7 +808,7 @@ export default function UploadStage() {
               <select
                 title="category"
                 id="categorySelector"
-                className="block w-[60%] text-lg _maxScreenMobile:w-[85%] p-2 mr-2 !border-[0px] !border-none bg-white outline outline-[white] indent-8"
+                className="block w-[60%] text-lg _maxScreenMobile:w-[85%] p-2 mr-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
                 {...register("category")}
               >
                 <option value="" disabled className="text-[gray]">
@@ -826,7 +828,7 @@ export default function UploadStage() {
                 }}
                 className="w-[40%] maxScreenMobile:responsiveText 
                       flex gap-1 justify-evenly items-center h-full p-2 
-                      bg-black border-black rounded-tr-md rounded-br-md _maxScreenMobile:w-fit _maxScreenMobile:p-4"
+                      bg-primaryTwo border-primaryTwo rounded-tr-md rounded-br-md _maxScreenMobile:w-fit _maxScreenMobile:p-4"
               >
                 <span className="text-white responsiveText block w-fit h-fit italic _maxScreenMobile:hidden">
                   NEW
@@ -842,12 +844,12 @@ export default function UploadStage() {
                 id="title"
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
-                className="block w-[60%] p-2 indent-8 border-none border-black border-r-0 rounded-tl-md rounded-bl-md"
+                className="block w-[60%] p-2 indent-8 border-none border-primaryTwo border-r-0 rounded-tl-md rounded-bl-md"
                 placeholder="ADD CATEGORY"
               />
               <button
                 type="button"
-                className="w-[40%] flex gap-1 justify-center items-center h-full p-2 bg-black border-none border-black rounded-tr-md rounded-br-md cursor-pointer"
+                className="w-[40%] flex gap-1 justify-center items-center h-full p-2 bg-primaryTwo border-none border-primaryTwo rounded-tr-md rounded-br-md cursor-pointer"
                 onClick={updateCategories}
               >
                 <span className="text-white responsiveText block w-fit h-fit italic">
@@ -857,7 +859,9 @@ export default function UploadStage() {
             </div>
           </div>
           {errors.category?.message && (
-            <p className="text-[red] w-full">{errors.category?.message?.toString()}</p>
+            <p className="text-[red] w-full">
+              {errors.category?.message?.toString()}
+            </p>
           )}
         </div>
       </div>

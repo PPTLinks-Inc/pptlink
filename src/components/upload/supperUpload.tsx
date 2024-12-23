@@ -12,7 +12,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingAssetBig2 } from "@/assets/assets";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-Black.png";
+import LogoBlack from "../../images/Logo-black.png";
 import { authFetch } from "@/lib/axios";
 
 export default function SupperUpload() {

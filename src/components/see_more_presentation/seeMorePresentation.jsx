@@ -5,7 +5,7 @@ import Card from "../list/card";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import { Helmet } from 'react-helmet';
-import LogoBlack from '../../images/Logo-Black.png';
+import LogoBlack from '../../images/Logo-black.png';
 import usePublicPresentation from "../../hooks/usePublicPresentation";
 
 export default function PublicPresentation() {
@@ -76,7 +76,7 @@ export default function PublicPresentation() {
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
-      <section className="bg-black">
+      <section className="bg-primaryTwo">
         <div className="container h-fit py-10 flex flex-col justify-between items-center">
           <h1 className="text-5xl font-[400] uppercase mb-5 maxScreenMobile:text-3xl maxScreenMobile:text-center">
             PUBLIC PRESENTATIONS
@@ -93,7 +93,7 @@ export default function PublicPresentation() {
               type="text"
               name="searcher"
               placeholder="Search for Libraries"
-              className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-black text-white"
+              className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
             />
             <img
               src={searchImg}
@@ -104,7 +104,7 @@ export default function PublicPresentation() {
         </div>
       </section>
 
-      <section className="public_presentations container py-5 h-fit bg-black">
+      <section className="public_presentations container py-5 h-fit bg-primaryTwo">
         <div
           className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
           ref={scrollRef}
@@ -133,7 +133,7 @@ export default function PublicPresentation() {
               <p className="text-whte">Failed to fetch</p>
               <button
                 onClick={() => fetchNextPage()}
-                className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-black text-white"
+                className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
               >
                 Load more
               </button>

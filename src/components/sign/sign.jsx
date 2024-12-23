@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useMutation } from "@tanstack/react-query";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -14,12 +14,13 @@ import "../../assets/styles/general_css.css";
 import logo_orange from "/imgs/onemorecolor.png";
 import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-Black.png";
+import LogoBlack from "../../images/Logo-black.png";
 import { standardFetch } from "../../lib/axios";
 import useUser from "../../hooks/useUser";
 import { setAuthFetchToken } from "../../lib/axios";
 
 export default function SignPage() {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { setUser } = useUser();
   const [passwordErr, setPasswordErr] = useState(null);
@@ -62,7 +63,8 @@ export default function SignPage() {
       } else {
         setUser(data.user);
         setAuthFetchToken(data.token);
-        navigate("/");
+        const redirectUrl = searchParams.get('redirect') || '/';
+        navigate(redirectUrl);
       }
     }
   });
@@ -279,7 +281,7 @@ export default function SignPage() {
       </Helmet>
       <PopUpModal
         open={modal}
-        onClose={() => {}}
+        onClose={() => { }}
         onSubmit={(e) => {
           switchPage(e);
         }}
@@ -405,12 +407,12 @@ export default function SignPage() {
                   <div className="relative w-full h-fit">
                     {values.showPassword ? (
                       <AiFillEyeInvisible
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     ) : (
                       <AiFillEye
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     )}
@@ -444,12 +446,12 @@ export default function SignPage() {
                   <div className="relative w-full h-fit">
                     {values.showPassword ? (
                       <AiFillEyeInvisible
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     ) : (
                       <AiFillEye
-                        className="text-black font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
+                        className="text-primaryTwo font-bold text-xl absolute right-0 top-[50%] translate-y-[-50%] mr-2 z-10 cursor-pointer"
                         onClick={showPassword}
                       />
                     )}
@@ -477,7 +479,7 @@ export default function SignPage() {
               </div>
               <button
                 disabled={signin.isPending || signup.isPending}
-                className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-black rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
+                className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-primaryTwo rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
               >
                 {signin.isPending || signup.isPending ? (
                   <LoadingAssetSmall2 />
@@ -509,16 +511,16 @@ export default function SignPage() {
             </form>
             <div className="w-full mt-3 flex flex-col items-center justify-between gap-2 maxScreenMobile:px-3">
               <span className="flex w-full justify-center items-center mb-2">
-                <hr className="block w-[35%] h-[0.1px] bg-black" />
+                <hr className="block w-[35%] h-[0.1px] bg-primaryTwo" />
                 <span className="block w-fit text-center mx-1 font-bold">
                   Or
                 </span>
-                <hr className="block w-[35%] h-[0.1px] bg-black" />
+                <hr className="block w-[35%] h-[0.1px] bg-primaryTwo" />
               </span>
 
               <button
                 disabled
-                className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+                className="flex items-center justify-center w-3/5 border-[1px] border-primaryTwo text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -538,7 +540,7 @@ export default function SignPage() {
               </button>
               <button
                 disabled
-                className="flex items-center justify-center w-3/5 border-[1px] border-black text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
+                className="flex items-center justify-center w-3/5 border-[1px] border-primaryTwo text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full hover:!font-normal hover:!cursor-not-allowed"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

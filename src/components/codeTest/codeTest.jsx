@@ -69,7 +69,7 @@ export default function CodeTest() {
                 {Array.from({ length: 10 }, (_, i) => (
                     <div
                         key={i}
-                        className="card-class min-w-[18rem] grow-0 shrink-0 basis-[15rem] bg-black text-white"
+                        className="card-class min-w-[18rem] grow-0 shrink-0 basis-[15rem] bg-primaryTwo text-white"
                     >
                         Card {i + 1}
                     </div>
