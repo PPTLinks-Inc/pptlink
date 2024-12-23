@@ -180,8 +180,8 @@ export default function CreatePath() {
 
                         <div className={`p-8 maxScreenMobile:p-4 flex flex-col justify-center items-center border-[1px] ${create.dontHave ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, file: "", dontHave: !create.dontHave })}>
                             <div>
-                                <h6 className="text-md font-semibold text-center mb-2">I don'nt have one</h6>
-                                <p className="text-sm text-center">Skip these for now, I'll do this later</p>
+                                <h6 className="text-md font-semibold text-center mb-2">I don&apos;t have one</h6>
+                                <p className="text-sm text-center">Skip these for now, I&apos;ll do this later</p>
                             </div>
                         </div>
                     </div>

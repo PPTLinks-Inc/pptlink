@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
 import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
-import initiative from "/team/pptlink_resources/initiative.png";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 
 export default function Library() {
+    const courseUnlocked = true;
+
     return (<>
         <Helmet>
             <title>{`Library - PPTLinks `}</title>
@@ -79,7 +80,7 @@ export default function Library() {
                     text-[.8rem] flex flex-col 
                     justify-between items-center">
                     <div className="after_effect bg-transparent rounded-t-[.5rem] flex w-full justify-between items-center text-white pt-8 pb-4 px-2">
-                        <span className="tracking-[.4rem] uppercase text-xl text-[#FFA500] font-extrabold">{true ? <BsUnlockFill /> : <BsLockFill />}</span>
+                        <span className="tracking-[.4rem] uppercase text-xl text-[#FFA500] font-extrabold">{courseUnlocked ? <BsUnlockFill /> : <BsLockFill />}</span>
                         <span className="tracking-[.4rem] uppercase text-[1.005rem]">LIBRARY</span>
                     </div>
                     <div className="w-full bg-[#FFFFF0] text-black px-2">
@@ -90,7 +91,7 @@ export default function Library() {
                     </div>
                     <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
                         {/* <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span> */}
-                        <span class="block mt-2"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 192 512" class="text-xl text-[#FFA500] cursor-pointer rotate-90" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg></span>
+                        <span className="block mt-2"><svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 192 512" className="text-xl text-[#FFA500] cursor-pointer rotate-90" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg></span>
                         <span className="responsiveText block bg-[#FFA500] text-black px-[4px] p-[1px]">Free</span>
                     </div>
                 </NavLink>
@@ -102,7 +103,7 @@ export default function Library() {
                     text-[.8rem] flex flex-col 
                     justify-between items-center">
                     <div className="after_effect bg-transparent rounded-t-[.5rem] flex w-full justify-between items-center text-white pt-8 pb-4 px-2">
-                        <span className="tracking-[.4rem] uppercase text-xl text-[#FFA500] font-extrabold">{true ? <BsUnlockFill /> : <BsLockFill />}</span>
+                        <span className="tracking-[.4rem] uppercase text-xl text-[#FFA500] font-extrabold">{courseUnlocked ? <BsUnlockFill /> : <BsLockFill />}</span>
                         <span className="tracking-[.4rem] uppercase text-[1.005rem]">LIBRARY</span>
                     </div>
                     <div className="w-full bg-[#FFFFF0] text-black px-2">
@@ -113,7 +114,7 @@ export default function Library() {
                     </div>
                     <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
                         {/* <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span> */}
-                        <span class="block mt-2"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 192 512" class="text-xl text-[#FFA500] cursor-pointer rotate-90" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg></span>
+                        <span className="block mt-2"><svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 192 512" className="text-xl text-[#FFA500] cursor-pointer rotate-90" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg></span>
                         <span className="responsiveText block bg-[#FFA500] text-black px-[4px] p-[1px]">Free</span>
                     </div>
                 </NavLink>
@@ -125,7 +126,7 @@ export default function Library() {
                     text-[.8rem] flex flex-col 
                     justify-between items-center">
                     <div className="after_effect bg-transparent rounded-t-[.5rem] flex w-full justify-between items-center text-white pt-8 pb-4 px-2">
-                        <span className="tracking-[.4rem] uppercase text-xl text-[#FFA500] font-extrabold">{true ? <BsUnlockFill /> : <BsLockFill />}</span>
+                        <span className="tracking-[.4rem] uppercase text-xl text-[#FFA500] font-extrabold">{courseUnlocked ? <BsUnlockFill /> : <BsLockFill />}</span>
                         <span className="tracking-[.4rem] uppercase text-[1.005rem]">LIBRARY</span>
                     </div>
                     <div className="w-full bg-[#FFFFF0] text-black px-2">
@@ -136,7 +137,7 @@ export default function Library() {
                     </div>
                     <div className="before_effect bg-transparent rounded-b-[.5rem] flex w-full justify-between items-center text-white pt-4 pb-8 px-2">
                         {/* <span className="text-[1.005rem]">View Library <span className="font-bold text-xl">&rarr;</span></span> */}
-                        <span class="block mt-2"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 192 512" class="text-xl text-[#FFA500] cursor-pointer rotate-90" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg></span>
+                        <span className="block mt-2"><svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 192 512" className="text-xl text-[#FFA500] cursor-pointer rotate-90" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg></span>
                         <span className="responsiveText block bg-[#FFA500] text-black px-[4px] p-[1px]">Free</span>
                     </div>
                 </NavLink>
