@@ -19,7 +19,7 @@ import LogoBlack from "../../images/Logo-Black.png";
 import usePublicPresentation from "../../hooks/usePublicPresentation";
 import useUser from "../../hooks/useUser";
 
-export default function NewHome() {
+export default function Home() {
   // context
   const scrollRef = useRef();
   const scrollRefTwo = useRef();
