@@ -146,25 +146,6 @@ export default function NewHome() {
     }
   }, [isInView]);
 
-  const containertVarients = {
-    hidden: {
-      opacity: 0
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        delay: 0.5,
-        duration: 1.5
-      }
-    },
-    exit: {
-      x: "-100vw",
-      transition: {
-        ease: "easeInOut"
-      }
-    }
-  };
-
   return (
     <>
       <Modal
@@ -270,7 +251,7 @@ export default function NewHome() {
                 </Link>
                 <Link
                   to="/signin"
-                  className={`block w-fit px-6 py-1 _bg-[black] text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
+                  className={`block w-fit px-6 py-1 text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
                 >
                   Sign In
                 </Link>
