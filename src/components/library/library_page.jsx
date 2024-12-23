@@ -1,8 +1,4 @@
 import { NavLink, Link } from "react-router-dom";
-import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
-import initiative from "/team/pptlink_resources/initiative.png";
-import searchImg from "/team/pptlink_resources/Icon material-search.png";
-import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -57,7 +53,7 @@ export default function LibraryPage() {
                                 className="border-2 border-background block w-[2rem] h-[2rem] !rounded-[1rem]"
                                 style={{ zIndex: index + 1 }}
                             >
-                                <AvatarImage src={"/team/baraka.jpg"} alt={"baraka"} className="object-cover" />
+                                <AvatarImage src={"/team/imoh.jpg"} alt={"imoh"} className="object-cover" />
                                 <AvatarFallback>{"B"}</AvatarFallback>
                             </Avatar>
                         ))}
@@ -90,7 +86,7 @@ export default function LibraryPage() {
 
                     {Array.from({ length: 3 }, (_, i) => i + 1).map(idx => (
                         <div key={idx.toString()} className="border-2 border-[#FFFFF0] rounded-md p-3">
-                            <img src="/team/baraka.jpg" alt="baraka" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
+                            <img src="/team/imoh.jpg" alt="imoh" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
                             <div className="flex flex-col justify-between items-start gap-2">
                                 <h3 className="font-semibold text-base">Ideation and Validation</h3>
                                 <p className="text-sm">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, dolor qui beatae corrupti at numquam delectus iusto quia in, dignissimos alias. Minus repudiandae at incidunt hic nihil unde nulla odit?</p>
@@ -112,7 +108,7 @@ export default function LibraryPage() {
 
                     {Array.from({ length: 5 }, (_, i) => i + 1).map(idx => (
                         <div key={idx.toString()} className="border-2 border-[#FFFFF0] rounded-md p-3">
-                            <img src="/team/baraka.jpg" alt="baraka" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
+                            <img src="/team/imoh.jpg" alt="imoh" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
                             <div className="flex flex-col justify-between items-start gap-2">
                                 <h3 className="font-semibold text-base">Ideation and Validation</h3>
                                 <p className="text-sm">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, dolor qui beatae corrupti at numquam delectus iusto quia in, dignissimos alias. Minus repudiandae at incidunt hic nihil unde nulla odit?</p>
@@ -134,7 +130,7 @@ export default function LibraryPage() {
 
                     {Array.from({ length: 4 }, (_, i) => i + 1).map(idx => (
                         <div key={idx.toString()} className="border-2 border-[#FFFFF0] rounded-md p-3">
-                            <img src="/team/baraka.jpg" alt="baraka" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
+                            <img src="/team/imoh.jpg" alt="imoh" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
                             <div className="flex flex-col justify-between items-start gap-2">
                                 <h3 className="font-semibold text-base">Ideation and Validation</h3>
                                 <p className="text-sm">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, dolor qui beatae corrupti at numquam delectus iusto quia in, dignissimos alias. Minus repudiandae at incidunt hic nihil unde nulla odit?</p>
@@ -160,7 +156,7 @@ export default function LibraryPage() {
                 {/* start */}
                 {Array.from({ length: 4 }, (_, i) => i + 1).map(idx => (
                     <div key={idx.toString()} className="border-2 border-[#FFFFF0] rounded-md p-3">
-                        <img src="/team/baraka.jpg" alt="baraka" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
+                        <img src="/team/imoh.jpg" alt="imoh" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
                         <div className="flex flex-col justify-between items-start gap-2">
                             <h3 className="font-semibold text-base">Raahi H. Aljareem</h3>
                             <p className="text-sm">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, dolor qui beatae corrupti at numquam delectus iusto quia in, dignissimos alias. a odit?</p>
@@ -178,7 +174,7 @@ export default function LibraryPage() {
                 {/* start */}
                 {Array.from({ length: 4 }, (_, i) => i + 1).map(idx => (
                     <div key={idx.toString()} className="border-2 border-[#FFFFF0] rounded-md p-3">
-                        <img src="/team/baraka.jpg" alt="baraka" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
+                        <img src="/team/imoh.jpg" alt="imoh" className="block mb-3 w-12 aspect-square border-0 rounded-md object-cover" />
                         <div className="flex flex-col justify-between items-start gap-2">
                             <h3 className="font-semibold text-base">Raahi H. Aljareem</h3>
                             <p className="text-sm">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, dolor qui beatae corrupti at numquam delectus iusto quia in, dignissimos alias. a odit?</p>

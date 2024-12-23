@@ -6,7 +6,6 @@ import PresentationContextProvider, {
   presentationLoader
 } from "./contexts/presentationContext";
 import "./assets/styles/general_css.css";
-import ErrorBoundary from "./ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
 import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
