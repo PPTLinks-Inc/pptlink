@@ -15,7 +15,7 @@ import { useState } from "react";
 // import logo_orange from "/imgs/onemorecolor.png";
 // import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
-import LogoprimaryTwo from "../../images/Logo-primaryTwo.png";
+import LogoBlack from "../../images/Logo-black.png";
 import { RiVisaLine } from "react-icons/ri";
 import { FaStripe } from "react-icons/fa";
 import { FaPaypal } from "react-icons/fa";
@@ -47,7 +47,7 @@ export default function Pay() {
                     property='og:description'
                     content='Make your powerpoint presentations payment for a course'
                 />
-                <meta property='og:image' content={LogoprimaryTwo} />
+                <meta property='og:image' content={LogoBlack} />
 
                 {/* meta tags to display information on twitter  */}
                 <meta property='twitter:card' content='website' />
@@ -61,7 +61,7 @@ export default function Pay() {
                     property='twitter:description'
                     content='Make your powerpoint presentations payment for a course'
                 />
-                <meta property='twitter:image' content={LogoprimaryTwo} />
+                <meta property='twitter:image' content={LogoBlack} />
             </Helmet>
             <section className="absolute top-0 left-0 right-0 bottom-0 bg-primaryTwo w-full h-full overflow-y-hidden maxScreenMobile:overflow-y-auto">
                 <form onSubmit={(e) => { e.preventDefault(); alert("Submitted Successfully...") }} className="w-full h-full _grid _grid-cols-2 _grid-rows-1 flex justify-between items-center gap-0 maxScreenMobile:flex-col  maxScreenMobile:h-fit">

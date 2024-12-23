@@ -56,53 +56,29 @@ button,
 }
 
 // Scrollbar styles
-// @supports (scrollbar-color: red blue) {
-//   * {
-//     scrollbar-width: thin;
-//     scrollbar-color: #212a37 transparent;
-//     // scrollbar-color: #e2e8f0 transparent;
-//     // scrollbar-color: #ffa500 transparent;
-//   }
-// }
-
-// Scrollbar styles
 @supports (scrollbar-color: red blue) {
   * {
     scrollbar-width: thin;
-
-    &:hover {
-      // Horizontal scrollbar
-      &::-webkit-scrollbar-horizontal {
-        scrollbar-color: #ffffff transparent !important;
-      }
-
-      // Vertical scrollbar
-      &:not(::-webkit-scrollbar-horizontal) {
-        scrollbar-color: #212a37 transparent;
-      }
-    }
-  }
-}
-
-// For Webkit browsers
-*::-webkit-scrollbar {
-  width: thin;
-  height: thin;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-*::-webkit-scrollbar-thumb {
-  border-radius: 20px;
-
-  &:horizontal {
-    background-color: #ffffff;
+    scrollbar-color: #707e94 transparent;
+    // scrollbar-color: #e2e8f0 transparent;
+    // scrollbar-color: #ffa500 transparent;
   }
 
-  &:vertical {
-    background-color: #212a37 !important;
+  *::-webkit-scrollbar:horizontal {
+    height: 8px;  // Height of horizontal scrollbar
+  }
+
+  *::-webkit-scrollbar-thumb:horizontal {
+    background-color: #212a37;
+    border-radius: 4px;
+  }
+
+  *::-webkit-scrollbar-track:horizontal {
+    background: transparent;
+  }
+
+  .formwrapper::-webkit-scrollbar {
+    background: transparent !important;
   }
 }
 
@@ -249,10 +225,6 @@ button,
   background-color: rgba(0, 0, 0, 1);
   background-blend-mode: hard-light;
   // animation: signanim 5s ease-in-out 10ms infinite;
-}
-
-.formwrapper::-webkit-scrollbar {
-  display: none !important;
 }
 
 .uploadSvgCover {
@@ -537,7 +509,7 @@ label.toggle__label {
   background: transparent url("/Icon-metro-calendar.svg") no-repeat center/contain;
   vertical-align: middle;
   /* background: transparent
-      url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJ2LTFoMnpNNCAxMnYxSDJ2LTFoMnptMyAwdjFINXYtMWgyem0zIDB2MUg4di0xaDJ6bTMgMHYxaC0ydi0xaDJ6bTMgMHYxaC0ydi0xaDJ6TTQgMTB2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0zIDB2MWgtMnYtMWgyem0zIDB2MWgtMnYtMWgyek03IDh2MUg1VjhoMnptMyAwdjFIOFY4aDJ6bTMgMHYxaC0yVjhoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==")
+      url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==")
       no-repeat center center; */
 }
 
