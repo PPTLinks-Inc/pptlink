@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useRouteError } from "react-router-dom";
 import notFound from "./illustration.svg";
+import { AxiosError } from "axios";
 
 function PresentationNotFound() {
   return (
@@ -49,4 +50,27 @@ function PresentationNotFound() {
   );
 }
 
-export default PresentationNotFound;
+export default function ErrorComponent() {
+  const error = useRouteError();
+
+  if (error instanceof AxiosError) {
+    return <PresentationNotFound />;
+  }
+
+  return (
+    <div className="w-full h-screen flex flex-col items-center justify-center z-50 absolute bg-black inset-0">
+      <p className="text-slate-200 text-3xl text-center">
+        Something terrible happened.
+      </p>
+      <p className="text-slate-200 mt-5 text-center">
+        Reload the page to try again.
+      </p>
+      <button
+        className="bg-slate-200 text-black p-3 mt-3 rounded-md"
+        onClick={() => location.reload()}
+      >
+        Reload
+      </button>
+    </div>
+  );
+}
