@@ -358,8 +358,8 @@ export default function NewHome() {
                             className="border-2 border-background block w-[1.5rem] h-[1.5rem] !rounded-[0.75rem]"
                             style={{ zIndex: index + 1 }}
                           >
-                            <AvatarImage src={"/team/baraka.jpg"} alt={"baraka"} className="object-cover" />
-                            <AvatarFallback>{"B"}</AvatarFallback>
+                            <AvatarImage src={"/team/imoh.jpg"} alt={"imoh"} className="object-cover" />
+                            <AvatarFallback>{"I"}</AvatarFallback>
                           </Avatar>
                         ))}
                       </span>

@@ -4,6 +4,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import logo_orange from "/imgs/onemorecolor.png";
 import { MdDone } from "react-icons/md";
 import PopUpModal from "../Models/dashboardModel";
+import { LoadingAssetSmall2 } from "../../assets/assets";
 
 export default function ResetPasswordPage() {
     const [passwordErr, setPasswordErr] = useState(null);
