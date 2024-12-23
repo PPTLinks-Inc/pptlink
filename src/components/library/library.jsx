@@ -3,7 +3,7 @@ import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).s
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
 import { Helmet } from "react-helmet";
-import LogoprimaryTwo from "../../images/Logo-primaryTwo.png";
+import LogoBlack from "../../images/Logo-black.png";
 
 export default function Library() {
     const courseUnlocked = true;
@@ -28,7 +28,7 @@ export default function Library() {
                 property='og:description'
                 content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
             />
-            <meta property='og:image' content={LogoprimaryTwo} />
+            <meta property='og:image' content={LogoBlack} />
 
             {/* meta tags to display information on twitter  */}
             <meta property='twitter:card' content='website' />
@@ -42,7 +42,7 @@ export default function Library() {
                 property='twitter:description'
                 content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
             />
-            <meta property='twitter:image' content={LogoprimaryTwo} />
+            <meta property='twitter:image' content={LogoBlack} />
         </Helmet>
         <section className="bg-primaryTwo">
             <div className="container h-fit py-10 flex flex-col justify-between items-center">

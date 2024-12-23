@@ -24,33 +24,22 @@ button,
 @supports (scrollbar-color: red blue) {
   * {
     scrollbar-width: thin;
+    scrollbar-color: #707e94 transparent;
   }
-  *:hover::-webkit-scrollbar-horizontal {
-    scrollbar-color: #ffffff transparent !important;
+  *::-webkit-scrollbar:horizontal {
+    height: 8px;
   }
-  *:hover:not(::-webkit-scrollbar-horizontal) {
-    scrollbar-color: #212a37 transparent;
+  *::-webkit-scrollbar-thumb:horizontal {
+    background-color: #212a37;
+    border-radius: 4px;
+  }
+  *::-webkit-scrollbar-track:horizontal {
+    background: transparent;
+  }
+  .formwrapper::-webkit-scrollbar {
+    background: transparent !important;
   }
 }
-*::-webkit-scrollbar {
-  width: thin;
-  height: thin;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-*::-webkit-scrollbar-thumb {
-  border-radius: 20px;
-}
-*::-webkit-scrollbar-thumb:horizontal {
-  background-color: #ffffff;
-}
-*::-webkit-scrollbar-thumb:vertical {
-  background-color: #212a37 !important;
-}
-
 .parent_page_wrapper::before {
   height: 100svh;
 }
@@ -161,10 +150,6 @@ button,
   background-size: cover;
   background-color: rgb(0, 0, 0);
   background-blend-mode: hard-light;
-}
-
-.formwrapper::-webkit-scrollbar {
-  display: none !important;
 }
 
 .uploadSvgCover::before {
@@ -395,7 +380,7 @@ label.toggle__label:active:after {
   background: transparent url("/Icon-metro-calendar.svg") no-repeat center/contain;
   vertical-align: middle;
   /* background: transparent
-      url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJ2LTFoMnpNNCAxMnYxSDJ2LTFoMnptMyAwdjFINXYtMWgyem0zIDB2MUg4di0xaDJ6bTMgMHYxaC0ydi0xaDJ6bTMgMHYxaC0ydi0xaDJ6TTQgMTB2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0zIDB2MWgtMnYtMWgyem0zIDB2MWgtMnYtMWgyek03IDh2MUg1VjhoMnptMyAwdjFIOFY4aDJ6bTMgMHYxaC0yVjhoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==")
+      url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==")
       no-repeat center center; */
 }
 
