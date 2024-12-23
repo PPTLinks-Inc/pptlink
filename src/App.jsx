@@ -11,7 +11,7 @@ import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
 
 // all lazy import
-const NewHome = lazy(() => import("./components/home/home"));
+const Home = lazy(() => import("./components/home/home"));
 const NotFound = lazy(() => import("./components/404/404"));
 const Interface = lazy(() => import("./components/interface/Interface"));
 const InterfaceNotFound = lazy(() => import("./components/interface/404"));
@@ -37,7 +37,7 @@ const router = createBrowserRouter(
       children: [
         {
           path: "/",
-          element: <NewHome />
+          element: <Home />
         },
         {
           path: "public_presentation",
