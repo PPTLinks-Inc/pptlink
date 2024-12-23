@@ -15,10 +15,9 @@ import useUser from "../../hooks/useUser";
 
 export default function Header({ isBackMenu, handleDropdown }) {
   const location = useLocation();
-  const [getlocation] = useState(useLocation().pathname === "/document");
-  const [getDashboardLocation] = useState(useLocation().pathname === "/dashboard");
-  const [getUploadLocation] = useState(useLocation().pathname === "/upload");
-
+  const getlocation = () => location.pathname === "/document";
+  const getDashboardLocation = () => location.pathname === "/dashboard";
+  const getUploadLocation = () => location.pathname === "/upload";
   const getPathName = () => location.pathname === "/" ? true : false;
   const getPathNameDoc = () => location.pathname.split("/")[1] === "documentation" ? true : false;
   // context
@@ -49,7 +48,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className={`w-full border-b-[0.1px] pt-8 pb-3 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation ? "!bg-transparent chokes" : "bg-black border-b-[#fffff022]"} ${!isBackMenu && "z-50"}`}
+      className={`w-full border-b-[0.1px] pt-8 pb-3 flex items-center justify-center ${isBackMenu ? "bg-[#FFFFF0] border-b-black" : getlocation() ? "!bg-transparent chokes" : "bg-black border-b-[#fffff022]"} ${!isBackMenu && "z-50"}`}
     >
       <div className="container !mx-auto flex justify-between items-center">
         <motion.div
@@ -95,12 +94,12 @@ export default function Header({ isBackMenu, handleDropdown }) {
           </label>
 
           <Link
-            to={!user ? "/signin" : getUploadLocation ? "/dashboard" : getDashboardLocation ? "/upload" : "/dashboard"}
+            to={!user ? "/signin" : getUploadLocation() ? "/dashboard" : getDashboardLocation() ? "/upload" : "/dashboard"}
             className={`${!user && "!hidden"} flex justify-center items-center w-fit md:px-6 md:py-[0.35rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-black md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-black md:text-black"}`}
           >
-            <span className="block text-sm maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation ? "Dashboard" : getDashboardLocation ? "Upload" : "Dashboard"}</span>
-            {!user ? "Sign In" : getUploadLocation ?
-              <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span> : getDashboardLocation ?
+            <span className="block text-sm maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation() ? "Dashboard" : getDashboardLocation() ? "Upload" : "Dashboard"}</span>
+            {!user ? "Sign In" : getUploadLocation() ?
+              <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span> : getDashboardLocation() ?
                 <span className={`hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><FiUploadCloud /></span> :
                 <span className={`hidden p-1 maxScreenMobile:block w-fit h-fit text-3xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-black"}`}><CiUser /></span>}
           </Link>

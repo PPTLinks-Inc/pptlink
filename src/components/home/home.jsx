@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useRef, useCallback, useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import sms from "/team/pptlink_resources/Group 33.png";
@@ -23,6 +23,7 @@ export default function NewHome() {
   // context
   const scrollRef = useRef();
   const scrollRefTwo = useRef();
+  const navigate = useNavigate();
   const { userQuery } = useUser();
   const user = userQuery.data;
   const { presentations, refetch } = usePublicPresentation();
@@ -44,6 +45,16 @@ export default function NewHome() {
     msgError: [],
     msgSuccess: ""
   });
+
+  const handleCreateClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      // Redirect to login with return URL
+      navigate('/signin?redirect=/create');
+    } else {
+      navigate('/create');
+    }
+  };
 
   const handleMsgSubmit = useCallback((e) => {
     e.preventDefault();
@@ -263,7 +274,8 @@ export default function NewHome() {
                 className="mx-[auto] flex justify-left items-center gap-4 w-full _maxScreenMobile:flex-col"
               >
                 <Link
-                  to="create"
+                  onClick={handleCreateClick}
+                  to="#"
                   className="block w-fit px-6 py-1 bg-[#FFFFF0] text-black responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
                 >
                   Create Now

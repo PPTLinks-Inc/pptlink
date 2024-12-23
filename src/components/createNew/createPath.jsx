@@ -7,6 +7,8 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import logo_white from "/imgs/WHITE.png";
 import LogoBlack from "../../images/Logo-Black.png";
 import { Helmet } from "react-helmet";
+import { motion } from "framer-motion";
+
 
 export default function CreatePath() {
     const [stage, setStage] = useState(1);
@@ -101,27 +103,87 @@ export default function CreatePath() {
 
             <span className="hidden maxScreenMobile:block w-fit my-8 mx-auto">Step {stage} of 4</span>
 
-            <section className={`w-3/6 h-fit flex flex-col justify-between items-center gap-6 maxScreenMobile:!w-[90%]`}>
-                {stage === 1 && <><h1 className="w-full text-2xl md:text-3xl font-bold text-left maxScreenMobile:">What type of content are you working on?</h1>
+            <section className={`w-3/6 mx-auto h-fit flex flex-col justify-between items-center gap-6 maxScreenMobile:!w-[90%]`}>
+                {stage === 1 && <><motion.h1
+                    initial={{ y: 10, opacity: 0 }}
+                    whileInView={{
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.5, type: "tween" }
+                    }}
+                    viewport={{ once: true }}
+                    className="w-full text-2xl md:text-3xl font-bold text-center maxScreenMobile:">What type of content are you working on?</motion.h1>
                     <div className="w-fit h-fit grid grid-cols-2 gap-6 maxScreenMobile:grid-cols-1 maxScreenMobile:grid-rows-2">
-                        <div className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Courses" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, type: "Courses" })}>
+                        <motion.div
+                            initial={{ y: 10, opacity: 0 }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    type: "spring", // Changed from "tween"
+                                    stiffness: 100,
+                                    damping: 10
+                                }
+                            }}
+                            viewport={{ once: true }}
+                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Courses" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, type: "Courses" })}>
                             <span className="block text-3xl mb-2"><CiVideoOn /></span>
                             <div>
                                 <h6 className="text-md font-semibold mb-2">Courses</h6>
                                 <p className="text-sm">Uncover the simplicity of crafting compelling courses using our efficient and user-friendly tool</p>
                             </div>
-                        </div>
-                        <div className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Presentation" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, type: "Presentation" })}>
+                        </motion.div>
+                        <motion.div
+                            initial={{ y: 10, opacity: 0 }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    type: "spring", // Changed from "tween"
+                                    stiffness: 150,
+                                    damping: 10
+                                }
+                            }}
+                            viewport={{ once: true }}
+                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Presentation" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, type: "Presentation" })}>
                             <span className="block text-3xl mb-2"><PiPresentationLight /></span>
                             <div>
                                 <h6 className="text-md font-semibold mb-2">Presentation</h6>
                                 <p className="text-sm">Unwind and create outstanding free presentation using our hassle-free tools, making presenting a breeze</p>
                             </div>
-                        </div>
+                        </motion.div>
                     </div></>}
                 {stage === 2 && <>
-                    <h1 className="w-full text-2xl md:text-3xl font-bold text-left maxScreenMobile:">Choose a category for your content.</h1>
-                    <div className="w-full h-fit">
+                    <motion.h1
+                        initial={{ y: 10, opacity: 0 }}
+                        whileInView={{
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                                duration: 0.5,
+                                type: "spring", // Changed from "tween"
+                                stiffness: 100,
+                                damping: 10
+                            }
+                        }}
+                        viewport={{ once: true }}
+                        className="w-full text-2xl md:text-3xl font-bold text-center maxScreenMobile:">Choose a category for your content.</motion.h1>
+                    <motion.div
+                        initial={{ y: 10, opacity: 0 }}
+                        whileInView={{
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                                duration: 0.5,
+                                type: "spring", // Changed from "tween"
+                                stiffness: 150,
+                                damping: 10
+                            }
+                        }}
+                        viewport={{ once: true }}
+                        className="w-full h-fit">
                         <select
                             id="category"
                             name="category"
@@ -137,12 +199,37 @@ export default function CreatePath() {
                             <option value="Fashion">Fashion</option>
                             <option value="Business">Business</option>
                         </select>
-                    </div>
+                    </motion.div>
                 </>}
                 {stage === 3 && <>
-                    <h1 className="w-full text-2xl md:text-3xl font-bold text-left maxScreenMobile:">What fantastic name do you want to give to it?</h1>
+                    <motion.h1
+                        initial={{ y: 10, opacity: 0 }}
+                        whileInView={{
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                                duration: 0.5,
+                                type: "spring", // Changed from "tween"
+                                stiffness: 100,
+                                damping: 10
+                            }
+                        }}
+                        viewport={{ once: true }}
+                        className="w-full text-2xl md:text-3xl font-bold text-center maxScreenMobile:">What fantastic name do you want to give to it?</motion.h1>
                     <div className="w-full h-fit flex flex-col gap-4">
-                        <input
+                        <motion.input
+                            initial={{ y: 10, opacity: 0 }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    type: "spring", // Changed from "tween"
+                                    stiffness: 150,
+                                    damping: 10
+                                }
+                            }}
+                            viewport={{ once: true }}
                             type="text"
                             name="name"
                             className={`block w-full bg-transparent border-[1px] border-solid ${create.name !== "" ? "border-[#FFA500]" : "border-white"} rounded-md py-2 text-white text-sm indent-4`}
@@ -151,7 +238,19 @@ export default function CreatePath() {
                             onChange={handleInputChange}
                             required
                         />
-                        <textarea
+                        <motion.textarea
+                            initial={{ y: 10, opacity: 0 }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    type: "spring", // Changed from "tween"
+                                    stiffness: 200,
+                                    damping: 10
+                                }
+                            }}
+                            viewport={{ once: true }}
                             name="message"
                             cols="auto"
                             rows="auto"
@@ -159,13 +258,39 @@ export default function CreatePath() {
                             className={`block w-full !h-32 bg-transparent border-[1px] border-solid ${create.message !== "" ? "border-[#FFA500]" : "border-white"} rounded-md p-4 resize-none text-white text-sm`}
                             value={create.message}
                             onChange={handleInputChange}
-                        ></textarea>
+                        ></motion.textarea>
                     </div>
                 </>}
                 {stage === 4 && <>
-                    <h1 className="w-full text-2xl md:text-3xl font-bold text-left maxScreenMobile:">Add a thumbnail image</h1>
+                    <motion.h1
+                        initial={{ y: 10, opacity: 0 }}
+                        whileInView={{
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                                duration: 0.5,
+                                type: "spring", // Changed from "tween"
+                                stiffness: 100,
+                                damping: 10
+                            }
+                        }}
+                        viewport={{ once: true }}
+                        className="w-full text-2xl md:text-3xl font-bold text-center maxScreenMobile:">Add a thumbnail image</motion.h1>
                     <div className="w-fit h-fit grid grid-cols-2 gap-6 maxScreenMobile:grid-cols-1 maxScreenMobile:grid-rows-2 maxScreenMobile:w-full">
-                        <div className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-center border-[1px] ${create.file ? "border-[#FFA500]" : "border-white"} rounded-md`}>
+                        <motion.div
+                            initial={{ y: 10, opacity: 0 }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    type: "spring", // Changed from "tween"
+                                    stiffness: 150,
+                                    damping: 10
+                                }
+                            }}
+                            viewport={{ once: true }}
+                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-center border-[1px] ${create.file ? "border-[#FFA500]" : "border-white"} rounded-md`}>
                             <span className="block text-3xl mb-2"><CiImageOn /></span>
                             <div className="mb-2">
                                 <h6 className="text-md font-semibold text-center mb-2">Upload an image</h6>
@@ -176,14 +301,27 @@ export default function CreatePath() {
                                 <MdOutlineFileUpload />
                             </button>
                             <input type="file" name="file" id="file" className="hidden" onChange={handleFileChange} />
-                        </div>
+                        </motion.div>
 
-                        <div className={`p-8 maxScreenMobile:p-4 flex flex-col justify-center items-center border-[1px] ${create.dontHave ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, file: "", dontHave: !create.dontHave })}>
+                        <motion.div
+                            initial={{ y: 10, opacity: 0 }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    type: "spring", // Changed from "tween"
+                                    stiffness: 200,
+                                    damping: 10
+                                }
+                            }}
+                            viewport={{ once: true }}
+                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-center items-center border-[1px] ${create.dontHave ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, file: "", dontHave: !create.dontHave })}>
                             <div>
                                 <h6 className="text-md font-semibold text-center mb-2">I don'nt have one</h6>
                                 <p className="text-sm text-center">Skip these for now, I'll do this later</p>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </>}
             </section>

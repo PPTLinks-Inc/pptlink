@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useMutation } from "@tanstack/react-query";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -20,6 +20,7 @@ import useUser from "../../hooks/useUser";
 import { setAuthFetchToken } from "../../lib/axios";
 
 export default function SignPage() {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { setUser } = useUser();
   const [passwordErr, setPasswordErr] = useState(null);
@@ -62,7 +63,8 @@ export default function SignPage() {
       } else {
         setUser(data.user);
         setAuthFetchToken(data.token);
-        navigate("/");
+        const redirectUrl = searchParams.get('redirect') || '/';
+        navigate(redirectUrl);
       }
     }
   });
@@ -279,7 +281,7 @@ export default function SignPage() {
       </Helmet>
       <PopUpModal
         open={modal}
-        onClose={() => {}}
+        onClose={() => { }}
         onSubmit={(e) => {
           switchPage(e);
         }}
