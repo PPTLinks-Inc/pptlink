@@ -3,7 +3,7 @@ import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).s
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import { BsLockFill, BsUnlockFill } from 'react-icons/bs';
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-black.png";
+import LogoBlack from "../../images/Logo-Black.png";
 
 export default function Library() {
     const courseUnlocked = true;

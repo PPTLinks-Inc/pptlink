@@ -5,7 +5,7 @@ import { CiSettings } from "react-icons/ci";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-black.png";
+import LogoBlack from "../../images/Logo-Black.png";
 import { FaUser } from "react-icons/fa6";
 import useUserPresentation from "../../hooks/useUserPresentation";
 import useUser from "../../hooks/useUser";

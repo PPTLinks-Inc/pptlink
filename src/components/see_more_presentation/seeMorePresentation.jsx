@@ -5,7 +5,7 @@ import Card from "../list/card";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import { Helmet } from 'react-helmet';
-import LogoBlack from '../../images/Logo-black.png';
+import LogoBlack from '../../images/Logo-Black.png';
 import usePublicPresentation from "../../hooks/usePublicPresentation";
 
 export default function PublicPresentation() {

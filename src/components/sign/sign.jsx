@@ -14,7 +14,7 @@ import "../../assets/styles/general_css.css";
 import logo_orange from "/imgs/onemorecolor.png";
 import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-black.png";
+import LogoBlack from "../../images/Logo-Black.png";
 import { standardFetch } from "../../lib/axios";
 import useUser from "../../hooks/useUser";
 import { setAuthFetchToken } from "../../lib/axios";
