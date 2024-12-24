@@ -1,6 +1,6 @@
 import { NavLink, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-black.png";
+import LogoBlack from "../../images/Logo-Black.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function LibraryPage() {

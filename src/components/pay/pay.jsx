@@ -15,7 +15,7 @@ import { useState } from "react";
 // import logo_orange from "/imgs/onemorecolor.png";
 // import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
-import LogoBlack from "../../images/Logo-black.png";
+import LogoBlack from "../../images/Logo-Black.png";
 import { RiVisaLine } from "react-icons/ri";
 import { FaStripe } from "react-icons/fa";
 import { FaPaypal } from "react-icons/fa";

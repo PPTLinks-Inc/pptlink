@@ -687,7 +687,7 @@ export default function Home() {
               viewport={{ margin: "100px", once: true }}
             >
               <p className="mb-1">FAQs</p>
-              <h3 className="text-[3rem] font-primaryTwo break-all leading-[4rem] maxScreenMobile:text-[2rem]">
+              <h3 className="text-[3rem] font-black break-all leading-[4rem] maxScreenMobile:text-[2rem]">
                 Frequently <br /> Asked <br /> Questions.
               </h3>
             </motion.div >
