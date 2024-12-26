@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   BookOpen,
   HelpCircle,
@@ -151,7 +152,7 @@ const CourseCreationWorkflow = () => {
             setIsMobileMenuOpen(!isMobileMenuOpen);
           }}
         />
-        <div className="text-xl font-bold text-primaryTwo">CourseBuilder</div>
+        <Link to="/" className="block text-xl font-bold text-primaryTwo">PPTLINKS</Link>
       </div>
       <div className="flex items-center space-x-4">
         <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center">
@@ -220,7 +221,7 @@ const CourseCreationWorkflow = () => {
 
   const renderSectionManager = () => (
     <div
-      className={`w-full sm:w-1/4 bg-gray-100 p-4 border-r 
+      className={`w-full sm:w-1/4 bg-gray-100 p-4 border-r overflow-y-auto 
       ${showMobileSections ? "block" : "hidden sm:block"}`}
     >
       <div className="flex justify-between items-center mb-4">
@@ -334,7 +335,7 @@ const CourseCreationWorkflow = () => {
 
   const renderPreview = () => (
     <div
-      className={`w-full sm:w-1/4 bg-white p-4 border-l
+      className={`w-full sm:w-1/4 bg-white p-4 border-l overflow-y-auto
       ${showMobilePreview ? "block" : "hidden sm:block"}`}
     >
       <div className="flex justify-between items-center mb-4">

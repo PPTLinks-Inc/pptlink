@@ -28,7 +28,7 @@ const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
 const CourseCreationWorkflow = lazy(() => import("./components/upload/createCourseFlow/courseCreationWorkflow"));
-const CourseCreationWorkflowTwo = lazy(() => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo"));
+// const CourseCreationWorkflowTwo = lazy(() => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo"));
 
 const router = createBrowserRouter(
   [
@@ -106,10 +106,11 @@ const router = createBrowserRouter(
     }, {
       path: "create-course",
       element: <CourseCreationWorkflow />
-    }, {
-      path: "create-course-antidote",
-      element: <CourseCreationWorkflowTwo />
-    }
+    },
+    //  {
+    //   path: "create-course-antidote",
+    //   element: <CourseCreationWorkflowTwo />
+    // }
   ],
   {
     future: {
