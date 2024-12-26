@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   BookOpen,
   HelpCircle,
@@ -151,7 +152,7 @@ const CourseCreationWorkflow = () => {
             setIsMobileMenuOpen(!isMobileMenuOpen);
           }}
         />
-        <div className="text-xl font-bold text-primaryTwo">PPTLINKS</div>
+        <Link to="/" className="block text-xl font-bold text-primaryTwo">PPTLINKS</Link>
       </div>
       <div className="flex items-center space-x-4">
         <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center">
