@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 
 export default function CreatePath() {
     const navigate = useNavigate();
+    const [isError, setIsError] = useState("");
     const [stage, setStage] = useState(1);
     const [create, setCreate] = useState({
         type: "",
@@ -21,13 +22,39 @@ export default function CreatePath() {
         dontHave: false,
     });
 
+    const navigateTo = (url) => {
+        setCreate({ ...create, type: "Presentation", category: "", name: "", message: "", file: "", dontHave: false });
+        navigate(url);
+    }
+
     const IncrementDecrementStage = (value) => {
         if (value === "increment") {
+            if (stage === 1 && create.type === "") {
+                setIsError("Please select a type of content.");
+                return;
+            }
+            if (stage === 2 && create.category === "") {
+                setIsError("Please select a category.");
+                return;
+            }
+            if (stage === 3 && (create.name === "" || create.message === "")) {
+                setIsError("Please enter a name and description for your content.");
+                return;
+            }
+            if (stage === 4 && (create.file === "" && create.dontHave === false)) {
+                setIsError("Please upload an image for your content.");
+                return;
+            }
+            setIsError("");
             setStage(stage >= 4 ? 4 : stage + 1);
+            if (stage === 4 && create.type !== "" && create.category !== "" && create.name !== "" && create.message !== "" && (create.file !== "" || create.dontHave === true)) {
+                console.log(create);
+                navigateTo("/create-course");
+            }
         } else {
             setStage(stage <= 1 ? 1 : stage - 1);
         }
-    }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -46,12 +73,11 @@ export default function CreatePath() {
     };
 
     const handleSinglePresentation = () => {
-        setCreate({ ...create, type: "Presentation" });
-        navigate("/upload");
+        navigateTo("/upload");
     }
 
     return (
-        <div className="bg-primaryTwo w-full h-screen !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
+        <div className="bg-primaryTwo w-full !h-[100svh] !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
             <Helmet>
                 <title>{`Create - PPTLinks `}</title>
                 <meta
@@ -108,7 +134,7 @@ export default function CreatePath() {
 
             <span className="hidden maxScreenMobile:block w-fit my-8 mx-auto">Step {stage} of 4</span>
 
-            <section className={`w-3/6 mx-auto h-fit flex flex-col justify-between items-center gap-6 maxScreenMobile:!w-[90%]`}>
+            <section className={`w-3/6 mx-auto h-fit flex flex-col justify-between items-center gap-6 maxScreenMobile:!w-[90%] relative`}>
                 {stage === 1 && <><motion.h1
                     initial={{ y: 10, opacity: 0 }}
                     whileInView={{
@@ -329,6 +355,7 @@ export default function CreatePath() {
                         </motion.div>
                     </div>
                 </>}
+                <p className={`${isError ? "block font-bold text-[red] text-md w-full text-center absolute top-[105%]" : "hidden"}`}>{isError}</p>
             </section>
 
             <footer className="w-full h-fit pb-8 pt-3 maxScreenMobile:mt-auto maxScreenMobile:mb-0 maxScreenMobile:justify-self-end">
