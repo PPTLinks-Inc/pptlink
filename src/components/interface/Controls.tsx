@@ -106,7 +106,7 @@ export default function Controls({
       if (micState === MIC_STATE.MIC_OFF || audioLoadingStatus !== "success") {
         const text =
           audioLoadingStatus === "success"
-            ? "MIC OFF"
+            ? "REQUEST TO SPEAK"
             : presentation?.User === "HOST" && presentation.status === "AUDIO"
               ? "REJOIN"
               : presentation?.User === "HOST" && presentation.status !== "AUDIO"
@@ -287,17 +287,17 @@ export default function Controls({
                 presentation?.User === "CO-HOST") && (
                 <button
                   onClick={() => setShowOptions(true)}
-                  className="rounded-full p-3 bg-gray-300 shadow"
+                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
                 >
                   <BsThreeDots size={24} />
                 </button>
               )}
-              <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
+              <a href="/" className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow">
                 <FiHome size={24} />
               </a>
               <button
                 disabled={!presentation?.downloadable}
-                className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
+                className={`rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
                 onClick={() =>
                   downloadFile(
                     presentation?.pdfLink || "",
@@ -334,7 +334,7 @@ export default function Controls({
             <>
               <div className="relative">
                 <button
-                  className="rounded-full p-3 bg-gray-300 shadow"
+                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
                   onClick={() => setShowUsersList(true)}
                 >
                   <FaRegUser size={24} />
@@ -345,7 +345,7 @@ export default function Controls({
               </div>
               <div className="relative">
                 <button
-                  className="rounded-full p-3 bg-gray-300 shadow"
+                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
                   onClick={() => setShowMessage(true)}
                 >
                   <LuMessagesSquare size={24} />
@@ -372,14 +372,14 @@ export default function Controls({
                 <button
                   onMouseDown={hapticFeedback}
                   onClick={() => setShowOptions(true)}
-                  className="rounded-full p-3 bg-gray-300 shadow"
+                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
                 >
                   <BsThreeDots size={18} />
                 </button>
               ) : presentation?.downloadable ? (
                 <button
                   disabled={!presentation?.downloadable}
-                  className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
+                  className={`rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
                   onMouseDown={hapticFeedback}
                   onClick={() =>
                     downloadFile(
@@ -394,14 +394,14 @@ export default function Controls({
                   />
                 </button>
               ) : (
-                <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
+                <a href="/" className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow">
                   <FiHome size={18} />
                 </a>
               )}
 
               <div className="relative">
                 <button
-                  className="rounded-full p-3 bg-gray-300 shadow"
+                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
                   onMouseDown={hapticFeedback}
                   onClick={() => setShowUsersList(true)}
                 >
@@ -435,7 +435,7 @@ export default function Controls({
             <>
               <div className="relative">
                 <button
-                  className="rounded-full p-3 bg-gray-300 shadow"
+                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
                   onMouseDown={hapticFeedback}
                   onClick={() => setShowMessage(true)}
                 >
