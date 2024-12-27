@@ -184,7 +184,7 @@ export default function NewDashboard() {
               className={`w-full min-h-[100vh] flex justify-center items-center _bg-[purple]`}
             >
               {presentationQuery?.data && (
-                <div className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
+                <div className="dashboard_cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
                   {presentationQuery.data.pages.flat().map((presentation) => (
                     <Card
                       key={presentation.id}

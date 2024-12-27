@@ -15,11 +15,7 @@ export default function Root() {
   const mainScrollRef = useRef(null);
   // const [getlocation] = useState(useLocation().pathname.includes("public_presentation") ? true : false);
   const keywords = ["public_presentation", "dashboard"];
-  const [getlocation] = useState(
-    keywords.some((keyword) => location.pathname.includes(keyword))
-      ? true
-      : false
-  );
+  const getlocation = () => keywords.some((keyword) => location.pathname.includes(keyword)) ? true : false;
   // states
   const [dropdown, setDropdown] = useState(false);
   // effects
@@ -41,11 +37,10 @@ export default function Root() {
     >
       <Backmenu backmenu={dropdown} handleDropdown={handleDropdown} />
       <div
-        className={`h-fit flex flex-col justify-between ${!getlocation ? "bg-[#FFFFF0]" : "bg-primaryTwo"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${
-          dropdown
+        className={`h-fit flex flex-col justify-between ${!getlocation() ? "bg-[#FFFFF0]" : "bg-primaryTwo"} w-[100%] _pt-[5.5rem] absolute overflow-x-hidden  text-slate-200 ${dropdown
             ? "transition-transform translate-y-[100vh] top-0 lg:translate-y-[100vh]  ease-in-out"
             : "transition-transform translate-y-0 ease-in-out top-0"
-        }`}
+          }`}
         ref={mainScrollRef}
       >
         <Header
@@ -55,7 +50,7 @@ export default function Root() {
         />
         <Outlet />
         <MovingEllipses />
-        {!getlocation && <Footer />}
+        {!getlocation() && <Footer />}
       </div>
     </div>
   );
