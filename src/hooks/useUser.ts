@@ -1,4 +1,4 @@
-import { authFetch } from "@/lib/axios";
+import { authFetch, setAuthFetchToken } from "@/lib/axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface User {
@@ -16,8 +16,29 @@ export default function useUser() {
         refetchOnReconnect: false,
         refetchOnWindowFocus: false,
         queryFn: async () => {
-            const { data } = await authFetch.get("/api/v1/auth/user");
-            return data.user as User;
+            const searchParams = new URLSearchParams(location.search);
+            const id = searchParams.get('id');
+            const username = searchParams.get('username');
+            const email = searchParams.get('email');
+            const presentations = searchParams.get('presentations');
+            const token = searchParams.get('token');
+
+            if (token && id && username && email && presentations) {
+                localStorage.setItem('accessToken', token);
+
+                setUser({
+                    id,
+                    username,
+                    email,
+                    presentations: parseInt(presentations)
+                });
+
+                setAuthFetchToken(token);
+                location.replace("/");
+            } else {
+                const { data } = await authFetch.get("/api/v1/auth/user");
+                return data.user as User;
+            }
         }
     });
 
