@@ -106,30 +106,30 @@ export default function Controls({
       if (micState === MIC_STATE.MIC_OFF || audioLoadingStatus !== "success") {
         const text =
           audioLoadingStatus === "success"
-            ? "REQUEST TO SPEAK"
+            ? "Request"
             : presentation?.User === "HOST" && presentation.status === "AUDIO"
-              ? "REJOIN"
+              ? "Rejoin"
               : presentation?.User === "HOST" && presentation.status !== "AUDIO"
-                ? "START"
-                : "JOIN";
+                ? "Start"
+                : "Join";
         return { style: "bg-gray-300", icon: <IoIosMic size={46} />, text };
       } else if (micState === MIC_STATE.REQ_MIC) {
         return {
           style: "bg-orange-500",
           icon: <PiHandWaving size={46} />,
-          text: "REQUESTING"
+          text: "Requesting"
         };
       } else if (micState === MIC_STATE.MIC_MUTED) {
         return {
           style: "bg-rose-500",
           icon: <IoIosMic size={46} />,
-          text: "MIC MUTED"
+          text: "Mic Muted"
         };
       } else if (micState === MIC_STATE.CAN_SPK) {
         return {
           style: "bg-[#05FF00]",
           icon: <IoIosMic size={46} />,
-          text: "MIC ON"
+          text: "Mic On"
         };
       }
     },
