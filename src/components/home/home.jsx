@@ -327,7 +327,7 @@ export default function Home() {
             }}
             viewport={{ once: true }}
             ref={scrollRefTwo}
-            className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-6 mb-6 scroll-smooth">
+            className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-2 scroll-smooth">
             {(currentView === 1 ||
               currentView === 2 ||
               currentView === 3 ||
@@ -364,7 +364,7 @@ export default function Home() {
           </motion.div>
           <NavLink
             to="#"
-            className="block text-center text-[#FFA500] underline"
+            className="block text-center text-[#FFA500] underline mt-6"
           >
             See more
           </NavLink>
@@ -372,7 +372,7 @@ export default function Home() {
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
         {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
         <div className="w-full h-fit bg-primaryTwo !pt-16">
-          <div className="_recent public_presentations container relative min-h-[60vh] bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
+          <div className="public_presentations container relative min-h-[60vh] bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
             <motion.h2
               initial={{ y: 10, opacity: 0 }}
               whileInView={{
@@ -385,7 +385,7 @@ export default function Home() {
               Popular Presentations
             </motion.h2>
 
-            <div className="hidden maxScreenMobile:flex gap-5 justify-end w-[90%] mx-auto mb-4 h-fit bg-[transparent]">
+            <div className="hidden maxScreenMobile:flex gap-5 justify-end w-full pb-4 h-fit bg-[transparent]">
               <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
                 <FaCaretLeft
                   onClick={() => scrollCards(true)}
@@ -401,14 +401,7 @@ export default function Home() {
             </div>
 
             <div className="w-full min-h-[40vh]">
-              <motion.div
-                variants={containerVarient}
-                initial="initial"
-                whileInView="inView"
-                viewport={{ once: true }}
-                className="cards_wrapper w-full scroll-smooth"
-                ref={scrollRef}
-              >
+              <div className="cards_wrapper w-full scroll-smooth">
                 {presentations.slice(0, 12).map((presentation) => (
                   <Card
                     key={presentation.id}
@@ -416,7 +409,7 @@ export default function Home() {
                     refresh={refetch}
                   />
                 ))}
-              </motion.div>
+              </div>
             </div>
             <NavLink
               to="/public_presentation"
@@ -439,11 +432,7 @@ export default function Home() {
               Get in touch
             </motion.h3>
             <div className="wrap_contacts w-full flex justify-between items-center flex-wrap maxScreenMobile:flex-col-reverse">
-              <motion.div
-                // variants={secondVarient}
-                // initial="initial"
-                // whileInView="inView"
-                // viewport={{ margin: "100px", once: true }}
+              <div
                 className="w-[50%] min-h-[30rem] text-sm maxScreenMobile:w-full"
               >
                 <motion.h5
@@ -608,7 +597,7 @@ export default function Home() {
                     {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                   </button>
                 </motion.form>
-              </motion.div>
+              </div>
 
               <motion.div
                 variants={secondVarient}
