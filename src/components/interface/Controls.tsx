@@ -292,7 +292,10 @@ export default function Controls({
                   <BsThreeDots size={24} />
                 </button>
               )}
-              <a href="/" className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow">
+              <a
+                href="/"
+                className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
+              >
                 <FiHome size={24} />
               </a>
               <button
@@ -307,12 +310,15 @@ export default function Controls({
               >
                 <IoCloudDownloadOutline
                   size={24}
-                  color={presentation?.downloadable ? "primaryTwo" : "bg-gray-400"}
+                  color={
+                    presentation?.downloadable ? "primaryTwo" : "bg-gray-400"
+                  }
                 />
               </button>
             </>
           )}
-          {(presentation.status === "AUDIO" || presentation?.User === "HOST") && (
+          {(presentation.status === "AUDIO" ||
+            presentation?.User === "HOST") && (
             <div className="flex flex-col items-center justify-center relative">
               <button
                 className={`${micStyle?.style} rounded-full p-3 shadow ${audioLoadingStatus === "loading" && "!cursor-not-allowed"}`}
@@ -372,14 +378,14 @@ export default function Controls({
                 <button
                   onMouseDown={hapticFeedback}
                   onClick={() => setShowOptions(true)}
-                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
+                  className="rounded-full p-3 bg-gray-300 shadow"
                 >
                   <BsThreeDots size={18} />
                 </button>
               ) : presentation?.downloadable ? (
                 <button
                   disabled={!presentation?.downloadable}
-                  className={`rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
+                  className={`rounded-full p-3 bg-gray-300 shadow ${!presentation?.downloadable && "!cursor-not-allowed"}`}
                   onMouseDown={hapticFeedback}
                   onClick={() =>
                     downloadFile(
@@ -390,30 +396,33 @@ export default function Controls({
                 >
                   <IoCloudDownloadOutline
                     size={18}
-                    color={presentation?.downloadable ? "primaryTwo" : "bg-gray-400"}
+                    color={
+                      presentation?.downloadable ? "primaryTwo" : "bg-gray-300"
+                    }
                   />
                 </button>
               ) : (
-                <a href="/" className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow">
+                <a href="/" className="rounded-full p-3 bg-gray-300 shadow">
                   <FiHome size={18} />
                 </a>
               )}
 
               <div className="relative">
                 <button
-                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
+                  className="rounded-full p-3 bg-gray-300 shadow"
                   onMouseDown={hapticFeedback}
                   onClick={() => setShowUsersList(true)}
                 >
                   <FaRegUser size={18} />
                 </button>
-                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
+                <span className="absolute -top-2 -right-2 bg-slate-300 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
                   {users.length + (host ? 1 : 0)}
                 </span>
               </div>
             </>
           )}
-          {(presentation.status === "AUDIO" || presentation.User === "HOST") && (
+          {(presentation.status === "AUDIO" ||
+            presentation.User === "HOST") && (
             <div className="flex flex-col items-center justify-center relative">
               <button
                 className={`${micStyle?.style} rounded-full p-3 shadow`}
@@ -435,13 +444,13 @@ export default function Controls({
             <>
               <div className="relative">
                 <button
-                  className="rounded-full p-3 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-30 border shadow"
+                  className="rounded-full p-3 bg-gray-300 shadow"
                   onMouseDown={hapticFeedback}
                   onClick={() => setShowMessage(true)}
                 >
                   <LuMessagesSquare size={18} />
                 </button>
-                <span className="absolute -top-2 -right-2 bg-slate-400 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
+                <span className="absolute -top-2 -right-2 bg-slate-300 rounded-full text-sm p-3 flex justify-center items-center w-3 h-3 text-center">
                   {unReadMessagesCount}
                 </span>
               </div>
@@ -455,14 +464,16 @@ export default function Controls({
           )}
         </div>
         <div className="absolute md:bottom-5 bottom-24 right-2 md:right-5 flex gap-4">
-          {!synced && presentation.status !== "NOT_LIVE" && presentation?.User === "GUEST" && (
-            <button
-              onClick={syncSlide}
-              className="shadow bg-primaryTwo rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
-            >
-              <IoSync color="white" size={28} />
-            </button>
-          )}
+          {!synced &&
+            presentation.status !== "NOT_LIVE" &&
+            presentation?.User === "GUEST" && (
+              <button
+                onClick={syncSlide}
+                className="shadow bg-primaryTwo rounded-full p-2 block w-fit h-fit border-gray-100 border-[1px]"
+              >
+                <IoSync color="white" size={28} />
+              </button>
+            )}
           {document.fullscreenEnabled && (
             <button
               onClick={() => fullScreenToggle()}
