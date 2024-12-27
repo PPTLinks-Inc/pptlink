@@ -219,7 +219,6 @@ export default function Card({ presentation, refresh }) {
       />
       <motion.div
         variants={containerVarient}
-        // whileHover="hover"
         className="card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
       >
         <Link to={`/${presentation.liveId}`}>

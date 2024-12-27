@@ -88,43 +88,6 @@ button,
   top: 60vh;
   height: 100%;
 }
-.parent_page_wrapper .cards_wrapper {
-  width: 100%;
-  display: grid;
-  -moz-column-gap: 9rem;
-  column-gap: 9rem;
-  row-gap: 3rem;
-  grid-auto-flow: row;
-  grid-template: auto/repeat(auto-fill, minmax(280px, 1fr));
-}
-.parent_page_wrapper .cards_wrapper .card {
-  background: rgba(255, 255, 255, 0.1);
-}
-.parent_page_wrapper .cards_wrapper .card:hover {
-  outline: rgba(255, 255, 255, 0.5) !important;
-  background: rgba(0, 0, 0, 0.4);
-}
-@media screen and (max-width: 768px) {
-  .parent_page_wrapper .cards_wrapper {
-    display: flex !important;
-    flex-direction: row;
-    overflow-y: hidden;
-    overflow-x: scroll;
-    gap: calc(10% + 0.5rem);
-    scroll-snap-type: x mandatory;
-  }
-  .parent_page_wrapper .cards_wrapper .card {
-    display: block;
-    min-width: 280px;
-    flex-grow: 1;
-    flex-shrink: 1;
-    scroll-snap-align: start;
-    margin-bottom: 0.3em;
-  }
-  .parent_page_wrapper .cards_wrapper .card:first-child {
-    margin-left: 50%;
-  }
-}
 @keyframes signanim {
   from {
     background-blend-mode: hard-light;
@@ -314,7 +277,6 @@ button,
   /**/
 }
 
-/* toggle animation css */
 input.toggle[type=checkbox] {
   height: 0;
   width: 0;
@@ -492,16 +454,35 @@ label.toggle__label:active:after {
 }
 @media screen and (max-width: 768px) {
   .public_presentations .cards_wrapper {
-    grid-template: auto/repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    display: flex !important;
+    flex-direction: row;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+  }
+  .public_presentations .cards_wrapper .card {
+    display: block;
+    min-width: 280px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    scroll-snap-align: start;
+    margin-bottom: 0.5em;
   }
 }
-@media screen and (max-width: 468px) {
-  .public_presentations .cards_wrapper {
-    width: 90%;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
+
+.dashboard_cards_wrapper {
+  width: 100%;
+  display: grid;
+  grid-template: auto/repeat(auto-fill, minmax(250px, 1fr));
+  grid-auto-flow: row;
+  gap: 2rem;
+}
+.dashboard_cards_wrapper .card {
+  background: rgba(255, 255, 255, 0.1);
+}
+.dashboard_cards_wrapper .card:hover {
+  outline: rgba(255, 255, 255, 0.5) !important;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .grid_anim_wrapper {
@@ -636,4 +617,13 @@ label.toggle__label:active:after {
 
 .scaleIn {
   animation: scaleInAnim 0.3s ease-in-out 1 forwards;
+}
+
+.snap_scrolling {
+  overflow-y: hidden;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+}
+.snap_scrolling .snap_scrolling_child {
+  scroll-snap-align: start;
 }/*# sourceMappingURL=general_css.css.map */

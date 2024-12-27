@@ -40,7 +40,7 @@ export default function PublicPresentation() {
   );
 
   return (
-    <div>
+    <div className="bg-primaryTwo w-full h-fit">
       <Helmet>
         <title>{`See more - PPTLinks `}</title>
         <meta
@@ -76,7 +76,7 @@ export default function PublicPresentation() {
         />
         <meta property='twitter:image' content={LogoBlack} />
       </Helmet>
-      <section className="bg-primaryTwo">
+      <section className="">
         <div className="container h-fit py-10 flex flex-col justify-between items-center">
           <h1 className="text-5xl font-[400] uppercase mb-5 maxScreenMobile:text-3xl maxScreenMobile:text-center">
             PUBLIC PRESENTATIONS
@@ -104,7 +104,7 @@ export default function PublicPresentation() {
         </div>
       </section>
 
-      <section className="public_presentations container py-5 h-fit bg-primaryTwo">
+      <section className="public_presentations container py-5 h-fit">
         <div
           className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
           ref={scrollRef}

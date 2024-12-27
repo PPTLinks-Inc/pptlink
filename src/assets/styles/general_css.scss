@@ -1,7 +1,6 @@
 // /////////////////////variables//////////////////////////////
 $maxHeight: 100svh;
 $mediaWidth: 768px;
-// variables
 $blurbg: rgba(255, 255, 255, 0.1);
 $blur: blur(6px);
 $primaryTwo: #212a37;
@@ -65,7 +64,7 @@ button,
   }
 
   *::-webkit-scrollbar:horizontal {
-    height: 8px;  // Height of horizontal scrollbar
+    height: 8px; // Height of horizontal scrollbar
   }
 
   *::-webkit-scrollbar-thumb:horizontal {
@@ -139,49 +138,6 @@ button,
       transform: unset;
       top: calc($setTop * 2);
       height: 100%;
-    }
-  }
-
-  .cards_wrapper {
-    $cardWidth: 280px;
-    width: 100%;
-    display: grid;
-    -moz-column-gap: 9rem;
-    column-gap: 9rem;
-    row-gap: 3rem;
-    grid-auto-flow: row;
-    grid-template: auto/repeat(auto-fill, minmax($cardWidth, 1fr));
-
-    & .card {
-      background: rgba(white, 0.1);
-
-      &:hover {
-        outline: rgba(white, 0.5) !important;
-        background: rgba(black, 0.4);
-      }
-    }
-
-    @include is_mediaQuery_MaxWidth_Yes {
-      display: flex !important;
-      flex-direction: row;
-      overflow-y: hidden;
-      overflow-x: scroll;
-      gap: calc((100% / 10) + 0.5rem);
-      -ms-scroll-snap-type: x mandatory;
-      scroll-snap-type: x mandatory;
-
-      & .card {
-        display: block;
-        min-width: $cardWidth;
-        flex-grow: 1;
-        flex-shrink: 1;
-        scroll-snap-align: start;
-        margin-bottom: 0.3em;
-
-        &:first-child {
-          margin-left: calc(100% / 2);
-        }
-      }
     }
   }
 }
@@ -429,7 +385,7 @@ button,
     /**/
   }
 }
-/* toggle animation css */
+
 input.toggle {
   &[type="checkbox"] {
     height: 0;
@@ -637,16 +593,41 @@ label.toggle__label {
     }
 
     @include is_mediaQuery_MaxWidth_Yes {
-      grid-template: auto / repeat(auto-fill, minmax(200px, 1fr)); // 👌
-      gap: 1rem;
-    }
+      display: flex !important;
+      flex-direction: row;
+      overflow-y: hidden;
+      overflow-x: scroll;
+      -ms-scroll-snap-type: x mandatory;
+      scroll-snap-type: x mandatory;
 
-    @include is_mediaQuery_MaxWidth_Yes(468px, true) {
-      width: 90%;
-      margin-left: auto !important;
-      margin-right: auto !important;
+      & .card {
+        display: block;
+        min-width: $cardWidth;
+        flex-grow: 1;
+        flex-shrink: 1;
+        scroll-snap-align: start;
+        margin-bottom: 0.5em;
+      }
     }
   }
+}
+
+.dashboard_cards_wrapper {
+  $cardWidth: 280px;
+  width: 100%;
+  display: grid;
+  grid-template: auto / repeat(auto-fill, minmax(250px, 1fr)); // 👌
+  grid-auto-flow: row;
+  gap: 2rem;
+
+  & .card {
+    background: rgba(white, 0.1);
+
+    &:hover {
+      outline: rgba(white, 0.5) !important;
+      background: rgba(black, 0.4);
+    }
+  } 
 }
 
 .grid_anim_wrapper {
@@ -808,4 +789,15 @@ label.toggle__label {
   // @include is_mediaQuery_MaxWidth_Yes {
   animation: scaleInAnim 0.3s ease-in-out 1 forwards;
   // }
+}
+
+.snap_scrolling {
+  overflow-y: hidden;
+  overflow-x: scroll;
+  -ms-scroll-snap-type: x mandatory;
+  scroll-snap-type: x mandatory;
+
+  & .snap_scrolling_child {
+    scroll-snap-align: start;
+  }
 }
