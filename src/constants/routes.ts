@@ -8,7 +8,7 @@ export enum MIC_STATE {
 
 // export const SERVER_URL = "http://localhost:4000";
 
-export const SERVER_URL = "https://pptlinks-backend.onrender.com";
+export const SERVER_URL = "https://api.pptlinks.com";
 
 export const AGORA_APP_ID = "33672aae3d8d48f4b83292008db3986e";
 
