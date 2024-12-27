@@ -23,7 +23,7 @@ import LogoBlack from "../../images/Logo-Black.png";
 import { standardFetch } from "../../lib/axios";
 import useUser from "../../hooks/useUser";
 import { setAuthFetchToken } from "../../lib/axios";
-import { SERVER_URL } from "../../constants/routes";
+import GoogleLoginButton from "../ui/googleLoginButton";
 
 export default function SignPage() {
   const [searchParams] = useSearchParams();
@@ -504,13 +504,13 @@ export default function SignPage() {
                     ? "Remembered your password"
                     : "Don't have an account?"}{" "}
                 {/* href={isSignupPage ? "/signin" : "/signup"} */}
-                <a onClick={switchPage} className="text-[#FFA500]">
+                <button onClick={switchPage} className="text-[#FFA500] cursor-pointer hover:underlines">
                   {isSignupPage || isResetPage ? "Sign In" : "SIgn Up"}
-                </a>
+                </button>
               </p>
               <Link
                 to={"/forgot-password"}
-                className={`block w-fit m-auto mt-4 text-center text-[#FFA500] ${(isSignupPage || isResetPage) && "hidden"}`}
+                className={`cursor-pointer hover:underline block w-fit m-auto mt-4 text-center text-[#FFA500] ${(isSignupPage || isResetPage) && "hidden"}`}
               >
                 Forgot password
               </Link>
@@ -524,10 +524,7 @@ export default function SignPage() {
                 <hr className="block w-[35%] h-[0.1px] bg-primaryTwo" />
               </span>
 
-              <a href={`${SERVER_URL}/api/v1/auth/oauth/google`} className="!bg-white flex items-center border border-black justify-center gap-3 w-3/5 text-[.7rem] h-[40px] px-4 rounded-md maxScreenMobile:w-full">
-                <img src="/google-icon.svg" className="w-6" alt="" />
-                <span className="text-black">Sign in with Google</span>
-              </a>
+              <GoogleLoginButton />
             </div>
             {/* svgs all over the area 😠🐱‍👤 */}
             <img
