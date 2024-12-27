@@ -13,14 +13,6 @@
   margin: auto;
 }
 
-a,
-* a,
-*[href],
-button,
-* button {
-  cursor: pointer !important;
-}
-
 @supports (scrollbar-color: red blue) {
   * {
     scrollbar-width: thin;
