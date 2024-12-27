@@ -46,14 +46,6 @@ $primaryTwo: #212a37;
   margin: auto;
 }
 
-a,
-* a,
-*[href],
-button,
-* button {
-  cursor: pointer !important;
-}
-
 // Scrollbar styles
 @supports (scrollbar-color: red blue) {
   * {
