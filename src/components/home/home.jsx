@@ -372,7 +372,7 @@ export default function Home() {
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
         {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
         <div className="w-full h-fit bg-primaryTwo !pt-16">
-          <div className="public_presentations container relative min-h-[60vh] bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
+          <div className="public_presentations container relative h-fit bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
             <motion.h2
               initial={{ y: 10, opacity: 0 }}
               whileInView={{
@@ -400,7 +400,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="w-full min-h-[40vh]">
+            <div className="w-full min-h-[50vh] maxScreenMobile:min-h-[20vh]">
               <div className="cards_wrapper w-full scroll-smooth">
                 {presentations.slice(0, 12).map((presentation) => (
                   <Card

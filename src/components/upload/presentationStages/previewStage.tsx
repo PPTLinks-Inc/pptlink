@@ -111,7 +111,7 @@ export default function PreviewStage() {
       <div className="w-full h-fit gridPreview overflow-x-auto">
         <div className="w-full flex flex-col justify-between bg-[#FFFFF0]">
           {/* MARK: Preview */}
-          <div className="maxScreenMobile:mt-4 w-[95%] maxScreenMobile:w-full m-auto h-[20rem] bg-white rounded-md border-2 border-primaryTwo maxScreenMobile:border-[0.1px] maxScreenMobile:border-[#00000034] maxScreenMobile:rounded-none">
+          <div className="maxScreenMobile:mt-4 w-[95%] maxScreenMobile:w-full m-auto h-[20rem] bg-white rounded-md border-2 border-primaryTwo maxScreenMobile:border-[0.1px] maxScreenMobile:border-[#212a37] maxScreenMobile:rounded-none">
             {processingFile ? (
               <div className="w-full h-full flex flex-col justify-center items-center">
                 <LoadingAssetBig />
