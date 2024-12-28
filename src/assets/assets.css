@@ -17,7 +17,7 @@
 .logo {
   width: 25px;
   height: 25px;
-  border: 1px solid black;
+  border: 1px solid #212a37;
   position: relative;
   overflow: hidden;
 }
@@ -43,7 +43,7 @@
 .logo__content1 {
   width: 19px;
   height: 19px;
-  background-color: black;
+  background-color: #212a37;
 }
 
 .two .logo__content1 {
@@ -54,7 +54,7 @@
 .logo__content2 {
   width: 19px;
   height: 19px;
-  border: 1px solid black;
+  border: 1px solid #212a37;
 }
 
 .two .logo__content {
@@ -69,22 +69,22 @@
 
 .two.active .logo {
   /* border: 1px solid rgb(226 232 240); */
-  border: 1px solid #0000 !important;
+  border: 1px solid #212a37 !important;
 }
 
 .two.active .logo__content1 {
   /* background-color: rgb(226 232 240); */
-  background-color: #0000 !important;
+  background-color: #212a37 !important;
 }
 
 .two.active .logo__content {
   /* border: 1px solid rgb(226 232 240); */
-  border: 1px solid #0000 !important;
+  border: 1px solid #212a37 !important;
 }
 
 .two.active .logo__content2 {
   /* border: 1px solid rgb(226 232 240); */
-  border: 1px solid #0000 !important;
+  border: 1px solid #212a37 !important;
 }
 
 @keyframes logo {

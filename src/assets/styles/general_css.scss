@@ -604,7 +604,8 @@ label.toggle__label {
   }
 }
 
-.dashboard_cards_wrapper {
+.dashboard_cards_wrapper,
+.seeMore_cards_wrapper {
   $cardWidth: 280px;
   width: 100%;
   display: grid;
@@ -619,7 +620,15 @@ label.toggle__label {
       outline: rgba(white, 0.5) !important;
       background: rgba(black, 0.4);
     }
-  } 
+  }
+
+  @include is_mediaQuery_MaxWidth_Yes {
+    grid-template: auto / repeat(auto-fill, minmax(150px, 1fr)); // 👌
+  }
+
+  @include is_mediaQuery_MaxWidth_Yes(468px, true) {
+    grid-template: auto / repeat(auto-fill, minmax(250px, 1fr)); // 👌
+  }
 }
 
 .grid_anim_wrapper {

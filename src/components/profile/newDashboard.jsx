@@ -181,7 +181,7 @@ export default function NewDashboard() {
             </div>
             {/* end search */}
             <div
-              className={`w-full min-h-[100vh] flex justify-center items-center _bg-[purple]`}
+              className={`w-full min-h-screen flex justify-center items-center _bg-[purple]`}
             >
               {presentationQuery?.data && (
                 <div className="dashboard_cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
@@ -220,7 +220,7 @@ export default function NewDashboard() {
               ))}
           </div>
           <div
-            className={`w-full min-h-[100vh] flex flex-col justify-center items-center pt-12 _bg-[gold] ${currentView == 2 ? "block" : "hidden"}`}
+            className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[gold] ${currentView == 2 ? "block" : "hidden"}`}
           >
             {/* search */}
             <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
@@ -238,13 +238,13 @@ export default function NewDashboard() {
             </div>
             {/* end search */}
             <div
-              className={`container _w-full min-h-[100vh] flex justify-center items-center _bg-[purple]`}
+              className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
             >
               <h1>No Librarey yet</h1>
             </div>
           </div>
           <div
-            className={`w-full min-h-[100vh] flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
+            className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
           >
             {/* search */}
             <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
@@ -262,7 +262,7 @@ export default function NewDashboard() {
             </div>
             {/* end search */}
             <div
-              className={`container _w-full min-h-[100vh] flex justify-center items-center _bg-[purple]`}
+              className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
             >
               <h1>No History yet</h1>
             </div>
