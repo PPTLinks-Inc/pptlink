@@ -106,7 +106,7 @@ export default function PublicPresentation() {
 
       <section className="public_presentations container py-5 h-fit">
         <div
-          className="cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
+          className="seeMore_cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth"
           ref={scrollRef}
         >
           {presentations.map((presentation) => (
