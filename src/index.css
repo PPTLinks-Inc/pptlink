@@ -9,12 +9,12 @@
 }
 
 /* *::-webkit-scrollbar { */
-  /* width: 0;
+/* width: 0;
   height: 0; */
-  /* margin-right: 1rem; */
-  /* @apply w-0 h-0 md:w-[0.3rem] md:h-[0.2rem] */
-  /* @apply w-0 h-0; */
-  /* display: none; */
+/* margin-right: 1rem; */
+/* @apply w-0 h-0 md:w-[0.3rem] md:h-[0.2rem] */
+/* @apply w-0 h-0; */
+/* display: none; */
 /* } */
 
 /* *::-webkit-scrollbar-thumb {
@@ -54,17 +54,17 @@ img {
   -webkit-user-drag: none;
 }
 
-input:checked.chapter ~ div .chapter-child {
+input:checked.chapter~div .chapter-child {
   @apply bg-white;
 }
 
 /*beginning of documentation page  */
 
-.sub-heading > li {
+.sub-heading>li {
   position: relative;
 }
 
-.sub-heading > li:after {
+.sub-heading>li:after {
   width: 5px;
   position: absolute;
   content: "";
@@ -88,29 +88,36 @@ input:checked.chapter ~ div .chapter-child {
   top: 15px;
   background-color: white;
   @apply bg-black md:bg-white
-  /* z-index: 20; */;
+  /* z-index: 20; */
+  ;
 }
+
 .isActive {
   display: grid;
   grid-template-rows: 0fr;
   transition: all 2s ease-in-out;
 }
-.isActive > div {
+
+.isActive>div {
   overflow: hidden;
 }
+
 .isActive.active {
   grid-template-rows: 1fr;
 }
+
 .sticky-heading {
   position: sticky;
   top: 0rem;
 }
+
 .documentation::after {
   content: "";
   width: 100.7%;
   height: 100.5%;
   @apply border-2 border-body absolute -top-[.5%] bottom-0 -left-[.7%] rounded-tl-md;
 }
+
 /* end of documentation page */
 @layer base {
   :root {
@@ -139,7 +146,16 @@ input:checked.chapter ~ div .chapter-child {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -165,13 +181,44 @@ input:checked.chapter ~ div .chapter-child {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+  :root {
+    --sidebar-background: 210 25% 15%; /* Darker shade of primary */
+    --sidebar-foreground: 210 10% 90%; /* Light complementary color */
+    --sidebar-primary: 210 25% 20%; /* #212a37 */
+    --sidebar-primary-foreground: 0 0% 100%; /* White */
+    --sidebar-accent: 210 25% 25%; /* Slightly lighter shade of primary */
+    --sidebar-accent-foreground: 210 10% 90%; /* Light complementary color */
+    --sidebar-border: 210 25% 25%; /* Matching accent color */
+    --sidebar-ring: 210 50% 50%; /* Bright complementary color */
+  }
+
+  /* .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  } */
 }
