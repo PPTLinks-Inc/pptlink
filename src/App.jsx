@@ -16,6 +16,7 @@ const NotFound = lazy(() => import("./components/404/404"));
 const Interface = lazy(() => import("./components/interface/Interface"));
 const InterfaceNotFound = lazy(() => import("./components/interface/404"));
 const Root = lazy(() => import("./components/root/root"));
+const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Library = lazy(() => import("./components/library/library"));
 const LibraryPage = lazy(() => import("./components/library/library_page"));
 const SignPage = lazy(() => import("./components/sign/sign"));
@@ -23,11 +24,28 @@ const Pay = lazy(() => import("./components/pay/pay"));
 const About = lazy(() => import("./components/about-us/about"));
 const Document = lazy(() => import("./components/document/document"));
 const NewDashboard = lazy(() => import("./components/profile/newDashboard"));
-const PublicPresentation = lazy(() => import("./components/see_more_presentation/seeMorePresentation"));
+const PublicPresentation = lazy(
+  () => import("./components/see_more_presentation/seeMorePresentation")
+);
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
-const CourseCreationWorkflow = lazy(() => import("./components/upload/createCourseFlow/courseCreationWorkflow"));
+const CourseCreationWorkflow = lazy(
+  () => import("./components/upload/createCourseFlow/courseCreationWorkflow")
+);
+const CourseCreationWorkflow3 = lazy(
+  () =>
+    import("./components/upload/createCourseFlow/courseCreationWorkflowThree")
+);
+const CourseSideBarContext = lazy(
+  () => import("./contexts/courseSideBarContext")
+);
+const CourseCreationSettings = lazy(
+  () => import("./components/upload/createCourseFlow/courseCreationSettings")
+);
+const CourseCreationHelp = lazy(
+  () => import("./components/upload/createCourseFlow/courseCreationHelp")
+);
 // const CourseCreationWorkflowTwo = lazy(() => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo"));
 
 const router = createBrowserRouter(
@@ -40,14 +58,6 @@ const router = createBrowserRouter(
         {
           path: "/",
           element: <Home />
-        },
-        {
-          path: "public_presentation",
-          element: <PublicPresentation />
-        },
-        {
-          path: "dashboard",
-          element: <NewDashboard />
         },
         {
           path: "about",
@@ -68,6 +78,21 @@ const router = createBrowserRouter(
         {
           path: "libraryPage",
           element: <LibraryPage />
+        }
+      ]
+    },
+    {
+      path: "/",
+      element: <RootNoFooter />,
+      errorElement: <NotFound />,
+      children: [
+        {
+          path: "public_presentation",
+          element: <PublicPresentation />
+        },
+        {
+          path: "dashboard",
+          element: <NewDashboard />
         }
       ]
     },
@@ -100,13 +125,39 @@ const router = createBrowserRouter(
     {
       path: "/reset/:token",
       element: <ResetPasswordPage />
-    }, {
-      path: "create",
+    },
+    {
+      path: "/create",
       element: <CreatePath />
-    }, {
-      path: "create-course",
+    },
+    {
+      path: "/create-course",
       element: <CourseCreationWorkflow />
     },
+    {
+      path: "/create-course3/course",
+      element: (
+        <CourseSideBarContext isActive="course">
+          <CourseCreationWorkflow3 />
+        </CourseSideBarContext>
+      )
+    },
+    {
+      path: "/create-course3/settings",
+      element: (
+        <CourseSideBarContext isActive="settings">
+          <CourseCreationSettings />
+        </CourseSideBarContext>
+      )
+    },
+    {
+      path: "/create-course3/help",
+      element: (
+        <CourseSideBarContext isActive="help">
+          <CourseCreationHelp />
+        </CourseSideBarContext>
+      )
+    }
     //  {
     //   path: "create-course-antidote",
     //   element: <CourseCreationWorkflowTwo />

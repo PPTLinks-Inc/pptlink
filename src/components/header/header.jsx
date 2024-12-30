@@ -63,7 +63,7 @@ export default function Header({ isBackMenu, handleDropdown }) {
           <Link to="/" className="w-fit h-fit !flex !items-center !justify-center gap-2">
             <img
               src={isBackMenu ? logo_black : logo_white}
-              alt={isBackMenu ? logo_black : logo_white}
+              alt="PPTLinks Logo"
               className="block w-8 aspect-square"
             />
             <span className={`block w-fit h-fit text-2xl md:text-3xl font-semibold ${isBackMenu ? "text-primaryTwo" : "text-[#FFFFF0]"}`}>PPTLinks</span>
