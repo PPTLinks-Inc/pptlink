@@ -78,7 +78,7 @@ export default function Home() {
   };
 
   const scrollCardsTwo = (isLeft) => {
-    const scrollAmount = 290;
+    const scrollAmount = 250;
     const scrollContainer = scrollRefTwo.current;
 
     return isLeft
@@ -401,7 +401,7 @@ export default function Home() {
             </div>
 
             <div className="w-full min-h-[50vh] maxScreenMobile:min-h-[20vh]">
-              <div className="cards_wrapper w-full scroll-smooth">
+              <div ref={scrollRef} className="cards_wrapper w-full scroll-smooth">
                 {presentations.slice(0, 12).map((presentation) => (
                   <Card
                     key={presentation.id}

@@ -22,8 +22,8 @@ export default function CreatePath() {
         dontHave: false,
     });
 
-    const navigateTo = (url) => {
-        setCreate({ ...create, type: "Presentation", category: "", name: "", message: "", file: "", dontHave: false });
+    const navigateTo = (url, oFtype) => {
+        setCreate({ ...create, type: oFtype, category: "", name: "", message: "", file: "", dontHave: false });
         navigate(url);
     }
 
@@ -31,6 +31,10 @@ export default function CreatePath() {
         if (value === "increment") {
             if (stage === 1 && create.type === "") {
                 setIsError("Please select a type of content.");
+                return;
+            }
+            if (stage === 1 && create.type === "presentation") {
+                navigateTo("/upload", "presentation");
                 return;
             }
             if (stage === 2 && create.category === "") {
@@ -49,7 +53,7 @@ export default function CreatePath() {
             setStage(stage >= 4 ? 4 : stage + 1);
             if (stage === 4 && create.type !== "" && create.category !== "" && create.name !== "" && create.message !== "" && (create.file !== "" || create.dontHave === true)) {
                 console.log(create);
-                navigateTo("/create-course");
+                navigateTo("/create-course", "Courses");
             }
         } else {
             setStage(stage <= 1 ? 1 : stage - 1);
@@ -71,10 +75,6 @@ export default function CreatePath() {
             file: e.target.files[0],
         });
     };
-
-    const handleSinglePresentation = () => {
-        navigateTo("/upload");
-    }
 
     return (
         <div className="bg-primaryTwo w-full !h-[100svh] !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
@@ -178,10 +178,10 @@ export default function CreatePath() {
                                 }
                             }}
                             viewport={{ once: true }}
-                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Presentation" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => handleSinglePresentation()}>
+                            className={`p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "presentation" ? "border-[#FFA500]" : "border-white"} rounded-md`} onClick={() => setCreate({ ...create, type: "presentation" })}>
                             <span className="block text-3xl mb-2"><PiPresentationLight /></span>
                             <div>
-                                <h6 className="text-md font-semibold mb-2">Presentation</h6>
+                                <h6 className="text-md font-semibold mb-2">Single Presentation</h6>
                                 <p className="text-sm">Unwind and create outstanding free presentation using our hassle-free tools, making presenting a breeze</p>
                             </div>
                         </motion.div>
