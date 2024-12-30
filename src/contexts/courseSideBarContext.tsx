@@ -15,6 +15,7 @@ import { GoGear } from "react-icons/go";
 import logo_white from "/imgs/WHITE.png";
 import { Button } from "@/components/ui/button";
 import { FaRegSave } from "react-icons/fa";
+import { MdHelpOutline } from "react-icons/md";
 import React, { createContext, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -45,7 +46,7 @@ export default function CourseSideBarContextProvider({
   isActive
 }: {
   children: React.ReactNode;
-  isActive: "course" | "settings";
+  isActive: "course" | "settings" | "help";
 }) {
   const [sections, setSections] = useState([
     {
@@ -101,9 +102,9 @@ export default function CourseSideBarContextProvider({
       }}
     >
       <SidebarProvider>
-        <Sidebar collapsible="icon">
+        <Sidebar collapsible="icon" >
           <SidebarHeader>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip="Go to Home">
               <Link to="/">
                 <img src={logo_white} className="block w-8 aspect-square" />
                 <span className="font-bold">PPTLinks</span>
@@ -112,7 +113,7 @@ export default function CourseSideBarContextProvider({
           </SidebarHeader>
           <SidebarContent className="mt-5">
             <SidebarMenuButton
-              tooltip="Create a new course"
+              tooltip="Course content"
               className="mx-auto"
               isActive={isActive === "course"}
               asChild
@@ -131,6 +132,17 @@ export default function CourseSideBarContextProvider({
               <Link to="/create-course3/settings">
                 <GoGear />
                 <span className="text-lg">Settings</span>
+              </Link>
+            </SidebarMenuButton>
+            <SidebarMenuButton
+              isActive={isActive === "help"}
+              tooltip="Help"
+              className="mx-auto"
+              asChild
+            >
+              <Link to="/create-course3/help">
+                <MdHelpOutline />
+                <span className="text-lg">Help</span>
               </Link>
             </SidebarMenuButton>
           </SidebarContent>
