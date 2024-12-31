@@ -30,15 +30,17 @@ const PublicPresentation = lazy(
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
+const CourseSideBarContext = lazy(
+  () => import("./contexts/courseSideBarContext")
+);
 const CourseCreationWorkflow = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationWorkflow")
 );
-const CourseCreationWorkflow3 = lazy(
-  () =>
-    import("./components/upload/createCourseFlow/courseCreationWorkflowThree")
+const CourseCreationProfile = lazy(
+  () => import("./components/upload/createCourseFlow/courseCreationProfile")
 );
-const CourseSideBarContext = lazy(
-  () => import("./contexts/courseSideBarContext")
+const CourseCreationFeedback = lazy(
+  () => import("./components/upload/createCourseFlow/courseCreationFeedback")
 );
 const CourseCreationSettings = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationSettings")
@@ -131,19 +133,15 @@ const router = createBrowserRouter(
       element: <CreatePath />
     },
     {
-      path: "/create-course",
-      element: <CourseCreationWorkflow />
-    },
-    {
-      path: "/create-course3/course",
+      path: "/create-course/course",
       element: (
         <CourseSideBarContext isActive="course">
-          <CourseCreationWorkflow3 />
+          <CourseCreationWorkflow />
         </CourseSideBarContext>
       )
     },
     {
-      path: "/create-course3/settings",
+      path: "/create-course/settings",
       element: (
         <CourseSideBarContext isActive="settings">
           <CourseCreationSettings />
@@ -151,7 +149,23 @@ const router = createBrowserRouter(
       )
     },
     {
-      path: "/create-course3/help",
+      path: "/create-course/profile",
+      element: (
+        <CourseSideBarContext isActive="profile">
+          <CourseCreationProfile />
+        </CourseSideBarContext>
+      )
+    },
+    {
+      path: "/create-course/feedback",
+      element: (
+        <CourseSideBarContext isActive="feedback">
+          <CourseCreationFeedback />
+        </CourseSideBarContext>
+      )
+    },
+    {
+      path: "/create-course/help",
       element: (
         <CourseSideBarContext isActive="help">
           <CourseCreationHelp />
