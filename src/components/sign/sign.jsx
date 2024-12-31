@@ -483,9 +483,31 @@ export default function SignPage() {
                   )}
                 </div>
               </div>
+              {isSignupPage && (
+                <p className="text-center text-[.8rem] mb-4">
+                  By signing up, you agree to our{" "}
+                  <a
+                    href="https://docs.google.com/document/d/1-J6j0Pt7fjS479twAPzObB7sJxNztgEE4OO_kPL2YJE/edit?usp=sharing"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#FFA500] hover:underline"
+                  >
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://docs.google.com/document/d/1-cqT7rNCgf2C0a67PS_Z4yql6fkgPp2pOhLDPayH5rc/edit?usp=sharing"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#FFA500] hover:underline"
+                  >
+                    Privacy Policy
+                  </a>
+                </p>
+              )}
               <button
                 disabled={signin.isPending || signup.isPending}
-                className="flex justify-center items-center w-3/5 m-auto mt-14 mb-2 bg-primaryTwo rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
+                className="flex justify-center items-center w-3/5 m-auto mt-7 mb-2 bg-primaryTwo rounded-md text-white h-[2.5rem] _px-5 shadow-xl border-none maxScreenMobile:w-full"
               >
                 {signin.isPending || signup.isPending ? (
                   <LoadingAssetSmall2 />
@@ -504,7 +526,10 @@ export default function SignPage() {
                     ? "Remembered your password"
                     : "Don't have an account?"}{" "}
                 {/* href={isSignupPage ? "/signin" : "/signup"} */}
-                <button onClick={switchPage} className="text-[#FFA500] cursor-pointer hover:underlines">
+                <button
+                  onClick={switchPage}
+                  className="text-[#FFA500] cursor-pointer hover:underlines"
+                >
                   {isSignupPage || isResetPage ? "Sign In" : "SIgn Up"}
                 </button>
               </p>
