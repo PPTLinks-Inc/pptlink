@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import {
+  SidebarFooter,
   SidebarInset,
   SidebarMenuButton,
   SidebarProvider,
@@ -182,10 +183,11 @@ export default function CourseSideBarContextProvider({
                 <span className="text-lg">Feedback</span>
               </Link>
             </SidebarMenuButton>
+          </SidebarContent>
+          <SidebarFooter>
             <SidebarMenuButton
               isActive={isActive === "help"}
               tooltip="Help"
-              className="mx-auto mt-auto mb-4"
               asChild
             >
               <Link to="/create-course/help">
@@ -193,7 +195,7 @@ export default function CourseSideBarContextProvider({
                 <span className="text-lg">Help</span>
               </Link>
             </SidebarMenuButton>
-          </SidebarContent>
+          </SidebarFooter>
         </Sidebar>
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
