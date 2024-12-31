@@ -22,10 +22,10 @@ export default function CreatePath() {
         dontHave: false
     });
 
-    const navigateTo = (url) => {
+    const navigateTo = (url, oftype) => {
         setCreate({
             ...create,
-            type: "Presentation",
+            type: oftype,
             category: "",
             name: "",
             message: "",
@@ -39,6 +39,10 @@ export default function CreatePath() {
         if (value === "increment") {
             if (stage === 1 && create.type === "") {
                 setIsError("Please select a type of content.");
+                return;
+            }
+            if (stage === 1 && create.type === "Presentation") {
+                navigateTo("/upload", "Presentation");
                 return;
             }
             if (stage === 2 && create.category === "") {
@@ -64,8 +68,7 @@ export default function CreatePath() {
                 (create.file !== "" || create.dontHave === true)
             ) {
                 console.log(create);
-                // navigateTo("/create-course");
-                navigateTo("/create-course3/course");
+                navigateTo("/create-course/course", "Course");
             }
         } else {
             setStage(stage <= 1 ? 1 : stage - 1);
@@ -86,10 +89,6 @@ export default function CreatePath() {
             dontHave: false,
             file: e.target.files[0]
         });
-    };
-
-    const handleSinglePresentation = () => {
-        navigateTo("/upload");
     };
 
     return (
@@ -212,13 +211,13 @@ export default function CreatePath() {
                                 }}
                                 viewport={{ once: true }}
                                 className={`cursor-pointer p-8 maxScreenMobile:p-4 flex flex-col justify-between items-start border-[1px] ${create.type === "Presentation" ? "border-[#FFA500]" : "border-white"} rounded-md`}
-                                onClick={handleSinglePresentation}
+                                onClick={() => setCreate({ ...create, type: "Presentation" })}
                             >
                                 <span className="block text-3xl mb-2">
                                     <PiPresentationLight />
                                 </span>
                                 <div>
-                                    <h6 className="text-md font-semibold mb-2">Presentation</h6>
+                                    <h6 className="text-md font-semibold mb-2">Single Presentation</h6>
                                     <p className="text-sm">
                                         Unwind and create outstanding free presentation using our
                                         hassle-free tools, making presenting a breeze
@@ -426,7 +425,7 @@ export default function CreatePath() {
                             >
                                 <div>
                                     <h6 className="text-md font-semibold text-center mb-2">
-                                        I don&apos;nt have one
+                                        I don't have one
                                     </h6>
                                     <p className="text-sm text-center">
                                         Skip these for now, I&apos;ll do this later

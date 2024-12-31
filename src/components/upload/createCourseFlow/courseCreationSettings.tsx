@@ -1,3 +1,3 @@
-export default function courseCreationSettings() {
+export default function CourseCreationSettings() {
   return <div className="text-white">courseCreationSettings</div>;
 }
