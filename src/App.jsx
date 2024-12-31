@@ -48,7 +48,9 @@ const CourseCreationSettings = lazy(
 const CourseCreationHelp = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationHelp")
 );
-const CourseCreationWorkflowTwo = lazy(() => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo"));
+const CourseCreationWorkflowTwo = lazy(
+  () => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo")
+);
 
 const router = createBrowserRouter(
   [
@@ -172,8 +174,8 @@ const router = createBrowserRouter(
         </CourseSideBarContext>
       )
     },
-     {
-      path: "create-course-antidote",
+    {
+      path: "/create-course-antidote",
       element: <CourseCreationWorkflowTwo />
     }
   ],
