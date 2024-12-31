@@ -1,4 +1,5 @@
 // eslint-disable-next-line react/prop-types
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 export default function Modal({
@@ -12,6 +13,23 @@ export default function Modal({
   children: React.ReactNode;
   color: string;
 }) {
+  useEffect(
+    function () {
+      function handleKeyDown(e: KeyboardEvent) {
+        if (e.key === "Escape") {
+          onClose && onClose();
+        }
+      }
+      if (open) {
+        window.addEventListener("keydown", handleKeyDown);
+      }
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    },
+    [onClose, open]
+  );
+
   if (!open) return null;
 
   return createPortal(

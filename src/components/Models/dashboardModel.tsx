@@ -30,7 +30,9 @@ export default function PopUpModal({
         className="flex flex-col justify-evenly items-center gap-3 max-w-[20rem]"
         onSubmit={onSubmit}
       >
-        <h3 className="mx-auto font-light text-primaryTwo pt-3">NOTIFICATION</h3>
+        <h3 className="mx-auto font-light text-primaryTwo pt-3">
+          NOTIFICATION
+        </h3>
         <p className="w-2/3 mx-auto text-md text-primaryTwo text-center mb-2">
           {message}
         </p>

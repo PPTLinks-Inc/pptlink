@@ -62,7 +62,7 @@ export default function CourseCreationWorkflow() {
     handleSectionTitleChange(value);
   };
 
-  const handleNamelessSectionDelete = (e) => {
+  const handleNamelessSectionDelete = (e: React.FormEvent) => {
     e.preventDefault();
     removeSection(sections[selectedSectionIndex].id);
     setModal((prev) => ({ ...prev, isTriggered: false }));
