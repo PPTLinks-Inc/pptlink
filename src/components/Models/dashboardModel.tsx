@@ -9,7 +9,10 @@ export default function PopUpModal({
   isLoading,
   message,
   actionText,
-  oneButton = false
+  oneButton = false,
+  bgColor = "bg-[#FFFFF0]",
+  textColor = "text-primaryTwo",
+  borderColor = "border-primaryTwo"
 }: {
   open: boolean;
   onClose: (() => void) | null;
@@ -18,9 +21,12 @@ export default function PopUpModal({
   message: string;
   actionText: string;
   oneButton: boolean;
+  bgColor: string;
+  textColor: string;
+  borderColor: string;
 }) {
   return (
-    <Modal open={open} onClose={onClose || (() => {})} color="bg-[#FFFFF0]">
+    <Modal open={open} onClose={onClose || (() => {})} color={bgColor}>
       <img
         src="/team/pptlink_resources/Icon_metro-notification.svg"
         alt={"icon"}
@@ -30,10 +36,8 @@ export default function PopUpModal({
         className="flex flex-col justify-evenly items-center gap-3 max-w-[20rem]"
         onSubmit={onSubmit}
       >
-        <h3 className="mx-auto font-light text-primaryTwo pt-3">
-          NOTIFICATION
-        </h3>
-        <p className="w-2/3 mx-auto text-md text-primaryTwo text-center mb-2">
+        <h3 className={`mx-auto font-light ${textColor} pt-3`}>NOTIFICATION</h3>
+        <p className={`w-2/3 mx-auto text-md ${textColor} text-center mb-2`}>
           {message}
         </p>
         {isLoading ? (
@@ -42,14 +46,14 @@ export default function PopUpModal({
           </div>
         ) : (
           <div
-            className={`flex border-t-[2px] border-primaryTwo w-full ${oneButton && "justify-center items-center"}`}
+            className={`flex border-t-[2px] ${borderColor} w-full ${oneButton && "justify-center items-center"}`}
           >
             <div
-              className={`w-[calc(100%/2)] p-1 border-r-[1px] border-primaryTwo ${oneButton && "hidden"}`}
+              className={`w-[calc(100%/2)] p-1 border-r-[1px] ${borderColor} ${oneButton && "hidden"}`}
             >
               <button
                 onClick={onClose || (() => {})}
-                className={`bg-[#FFFFF0]  border-[0.1px] border-primaryTwo py-2 px-4 w-full rounded-bl text-primaryTwo hover:shadow-md hover:font-extrabold`}
+                className={`${bgColor}  border-[0.1px] ${borderColor} py-2 px-4 w-full rounded-bl ${textColor} hover:shadow-md hover:font-extrabold`}
                 type="button"
               >
                 Cancel
@@ -57,10 +61,10 @@ export default function PopUpModal({
             </div>
 
             <div
-              className={`${oneButton ? "w-full border-l-0" : "w-[calc(100%/2)] border-l-[1px]"} p-1 border-primaryTwo`}
+              className={`${oneButton ? "w-full border-l-0" : "w-[calc(100%/2)] border-l-[1px]"} p-1 ${borderColor}`}
             >
               <button
-                className={`bg-[#FFFFF0]  border-[0.1px] border-primaryTwo py-2 px-4 w-full rounded-br text-primaryTwo hover:shadow-md hover:font-extrabold ${oneButton && "font-bold rounded-bl"}`}
+                className={`${bgColor}  border-[0.1px] ${borderColor} py-2 px-4 w-full rounded-br ${textColor} hover:shadow-md hover:font-extrabold ${oneButton && "font-bold rounded-bl"}`}
                 type="submit"
               >
                 {actionText}
