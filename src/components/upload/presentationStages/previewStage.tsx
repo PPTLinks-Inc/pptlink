@@ -7,6 +7,7 @@ import { SERVER_URL } from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
 import { authFetch } from "@/lib/axios";
+import { AxiosError } from "axios";
 
 export default function PreviewStage() {
   const currentView = useUploadStore((state) => state.currentView);
@@ -84,10 +85,11 @@ export default function PreviewStage() {
       }
       window.location.href = `/${liveId}`;
     },
-    onError: function () {
+    onError: function (error) {
+      const errorMessage = error instanceof AxiosError ? error.response?.data.message : "An error occurred while saving your presentation";
       toast({
         title: "Error",
-        description: "An error occurred while saving your presentation",
+        description: errorMessage,
         variant: "destructive"
       });
       setIsSaving(false);
