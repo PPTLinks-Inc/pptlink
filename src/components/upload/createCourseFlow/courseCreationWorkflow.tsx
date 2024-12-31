@@ -82,12 +82,20 @@ export default function CourseCreationWorkflow() {
     <>
       <PopUpModal
         open={modal.isTriggered}
-        onClose={() => setModal((prev) => ({ ...prev, isTriggered: false }))}
+        onClose={() => {
+          setModal((prev) => ({ ...prev, isTriggered: false }));
+          newSectionRef.current?.focus();
+          titleInputRef.current?.focus();
+          titleInputRef.current?.select();
+        }}
         onSubmit={(e) => handleNamelessSectionDelete(e)}
         isLoading={modal.isLoading}
         message={modal.message}
         actionText={modal.actionText}
         oneButton={false}
+        bgColor="bg-primaryTwo"
+        textColor="text-[#FFFFF0]"
+        borderColor="border-[#FFFFF0]"
       />
       <div className="flex w-full h-full">
         <div className="w-full sm:w-1/4 h-full bg-gray-100 p-4 border-r overflow-y-auto">
@@ -147,9 +155,12 @@ export default function CourseCreationWorkflow() {
             </button>
             <button className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300">
               <HiOutlineDocumentText />
-              <span className="ml-2">Document</span>
+              <span className="ml-2">Presentation</span>
             </button>
-            <button disabled={true} className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300 cursor-not-allowed">
+            <button
+              disabled={true}
+              className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300 cursor-not-allowed"
+            >
               <MdOutlineQuiz />
               <span className="ml-2">Quiz</span>
             </button>
