@@ -8,6 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from "@/components/ui/popover";
+https://www.sec.gov/Archives/edgar/data/1141197/000110313204000018/exhibit101.pdf?utm_source=chatgpt.com
 // import { TimePicker } from "@/components/ui/customTimePicker"
 import { SlCalender } from "react-icons/sl";
 import { useUploadStore } from "@/store/uploadStore";
