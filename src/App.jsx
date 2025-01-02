@@ -176,7 +176,7 @@ const router = createBrowserRouter(
       )
     },
     {
-      path: "/create-course-antidote",
+      path: "/create-course/antidote",
       element: <CourseCreationWorkflowTwo />
     }
   ],

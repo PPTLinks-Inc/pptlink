@@ -5,6 +5,8 @@ import { IoVideocamOutline } from "react-icons/io5";
 import { MdOutlineQuiz } from "react-icons/md";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { MdDragIndicator } from "react-icons/md";
+import { FaRegEdit } from "react-icons/fa";
+import { FaSave } from "react-icons/fa";
 import { useContext } from "react";
 import { CourseSideBarContext } from "@/contexts/courseSideBarContext";
 import PopUpModal from "../../Models/dashboardModel";
@@ -13,6 +15,8 @@ interface ContentItem {
   type: "video" | "presentation";
   file: File;
   name: string;
+  isEditing?: boolean;
+  tempName?: string; // Add this new property
 }
 
 export default function CourseCreationWorkflow() {
@@ -103,6 +107,46 @@ export default function CourseCreationWorkflow() {
     }
   };
 
+  const startEditing = (index: number) => {
+    setContentItems((items) =>
+      items.map((item, i) => ({
+        ...item,
+        isEditing: i === index,
+        tempName: i === index ? item.name : undefined
+      }))
+    );
+  };
+
+  const handleNameChange = (index: number, newName: string) => {
+    setContentItems((items) =>
+      items.map((item, i) => ({
+        ...item,
+        tempName: i === index ? newName : item.tempName
+      }))
+    );
+  };
+
+  const handleSave = (index: number) => {
+    setContentItems((items) =>
+      items.map((item, i) => ({
+        ...item,
+        name: i === index ? (item.tempName || item.name) : item.name,
+        isEditing: false,
+        tempName: undefined
+      }))
+    );
+  };
+
+  const cancelEditing = (index: number) => {
+    setContentItems((items) =>
+      items.map((item, index) => ({
+        ...item,
+        isEditing: false,
+        tempName: undefined
+      }))
+    );
+  };
+
   // Focus effect for new sections
   useEffect(() => {
     if (newlyCreatedSection !== null) {
@@ -136,6 +180,7 @@ export default function CourseCreationWorkflow() {
   const handleNamelessSectionDelete = (e: React.FormEvent) => {
     e.preventDefault();
     removeSection(sections[selectedSectionIndex].id);
+
     setModal((prev) => ({ ...prev, isTriggered: false }));
   };
 
@@ -288,17 +333,58 @@ export default function CourseCreationWorkflow() {
                 key={index}
                 className="bg-gray-100 px-2 py-4 rounded mb-2 flex items-center justify-start gap-2"
               >
-                <span className="block ">
+                <span className="block">
                   <MdDragIndicator />
                 </span>
                 <div className="flex items-center">
-                  {item.type === "video" ? (
-                    <IoVideocamOutline className="mr-2" />
+                  <span className="block w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
+                    <img src="" alt="" />
+                  </span>
+                  {item.isEditing ? (
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-[350px] maxScreenMobile:w-[200px]"
+                      value={item.tempName || item.name}
+                      onChange={(e) => handleNameChange(index, e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                          cancelEditing(index);
+                        }
+                      }}
+                      autoFocus
+                    />
                   ) : (
-                    <HiOutlineDocumentText className="mr-2" />
+                    <span 
+                      title={item.name} 
+                      className="block w-[350px] maxScreenMobile:w-[200px] overflow-x-hidden whitespace-nowrap text-ellipsis"
+                    >
+                      {item.name}
+                    </span>
                   )}
-                  <span className="overflow-x-hidden whitespace-nowrap text-ellipsis">{item.name}</span>
                 </div>
+                {item.isEditing ? (
+                  <>
+                    <button
+                      className="ml-auto"
+                      onClick={() => handleSave(index)}
+                    >
+                      <FaSave />
+                    </button>
+                    <button
+                      className="text-gray-500 hover:text-gray-700"
+                      onClick={() => cancelEditing(index)}
+                    >
+                      ✕
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    className="ml-auto text-primaryTwo hover:text-primaryThree"
+                    onClick={() => startEditing(index)}
+                  >
+                    <FaRegEdit />
+                  </button>
+                )}
                 <button
                   onClick={() =>
                     setContentItems((prev) =>
