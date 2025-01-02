@@ -430,11 +430,13 @@ function SectionItem({
 }
 
 function ContentItems({ content }: { content: ContentItem }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: content.id });
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform)
+    transform: CSS.Transform.toString(transform),
+    zIndex: isDragging ? "100" : "auto",
+    opacity: isDragging ? 0.3 : 1
   };
 
   const { removeContentItem } = useContext(CourseSideBarContext);
