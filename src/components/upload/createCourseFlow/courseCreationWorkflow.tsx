@@ -5,14 +5,35 @@ import { IoVideocamOutline } from "react-icons/io5";
 import { MdOutlineQuiz } from "react-icons/md";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { MdDragIndicator } from "react-icons/md";
+import { FaRegEdit } from "react-icons/fa";
+import { FaSave } from "react-icons/fa";
 import { useContext } from "react";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  sortableKeyboardCoordinates,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { CourseSideBarContext } from "@/contexts/courseSideBarContext";
 import PopUpModal from "../../Models/dashboardModel";
 
 interface ContentItem {
+  id: number;
   type: "video" | "presentation";
   file: File;
   name: string;
+  isEditing?: boolean;
+  tempName?: string; // Add this new property
 }
 
 export default function CourseCreationWorkflow() {
@@ -52,6 +73,30 @@ export default function CourseCreationWorkflow() {
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  );
+
+  const getItemPos = (id: number) =>
+    contentItems.findIndex((item) => item.id === id);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (active.id === over.id) return;
+
+    setContentItems((item) => {
+      const originalPos = getItemPos(active.id);
+      const newPos = getItemPos(over.id);
+
+      return arrayMove(item, originalPos, newPos);
+    });
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -87,7 +132,15 @@ export default function CourseCreationWorkflow() {
   };
 
   const addContentItem = (type: "video" | "presentation", file: File) => {
-    setContentItems((prev) => [...prev, { type, file, name: file.name }]);
+    setContentItems((prev) => [
+      ...prev,
+      {
+        type,
+        file,
+        name: file.name,
+        id: Math.max(0, ...contentItems.map((s) => s.id)) + 1
+      }
+    ]);
   };
 
   const handleFileSelect = (
@@ -136,6 +189,7 @@ export default function CourseCreationWorkflow() {
   const handleNamelessSectionDelete = (e: React.FormEvent) => {
     e.preventDefault();
     removeSection(sections[selectedSectionIndex].id);
+
     setModal((prev) => ({ ...prev, isTriggered: false }));
   };
 
@@ -282,41 +336,31 @@ export default function CourseCreationWorkflow() {
               </div>
             </div>
           </div>
-          <div className="mt-4 min-h-[50px] rounded overflow-y-auto">
-            {contentItems.map((item, index) => (
-              <div
-                key={index}
-                className="bg-gray-100 px-2 py-4 rounded mb-2 flex items-center justify-start gap-2"
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragEnd={handleDragEnd}
+          >
+            <div className="mt-4 h-full rounded overflow-y-auto">
+              <SortableContext
+                items={contentItems}
+                strategy={verticalListSortingStrategy}
               >
-                <span className="block ">
-                  <MdDragIndicator />
-                </span>
-                <div className="flex items-center">
-                  {item.type === "video" ? (
-                    <IoVideocamOutline className="mr-2" />
-                  ) : (
-                    <HiOutlineDocumentText className="mr-2" />
-                  )}
-                  <span className="overflow-x-hidden whitespace-nowrap text-ellipsis">{item.name}</span>
+                {contentItems.map((item) => (
+                  <ContentItems
+                    key={item.id}
+                    content={item}
+                    setContentItems={setContentItems}
+                  />
+                ))}
+              </SortableContext>
+              {contentItems.length === 0 && (
+                <div className="bg-gray-100 p-4 rounded">
+                  No content items added yet
                 </div>
-                <button
-                  onClick={() =>
-                    setContentItems((prev) =>
-                      prev.filter((_, i) => i !== index)
-                    )
-                  }
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <FaRegTrashCan className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
-            {contentItems.length === 0 && (
-              <div className="bg-gray-100 p-4 rounded">
-                No content items added yet
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </DndContext>
         </div>
 
         <div className="w-full sm:w-1/4 bg-white p-4 border-l overflow-y-auto">
@@ -329,5 +373,59 @@ export default function CourseCreationWorkflow() {
         </div>
       </div>
     </>
+  );
+}
+
+function ContentItems({
+  content,
+  setContentItems
+}: {
+  content: ContentItem;
+  setContentItems: React.Dispatch<React.SetStateAction<ContentItem[]>>;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: content.id });
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform)
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="bg-gray-100 px-2 py-4 rounded mb-2 flex items-center justify-start gap-2"
+    >
+      <span className="block cursor-move">
+        <MdDragIndicator />
+      </span>
+      <div className="flex items-center">
+        {content.type === "video" ? (
+          <IoVideocamOutline className="mr-2" />
+        ) : (
+          <HiOutlineDocumentText className="mr-2" />
+        )}
+        <span className="block w-[350px] maxScreenMobile:w-[200px] overflow-x-hidden whitespace-nowrap text-ellipsis">
+          {content.name}
+        </span>
+      </div>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          console.log("Delete button clicked");
+          setContentItems((prev) => {
+            const newItems = prev.filter((i) => i.id !== content.id);
+            console.log("Updated content items:", newItems);
+            return newItems;
+          });
+        }}
+        className="text-red-500 hover:text-red-700 cursor-pointer z-50 ml-auto mr-0 p-1"
+        type="button"
+      >
+        <FaRegTrashCan className="w-4 h-4" />
+      </button>
+    </div>
   );
 }
