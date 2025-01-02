@@ -29,6 +29,7 @@ const PublicPresentation = lazy(
 );
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
+const RequestPasswordResetLink = lazy(() => import("./components/sign/requestPasswordResetLink"));
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
 const CourseSideBarContext = lazy(
   () => import("./contexts/courseSideBarContext")
@@ -120,14 +121,14 @@ const router = createBrowserRouter(
     },
     {
       path: "/forgot-password",
-      element: <SignPage />
+      element: <RequestPasswordResetLink />
     },
     {
       path: "/pay",
       element: <Pay />
     },
     {
-      path: "/reset/:token",
+      path: "/reset-password",
       element: <ResetPasswordPage />
     },
     {
