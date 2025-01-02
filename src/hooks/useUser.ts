@@ -22,9 +22,24 @@ export default function useUser() {
             const email = searchParams.get('email');
             const presentations = searchParams.get('presentations');
             const token = searchParams.get('token');
+            
 
             if (token && id && username && email && presentations) {
                 localStorage.setItem('accessToken', token);
+
+                if (window.opener) {
+                    window.opener.postMessage(
+                        { type: "SIGN_IN", payload: {
+                            id,
+                            username,
+                            email,
+                            presentations: parseInt(presentations)
+                        }, token: token },
+                        window.location.origin // Ensure only trusted origins receive the message
+                    );
+                    window.close();
+                    return;
+                }
 
                 setUser({
                     id,
