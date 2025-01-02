@@ -22,26 +22,38 @@ import { MdOutlineFeedback } from "react-icons/md";
 import React, { createContext, useState } from "react";
 import { Link } from "react-router-dom";
 
-interface Section {
+export interface ContentItem {
+  id: number;
+  type: "video" | "presentation";
+  file: File;
+  name: string;
+}
+export interface Section {
   id: number;
   title: string;
-  content: string[];
+  content: ContentItem[];
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext<{
   sections: Section[];
+  setSections: React.Dispatch<React.SetStateAction<Section[]>>;
   addSection: () => number;
   removeSection: (id: number) => void;
   selectedSectionIndex: number;
   selectSection: (id: number) => void;
+  setContentItems: (contentItems: ContentItem[]) => void;
+  removeContentItem: (id: number) => void;
   handleSectionTitleChange: (title: string) => void;
 }>({
   sections: [],
+  setSections: () => {},
   addSection: () => 0,
   removeSection: () => {},
   selectedSectionIndex: 0,
   selectSection: () => {},
+  setContentItems: () => {},
+  removeContentItem: () => {},
   handleSectionTitleChange: () => {}
 });
 
@@ -52,7 +64,7 @@ export default function CourseSideBarContextProvider({
   children: React.ReactNode;
   isActive: "course" | "settings" | "profile" | "feedback" | "help";
 }) {
-  const [sections, setSections] = useState([
+  const [sections, setSections] = useState<Section[]>([
     {
       id: 1,
       title: "Introduction to the Course",
@@ -60,6 +72,25 @@ export default function CourseSideBarContextProvider({
     }
   ]);
   const [selectedSectionIndex, setSelectedSectionIndex] = useState(0);
+
+  function setContentItems(contentItems: ContentItem[]) {
+    setSections((prevSections) => {
+      const newSections = [...prevSections];
+      newSections[selectedSectionIndex].content = contentItems;
+      return newSections;
+    });
+  }
+
+  function removeContentItem(id: number) {
+    setSections((prevSections) => {
+      const newSections = [...prevSections];
+      const content = newSections[selectedSectionIndex].content;
+      newSections[selectedSectionIndex].content = content.filter(
+        (item) => item.id !== id
+      );
+      return newSections;
+    });
+  }
 
   function handleSectionTitleChange(title: string) {
     setSections((prevSections) => {
@@ -122,10 +153,13 @@ export default function CourseSideBarContextProvider({
     <CourseSideBarContext.Provider
       value={{
         sections,
+        setSections,
         addSection,
         removeSection,
         selectedSectionIndex,
         selectSection,
+        setContentItems,
+        removeContentItem,
         handleSectionTitleChange
       }}
     >
