@@ -28,6 +28,7 @@ interface Section {
   content: string[];
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext<{
   sections: Section[];
   addSection: () => number;
@@ -128,7 +129,7 @@ export default function CourseSideBarContextProvider({
         handleSectionTitleChange
       }}
     >
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={false}>
         <Sidebar collapsible="icon">
           <SidebarHeader>
             <SidebarMenuButton asChild tooltip="Go to Home">
