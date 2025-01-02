@@ -6,7 +6,6 @@ import { MdOutlineQuiz } from "react-icons/md";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { MdDragIndicator } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
-import { FaSave } from "react-icons/fa";
 import { useContext } from "react";
 import {
   DndContext,
@@ -286,6 +285,7 @@ export default function CourseCreationWorkflow() {
                 ref={videoInputRef}
                 className="hidden"
                 accept="video/*"
+                multiple
                 onChange={(e) =>
                   handleFileSelect("video", e.target.files?.[0] || null)
                 }
@@ -295,6 +295,7 @@ export default function CourseCreationWorkflow() {
                 ref={pptInputRef}
                 className="hidden"
                 accept=".ppt,.pptx"
+                multiple
                 onChange={(e) =>
                   handleFileSelect("presentation", e.target.files?.[0] || null)
                 }
@@ -394,38 +395,48 @@ function ContentItems({
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
-      className="bg-gray-100 px-2 py-4 rounded mb-2 flex items-center justify-start gap-2"
+      className="bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2"
     >
-      <span className="block cursor-move">
-        <MdDragIndicator />
-      </span>
-      <div className="flex items-center">
-        {content.type === "video" ? (
-          <IoVideocamOutline className="mr-2" />
-        ) : (
-          <HiOutlineDocumentText className="mr-2" />
-        )}
-        <span className="block w-[350px] maxScreenMobile:w-[200px] overflow-x-hidden whitespace-nowrap text-ellipsis">
-          {content.name}
+      <div className="flex items-center gap-2 w-full">
+        <span {...attributes} {...listeners} className="block cursor-move">
+          <MdDragIndicator />
         </span>
+        <div className="flex items-center w-full">
+          {content.type === "video" ? (
+            <IoVideocamOutline className="mr-2" />
+          ) : (
+            <HiOutlineDocumentText className="mr-2" />
+          )}
+          <span
+            title={content.name}
+            className="cursor-text block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap"
+          >
+            {content.name}
+          </span>
+        </div>
       </div>
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          console.log("Delete button clicked");
-          setContentItems((prev) => {
-            const newItems = prev.filter((i) => i.id !== content.id);
-            console.log("Updated content items:", newItems);
-            return newItems;
-          });
-        }}
-        className="text-red-500 hover:text-red-700 cursor-pointer z-50 ml-auto mr-0 p-1"
-        type="button"
-      >
-        <FaRegTrashCan className="w-4 h-4" />
-      </button>
+      <div className="flex gap-2">
+        <button
+          className="text-red-500 hover:text-red-700 cursor-pointer"
+          type="button"
+          title="Edit"
+        >
+          <FaRegEdit className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => {
+            setContentItems((prev) => {
+              const newItems = prev.filter((i) => i.id !== content.id);
+              return newItems;
+            });
+          }}
+          title="Delete"
+          className="text-red-500 hover:text-red-700 cursor-pointer"
+          type="button"
+        >
+          <FaRegTrashCan className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 }
