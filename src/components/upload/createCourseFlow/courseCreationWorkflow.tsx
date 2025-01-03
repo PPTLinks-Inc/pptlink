@@ -214,7 +214,7 @@ export default function CourseCreationWorkflow() {
         borderColor="border-[#FFFFF0]"
       />
       <div className="flex w-full h-full">
-        <div className="w-full sm:w-1/4 h-full bg-gray-100 p-4 border-r overflow-y-auto">
+        <div className="w-full sm:w-1/4 h-full !bg-slate-200 p-4 border-r overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Course Sections</h2>
           </div>
@@ -331,13 +331,13 @@ export default function CourseCreationWorkflow() {
             {contentItems.map((item, index) => (
               <div
                 key={index}
-                className="bg-gray-100 px-2 py-4 rounded mb-2 flex items-center justify-start gap-2"
+                className="bg-slate-200 px-2 py-4 rounded mb-2 flex items-center justify-start gap-2"
               >
                 <span className="block">
                   <MdDragIndicator />
                 </span>
                 <div className="flex items-center">
-                  <span className="block w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
+                  <span className="block w-8 h-8 bg-slate-200 rounded-full overflow-hidden">
                     <img src="" alt="" />
                   </span>
                   {item.isEditing ? (
@@ -398,18 +398,18 @@ export default function CourseCreationWorkflow() {
               </div>
             ))}
             {contentItems.length === 0 && (
-              <div className="bg-gray-100 p-4 rounded">
+              <div className="bg-slate-200 p-4 rounded">
                 No content items added yet
               </div>
             )}
           </div>
         </div>
 
-        <div className="w-full sm:w-1/4 bg-white p-4 border-l overflow-y-auto">
+        <div className="w-full sm:w-1/4 bg-slate-200 p-4 border-l overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Preview</h2>
           </div>
-          <div className="bg-gray-100 p-4 rounded">
+          <div className="bg-slate-200 p-4 rounded">
             No content items added yet
           </div>
         </div>
