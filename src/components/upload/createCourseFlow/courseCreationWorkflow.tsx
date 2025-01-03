@@ -222,7 +222,7 @@ export default function CourseCreationWorkflow() {
         borderColor="border-[#FFFFF0]"
       />
       <div className="flex w-full h-full">
-        <div className="w-full sm:w-1/4 h-full bg-gray-100 p-4 border-r overflow-y-auto">
+        <div className="w-full sm:w-1/4 h-full !bg-slate-200 p-4 border-r overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Course Sections</h2>
           </div>
@@ -364,11 +364,11 @@ export default function CourseCreationWorkflow() {
           </DndContext>
         </div>
 
-        <div className="w-full sm:w-1/4 bg-white p-4 border-l overflow-y-auto">
+        <div className="w-full sm:w-1/4 bg-slate-200 p-4 border-l overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Preview</h2>
           </div>
-          <div className="bg-gray-100 p-4 rounded">
+          <div className="bg-slate-200 p-4 rounded">
             No content items added yet
           </div>
         </div>
