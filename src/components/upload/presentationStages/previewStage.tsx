@@ -1,4 +1,4 @@
-import { useUploadStore } from "@/store/uploadStore";
+import { useUploadStore } from "@/store/uploadStoreProvider";
 import formatDate from "@/lib/formatDate";
 import { useEffect } from "react";
 import { LoadingAssetBig } from "@/assets/assets";

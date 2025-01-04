@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useUploadStore } from "@/store/uploadStore";
+import { useUploadStore } from "@/store/uploadStoreProvider";
 import { useSearchParams } from "react-router-dom";
 
 function ProgressIndicator() {

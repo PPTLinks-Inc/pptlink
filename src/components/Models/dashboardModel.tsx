@@ -21,9 +21,9 @@ export default function PopUpModal({
   message: string;
   actionText: string;
   oneButton: boolean;
-  bgColor: string;
-  textColor: string;
-  borderColor: string;
+  bgColor?: string;
+  textColor?: string;
+  borderColor?: string;
 }) {
   return (
     <Modal open={open} onClose={onClose || (() => {})} color={bgColor}>
