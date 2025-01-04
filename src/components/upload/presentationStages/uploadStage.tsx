@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { useUploadStore } from "@/store/uploadStore";
+import { useUploadStore } from "@/store/uploadStoreProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SERVER_URL } from "@/constants/routes";
 import { useForm } from "react-hook-form";
@@ -14,67 +14,73 @@ import { useSearchParams } from "react-router-dom";
 import { authFetch } from "@/lib/axios";
 import useUser from "@/hooks/useUser";
 
-const schema = z.object({
-  title: z.string().min(2, { message: "Title is too short" }),
-  description: z
-    .string()
-    .optional()
-    .refine((description) => {
-      if (description) {
-        return description.length >= 5;
-      }
-      return true;
-    }, "Description is too short"),
-  privacy: z.enum(["PUBLIC", "PRIVATE", "TEMP"]),
-  downloadable: z.enum(["YES", "NO"]),
-  category: z.string().min(2, { message: "Choose a category" }),
-  file: z
-    .any()
-    .refine((file) => {
-      if (useUploadStore.getState().pdfUrl === "" && !file) {
-        return false;
-      }
-      return true;
-    })
-    .refine((file: FileList) => {
-      if (file) {
-        return file.length > 0;
-      }
+const useFileValidation = () => {
+  const pdfUrl = useUploadStore((state) => state.pdfUrl);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (file: any) => {
+    if (pdfUrl === "" && !file) {
       return false;
-    }, "File is required")
-    .refine((file) => {
-      if (!file) {
-        return false;
-      }
-      if (!file[0]) return false;
-      return file[0].size < 10 * 1024 * 1024;
-    }, "File size must not exceed 10MB")
-    .refine((file) => {
-      if (!file) {
-        return false;
-      }
-      if (!file[0]) return false;
-      const mimeTypes = [
-        "application/wps-office.pptx",
-        "application/vnd.ms-powerpoint",
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "application/vnd.openxmlformats-officedocument.presentationml.template",
-        "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
-        "application/vnd.ms-powerpoint.addin.macroEnabled.12",
-        "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
-        "application/vnd.ms-powerpoint.template.macroEnabled.12",
-        "application/vnd.ms-powerpoint.slideshow.macroEnabled.12"
-      ];
-
-      if (!mimeTypes.includes(file[0].type)) {
-        return false;
-      }
-
-      return true;
-    }, "Please upload a valid presentation file.")
-});
+    }
+    return true;
+  };
+};
 
 export default function UploadStage() {
+  const validateFile = useFileValidation();
+  const schema = z.object({
+    title: z.string().min(2, { message: "Title is too short" }),
+    description: z
+      .string()
+      .optional()
+      .refine((description) => {
+        if (description) {
+          return description.length >= 5;
+        }
+        return true;
+      }, "Description is too short"),
+    privacy: z.enum(["PUBLIC", "PRIVATE", "TEMP"]),
+    downloadable: z.enum(["YES", "NO"]),
+    category: z.string().min(2, { message: "Choose a category" }),
+    file: z
+      .any()
+      .refine(validateFile)
+      .refine((file: FileList) => {
+        if (file) {
+          return file.length > 0;
+        }
+        return false;
+      }, "File is required")
+      .refine((file) => {
+        if (!file) {
+          return false;
+        }
+        if (!file[0]) return false;
+        return file[0].size < 10 * 1024 * 1024;
+      }, "File size must not exceed 10MB")
+      .refine((file) => {
+        if (!file) {
+          return false;
+        }
+        if (!file[0]) return false;
+        const mimeTypes = [
+          "application/wps-office.pptx",
+          "application/vnd.ms-powerpoint",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "application/vnd.openxmlformats-officedocument.presentationml.template",
+          "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+          "application/vnd.ms-powerpoint.addin.macroEnabled.12",
+          "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
+          "application/vnd.ms-powerpoint.template.macroEnabled.12",
+          "application/vnd.ms-powerpoint.slideshow.macroEnabled.12"
+        ];
+
+        if (!mimeTypes.includes(file[0].type)) {
+          return false;
+        }
+
+        return true;
+      }, "Please upload a valid presentation file.")
+  });
   const { userQuery } = useUser();
   const user = userQuery.data;
   const currentView = useUploadStore((state) => state.currentView);
@@ -224,11 +230,13 @@ export default function UploadStage() {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: useUploadStore.getState().title,
-      description: useUploadStore.getState().description || "",
-      privacy: useUploadStore.getState().privacy,
-      downloadable: useUploadStore.getState().downloadable ? "YES" : "NO",
-      category: useUploadStore.getState().selectedCategory.id,
+      title: useUploadStore((store) => store.title),
+      description: useUploadStore((store) => store.description),
+      privacy: useUploadStore((store) => store.privacy),
+      downloadable: useUploadStore((store) => store.downloadable)
+        ? "YES"
+        : "NO",
+      category: useUploadStore((store) => store.selectedCategory.id),
       file: null
     }
   });
@@ -518,7 +526,6 @@ export default function UploadStage() {
           if (valid) {
             const file = formValues.file![0] as File;
 
-            const pdfUrl = useUploadStore.getState().pdfUrl;
             if (pdfUrl !== "" && !searchParams.has("edit")) {
               return;
             }
@@ -528,7 +535,7 @@ export default function UploadStage() {
         });
       }
     },
-    [formValues.file, trigger]
+    [formValues.file, pdfUrl]
   );
 
   const setUploadStageSubmitHandler = useUploadStore(

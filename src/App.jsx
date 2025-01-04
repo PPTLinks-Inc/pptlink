@@ -5,6 +5,7 @@ import { LoadingAssetBig2 } from "./assets/assets";
 import PresentationContextProvider, {
   presentationLoader
 } from "./contexts/presentationContext";
+import UploadStoreProvider from "./store/uploadStoreProvider";
 import "./assets/styles/general_css.css";
 import { Toaster } from "@/components/ui/toaster";
 import useUser from "./hooks/useUser";
@@ -29,7 +30,9 @@ const PublicPresentation = lazy(
 );
 const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
-const RequestPasswordResetLink = lazy(() => import("./components/sign/requestPasswordResetLink"));
+const RequestPasswordResetLink = lazy(
+  () => import("./components/sign/requestPasswordResetLink")
+);
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
 const CourseSideBarContext = lazy(
   () => import("./contexts/courseSideBarContext")
@@ -74,7 +77,11 @@ const router = createBrowserRouter(
         },
         {
           path: "upload",
-          element: <SupperUpload />
+          element: (
+            <UploadStoreProvider>
+              <SupperUpload />
+            </UploadStoreProvider>
+          )
         },
         {
           path: "library",
