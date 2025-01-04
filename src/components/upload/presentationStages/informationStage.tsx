@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Switch } from "@/components/ui/switch";
 import Icon_awesome_clock from "/Icon-awesome-clock.svg";
 import { Calendar } from "@/components/ui/calendar";
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/popover";
 // import { TimePicker } from "@/components/ui/customTimePicker"
 import { SlCalender } from "react-icons/sl";
-import { useUploadStore } from "@/store/uploadStore";
+import { useUploadStore } from "@/store/uploadStoreProvider";
 import { cn } from "@/lib/utils";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -126,8 +126,8 @@ export default function InformationStage() {
   const [searchParams] = useSearchParams();
   // const [toggleStartTime, setToggleStartTime] = useState(false);
   // const [toggleEndTime, setToggleEndTime] = useState(false);
-  const startTimeRef = useRef<HTMLInputElement>(null);
-  const endTimeRef = useRef<HTMLInputElement>(null);
+  const startTimeRef = useRef<HTMLInputElement | null>(null);
+  const endTimeRef = useRef<HTMLInputElement | null>(null);
 
   const handleClickStartTime = () => {
     const timeInput = startTimeRef.current;
@@ -151,6 +151,7 @@ export default function InformationStage() {
     }
   };
 
+  const date = useUploadStore((store) => store.date);
   const {
     register,
     control,
@@ -162,15 +163,15 @@ export default function InformationStage() {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      presenterName: useUploadStore.getState().presentersName,
-      bio: useUploadStore.getState().bio,
-      socialLinks: useUploadStore.getState().socialLinks,
-      selectDateTime: useUploadStore.getState().date ? true : false,
-      date: useUploadStore.getState().date
-        ? new Date(useUploadStore.getState().date as string)
+      presenterName: useUploadStore((store) => store.presentersName),
+      bio: useUploadStore((store) => store.bio),
+      socialLinks: useUploadStore((store) => store.socialLinks),
+      selectDateTime: date ? true : false,
+      date: useUploadStore((store) => store.date)
+        ? new Date(date as string)
         : undefined,
-      startTime: useUploadStore.getState().startTime,
-      endTime: useUploadStore.getState().endTime
+      startTime: useUploadStore((store) => store.startTime),
+      endTime: useUploadStore((store) => store.endTime)
     }
   });
 
@@ -335,7 +336,6 @@ export default function InformationStage() {
                 className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${errors.date?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
               >
                 <Controller
-                  id="DateSelectionIDTwo"
                   name="date"
                   control={control}
                   render={({ field }) => (
@@ -365,6 +365,7 @@ export default function InformationStage() {
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
+                          id="DateSelectionIDTwo"
                           mode="single"
                           selected={new Date(field.value || "")}
                           onSelect={field.onChange}

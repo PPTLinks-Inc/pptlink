@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useContext } from "react";
 import {
   ProgressIndicator,
   FormLabelIndicator,
@@ -7,7 +7,7 @@ import {
 import UploadStage from "./presentationStages/uploadStage";
 import InformationStage from "./presentationStages/informationStage";
 import PreviewStage from "./presentationStages/previewStage";
-import { useUploadStore } from "@/store/uploadStore";
+import { UploadContext, useUploadStore } from "@/store/uploadStoreProvider";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingAssetBig2 } from "@/assets/assets";
@@ -18,7 +18,6 @@ import { authFetch } from "@/lib/axios";
 export default function SupperUpload() {
   const scrollableRef = useRef<HTMLDivElement>(null);
   const currentView = useUploadStore((state) => state.currentView);
-  const resetUploadStore = useUploadStore((state) => state.resetStore);
   const [searchParams] = useSearchParams();
 
   // scroll page to the top when currentView changes
@@ -28,11 +27,7 @@ export default function SupperUpload() {
     }
   }, [currentView]);
 
-  useEffect(function () {
-    return function () {
-      resetUploadStore();
-    };
-  }, []);
+  const uploadStore = useContext(UploadContext)
 
   const editPresentationQuery = useQuery({
     queryKey: ["editPresentation", searchParams.get("edit")],
@@ -41,7 +36,7 @@ export default function SupperUpload() {
         `/api/v1/ppt/presentations/${searchParams.get("edit")}`
       );
 
-      useUploadStore.setState({
+      uploadStore?.setState({
         title: data.presentation.name,
         description: data.presentation.description,
         privacy: data.presentation.linkType,
