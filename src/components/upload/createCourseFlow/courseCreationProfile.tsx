@@ -21,36 +21,51 @@ type BankOption =
   | "First Bank"
   | "Fidelity Bank";
 
-export default function CourseCreationProfile() {
-  const [accountDetails, setAccountDetails] = useState({
-    accountName: "",
-    accountNumber: "",
-    bankName: "Select Bank" as BankOption,
-    isValidAccount: false
-  });
+// Define instructor interface
+interface Instructor {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  experience: string;
+  expertise: string[];
+  biography: string;
+  profileImage: File | null;
+}
 
-  const [courseSettings, setCourseSettings] = useState({
-    pricing: { currency: "naira", amount: "" },
-    registration: { deadline: "never", calculatedDate: null },
-    paymentInfo: "",
-    courseLevel: "beginner",
-    maxParticipants: "",
-    instructors: [
-      {
-        id: 1,
-        name: "",
-        email: "",
-        role: "",
-        experience: "",
-        expertise: [],
-        biography: "",
-        profileImage: null
-      }
-    ]
-  });
+// Define main state interface
+interface AccountProfileDetails {
+  accountName: string;
+  accountNumber: string;
+  bankName: BankOption;
+  isValidAccount: boolean;
+  instructors: Instructor[];
+}
+
+export default function CourseCreationProfile() {
+  // State with type
+  const [accountProfileDetails, setAccountProfileDetails] =
+    useState<AccountProfileDetails>({
+      accountName: "",
+      accountNumber: "",
+      bankName: "Select Bank" as BankOption,
+      isValidAccount: false,
+      instructors: [
+        {
+          id: 1,
+          name: "",
+          email: "",
+          role: "",
+          experience: "",
+          expertise: [],
+          biography: "",
+          profileImage: null
+        }
+      ]
+    });
 
   const addInstructor = () => {
-    setCourseSettings((prevSettings) => ({
+    setAccountProfileDetails((prevSettings) => ({
       ...prevSettings,
       instructors: [
         ...prevSettings.instructors,
@@ -68,8 +83,8 @@ export default function CourseCreationProfile() {
     }));
   };
 
-  const removeInstructor = (id: number) => {
-    setCourseSettings((prevSettings) => ({
+  const removeInstructor = (id: number): void => {
+    setAccountProfileDetails((prevSettings) => ({
       ...prevSettings,
       instructors: prevSettings.instructors.filter(
         (instructor) => instructor.id !== id
@@ -78,7 +93,7 @@ export default function CourseCreationProfile() {
   };
 
   const updateInstructor = (id: number, field: string, value: string) => {
-    setCourseSettings((prevSettings) => ({
+    setAccountProfileDetails((prevSettings) => ({
       ...prevSettings,
       instructors: prevSettings.instructors.map((instructor) =>
         instructor.id === id ? { ...instructor, [field]: value } : instructor
@@ -121,18 +136,18 @@ export default function CourseCreationProfile() {
               inputMode="numeric"
               pattern="\d*{10}"
               min="0"
-              value={accountDetails.accountNumber}
+              value={accountProfileDetails.accountNumber}
               id="accountName"
               onChange={(e) =>
-                setAccountDetails((prev) => ({
+                setAccountProfileDetails((prev) => ({
                   ...prev,
                   accountNumber: e.target.value
                 }))
               }
               placeholder="e.g 0123456789"
               className={`pl-2 border-[0.5px] mt-2 ${
-                accountDetails.accountNumber &&
-                isValidNumber(accountDetails.accountNumber)
+                accountProfileDetails.accountNumber &&
+                isValidNumber(accountProfileDetails.accountNumber)
                   ? "border-[#FFA500]"
                   : "border-primaryTwo"
               }`}
@@ -144,9 +159,9 @@ export default function CourseCreationProfile() {
               Select bank name
             </Label>
             <Select
-              value={accountDetails.bankName}
+              value={accountProfileDetails.bankName}
               onValueChange={(value: BankOption) =>
-                setAccountDetails((prev) => ({
+                setAccountProfileDetails((prev) => ({
                   ...prev,
                   bankName: value
                 }))
@@ -154,7 +169,7 @@ export default function CourseCreationProfile() {
             >
               <SelectTrigger
                 className={`border-[0.5px] mt-2 ${
-                  accountDetails.bankName !== "Select Bank"
+                  accountProfileDetails.bankName !== "Select Bank"
                     ? "border-[#FFA500]"
                     : "border-primaryTwo"
                 } w-3/6 maxScreenMobile:w-full`}
@@ -178,7 +193,7 @@ export default function CourseCreationProfile() {
 
         <div className="space-y-4 mt-10">
           <h3 className="text-lg font-bold">Instructor(s) Details</h3>
-          {courseSettings.instructors.map((instructor, index) => (
+          {accountProfileDetails.instructors.map((instructor, index) => (
             <Card
               key={instructor.id}
               className="bg-slate-200 shadow-primaryTwo"
@@ -186,7 +201,7 @@ export default function CourseCreationProfile() {
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                   <span>Instructor {index + 1}</span>
-                  {courseSettings.instructors.length > 1 && (
+                  {accountProfileDetails.instructors.length > 1 && (
                     <Button
                       onClick={() => removeInstructor(instructor.id)}
                       variant="destructive"
@@ -246,7 +261,12 @@ export default function CourseCreationProfile() {
                         updateInstructor(instructor.id, "name", e.target.value)
                       }
                       placeholder="Full Name"
-                      className="border-[0.5px] border-primaryTwo"
+                      className={`relative border-[0.5px] ${
+                        instructor.name
+                          ? "border-[#FFA500]"
+                          : "border-primaryTwo"
+                      }`}
+                      // ${"pointer-events-none cursor-not-allowed before:absolute before:bg-red before:block before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-10"}
                     />
                   </div>
                   <div className="space-y-2">
@@ -261,7 +281,11 @@ export default function CourseCreationProfile() {
                         updateInstructor(instructor.id, "email", e.target.value)
                       }
                       placeholder="Email Address"
-                      className="border-[0.5px] border-primaryTwo"
+                      className={`border-[0.5px] ${
+                        instructor.email
+                          ? "border-[#FFA500]"
+                          : "border-primaryTwo"
+                      }`}
                     />
                   </div>
                   <div className="space-y-2">
@@ -273,7 +297,11 @@ export default function CourseCreationProfile() {
                         updateInstructor(instructor.id, "role", e.target.value)
                       }
                       placeholder="Role/Title"
-                      className="border-[0.5px] border-primaryTwo"
+                      className={`border-[0.5px] ${
+                        instructor.role
+                          ? "border-[#FFA500]"
+                          : "border-primaryTwo"
+                      }`}
                     />
                   </div>
                   <div className="space-y-2">
@@ -288,7 +316,11 @@ export default function CourseCreationProfile() {
                     >
                       <SelectTrigger
                         id={`experience-${instructor.id}`}
-                        className="border-[0.5px] border-primaryTwo"
+                        className={`border-[0.5px] ${
+                          instructor.experience
+                            ? "border-[#FFA500]"
+                            : "border-primaryTwo"
+                        }`}
                       >
                         <SelectValue placeholder="Select Experience" />
                       </SelectTrigger>
@@ -317,7 +349,11 @@ export default function CourseCreationProfile() {
                       )
                     }
                     placeholder="Enter instructor biography..."
-                    className="min-h-[100px] border-[0.5px] border-primaryTwo"
+                    className={`min-h-[100px] resize-none border-[0.5px] ${
+                      instructor.biography
+                        ? "border-[#FFA500]"
+                        : "border-primaryTwo"
+                    }`}
                   />
                 </div>
               </CardContent>
