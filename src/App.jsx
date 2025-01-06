@@ -143,7 +143,7 @@ const router = createBrowserRouter(
       element: <CreatePath />
     },
     {
-      path: "/create-course/course",
+      path: "/course/:courseId",
       element: (
         <CourseSideBarContext isActive="course">
           <CourseCreationWorkflow />
@@ -151,7 +151,7 @@ const router = createBrowserRouter(
       )
     },
     {
-      path: "/create-course/settings",
+      path: "/course/settings/:courseId",
       element: (
         <CourseSideBarContext isActive="settings">
           <CourseCreationSettings />
@@ -159,7 +159,7 @@ const router = createBrowserRouter(
       )
     },
     {
-      path: "/create-course/profile",
+      path: "/course/profile/:courseId",
       element: (
         <CourseSideBarContext isActive="profile">
           <CourseCreationProfile />
@@ -167,7 +167,7 @@ const router = createBrowserRouter(
       )
     },
     {
-      path: "/create-course/feedback",
+      path: "/course/feedback",
       element: (
         <CourseSideBarContext isActive="feedback">
           <CourseCreationFeedback />
@@ -175,7 +175,7 @@ const router = createBrowserRouter(
       )
     },
     {
-      path: "/create-course/help",
+      path: "/course/help",
       element: (
         <CourseSideBarContext isActive="help">
           <CourseCreationHelp />
@@ -183,7 +183,7 @@ const router = createBrowserRouter(
       )
     },
     {
-      path: "/create-course/antidote",
+      path: "/course/antidote",
       element: <CourseCreationWorkflowTwo />
     }
   ],
