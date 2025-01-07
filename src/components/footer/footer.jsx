@@ -95,19 +95,25 @@ export default function Footer() {
                   How to Use
                 </NavLink>
                 <NavLink
-                  to={LEGAL}
+                  to={TERMS_AND_SERVICES}
                   className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Legal
                 </NavLink>
-                <a
+                <NavLink
+                  to={LEGAL}
+                  className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
+                >
+                  Terms and Services
+                </NavLink>
+                {/* <a
                   href="https://docs.google.com/document/d/1-J6j0Pt7fjS479twAPzObB7sJxNztgEE4OO_kPL2YJE/edit?usp=sharing"
                   target="_blank"
                   rel="noreferrer"
                   className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1]"
                 >
                   Terms of Service
-                </a>
+                </a> */}
                 <a
                   href="https://docs.google.com/document/d/1-cqT7rNCgf2C0a67PS_Z4yql6fkgPp2pOhLDPayH5rc/edit?usp=sharing"
                   target="_blank"

@@ -55,6 +55,9 @@ const CourseCreationHelp = lazy(
 const CourseCreationWorkflowTwo = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo")
 );
+const TermsAndServicesPage = lazy(
+  () => import("./components/Terms_and_policy_page/termsAndServices")
+);
 
 const router = createBrowserRouter(
   [
@@ -185,6 +188,10 @@ const router = createBrowserRouter(
     {
       path: "/course/antidote",
       element: <CourseCreationWorkflowTwo />
+    },
+    {
+      path: "/terms-and-services",
+      element: <TermsAndServicesPage />
     }
   ],
   {
