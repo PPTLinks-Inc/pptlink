@@ -111,6 +111,13 @@ const router = createBrowserRouter(
         {
           path: "dashboard",
           element: <NewDashboard />
+        }, {
+          path: "/terms-and-services",
+          element: <TermsAndServicesPage />
+        },
+        {
+          path: "/privacy-policy",
+          element: <PrivacyPolicyPage />
         }
       ]
     },
@@ -191,14 +198,6 @@ const router = createBrowserRouter(
     {
       path: "/course/antidote",
       element: <CourseCreationWorkflowTwo />
-    },
-    {
-      path: "/terms-and-services",
-      element: <TermsAndServicesPage />
-    },
-    {
-      path: "/privacy-policy",
-      element: <PrivacyPolicyPage />
     }
   ],
   {
