@@ -32,3 +32,7 @@ export const SIGNUP = "/signup";
 export const LOGIN = "/login";
 
 export const DOCUMENT = "/documentation";
+
+export const TERMS_AND_SERVICES = "/terms-and-services";
+
+export const PRIVACY_POLICY = "/privacy-policy";
