@@ -93,6 +93,10 @@ const router = createBrowserRouter(
         {
           path: "libraryPage",
           element: <LibraryPage />
+        },
+        {
+          path: "/terms-and-services",
+          element: <TermsAndServicesPage />
         }
       ]
     },
@@ -188,10 +192,6 @@ const router = createBrowserRouter(
     {
       path: "/course/antidote",
       element: <CourseCreationWorkflowTwo />
-    },
-    {
-      path: "/terms-and-services",
-      element: <TermsAndServicesPage />
     }
   ],
   {
