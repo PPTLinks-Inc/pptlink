@@ -58,6 +58,9 @@ const CourseCreationWorkflowTwo = lazy(
 const TermsAndServicesPage = lazy(
   () => import("./components/Terms_and_policy_page/termsAndServices")
 );
+const PrivacyPolicyPage = lazy(
+  () => import("./components/Terms_and_policy_page/privacyPolicy")
+);
 
 const router = createBrowserRouter(
   [
@@ -93,10 +96,6 @@ const router = createBrowserRouter(
         {
           path: "libraryPage",
           element: <LibraryPage />
-        },
-        {
-          path: "/terms-and-services",
-          element: <TermsAndServicesPage />
         }
       ]
     },
@@ -112,6 +111,13 @@ const router = createBrowserRouter(
         {
           path: "dashboard",
           element: <NewDashboard />
+        }, {
+          path: "/terms-and-services",
+          element: <TermsAndServicesPage />
+        },
+        {
+          path: "/privacy-policy",
+          element: <PrivacyPolicyPage />
         }
       ]
     },
