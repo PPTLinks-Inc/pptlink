@@ -43,9 +43,9 @@ const CourseCreationWorkflow = lazy(
 const CourseCreationProfile = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationProfile")
 );
-const CourseCreationFeedback = lazy(
-  () => import("./components/upload/createCourseFlow/courseCreationFeedback")
-);
+// const CourseCreationFeedback = lazy(
+//   () => import("./components/upload/createCourseFlow/courseCreationFeedback")
+// );
 const CourseCreationSettings = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationSettings")
 );
@@ -173,14 +173,14 @@ const router = createBrowserRouter(
         </CourseSideBarContext>
       )
     },
-    {
-      path: "/course/feedback",
-      element: (
-        <CourseSideBarContext isActive="feedback">
-          <CourseCreationFeedback />
-        </CourseSideBarContext>
-      )
-    },
+    // {
+    //   path: "/course/feedback",
+    //   element: (
+    //     <CourseSideBarContext isActive="feedback">
+    //       <CourseCreationFeedback />
+    //     </CourseSideBarContext>
+    //   )
+    // },
     {
       path: "/course/help",
       element: (

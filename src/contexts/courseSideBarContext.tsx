@@ -62,7 +62,7 @@ export default function CourseSideBarContextProvider({
   isActive
 }: {
   children: React.ReactNode;
-  isActive: "course" | "settings" | "profile" | "feedback" | "help";
+  isActive: "course" | "settings" | "profile" | "help";
 }) {
   const [sections, setSections] = useState<Section[]>([
     {
@@ -180,7 +180,7 @@ export default function CourseSideBarContextProvider({
               isActive={isActive === "course"}
               asChild
             >
-              <Link to="/course/course/courseId">
+              <Link to="/course/courseId">
                 <IoBookOutline />
                 <span className="text-lg">Courses</span>
               </Link>
@@ -207,7 +207,7 @@ export default function CourseSideBarContextProvider({
                 <span className="text-lg">Profile</span>
               </Link>
             </SidebarMenuButton>
-            <SidebarMenuButton
+            {/* <SidebarMenuButton
               isActive={isActive === "feedback"}
               tooltip="Course feedback"
               className="mx-auto"
@@ -217,7 +217,7 @@ export default function CourseSideBarContextProvider({
                 <MdOutlineFeedback />
                 <span className="text-lg">Feedback</span>
               </Link>
-            </SidebarMenuButton>
+            </SidebarMenuButton> */}
           </SidebarContent>
           <SidebarFooter>
             <SidebarMenuButton
