@@ -43,9 +43,9 @@ const CourseCreationWorkflow = lazy(
 const CourseCreationProfile = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationProfile")
 );
-const CourseCreationFeedback = lazy(
-  () => import("./components/upload/createCourseFlow/courseCreationFeedback")
-);
+// const CourseCreationFeedback = lazy(
+//   () => import("./components/upload/createCourseFlow/courseCreationFeedback")
+// );
 const CourseCreationSettings = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationSettings")
 );
@@ -54,6 +54,12 @@ const CourseCreationHelp = lazy(
 );
 const CourseCreationWorkflowTwo = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo")
+);
+const TermsAndServicesPage = lazy(
+  () => import("./components/Terms_and_policy_page/termsAndServices")
+);
+const PrivacyPolicyPage = lazy(
+  () => import("./components/Terms_and_policy_page/privacyPolicy")
 );
 
 const router = createBrowserRouter(
@@ -105,6 +111,13 @@ const router = createBrowserRouter(
         {
           path: "dashboard",
           element: <NewDashboard />
+        }, {
+          path: "/terms-and-services",
+          element: <TermsAndServicesPage />
+        },
+        {
+          path: "/privacy-policy",
+          element: <PrivacyPolicyPage />
         }
       ]
     },
@@ -166,14 +179,14 @@ const router = createBrowserRouter(
         </CourseSideBarContext>
       )
     },
-    {
-      path: "/course/feedback",
-      element: (
-        <CourseSideBarContext isActive="feedback">
-          <CourseCreationFeedback />
-        </CourseSideBarContext>
-      )
-    },
+    // {
+    //   path: "/course/feedback",
+    //   element: (
+    //     <CourseSideBarContext isActive="feedback">
+    //       <CourseCreationFeedback />
+    //     </CourseSideBarContext>
+    //   )
+    // },
     {
       path: "/course/help",
       element: (
