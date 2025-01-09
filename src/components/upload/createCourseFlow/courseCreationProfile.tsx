@@ -13,6 +13,8 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FaUser } from "react-icons/fa6";
+import useUser from "../../../hooks/useUser";
 
 type BankOption =
   | "Select Bank"
@@ -43,7 +45,8 @@ interface AccountProfileDetails {
 }
 
 export default function CourseCreationProfile() {
-  // State with type
+  const { userQuery } = useUser();
+  const user = userQuery.data;
   const [accountProfileDetails, setAccountProfileDetails] =
     useState<AccountProfileDetails>({
       accountName: "",
@@ -201,15 +204,16 @@ export default function CourseCreationProfile() {
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                   <span>Instructor {index + 1}</span>
-                  {accountProfileDetails.instructors.length > 1 && (
-                    <Button
-                      onClick={() => removeInstructor(instructor.id)}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      Remove
-                    </Button>
-                  )}
+                  {accountProfileDetails.instructors.length > 1 &&
+                    index + 1 !== 1 && (
+                      <Button
+                        onClick={() => removeInstructor(instructor.id)}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        Remove
+                      </Button>
+                    )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -224,11 +228,15 @@ export default function CourseCreationProfile() {
                       layout="fill"
                       objectFit="cover"
                     /> */}
-                    <img
-                      src="../../../../public/team/imoh.jpg"
-                      alt="imoh knight"
-                      className="block w-full h-full object-cover"
-                    />
+                    {index + 1 === 1 ? (
+                      <img
+                        src="../../../../public/team/imoh.jpg"
+                        alt="imoh knight"
+                        className="block w-full h-full object-cover"
+                      />
+                    ) : (
+                      <FaUser size="80" className="block" />
+                    )}
                   </div>
                   <div>
                     <input
@@ -246,115 +254,165 @@ export default function CourseCreationProfile() {
                           .getElementById(`image-upload-${instructor.id}`)
                           ?.click()
                       }
+                      className={`${index + 1 >= 2 && "pointer-events-none cursor-not-allowed bg-black/20"}`}
                     >
                       Upload Image
                     </Button>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <div
+                    className={`space-y-2 ${(index + 1 === 1 || index + 1 >= 2) && "pointer-events-none cursor-not-allowed"}`}
+                  >
                     <Label htmlFor={`name-${instructor.id}`}>Full Name</Label>
-                    <Input
-                      id={`name-${instructor.id}`}
-                      value={instructor.name}
-                      onChange={(e) =>
-                        updateInstructor(instructor.id, "name", e.target.value)
-                      }
-                      placeholder="Full Name"
-                      className={`relative border-[0.5px] ${
-                        instructor.name
-                          ? "border-[#FFA500]"
-                          : "border-primaryTwo"
-                      }`}
-                      // ${"pointer-events-none cursor-not-allowed before:absolute before:bg-red before:block before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-10"}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`email-${instructor.id}`}>
-                      Email Address
-                    </Label>
-                    <Input
-                      id={`email-${instructor.id}`}
-                      type="email"
-                      value={instructor.email}
-                      onChange={(e) =>
-                        updateInstructor(instructor.id, "email", e.target.value)
-                      }
-                      placeholder="Email Address"
-                      className={`border-[0.5px] ${
-                        instructor.email
-                          ? "border-[#FFA500]"
-                          : "border-primaryTwo"
-                      }`}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`role-${instructor.id}`}>Role/Title</Label>
-                    <Input
-                      id={`role-${instructor.id}`}
-                      value={instructor.role}
-                      onChange={(e) =>
-                        updateInstructor(instructor.id, "role", e.target.value)
-                      }
-                      placeholder="Role/Title"
-                      className={`border-[0.5px] ${
-                        instructor.role
-                          ? "border-[#FFA500]"
-                          : "border-primaryTwo"
-                      }`}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`experience-${instructor.id}`}>
-                      Experience
-                    </Label>
-                    <Select
-                      value={instructor.experience}
-                      onValueChange={(value) =>
-                        updateInstructor(instructor.id, "experience", value)
-                      }
+                    <div
+                      className={`w-full relative ${(index + 1 === 1 || index + 1 >= 2) && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
                     >
-                      <SelectTrigger
-                        id={`experience-${instructor.id}`}
+                      <Input
+                        id={`name-${instructor.id}`}
+                        value={
+                          user && index + 1 === 1
+                            ? user.username
+                            : instructor.name
+                        }
+                        onChange={(e) =>
+                          updateInstructor(
+                            instructor.id,
+                            "name",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Full Name"
                         className={`border-[0.5px] ${
-                          instructor.experience
+                          instructor.name
                             ? "border-[#FFA500]"
                             : "border-primaryTwo"
                         }`}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={`space-y-2 ${index + 1 === 1 && "pointer-events-none cursor-not-allowed"}`}
+                  >
+                    <Label htmlFor={`email-${instructor.id}`}>
+                      Email Address
+                    </Label>
+                    <div
+                      className={`w-full relative ${index + 1 === 1 && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
+                    >
+                      <Input
+                        id={`email-${instructor.id}`}
+                        type="email"
+                        value={
+                          user && index + 1 === 1
+                            ? user.email
+                            : instructor.email
+                        }
+                        onChange={(e) =>
+                          updateInstructor(
+                            instructor.id,
+                            "email",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Email Address"
+                        className={`border-[0.5px] ${
+                          instructor.email
+                            ? "border-[#FFA500]"
+                            : "border-primaryTwo"
+                        }`}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={`space-y-2 ${index + 1 >= 2 && "pointer-events-none cursor-not-allowed"}`}
+                  >
+                    <Label htmlFor={`role-${instructor.id}`}>Role/Title</Label>
+                    <div
+                      className={`w-full relative ${index + 1 >= 2 && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
+                    >
+                      <Input
+                        id={`role-${instructor.id}`}
+                        value={instructor.role}
+                        onChange={(e) =>
+                          updateInstructor(
+                            instructor.id,
+                            "role",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Role/Title"
+                        className={`border-[0.5px] ${
+                          instructor.role
+                            ? "border-[#FFA500]"
+                            : "border-primaryTwo"
+                        }`}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={`space-y-2 ${index + 1 >= 2 && "pointer-events-none cursor-not-allowed"}`}
+                  >
+                    <Label htmlFor={`experience-${instructor.id}`}>
+                      Experience
+                    </Label>
+                    <div
+                      className={`w-full relative ${index + 1 >= 2 && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
+                    >
+                      <Select
+                        value={instructor.experience}
+                        onValueChange={(value) =>
+                          updateInstructor(instructor.id, "experience", value)
+                        }
                       >
-                        <SelectValue placeholder="Select Experience" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1, 2, 3, 4, 5, "5+", "10+"].map((years) => (
-                          <SelectItem key={years} value={years.toString()}>
-                            {years} years
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                        <SelectTrigger
+                          id={`experience-${instructor.id}`}
+                          className={`border-[0.5px] ${
+                            instructor.experience
+                              ? "border-[#FFA500]"
+                              : "border-primaryTwo"
+                          }`}
+                        >
+                          <SelectValue placeholder="Select Experience" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[1, 2, 3, 4, 5, "5+", "10+"].map((years) => (
+                            <SelectItem key={years} value={years.toString()}>
+                              {years} years
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-2">
+                <div
+                  className={`space-y-2 ${index + 1 >= 2 && "pointer-events-none cursor-not-allowed"}`}
+                >
                   <Label htmlFor={`biography-${instructor.id}`}>
                     Biography
                   </Label>
-                  <Textarea
-                    id={`biography-${instructor.id}`}
-                    value={instructor.biography}
-                    onChange={(e) =>
-                      updateInstructor(
-                        instructor.id,
-                        "biography",
-                        e.target.value
-                      )
-                    }
-                    placeholder="Enter instructor biography..."
-                    className={`min-h-[100px] resize-none border-[0.5px] ${
-                      instructor.biography
-                        ? "border-[#FFA500]"
-                        : "border-primaryTwo"
-                    }`}
-                  />
+                  <div
+                    className={`w-full relative ${index + 1 >= 2 && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
+                  >
+                    <Textarea
+                      id={`biography-${instructor.id}`}
+                      value={instructor.biography}
+                      onChange={(e) =>
+                        updateInstructor(
+                          instructor.id,
+                          "biography",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Enter instructor biography..."
+                      className={`min-h-[100px] resize-none border-[0.5px] ${
+                        instructor.biography
+                          ? "border-[#FFA500]"
+                          : "border-primaryTwo"
+                      }`}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
