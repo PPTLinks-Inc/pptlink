@@ -487,7 +487,7 @@ export default function SignPage() {
                 <p className="text-center text-[.8rem] mb-4">
                   By signing up, you agree to our{" "}
                   <a
-                    href="https://docs.google.com/document/d/1-J6j0Pt7fjS479twAPzObB7sJxNztgEE4OO_kPL2YJE/edit?usp=sharing"
+                    href="/terms-and-services"
                     target="_blank"
                     rel="noreferrer"
                     className="text-[#FFA500] hover:underline"
@@ -496,7 +496,7 @@ export default function SignPage() {
                   </a>{" "}
                   and{" "}
                   <a
-                    href="https://docs.google.com/document/d/1-cqT7rNCgf2C0a67PS_Z4yql6fkgPp2pOhLDPayH5rc/edit?usp=sharing"
+                    href="/privacy-policy"
                     target="_blank"
                     rel="noreferrer"
                     className="text-[#FFA500] hover:underline"
