@@ -3,7 +3,7 @@ $maxHeight: 100svh;
 $mediaWidth: 768px;
 $blurbg: rgba(255, 255, 255, 0.1);
 $blur: blur(6px);
-$primaryTwo: #212a37;
+$primaryTwo: #191919;
 // //////////////////////functions//////////////////////////////
 @mixin is_mediaQuery_MaxWidth_Yes($width: 768px, $isMaxWidth: true) {
   @if $isMaxWidth and $width {
@@ -60,7 +60,7 @@ $primaryTwo: #212a37;
   }
 
   *::-webkit-scrollbar-thumb:horizontal {
-    background-color: #212a37;
+    background-color: $primaryTwo;
     border-radius: 4px;
   }
 

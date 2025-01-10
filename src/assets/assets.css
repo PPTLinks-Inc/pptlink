@@ -1,3 +1,6 @@
+:root {
+  --baseColor: #191919;
+}
 .logo__container {
   width: 50px;
   height: 50px;
@@ -17,7 +20,7 @@
 .logo {
   width: 25px;
   height: 25px;
-  border: 1px solid #212a37;
+  border: 1px solid var(--baseColor);
   position: relative;
   overflow: hidden;
 }
@@ -43,7 +46,7 @@
 .logo__content1 {
   width: 19px;
   height: 19px;
-  background-color: #212a37;
+  background-color: var(--baseColor);
 }
 
 .two .logo__content1 {
@@ -54,7 +57,7 @@
 .logo__content2 {
   width: 19px;
   height: 19px;
-  border: 1px solid #212a37;
+  border: 1px solid var(--baseColor);
 }
 
 .two .logo__content {
@@ -69,22 +72,22 @@
 
 .two.active .logo {
   /* border: 1px solid rgb(226 232 240); */
-  border: 1px solid #212a37 !important;
+  border: 1px solid var(--baseColor) !important;
 }
 
 .two.active .logo__content1 {
   /* background-color: rgb(226 232 240); */
-  background-color: #212a37 !important;
+  background-color: var(--baseColor) !important;
 }
 
 .two.active .logo__content {
   /* border: 1px solid rgb(226 232 240); */
-  border: 1px solid #212a37 !important;
+  border: 1px solid var(--baseColor) !important;
 }
 
 .two.active .logo__content2 {
   /* border: 1px solid rgb(226 232 240); */
-  border: 1px solid #212a37 !important;
+  border: 1px solid var(--baseColor) !important;
 }
 
 @keyframes logo {
