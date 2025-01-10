@@ -10,6 +10,7 @@ import "./assets/styles/general_css.css";
 import { Toaster } from "@/components/ui/toaster";
 import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
+import * as Sentry from "@sentry/react";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -62,7 +63,10 @@ const PrivacyPolicyPage = lazy(
   () => import("./components/Terms_and_policy_page/privacyPolicy")
 );
 
-const router = createBrowserRouter(
+const sentryCreateBrowserRouter =
+  Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
+
+const router = sentryCreateBrowserRouter(
   [
     {
       path: "/",
@@ -111,7 +115,8 @@ const router = createBrowserRouter(
         {
           path: "dashboard",
           element: <NewDashboard />
-        }, {
+        },
+        {
           path: "/terms-and-services",
           element: <TermsAndServicesPage />
         },
