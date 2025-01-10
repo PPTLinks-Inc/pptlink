@@ -13,7 +13,7 @@ Sentry.init({
         // See docs for support of different versions of variation of react router
         // https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
         Sentry.reactRouterV6BrowserTracingIntegration({
-            useEffect,
+            useEffect: useEffect,
             useLocation,
             useNavigationType,
             createRoutesFromChildren,
