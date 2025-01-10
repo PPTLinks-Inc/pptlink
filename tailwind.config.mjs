@@ -63,7 +63,8 @@ module.exports = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			},
-  			primaryTwo: '#212A37',
+  			// primaryTwo: '#212A37',
+  			primaryTwo: '#191919',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
