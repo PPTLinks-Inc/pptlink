@@ -6,7 +6,6 @@ import { MdOutlineQuiz } from "react-icons/md";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { MdDragIndicator } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
-import { useContext } from "react";
 import {
   DndContext,
   KeyboardSensor,
@@ -25,14 +24,14 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import {
   ContentItem,
-  CourseSideBarContext,
   Section
-} from "@/contexts/courseSideBarContext";
+} from "@/store/courseStore";
 import PopUpModal from "../../Models/dashboardModel";
+import { useCourseStore } from "@/store/courseStoreProvider";
 
 export default function CourseCreationWorkflow() {
   const [newlyCreatedSection, setNewlyCreatedSection] = useState<{
-    id: number;
+    id: string;
     initialTitle: string;
   } | null>(null);
   const newSectionRef = useRef<HTMLDivElement>(null);
@@ -45,16 +44,15 @@ export default function CourseCreationWorkflow() {
     actionText: "Delete",
     sectionId: ""
   });
-  const {
-    sections,
-    setSections,
-    addSection,
-    removeSection,
-    selectSection,
-    selectedSectionIndex,
-    setContentItems,
-    handleSectionTitleChange
-  } = useContext(CourseSideBarContext);
+
+  const sections = useCourseStore((state) => state.sections);
+  const setSections = useCourseStore((state) => state.setSections);
+  const selectedSectionIndex = useCourseStore((state) => state.selectedSectionIndex);
+  const selectSection = useCourseStore((state) => state.selectSection);
+  const setContentItems = useCourseStore((state) => state.setContentItems);
+  const addSection = useCourseStore((state) => state.addSection);
+  const handleSectionTitleChange = useCourseStore((state) => state.handleSectionTitleChange);
+  const removeSection = useCourseStore((state) => state.removeSection);
 
   const contentItems = sections[selectedSectionIndex].content;
 
@@ -97,13 +95,11 @@ export default function CourseCreationWorkflow() {
     if (active.id === over.id) return;
 
     if (type === "section") {
-      setSections((section) => {
-        const originalPos = section.findIndex((s) => s.id === active.id);
-        const newPos = section.findIndex((s) => s.id === over.id);
-
-        return arrayMove(section, originalPos, newPos);
-      });
-      selectSection(over.id);
+      const originalPos = sections.findIndex((s) => s.id === active.id);
+      const newPos = sections.findIndex((s) => s.id === over.id);
+      const newSection = arrayMove(sections, originalPos, newPos);
+      setSections(newSection);
+      selectSection(active.id);
       return;
     }
 
@@ -162,7 +158,7 @@ export default function CourseCreationWorkflow() {
       type,
       file,
       name: file.name,
-      id: Math.max(0, ...contentItems.map((s) => s.id)) + 1
+      id: (Math.max(0, ...contentItems.map((s) => parseInt(s.id))) + 1).toString()
     };
 
     setContentItems([...contentItems, newContentItem]);
@@ -389,9 +385,9 @@ function SectionItem({
   newSectionRef: React.RefObject<HTMLDivElement>;
   section: Section;
   newlyCreated: boolean;
-  selectSection: (id: number) => void;
+  selectSection: (id: string) => void;
   active: boolean;
-  removeSection: (id: number) => void;
+  removeSection: (id: string) => void;
   showDelete: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -439,7 +435,7 @@ function ContentItems({ content }: { content: ContentItem }) {
     opacity: isDragging ? 0.3 : 1
   };
 
-  const { removeContentItem } = useContext(CourseSideBarContext);
+  const removeContentItem = useCourseStore((state) => state.removeContentItem);
 
   return (
     <div
