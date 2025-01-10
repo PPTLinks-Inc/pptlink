@@ -5,6 +5,7 @@ import { normalizePath, defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { createRequire } from "node:module";
 import basicSsl from "@vitejs/plugin-basic-ssl";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 const require = createRequire(import.meta.url);
 const cMapsDir = normalizePath(
@@ -33,6 +34,11 @@ const plugins = [
       }
     ]
   }),
+  sentryVitePlugin({
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+    org: "pptlinks",
+    project: "pptlinks-frontend",
+  })
   // basicSsl()
 ];
 export default defineConfig({
@@ -43,7 +49,7 @@ export default defineConfig({
     }
   },
   build: {
-    sourcemap: false
+    sourcemap: true
   },
   server: {
     proxy: {
