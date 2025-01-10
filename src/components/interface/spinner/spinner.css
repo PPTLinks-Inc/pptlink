@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Sarpanch&display=swap');
-
+:root {
+  --baseColorSpinner: #191919;
+}
 .spinner__container {
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #212a37;
+    background: var(--baseColorSpinner);
 }
 @layer {
   .presentation__spinner{
