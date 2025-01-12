@@ -80,6 +80,8 @@ export default function CoursePreviewPage() {
             {Array.from({ length: 4 }, (_, i) => i + 1).map(idx => (
                 <div key={idx} className="container !pb-8">
                     <AccordionWrapper
+                        isDark={false}
+                        isBorder={false}
                         title={<p className="w-full px-6 py-4 bg-[#FFFFF0] border-0 !rounded-md !font-normal">
                             <span className="block w-fit text-[#FFA500] text-md mb-1 font-semibold">Course 1-47 minutes</span>
                             <span className="block w-fit text-primaryTwo text-xl capitalize">Welcome to UI/UX Course</span>
