@@ -685,6 +685,8 @@ export default function Home() {
               {FAQ.map((_, id) => (
                 <AccordionWrapper
                   key={id}
+                  isDark={true}
+                  isBorder={true}
                   title={_.title}
                   className="transition-all duration-300"
                 >
