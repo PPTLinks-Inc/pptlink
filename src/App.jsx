@@ -20,7 +20,6 @@ const InterfaceNotFound = lazy(() => import("./components/interface/404"));
 const Root = lazy(() => import("./components/root/root"));
 const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Library = lazy(() => import("./components/library/library"));
-const LibraryPage = lazy(() => import("./components/library/library_page"));
 const SignPage = lazy(() => import("./components/sign/sign"));
 const Pay = lazy(() => import("./components/pay/pay"));
 const About = lazy(() => import("./components/about-us/about"));
@@ -44,14 +43,14 @@ const CourseCreationWorkflow = lazy(
 const CourseCreationProfile = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationProfile")
 );
-// const CourseCreationFeedback = lazy(
-//   () => import("./components/upload/createCourseFlow/courseCreationFeedback")
-// );
 const CourseCreationSettings = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationSettings")
 );
 const CourseCreationHelp = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationHelp")
+);
+const CoursePreviewPage = lazy(
+  () => import("./components/upload/createCourseFlow/coursePreviewPage")
 );
 const CourseCreationWorkflowTwo = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo")
@@ -96,10 +95,6 @@ const router = sentryCreateBrowserRouter(
         {
           path: "library",
           element: <Library />
-        },
-        {
-          path: "libraryPage",
-          element: <LibraryPage />
         }
       ]
     },
@@ -123,6 +118,10 @@ const router = sentryCreateBrowserRouter(
         {
           path: "/privacy-policy",
           element: <PrivacyPolicyPage />
+        },
+        {
+          path: "course/user/preview",
+          element: <CoursePreviewPage />
         }
       ]
     },
@@ -184,14 +183,6 @@ const router = sentryCreateBrowserRouter(
         </CourseSideBarContext>
       )
     },
-    // {
-    //   path: "/course/feedback",
-    //   element: (
-    //     <CourseSideBarContext isActive="feedback">
-    //       <CourseCreationFeedback />
-    //     </CourseSideBarContext>
-    //   )
-    // },
     {
       path: "/course/help",
       element: (
