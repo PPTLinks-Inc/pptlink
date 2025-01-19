@@ -35,7 +35,7 @@ export default function CourseCard({ img, type }) {
                         className="block w-full aspect-[1/0.8] rounded-md object-cover text-center"
                         loading="lazy"
                     />
-                    <span className="absolute top-0 left-0 right-0 bottom-0 bg-transparent z-10 pointer-events-none text-6xl font-black flex justify-center items-center">
+                    <span className="absolute top-0 left-0 right-0 bottom-0 z-10 pointer-events-none text-6xl font-black flex justify-center items-center bg-black/50 border-none rounded-[0.33rem]">
                         {parseInt(type) % 2 === 0 ? <CiPlay1 /> : <CiFileOn />}
                     </span>
                 </div>
