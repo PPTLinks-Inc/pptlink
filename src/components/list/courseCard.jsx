@@ -16,7 +16,7 @@ export default function CourseCard({ img, type }) {
                     transition: { duration: 0.5, type: "tween" }
                 }}
                 viewport={{ once: true }}
-                className="card rounded-lg !pt-0 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[#FFFFF0] relative"
+                className="card min-w-[285px] max-w-[285px] rounded-lg !pt-0 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[#FFFFF0] relative"
             >
                 <span className="block !w-full h-fit mb-4 z-10 border-none rounded-t-[0.33rem] bg-[#FFFFF0]">
                     <span className={`w-[90%] mx-auto text-black font-bold py-1 flex justify-between items-center ${parseInt(type) % 2 === 0 && "justify-start"}`}>
