@@ -90,8 +90,7 @@ export default function CoursePreviewPage() {
                         </p>}
                         className="transition-all duration-300"
                     >
-                        {/* <div className="courses my-4 grid grid-cols-4 auto-rows-max grid-flow-row gap-4 maxScreen:grid-cols-3 maxScreenMobile:grid-cols-2 maxSmallMobile:grid-cols-1"> */}
-                        <div className="snap_scrolling flex gap-8 h-fit overflow-x-auto overflow-y-hidden pt-4 pr-2 pb-2 scroll-smooth">
+                        <div className="md:my-4 grid grid-cols-4 auto-rows-max grid-flow-row gap-4 maxScreen:grid-cols-3  maxSmallMobile:snap_scrolling maxSmallMobile:grid-cols-none maxSmallMobile:grid-rows-none maxSmallMobile:!flex !h-fit maxSmallMobile:!overflow-x-auto maxSmallMobile:!overflow-y-hidden maxSmallMobile:pt-4 maxSmallMobile:pr-2 maxSmallMobile:pb-2 maxSmallMobile:!scroll-smooth">
                             {/* start */}
                             {Array.from({ length: (1 + idx) }, (_, i) => i + 1).map(idx2 => (
                                 <CourseCard key={idx2.toString()} img={"/team/yoh.jpg"} type={(1 + idx2)} />
