@@ -12,6 +12,8 @@ import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
 import * as Sentry from "@sentry/react";
 import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
+import CourseStoreProvider from "@/store/courseStoreProvider";
+import CourseSideBarContext from "@/contexts/courseSideBarContext";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -35,9 +37,7 @@ const RequestPasswordResetLink = lazy(
   () => import("./components/sign/requestPasswordResetLink")
 );
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
-const CourseSideBarContext = lazy(
-  () => import("./contexts/courseSideBarContext")
-);
+
 const CourseCreationWorkflow = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationWorkflow")
 );
@@ -170,9 +170,11 @@ const router = sentryCreateBrowserRouter(
             </div>
           }
         >
-          <CourseSideBarContext isActive="course">
-            <CourseCreationWorkflow />
-          </CourseSideBarContext>
+          <CourseStoreProvider>
+            <CourseSideBarContext isActive="course">
+              <CourseCreationWorkflow />
+            </CourseSideBarContext>
+          </CourseStoreProvider>
         </Suspense>
       ),
       loader: CourseContentLoader

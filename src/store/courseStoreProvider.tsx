@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
-import { ContentItem, CourseStore } from "./courseStore";
+import { ContentItem, CourseData, CourseStore } from "./courseStore";
 import { authFetch, standardFetch } from "@/lib/axios";
-import { useParams } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import safeAwait from "@/util/safeAwait";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -53,9 +53,11 @@ export default function CourseStoreProvider({
     throw new Error("Course ID is required");
   }
 
+  const data = useLoaderData() as CourseData;
+
   const store = createStore<CourseStore>((set, get) => ({
     courseId: courseId,
-    sections: [],
+    sections: data.CourseSection ?? [],
     setSections: (sections) => {
       set({ sections });
       
@@ -166,6 +168,11 @@ export default function CourseStoreProvider({
         selectedSectionIndex: state.sections.findIndex((s) => s.id === id)
       }));
     },
+    saveCourseData: async () => {
+      const courseData = get().sections;
+        
+      await authFetch.put(`/api/v1/course/update-course-data/${get().courseId}`, courseData);
+    },
     uploadQueue: [],
     canUpload: () => {
       const activeUploads = get().sections
@@ -227,6 +234,7 @@ export default function CourseStoreProvider({
           "/api/v1/course/generate-upload-url",
           {
             params: {
+              contentId: content.id,
               courseId,
               sectionId: selectedSection.id,
               contentType: content.file.type,
