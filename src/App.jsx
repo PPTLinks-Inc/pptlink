@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
 import * as Sentry from "@sentry/react";
+import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -162,10 +163,19 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/course/:courseId",
       element: (
-        <CourseSideBarContext isActive="course">
-          <CourseCreationWorkflow />
-        </CourseSideBarContext>
-      )
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen bg-primaryTwo">
+              <LoadingAssetBig2 />
+            </div>
+          }
+        >
+          <CourseSideBarContext isActive="course">
+            <CourseCreationWorkflow />
+          </CourseSideBarContext>
+        </Suspense>
+      ),
+      loader: CourseContentLoader
     },
     {
       path: "/course/settings/:courseId",

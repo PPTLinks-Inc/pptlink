@@ -1,6 +1,9 @@
 import { createContext, useContext } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
-import { CourseStore } from "./courseStore";
+import { ContentItem, CourseStore } from "./courseStore";
+import { authFetch, standardFetch } from "@/lib/axios";
+import { useParams } from "react-router-dom";
+import safeAwait from "@/util/safeAwait";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
@@ -9,33 +12,90 @@ export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
 
 interface CourseStoreProviderProps extends React.PropsWithChildren {}
 
+const checkProcessingStatus = async (
+  courseId: string,
+  sectionId: string,
+  contentId: string,
+  contentIndex: number,
+  sectionIndex: number,
+  set: (fn: (state: CourseStore) => Partial<CourseStore>) => void
+) => {
+  const [err, res] = await safeAwait(
+    authFetch.get<{ status: ContentItem["status"] }>(
+      `/api/v1/course/check-processing-status/${courseId}/${sectionId}/${contentId}`
+    )
+  );
+
+  if (err) {
+    console.error(err);
+    return false;
+  }
+
+  if (res.data.status === "done") {
+    set((state) => {
+      const newSections = [...state.sections];
+      if (newSections[sectionIndex]?.contents[contentIndex]) {
+        newSections[sectionIndex].contents[contentIndex].status = "done";
+      }
+      return { sections: newSections };
+    });
+    return true;
+  }
+  return false;
+};
+
 export default function CourseStoreProvider({
   children
 }: CourseStoreProviderProps) {
-  const store = createStore<CourseStore>((set) => ({
-    sections: [
-      {
-        id: "1",
-        title: "Introduction to the Course",
-        content: []
-      }
-    ],
-    setSections: (sections) => set({ sections }),
+  const { courseId } = useParams<{ courseId: string }>();
+
+  if (!courseId) {
+    throw new Error("Course ID is required");
+  }
+
+  const store = createStore<CourseStore>((set, get) => ({
+    courseId: courseId,
+    sections: [],
+    setSections: (sections) => {
+      set({ sections });
+      
+      // Start checking processing content
+      sections.forEach((section, sectionIndex) => {
+        section.contents.forEach((content, contentIndex) => {
+          if (content.status === "processing") {
+            const intervalId = setInterval(async () => {
+              const isDone = await checkProcessingStatus(
+                get().courseId,
+                section.id,
+                content.id,
+                contentIndex,
+                sectionIndex,
+                set
+              );
+              if (isDone) {
+                clearInterval(intervalId);
+              }
+            }, 10000);
+          }
+        });
+      });
+    },
     selectedSectionIndex: 0,
     setSelectedSectionIndex: (index: number) =>
       set({ selectedSectionIndex: index }),
     setContentItems: (contentItems) => {
       set((state) => {
         const newSections = [...state.sections];
-        newSections[state.selectedSectionIndex].content = contentItems;
+        newSections[state.selectedSectionIndex].contents = contentItems;
         return { sections: newSections };
       });
     },
     removeContentItem: (id: string) => {
       set((state) => {
         const newSections = [...state.sections];
-        const content = newSections[state.selectedSectionIndex].content;
-        newSections[state.selectedSectionIndex].content = content.filter(
+        const content = newSections[state.selectedSectionIndex].contents;
+        if (!content) return { sections: newSections };
+        newSections[state.selectedSectionIndex].contents = content.filter(
           (item) => item.id !== id
         );
         return { sections: newSections };
@@ -48,22 +108,36 @@ export default function CourseStoreProvider({
         return { sections: newSections };
       });
     },
-    addSection: () => {
-      const newId = generateUniqueId();
+    addSection: async () => {
+      const sectionOrder = get().sections.length + 1;
+
+      const { data } = await authFetch.post<{ sectionId: string }>(
+        "/api/v1/course/create-section",
+        {
+          courseId: get().courseId,
+          title: `Section ${sectionOrder}`,
+          orderNumber: sectionOrder
+        }
+      );
+
       set((state) => ({
         sections: [
           ...state.sections,
           {
-            id: newId,
-            title: `Section ${newId}`,
-            content: []
+            id: data.sectionId,
+            title: `Section ${sectionOrder}`,
+            contents: []
           }
         ],
         selectedSectionIndex: state.sections.length
       }));
-      return newId;
+      return { order: sectionOrder, id: data.sectionId };
     },
-    removeSection: (id: string) => {
+    removeSection: async (id: string) => {
+      await authFetch.delete(
+        `/api/v1/course/delete-section/${get().courseId}/${id}`
+      );
+
       set((state) => {
         const newSections = state.sections.filter(
           (section) => section.id !== id
@@ -91,14 +165,130 @@ export default function CourseStoreProvider({
       set((state) => ({
         selectedSectionIndex: state.sections.findIndex((s) => s.id === id)
       }));
+    },
+    uploadQueue: [],
+    canUpload: () => {
+      const activeUploads = get().sections
+        .flatMap(s => s.contents)
+        .filter(c => c.status === 'uploading' || c.status === 'starting')
+        .length;
+      return activeUploads < 3;
+    },
+    addToUploadQueue: (contentId: string) => {
+      set(state => ({
+        uploadQueue: [...state.uploadQueue, contentId]
+      }));
+      get().processUploadQueue();
+    },
+    processUploadQueue: () => {
+      if (!get().canUpload()) return;
+      
+      const nextContentId = get().uploadQueue[0];
+      if (!nextContentId) return;
+
+      set(state => ({
+        uploadQueue: state.uploadQueue.slice(1)
+      }));
+
+      get().uploadContent(nextContentId).finally(() => {
+        get().processUploadQueue();
+      });
+    },
+    uploadContent: async function (contentId) {
+      const selectedSection = get().sections[get().selectedSectionIndex];
+
+      const contentIndex = selectedSection.contents.findIndex(
+        (c) => c.id === contentId
+      );
+      if (contentIndex === -1) return;
+
+      const content = selectedSection.contents[contentIndex];
+      content.status = !content.file ? "error" : "starting";
+
+      set((state) => {
+        const newSections = [...state.sections];
+        newSections[state.selectedSectionIndex].contents[contentIndex] =
+          content;
+        return { sections: newSections };
+      });
+
+      if (!content.file) return;
+
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      for (let i = 0; i < 12; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters[randomIndex];
+      }
+
+      try {
+        const { data } = await authFetch.get(
+          "/api/v1/course/generate-upload-url",
+          {
+            params: {
+              courseId,
+              sectionId: selectedSection.id,
+              contentType: content.file.type,
+              key: `${Date.now()}_${result}.mp4`,
+              contentOrder: contentIndex + 1,
+              name: content.file.name
+            }
+          }
+        );
+
+        set((state) => {
+          const newSections = [...state.sections];
+          newSections[state.selectedSectionIndex].contents[contentIndex] = {
+            ...content,
+            status: "uploading",
+            id: data.contentId
+          };
+          return { sections: newSections };
+        });
+
+        await standardFetch.put(data.signedUrl, content.file, {
+          headers: {
+            "Content-Type": content.file.type
+          }
+        });
+
+        set((state) => {
+          const newSections = [...state.sections];
+          newSections[state.selectedSectionIndex].contents[contentIndex] = {
+            ...content,
+            status: "processing"
+          };
+          return { sections: newSections };
+        });
+
+        const intervalId = setInterval(async function () {
+          const isDone = await checkProcessingStatus(
+            courseId,
+            selectedSection.id,
+            data.contentId,
+            contentIndex,
+            get().selectedSectionIndex,
+            set
+          );
+          if (isDone) {
+            clearInterval(intervalId);
+          }
+        }, 10000);
+
+        console.log(data);
+      } catch (error) {
+        set((state) => {
+          const newSections = [...state.sections];
+          newSections[state.selectedSectionIndex].contents[contentIndex] = {
+            ...content,
+            status: "error"
+          };
+          return { sections: newSections };
+        });
+      }
     }
   }));
-
-  function generateUniqueId(): string {
-    return (
-      Math.max(0, ...store.getState().sections.map((s) => parseInt(s.id))) + 1
-    ).toString();
-  }
 
   return (
     <CourseContext.Provider value={store}>{children}</CourseContext.Provider>

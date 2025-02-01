@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
@@ -22,12 +22,29 @@ import {
   useSortable
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  ContentItem,
-  Section
-} from "@/store/courseStore";
+import { ContentItem, Section } from "@/store/courseStore";
 import PopUpModal from "../../Models/dashboardModel";
 import { useCourseStore } from "@/store/courseStoreProvider";
+import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { authFetch } from "@/lib/axios";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { LoadingAssetSmall2 } from "@/assets/assets";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function CourseContentLoader({ params }: LoaderFunctionArgs<any>) {
+  const { data } = await authFetch.get(
+    `/api/v1/course/content/${params.courseId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    }
+  );
+
+  return data;
+}
 
 export default function CourseCreationWorkflow() {
   const [newlyCreatedSection, setNewlyCreatedSection] = useState<{
@@ -45,16 +62,23 @@ export default function CourseCreationWorkflow() {
     sectionId: ""
   });
 
+  const toast = useToast();
+
   const sections = useCourseStore((state) => state.sections);
   const setSections = useCourseStore((state) => state.setSections);
-  const selectedSectionIndex = useCourseStore((state) => state.selectedSectionIndex);
+  const selectedSectionIndex = useCourseStore(
+    (state) => state.selectedSectionIndex
+  );
   const selectSection = useCourseStore((state) => state.selectSection);
   const setContentItems = useCourseStore((state) => state.setContentItems);
   const addSection = useCourseStore((state) => state.addSection);
-  const handleSectionTitleChange = useCourseStore((state) => state.handleSectionTitleChange);
+  const handleSectionTitleChange = useCourseStore(
+    (state) => state.handleSectionTitleChange
+  );
   const removeSection = useCourseStore((state) => state.removeSection);
+  const addToUploadQueue = useCourseStore((state) => state.addToUploadQueue);
 
-  const contentItems = sections[selectedSectionIndex].content;
+  const contentItems = sections[selectedSectionIndex]?.contents;
 
   const videoInputRef = useRef<HTMLInputElement>(null);
   const pptInputRef = useRef<HTMLInputElement>(null);
@@ -68,6 +92,14 @@ export default function CourseCreationWorkflow() {
       coordinateGetter: sortableKeyboardCoordinates
     })
   );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data = useLoaderData() as any;
+  useEffect(function () {
+    if (data) {
+      setSections(data.CourseSection);
+    }
+  }, []);
 
   // Focus effect for new sections
   useEffect(() => {
@@ -88,6 +120,46 @@ export default function CourseCreationWorkflow() {
     }
   }, [selectedSectionIndex, newlyCreatedSection, sections]);
 
+  const handleAddSection = useMutation({
+    mutationFn: function () {
+      return addSection();
+    },
+    onSuccess: (data) => {
+      toast.toast({
+        title: "Section created"
+      });
+      setNewlyCreatedSection({
+        id: data.id,
+        initialTitle: `Section ${data.order}`
+      });
+    },
+    onError: () => {
+      toast.toast({
+        title: "Failed to create section",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleRemoveSection = useMutation({
+    mutationFn: function (id: string) {
+      return removeSection(id);
+    },
+    onSuccess: () => {
+      toast.toast({
+        title: "Section deleted"
+      });
+    },
+    onError: () => {
+      toast.toast({
+        title: "Failed to delete section",
+        variant: "destructive"
+      });
+    }
+  });
+
+  if (!sections[selectedSectionIndex]) return null;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleDragEnd(event: any, type: "section" | "content") {
     const { active, over } = event;
@@ -102,6 +174,8 @@ export default function CourseCreationWorkflow() {
       selectSection(active.id);
       return;
     }
+
+    if (!contentItems) return;
 
     const originalPos = contentItems.findIndex((item) => item.id === active.id);
     const newPos = contentItems.findIndex((item) => item.id === over.id);
@@ -136,14 +210,14 @@ export default function CourseCreationWorkflow() {
     const files = Array.from(e.dataTransfer.files);
     files.forEach((file) => {
       if (file.type.startsWith("video/")) {
-        addContentItem("video", file);
+        addContentItem("VIDEO", file);
       } else if (file.name.match(/\.(ppt|pptx)$/i)) {
-        addContentItem("presentation", file);
+        addContentItem("PPT", file);
       }
     });
   }
 
-  function addContentItem(type: "video" | "presentation", file: File) {
+  function addContentItem(type: ContentItem["type"], file: File) {
     const ppttypes = [
       "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "application/vnd.ms-powerpoint",
@@ -154,29 +228,26 @@ export default function CourseCreationWorkflow() {
       return;
     }
 
+    if (!contentItems) return;
+
     const newContentItem: ContentItem = {
       type,
       file,
       name: file.name,
-      id: (Math.max(0, ...contentItems.map((s) => parseInt(s.id))) + 1).toString()
+      status: "starting",
+      id: (
+        Math.max(0, ...contentItems.map((s) => parseInt(s.id))) + 1
+      ).toString()
     };
 
     setContentItems([...contentItems, newContentItem]);
+    addToUploadQueue(newContentItem.id);
   }
 
-  function handleFileSelect(type: "video" | "presentation", file: File | null) {
+  function handleFileSelect(type: ContentItem["type"], file: File | null) {
     if (file) {
       addContentItem(type, file);
     }
-  }
-
-  // Modified addSection handler
-  function handleAddSection() {
-    const newId = addSection();
-    setNewlyCreatedSection({
-      id: newId,
-      initialTitle: `Section ${newId}`
-    });
   }
 
   function handleTitleBlur(value: string) {
@@ -193,7 +264,8 @@ export default function CourseCreationWorkflow() {
 
   function handleNamelessSectionDelete(e: React.FormEvent) {
     e.preventDefault();
-    removeSection(sections[selectedSectionIndex].id);
+    // removeSection(sections[selectedSectionIndex].id);
+    handleRemoveSection.mutate(sections[selectedSectionIndex].id);
 
     setModal((prev) => ({ ...prev, isTriggered: false }));
   }
@@ -240,7 +312,7 @@ export default function CourseCreationWorkflow() {
                   newlyCreated={newlyCreatedSection?.id === section.id}
                   selectSection={selectSection}
                   active={selectedSectionIndex === index}
-                  removeSection={removeSection}
+                  removeSection={(id) => handleRemoveSection.mutate(id)}
                   showDelete={sections.length > 1}
                 />
               ))}
@@ -249,10 +321,16 @@ export default function CourseCreationWorkflow() {
 
           <button
             className="mt-4 w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 flex items-center justify-center bg-primaryTwo"
-            onClick={handleAddSection}
+            onClick={() => handleAddSection.mutate()}
           >
-            <FaPlus className="w-5 h-5 mr-2" />
-            Add Section
+            {handleAddSection.isPending ? (
+              <LoadingAssetSmall2 />
+            ) : (
+              <>
+                <FaPlus className="w-5 h-5 mr-2" />
+                <span>Add Section</span>
+              </>
+            )}
           </button>
         </div>
 
@@ -288,7 +366,7 @@ export default function CourseCreationWorkflow() {
                 onChange={(e) => {
                   const numOfFiles = e.target.files?.length || 0;
                   for (let i = 0; i < numOfFiles; i++) {
-                    handleFileSelect("video", e.target.files?.[i] || null);
+                    handleFileSelect("VIDEO", e.target.files?.[i] || null);
                   }
                 }}
               />
@@ -302,7 +380,7 @@ export default function CourseCreationWorkflow() {
                   const numOfFiles = e.target.files?.length || 0;
                   for (let i = 0; i < numOfFiles; i++) {
                     handleFileSelect(
-                      "presentation",
+                      "PPT",
                       e.target.files?.[i] || null
                     );
                   }
@@ -337,27 +415,29 @@ export default function CourseCreationWorkflow() {
               </div>
             </div>
           </div>
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCorners}
-            onDragEnd={(e) => handleDragEnd(e, "content")}
-          >
-            <div className="mt-4 h-full rounded overflow-y-auto">
-              <SortableContext
-                items={contentItems}
-                strategy={verticalListSortingStrategy}
-              >
-                {contentItems.map((item) => (
-                  <ContentItems key={item.id} content={item} />
-                ))}
-              </SortableContext>
-              {contentItems.length === 0 && (
-                <div className="bg-gray-100 p-4 rounded">
-                  No content items added yet
-                </div>
-              )}
-            </div>
-          </DndContext>
+          {contentItems && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCorners}
+              onDragEnd={(e) => handleDragEnd(e, "content")}
+            >
+              <div className="mt-4 h-full rounded overflow-y-auto">
+                <SortableContext
+                  items={contentItems}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {contentItems.map((item) => (
+                    <ContentItems key={item.id} content={item} />
+                  ))}
+                </SortableContext>
+                {contentItems.length === 0 && (
+                  <div className="bg-gray-100 p-4 rounded">
+                    No content items added yet
+                  </div>
+                )}
+              </div>
+            </DndContext>
+          )}
         </div>
 
         <div className="w-full sm:w-1/4 bg-slate-200 p-4 border-l overflow-y-auto">
@@ -426,8 +506,14 @@ function SectionItem({
 }
 
 function ContentItems({ content }: { content: ContentItem }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: content.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: content.id });
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
@@ -436,6 +522,26 @@ function ContentItems({ content }: { content: ContentItem }) {
   };
 
   const removeContentItem = useCourseStore((state) => state.removeContentItem);
+
+  const statusColor = useMemo(
+    function () {
+      switch (content.status) {
+        case "starting":
+          return "text-blue-700 bg-blue-100";
+        case "uploading":
+          return "text-yellow-700 bg-yellow-100";
+        case "processing":
+          return "text-orange-700 bg-orange-100";
+        case "error":
+          return "text-red-700 bg-red-100";
+        case "done":
+          return "text-green-700 bg-green-100";
+        default:
+          return "text-gray-700 bg-gray-100";
+      }
+    },
+    [content.status]
+  );
 
   return (
     <div
@@ -448,7 +554,7 @@ function ContentItems({ content }: { content: ContentItem }) {
           <MdDragIndicator />
         </span>
         <div className="flex items-center w-full">
-          {content.type === "video" ? (
+          {content.type === "VIDEO" ? (
             <IoVideocamOutline className="mr-2" />
           ) : (
             <HiOutlineDocumentText className="mr-2" />
@@ -461,25 +567,31 @@ function ContentItems({ content }: { content: ContentItem }) {
           </span>
         </div>
       </div>
-      <div className="flex gap-2">
-        <button
-          className="text-red-500 hover:text-red-700 cursor-pointer"
-          type="button"
-          title="Edit"
-        >
-          <FaRegEdit className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => {
-            removeContentItem(content.id);
-          }}
-          title="Delete"
-          className="text-red-500 hover:text-red-700 cursor-pointer"
-          type="button"
-        >
-          <FaRegTrashCan className="w-4 h-4" />
-        </button>
-      </div>
+      <p className={cn("p-2 rounded-md flex", statusColor)}>
+        <span>・</span>
+        {content.status}
+      </p>
+      {(content.status === "done" || content.status === "error") && (
+        <div className="flex gap-2">
+          <button
+            className="text-red-500 hover:text-red-700 cursor-pointer"
+            type="button"
+            title="Edit"
+          >
+            <FaRegEdit className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => {
+              removeContentItem(content.id);
+            }}
+            title="Delete"
+            className="text-red-500 hover:text-red-700 cursor-pointer"
+            type="button"
+          >
+            <FaRegTrashCan className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
