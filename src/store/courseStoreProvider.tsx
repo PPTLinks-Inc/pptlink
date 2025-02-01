@@ -230,7 +230,7 @@ export default function CourseStoreProvider({
               courseId,
               sectionId: selectedSection.id,
               contentType: content.file.type,
-              key: `${Date.now()}_${result}.mp4`,
+              key: `${Date.now()}_${result}.${content.type === "VIDEO" ? "mp4" : "pptx"}`,
               contentOrder: contentIndex + 1,
               name: content.file.name
             }

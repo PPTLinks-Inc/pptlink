@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
@@ -312,8 +312,8 @@ export default function CourseCreationWorkflow() {
                   newlyCreated={newlyCreatedSection?.id === section.id}
                   selectSection={selectSection}
                   active={selectedSectionIndex === index}
-                  removeSection={(id) => handleRemoveSection.mutate(id)}
-                  showDelete={sections.length > 1}
+                  removeSection={handleRemoveSection.mutateAsync}
+                  showDelete={sections.length > 1 || !handleRemoveSection.isPending}
                 />
               ))}
             </SortableContext>
@@ -379,10 +379,7 @@ export default function CourseCreationWorkflow() {
                 onChange={(e) => {
                   const numOfFiles = e.target.files?.length || 0;
                   for (let i = 0; i < numOfFiles; i++) {
-                    handleFileSelect(
-                      "PPT",
-                      e.target.files?.[i] || null
-                    );
+                    handleFileSelect("PPT", e.target.files?.[i] || null);
                   }
                 }}
               />
@@ -467,7 +464,7 @@ function SectionItem({
   newlyCreated: boolean;
   selectSection: (id: string) => void;
   active: boolean;
-  removeSection: (id: string) => void;
+  removeSection: (id: string) => Promise<void>;
   showDelete: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -477,31 +474,67 @@ function SectionItem({
     transform: CSS.Transform.toString(transform)
   };
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleSubmit = useCallback(function(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setDeleting(true);
+    removeSection(section.id).then(function() {
+      setDeleting(false);
+      setModalOpen(false);
+    }).catch(function() {
+      setDeleting(false);
+      setModalOpen(false);
+    });
+  }, [section.id, removeSection]);
+
+  const handleClose = useCallback(function() {
+    setModalOpen(false);
+  }, []);
+
+  const handleOpen = useCallback(function(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    setModalOpen(true);
+  }, []);
+
   return (
-    <div
-      style={style}
-      ref={newlyCreated ? newSectionRef : setNodeRef}
-      className={`p-2 mb-2 rounded cursor-pointer flex justify-start items-center ${active ? "bg-gray-300" : "hover:bg-gray-200"}`}
-      onClick={() => selectSection(section.id)}
-    >
-      <span {...attributes} {...listeners} className="block cursor-move">
-        <MdDragIndicator />
-      </span>
-      <div className="w-full flex items-center justify-between">
-        <p title={section.title}>{section.title}</p>
-        {showDelete && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              removeSection(section.id);
-            }}
-            className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
-          >
-            <FaRegTrashCan className="w-4 h-4" />
-          </button>
-        )}
+    <>
+      <PopUpModal
+        open={modalOpen}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+        isLoading={deleting}
+        darkLoader={false}
+        message="Do you want to delete this section?"
+        actionText="Delete"
+        oneButton={false}
+        bgColor="bg-primaryTwo"
+        textColor="text-[#FFFFF0]"
+        borderColor="border-[#FFFFF0]"
+      />
+      <div
+        style={style}
+        ref={newlyCreated ? newSectionRef : setNodeRef}
+        className={`p-2 mb-2 rounded cursor-pointer flex justify-start items-center ${active ? "bg-gray-300" : "hover:bg-gray-200"}`}
+        onClick={() => selectSection(section.id)}
+      >
+        <span {...attributes} {...listeners} className="block cursor-move">
+          <MdDragIndicator />
+        </span>
+        <div className="w-full flex items-center justify-between">
+          <p title={section.title}>{section.title}</p>
+          {showDelete && (
+            <button
+              onClick={handleOpen}
+              className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
+            >
+              <FaRegTrashCan className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
