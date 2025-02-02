@@ -481,6 +481,8 @@ function SectionItem({
     transform: CSS.Transform.toString(transform)
   };
 
+  const toast = useToast();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -492,10 +494,17 @@ function SectionItem({
         .then(function () {
           setDeleting(false);
           setModalOpen(false);
+          toast.toast({
+            title: "Section deleted"
+          });
         })
         .catch(function () {
           setDeleting(false);
           setModalOpen(false);
+          toast.toast({
+            title: "Failed to delete section",
+            variant: "destructive"
+          });
         });
     },
     [section.id, removeSection]
@@ -570,6 +579,8 @@ function ContentItems({ content }: { content: ContentItem }) {
 
   const removeContentItem = useCourseStore((state) => state.removeContentItem);
 
+  const toast = useToast();
+
   const [name, setName] = useState(content.name);
   const [file, setFile] = useState<File | null>(null);
 
@@ -598,6 +609,44 @@ function ContentItems({ content }: { content: ContentItem }) {
     (state) => state.sections[state.selectedSectionIndex].contents
   );
   const addToUploadQueue = useCourseStore((state) => state.addToUploadQueue);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleClose = useCallback(function () {
+    setModalOpen(false);
+  }, []);
+
+  const handleOpen = useCallback(function (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
+    e.stopPropagation();
+    setModalOpen(true);
+  }, []);
+
+  const handleSubmit = useCallback(
+    function (e: React.FormEvent<HTMLFormElement>) {
+      e.preventDefault();
+      setDeleting(true);
+      removeContentItem(content.id)
+        .then(function () {
+          setDeleting(false);
+          setModalOpen(false);
+          toast.toast({
+            title: "Content deleted"
+          });
+        })
+        .catch(function () {
+          setDeleting(false);
+          setModalOpen(false);
+          toast.toast({
+            title: "Failed to delete content",
+            variant: "destructive"
+          });
+        });
+    },
+    [content.id, removeContentItem]
+  );
 
   function addContentItem() {
     let updatedContent: ContentItem = {
@@ -685,6 +734,21 @@ function ContentItems({ content }: { content: ContentItem }) {
           </DialogClose>
         </DialogFooter>
       </DialogContent>
+
+      <PopUpModal
+        open={modalOpen}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+        isLoading={deleting}
+        darkLoader={false}
+        message="Do you want to delete this content?"
+        actionText="Delete"
+        oneButton={false}
+        bgColor="bg-primaryTwo"
+        textColor="text-[#FFFFF0]"
+        borderColor="border-[#FFFFF0]"
+      />
+
       <div
         ref={setNodeRef}
         style={style}
@@ -724,12 +788,11 @@ function ContentItems({ content }: { content: ContentItem }) {
               </button>
             </DialogTrigger>
             <button
-              onClick={() => {
-                removeContentItem(content.id);
-              }}
+              onClick={handleOpen}
               title="Delete"
               className="text-red-500 hover:text-red-700 cursor-pointer"
               type="button"
+              disabled={deleting}
             >
               <FaRegTrashCan className="w-4 h-4" />
             </button>

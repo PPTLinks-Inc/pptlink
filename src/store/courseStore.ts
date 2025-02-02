@@ -33,7 +33,7 @@ export interface CourseStore {
     selectedSectionIndex: number;
     setSelectedSectionIndex: (index: number) => void;
     setContentItems: (contentItems: ContentItem[]) => void;
-    removeContentItem: (id: string) => void;
+    removeContentItem: (id: string) => Promise<void>;
     handleSectionTitleChange: (title: string) => void;
     addSection: () => Promise<{ order: number, id: string }>;
     removeSection: (id: string) => Promise<void>;

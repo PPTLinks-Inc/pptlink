@@ -77,7 +77,7 @@ export default function CourseSideBarContextProvider({
               isActive={isActive === "course"}
               asChild
             >
-              <Link to="/create-course/course/courseId">
+              <Link to={`/course/${data.id}`}>
                 <IoBookOutline />
                 <span className="text-lg">Courses</span>
               </Link>
@@ -88,7 +88,7 @@ export default function CourseSideBarContextProvider({
               className="mx-auto"
               asChild
             >
-              <Link to="/create-course/settings/courseId">
+              <Link to={`/course/settings/${data.id}`}>
                 <GoGear />
                 <span className="text-lg">Settings</span>
               </Link>
@@ -99,7 +99,7 @@ export default function CourseSideBarContextProvider({
               className="mx-auto"
               asChild
             >
-              <Link to="/create-course/profile/courseId">
+              <Link to={`/course/profile/${data.id}`}>
                 <AiOutlineProfile />
                 <span className="text-lg">Profile</span>
               </Link>

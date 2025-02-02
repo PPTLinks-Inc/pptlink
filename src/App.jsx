@@ -182,25 +182,31 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/course/settings/:courseId",
       element: (
-        <CourseSideBarContext isActive="settings">
-          <CourseCreationSettings />
-        </CourseSideBarContext>
+        <CourseStoreProvider>
+          <CourseSideBarContext isActive="settings">
+            <CourseCreationSettings />
+          </CourseSideBarContext>
+        </CourseStoreProvider>
       )
     },
     {
       path: "/course/profile/:courseId",
       element: (
-        <CourseSideBarContext isActive="profile">
-          <CourseCreationProfile />
-        </CourseSideBarContext>
+        <CourseStoreProvider>
+          <CourseSideBarContext isActive="profile">
+            <CourseCreationProfile />
+          </CourseSideBarContext>
+        </CourseStoreProvider>
       )
     },
     {
       path: "/course/help",
       element: (
-        <CourseSideBarContext isActive="help">
-          <CourseCreationHelp />
-        </CourseSideBarContext>
+        <CourseStoreProvider>
+          <CourseSideBarContext isActive="help">
+            <CourseCreationHelp />
+          </CourseSideBarContext>
+        </CourseStoreProvider>
       )
     },
     {

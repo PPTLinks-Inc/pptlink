@@ -92,7 +92,9 @@ export default function CourseStoreProvider({
         return { sections: newSections };
       });
     },
-    removeContentItem: (id: string) => {
+    removeContentItem: async (id: string) => {
+      await authFetch.delete(`/api/v1/course/delete-content/${get().courseId}/${get().sections[get().selectedSectionIndex].id}/${id}`);
+
       set((state) => {
         const newSections = [...state.sections];
         const content = newSections[state.selectedSectionIndex].contents;
