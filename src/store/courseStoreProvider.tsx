@@ -1,6 +1,9 @@
 import { createContext, useContext } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
-import { CourseStore } from "./courseStore";
+import { ContentItem, CourseData, CourseStore } from "./courseStore";
+import { authFetch, standardFetch } from "@/lib/axios";
+import { useLoaderData, useParams } from "react-router-dom";
+import safeAwait from "@/util/safeAwait";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
@@ -9,33 +12,94 @@ export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
 
 interface CourseStoreProviderProps extends React.PropsWithChildren {}
 
+const checkProcessingStatus = async (
+  courseId: string,
+  sectionId: string,
+  contentId: string,
+  contentIndex: number,
+  sectionIndex: number,
+  set: (fn: (state: CourseStore) => Partial<CourseStore>) => void
+) => {
+  const [err, res] = await safeAwait(
+    authFetch.get<{ status: ContentItem["status"] }>(
+      `/api/v1/course/check-processing-status/${courseId}/${sectionId}/${contentId}`
+    )
+  );
+
+  if (err) {
+    console.error(err);
+    return false;
+  }
+
+  if (res.data.status === "done") {
+    set((state) => {
+      const newSections = [...state.sections];
+      if (newSections[sectionIndex]?.contents[contentIndex]) {
+        newSections[sectionIndex].contents[contentIndex].status = "done";
+      }
+      return { sections: newSections };
+    });
+    return true;
+  }
+  return false;
+};
+
 export default function CourseStoreProvider({
   children
 }: CourseStoreProviderProps) {
-  const store = createStore<CourseStore>((set) => ({
-    sections: [
-      {
-        id: "1",
-        title: "Introduction to the Course",
-        content: []
-      }
-    ],
-    setSections: (sections) => set({ sections }),
+  const { courseId } = useParams<{ courseId: string }>();
+
+  if (!courseId) {
+    throw new Error("Course ID is required");
+  }
+
+  const data = useLoaderData() as CourseData;
+
+  const store = createStore<CourseStore>((set, get) => ({
+    courseId: courseId,
+    sections: data.CourseSection ?? [],
+    setSections: (sections) => {
+      set({ sections });
+      
+      // Start checking processing content
+      sections.forEach((section, sectionIndex) => {
+        section.contents.forEach((content, contentIndex) => {
+          if (content.status === "processing") {
+            const intervalId = setInterval(async () => {
+              const isDone = await checkProcessingStatus(
+                get().courseId,
+                section.id,
+                content.id,
+                contentIndex,
+                sectionIndex,
+                set
+              );
+              if (isDone) {
+                clearInterval(intervalId);
+              }
+            }, 10000);
+          }
+        });
+      });
+    },
     selectedSectionIndex: 0,
     setSelectedSectionIndex: (index: number) =>
       set({ selectedSectionIndex: index }),
     setContentItems: (contentItems) => {
       set((state) => {
         const newSections = [...state.sections];
-        newSections[state.selectedSectionIndex].content = contentItems;
+        newSections[state.selectedSectionIndex].contents = contentItems;
         return { sections: newSections };
       });
     },
-    removeContentItem: (id: string) => {
+    removeContentItem: async (id: string) => {
+      await authFetch.delete(`/api/v1/course/delete-content/${get().courseId}/${get().sections[get().selectedSectionIndex].id}/${id}`);
+
       set((state) => {
         const newSections = [...state.sections];
-        const content = newSections[state.selectedSectionIndex].content;
-        newSections[state.selectedSectionIndex].content = content.filter(
+        const content = newSections[state.selectedSectionIndex].contents;
+        if (!content) return { sections: newSections };
+        newSections[state.selectedSectionIndex].contents = content.filter(
           (item) => item.id !== id
         );
         return { sections: newSections };
@@ -48,22 +112,36 @@ export default function CourseStoreProvider({
         return { sections: newSections };
       });
     },
-    addSection: () => {
-      const newId = generateUniqueId();
+    addSection: async () => {
+      const sectionOrder = get().sections.length + 1;
+
+      const { data } = await authFetch.post<{ sectionId: string }>(
+        "/api/v1/course/create-section",
+        {
+          courseId: get().courseId,
+          title: `Section ${sectionOrder}`,
+          orderNumber: sectionOrder
+        }
+      );
+
       set((state) => ({
         sections: [
           ...state.sections,
           {
-            id: newId,
-            title: `Section ${newId}`,
-            content: []
+            id: data.sectionId,
+            title: `Section ${sectionOrder}`,
+            contents: []
           }
         ],
         selectedSectionIndex: state.sections.length
       }));
-      return newId;
+      return { order: sectionOrder, id: data.sectionId };
     },
-    removeSection: (id: string) => {
+    removeSection: async (id: string) => {
+      await authFetch.delete(
+        `/api/v1/course/delete-section/${get().courseId}/${id}`
+      );
+
       set((state) => {
         const newSections = state.sections.filter(
           (section) => section.id !== id
@@ -91,14 +169,144 @@ export default function CourseStoreProvider({
       set((state) => ({
         selectedSectionIndex: state.sections.findIndex((s) => s.id === id)
       }));
+    },
+    saveCourseData: async () => {
+      const courseData = get().sections;
+        
+      await authFetch.put(`/api/v1/course/update-course-data/${get().courseId}`, courseData);
+    },
+    uploadQueue: [],
+    canUpload: () => {
+      const activeUploads = get().sections
+        .flatMap(s => s.contents)
+        .filter(c => c.status === 'uploading' || c.status === 'starting')
+        .length;
+      return activeUploads < 3;
+    },
+    addToUploadQueue: (contentId: string) => {
+      set(state => ({
+        uploadQueue: [...state.uploadQueue, contentId]
+      }));
+      get().processUploadQueue();
+    },
+    processUploadQueue: () => {
+      if (!get().canUpload()) return;
+      
+      const nextContentId = get().uploadQueue[0];
+      if (!nextContentId) return;
+
+      set(state => ({
+        uploadQueue: state.uploadQueue.slice(1)
+      }));
+
+      get().uploadContent(nextContentId).finally(() => {
+        get().processUploadQueue();
+      });
+    },
+    uploadContent: async function (contentId) {
+      // Find the section containing the content
+      let targetSectionIndex = -1;
+      let targetSection = null;
+      let contentIndex = -1;
+    
+      // Search through all sections to find the content
+      for (let i = 0; i < get().sections.length; i++) {
+        const section = get().sections[i];
+        const index = section.contents.findIndex((c) => c.id === contentId);
+        if (index !== -1) {
+          targetSectionIndex = i;
+          targetSection = section;
+          contentIndex = index;
+          break;
+        }
+      }
+    
+      if (!targetSection || contentIndex === -1) return;
+    
+      const content = targetSection.contents[contentIndex];
+      content.status = !content.file ? "error" : "starting";
+    
+      set((state) => {
+        const newSections = [...state.sections];
+        newSections[targetSectionIndex].contents[contentIndex] = content;
+        return { sections: newSections };
+      });
+    
+      if (!content.file) return;
+    
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      for (let i = 0; i < 12; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters[randomIndex];
+      }
+    
+      try {
+        const { data } = await authFetch.get("/api/v1/course/generate-upload-url", {
+          params: {
+            contentId: content.id,
+            courseId: get().courseId,
+            sectionId: targetSection.id,
+            contentType: content.file.type,
+            key: `${Date.now()}_${result}.${
+              content.type === "VIDEO" ? "mp4" : "pptx"
+            }`,
+            contentOrder: contentIndex + 1,
+            name: content.file.name
+          }
+        });
+    
+        set((state) => {
+          const newSections = [...state.sections];
+          newSections[targetSectionIndex].contents[contentIndex] = {
+            ...content,
+            status: "uploading",
+            id: data.contentId
+          };
+          return { sections: newSections };
+        });
+    
+        await standardFetch.put(data.signedUrl, content.file, {
+          headers: {
+            "Content-Type": content.file.type
+          }
+        });
+    
+        set((state) => {
+          const newSections = [...state.sections];
+          newSections[targetSectionIndex].contents[contentIndex] = {
+            ...content,
+            status: "processing"
+          };
+          return { sections: newSections };
+        });
+    
+        const intervalId = setInterval(async function () {
+          const isDone = await checkProcessingStatus(
+            get().courseId,
+            targetSection.id,
+            data.contentId,
+            contentIndex,
+            targetSectionIndex,
+            set
+          );
+          if (isDone) {
+            clearInterval(intervalId);
+          }
+        }, 10000);
+      } catch (error) {
+        set((state) => {
+          const newSections = [...state.sections];
+          newSections[targetSectionIndex].contents[contentIndex] = {
+            ...content,
+            status: "error"
+          };
+          return { sections: newSections };
+        });
+      }
     }
   }));
-
-  function generateUniqueId(): string {
-    return (
-      Math.max(0, ...store.getState().sections.map((s) => parseInt(s.id))) + 1
-    ).toString();
-  }
 
   return (
     <CourseContext.Provider value={store}>{children}</CourseContext.Provider>
