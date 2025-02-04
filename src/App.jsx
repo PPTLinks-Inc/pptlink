@@ -11,6 +11,9 @@ import { Toaster } from "@/components/ui/toaster";
 import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
 import * as Sentry from "@sentry/react";
+import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
+import CourseStoreProvider from "@/store/courseStoreProvider";
+import CourseSideBarContext from "@/contexts/courseSideBarContext";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -34,9 +37,7 @@ const RequestPasswordResetLink = lazy(
   () => import("./components/sign/requestPasswordResetLink")
 );
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
-const CourseSideBarContext = lazy(
-  () => import("./contexts/courseSideBarContext")
-);
+
 const CourseCreationWorkflow = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationWorkflow")
 );
@@ -162,33 +163,50 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/course/:courseId",
       element: (
-        <CourseSideBarContext isActive="course">
-          <CourseCreationWorkflow />
-        </CourseSideBarContext>
-      )
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen bg-primaryTwo">
+              <LoadingAssetBig2 />
+            </div>
+          }
+        >
+          <CourseStoreProvider>
+            <CourseSideBarContext isActive="course">
+              <CourseCreationWorkflow />
+            </CourseSideBarContext>
+          </CourseStoreProvider>
+        </Suspense>
+      ),
+      loader: CourseContentLoader
     },
     {
       path: "/course/settings/:courseId",
       element: (
-        <CourseSideBarContext isActive="settings">
-          <CourseCreationSettings />
-        </CourseSideBarContext>
+        <CourseStoreProvider>
+          <CourseSideBarContext isActive="settings">
+            <CourseCreationSettings />
+          </CourseSideBarContext>
+        </CourseStoreProvider>
       )
     },
     {
       path: "/course/profile/:courseId",
       element: (
-        <CourseSideBarContext isActive="profile">
-          <CourseCreationProfile />
-        </CourseSideBarContext>
+        <CourseStoreProvider>
+          <CourseSideBarContext isActive="profile">
+            <CourseCreationProfile />
+          </CourseSideBarContext>
+        </CourseStoreProvider>
       )
     },
     {
       path: "/course/help",
       element: (
-        <CourseSideBarContext isActive="help">
-          <CourseCreationHelp />
-        </CourseSideBarContext>
+        <CourseStoreProvider>
+          <CourseSideBarContext isActive="help">
+            <CourseCreationHelp />
+          </CourseSideBarContext>
+        </CourseStoreProvider>
       )
     },
     {

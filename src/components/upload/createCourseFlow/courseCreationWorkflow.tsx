@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
@@ -22,12 +22,42 @@ import {
   useSortable
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  ContentItem,
-  Section
-} from "@/store/courseStore";
+import { ContentItem, Section } from "@/store/courseStore";
 import PopUpModal from "../../Models/dashboardModel";
 import { useCourseStore } from "@/store/courseStoreProvider";
+import { LoaderFunctionArgs } from "react-router-dom";
+import { authFetch } from "@/lib/axios";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { LoadingAssetSmall2 } from "@/assets/assets";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function CourseContentLoader({ params }: LoaderFunctionArgs<any>) {
+  const { data } = await authFetch.get(
+    `/api/v1/course/content/${params.courseId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    }
+  );
+
+  return data;
+}
 
 export default function CourseCreationWorkflow() {
   const [newlyCreatedSection, setNewlyCreatedSection] = useState<{
@@ -45,16 +75,23 @@ export default function CourseCreationWorkflow() {
     sectionId: ""
   });
 
+  const toast = useToast();
+
   const sections = useCourseStore((state) => state.sections);
   const setSections = useCourseStore((state) => state.setSections);
-  const selectedSectionIndex = useCourseStore((state) => state.selectedSectionIndex);
+  const selectedSectionIndex = useCourseStore(
+    (state) => state.selectedSectionIndex
+  );
   const selectSection = useCourseStore((state) => state.selectSection);
   const setContentItems = useCourseStore((state) => state.setContentItems);
   const addSection = useCourseStore((state) => state.addSection);
-  const handleSectionTitleChange = useCourseStore((state) => state.handleSectionTitleChange);
+  const handleSectionTitleChange = useCourseStore(
+    (state) => state.handleSectionTitleChange
+  );
   const removeSection = useCourseStore((state) => state.removeSection);
+  const addToUploadQueue = useCourseStore((state) => state.addToUploadQueue);
 
-  const contentItems = sections[selectedSectionIndex].content;
+  const contentItems = sections[selectedSectionIndex]?.contents;
 
   const videoInputRef = useRef<HTMLInputElement>(null);
   const pptInputRef = useRef<HTMLInputElement>(null);
@@ -88,6 +125,46 @@ export default function CourseCreationWorkflow() {
     }
   }, [selectedSectionIndex, newlyCreatedSection, sections]);
 
+  const handleAddSection = useMutation({
+    mutationFn: function () {
+      return addSection();
+    },
+    onSuccess: (data) => {
+      toast.toast({
+        title: "Section created"
+      });
+      setNewlyCreatedSection({
+        id: data.id,
+        initialTitle: `Section ${data.order}`
+      });
+    },
+    onError: () => {
+      toast.toast({
+        title: "Failed to create section",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleRemoveSection = useMutation({
+    mutationFn: function (id: string) {
+      return removeSection(id);
+    },
+    onSuccess: () => {
+      toast.toast({
+        title: "Section deleted"
+      });
+    },
+    onError: () => {
+      toast.toast({
+        title: "Failed to delete section",
+        variant: "destructive"
+      });
+    }
+  });
+
+  if (!sections[selectedSectionIndex]) return null;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleDragEnd(event: any, type: "section" | "content") {
     const { active, over } = event;
@@ -100,6 +177,17 @@ export default function CourseCreationWorkflow() {
       const newSection = arrayMove(sections, originalPos, newPos);
       setSections(newSection);
       selectSection(active.id);
+      return;
+    }
+
+    if (!contentItems) return;
+
+    // Find the content item being dragged
+    const draggedItem = contentItems.find(item => item.id === active.id);
+    if (!draggedItem) return;
+
+    // Prevent dragging if item is being processed or uploaded
+    if (draggedItem.status === "processing" || draggedItem.status === "uploading") {
       return;
     }
 
@@ -136,14 +224,14 @@ export default function CourseCreationWorkflow() {
     const files = Array.from(e.dataTransfer.files);
     files.forEach((file) => {
       if (file.type.startsWith("video/")) {
-        addContentItem("video", file);
+        addContentItem("VIDEO", file);
       } else if (file.name.match(/\.(ppt|pptx)$/i)) {
-        addContentItem("presentation", file);
+        addContentItem("PPT", file);
       }
     });
   }
 
-  function addContentItem(type: "video" | "presentation", file: File) {
+  function addContentItem(type: ContentItem["type"], file: File) {
     const ppttypes = [
       "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "application/vnd.ms-powerpoint",
@@ -154,29 +242,26 @@ export default function CourseCreationWorkflow() {
       return;
     }
 
+    if (!contentItems) return;
+
     const newContentItem: ContentItem = {
       type,
       file,
       name: file.name,
-      id: (Math.max(0, ...contentItems.map((s) => parseInt(s.id))) + 1).toString()
+      status: "starting",
+      id: `new-${(
+        Math.max(0, ...contentItems.map((s) => parseInt(s.id))) + 1
+      ).toString()}`
     };
 
     setContentItems([...contentItems, newContentItem]);
+    addToUploadQueue(newContentItem.id);
   }
 
-  function handleFileSelect(type: "video" | "presentation", file: File | null) {
+  function handleFileSelect(type: ContentItem["type"], file: File | null) {
     if (file) {
       addContentItem(type, file);
     }
-  }
-
-  // Modified addSection handler
-  function handleAddSection() {
-    const newId = addSection();
-    setNewlyCreatedSection({
-      id: newId,
-      initialTitle: `Section ${newId}`
-    });
   }
 
   function handleTitleBlur(value: string) {
@@ -193,7 +278,8 @@ export default function CourseCreationWorkflow() {
 
   function handleNamelessSectionDelete(e: React.FormEvent) {
     e.preventDefault();
-    removeSection(sections[selectedSectionIndex].id);
+    // removeSection(sections[selectedSectionIndex].id);
+    handleRemoveSection.mutate(sections[selectedSectionIndex].id);
 
     setModal((prev) => ({ ...prev, isTriggered: false }));
   }
@@ -240,8 +326,10 @@ export default function CourseCreationWorkflow() {
                   newlyCreated={newlyCreatedSection?.id === section.id}
                   selectSection={selectSection}
                   active={selectedSectionIndex === index}
-                  removeSection={removeSection}
-                  showDelete={sections.length > 1}
+                  removeSection={handleRemoveSection.mutateAsync}
+                  showDelete={
+                    sections.length > 1 || !handleRemoveSection.isPending
+                  }
                 />
               ))}
             </SortableContext>
@@ -249,10 +337,16 @@ export default function CourseCreationWorkflow() {
 
           <button
             className="mt-4 w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 flex items-center justify-center bg-primaryTwo"
-            onClick={handleAddSection}
+            onClick={() => handleAddSection.mutate()}
           >
-            <FaPlus className="w-5 h-5 mr-2" />
-            Add Section
+            {handleAddSection.isPending ? (
+              <LoadingAssetSmall2 />
+            ) : (
+              <>
+                <FaPlus className="w-5 h-5 mr-2" />
+                <span>Add Section</span>
+              </>
+            )}
           </button>
         </div>
 
@@ -286,10 +380,11 @@ export default function CourseCreationWorkflow() {
                 accept="video/*"
                 multiple
                 onChange={(e) => {
-                  const numOfFiles = e.target.files?.length || 0;
-                  for (let i = 0; i < numOfFiles; i++) {
-                    handleFileSelect("video", e.target.files?.[i] || null);
-                  }
+                  if (!e.target.files?.length) return;
+                  Array.from(e.target.files).forEach(file => {
+                    handleFileSelect("VIDEO", file);
+                  });
+                  e.target.value = ''; // Reset input after handling files
                 }}
               />
               <input
@@ -299,13 +394,11 @@ export default function CourseCreationWorkflow() {
                 accept=".ppt,.pptx"
                 multiple
                 onChange={(e) => {
-                  const numOfFiles = e.target.files?.length || 0;
-                  for (let i = 0; i < numOfFiles; i++) {
-                    handleFileSelect(
-                      "presentation",
-                      e.target.files?.[i] || null
-                    );
-                  }
+                  if (!e.target.files?.length) return;
+                  Array.from(e.target.files).forEach(file => {
+                    handleFileSelect("PPT", file);
+                  });
+                  e.target.value = ''; // Reset input after handling files
                 }}
               />
               <button
@@ -337,35 +430,87 @@ export default function CourseCreationWorkflow() {
               </div>
             </div>
           </div>
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCorners}
-            onDragEnd={(e) => handleDragEnd(e, "content")}
-          >
-            <div className="mt-4 h-full rounded overflow-y-auto">
-              <SortableContext
-                items={contentItems}
-                strategy={verticalListSortingStrategy}
-              >
-                {contentItems.map((item) => (
-                  <ContentItems key={item.id} content={item} />
-                ))}
-              </SortableContext>
-              {contentItems.length === 0 && (
-                <div className="bg-gray-100 p-4 rounded">
-                  No content items added yet
-                </div>
-              )}
-            </div>
-          </DndContext>
+          {contentItems && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCorners}
+              onDragEnd={(e) => handleDragEnd(e, "content")}
+            >
+              <div className="mt-4 h-full rounded overflow-y-auto">
+                <SortableContext
+                  items={contentItems}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {contentItems.map((item) => (
+                    <ContentItems key={item.id} content={item} />
+                  ))}
+                </SortableContext>
+                {contentItems.length === 0 && (
+                  <div className="bg-gray-100 p-4 rounded">
+                    No content items added yet
+                  </div>
+                )}
+              </div>
+            </DndContext>
+          )}
         </div>
 
         <div className="w-full sm:w-1/4 bg-slate-200 p-4 border-l overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Preview</h2>
+            <h2 className="text-xl font-bold">Course Preview</h2>
           </div>
           <div className="bg-slate-200 p-4 rounded">
-            No content items added yet
+            {sections.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="text-lg font-semibold">
+                  Total Sections: {sections.length}
+                </h3>
+                <div className="space-y-2">
+                  {sections.map((section) => {
+                    const videos = section.contents.filter(c => c.type === "VIDEO").length;
+                    const ppts = section.contents.filter(c => c.type === "PPT").length;
+                    const waiting = section.contents.filter(c => c.status === "waiting" || c.status === "starting");
+                    const uploading = section.contents.filter(c => c.status === "uploading");
+                    const processing = section.contents.filter(c => c.status === "processing");
+                    const errors = section.contents.filter(c => c.status === "error");
+
+                    return (
+                      <div key={section.id} className="p-2 rounded-md bg-gray-100">
+                        <p className="font-medium">{section.title}</p>
+                        <div className="text-sm text-gray-600 flex gap-3">
+                          <span>{videos} {videos === 1 ? "video" : "videos"}</span>
+                          <span>{ppts} {ppts === 1 ? "presentation" : "presentations"}</span>
+                        </div>
+                        <div className="mt-1 space-y-1">
+                          {waiting.length > 0 && (
+                            <div className="text-sm text-blue-600 flex items-center gap-2">
+                              <span>{waiting.length} waiting</span>
+                            </div>
+                          )}
+                          {uploading.length > 0 && (
+                            <div className="text-sm text-yellow-600 flex items-center gap-2">
+                              <span>{uploading.length} uploading</span>
+                            </div>
+                          )}
+                          {processing.length > 0 && (
+                            <div className="text-sm text-orange-600 flex items-center gap-2">
+                              <span>{processing.length} processing</span>
+                            </div>
+                          )}
+                          {errors.length > 0 && (
+                            <div className="text-sm text-rose-600 flex items-center gap-2">
+                              <span>{errors.length} failed</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <p>No sections added yet</p>
+            )}
           </div>
         </div>
       </div>
@@ -387,7 +532,7 @@ function SectionItem({
   newlyCreated: boolean;
   selectSection: (id: string) => void;
   active: boolean;
-  removeSection: (id: string) => void;
+  removeSection: (id: string) => Promise<void>;
   showDelete: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -397,37 +542,95 @@ function SectionItem({
     transform: CSS.Transform.toString(transform)
   };
 
+  const toast = useToast();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleSubmit = useCallback(
+    function (e: React.FormEvent<HTMLFormElement>) {
+      e.preventDefault();
+      setDeleting(true);
+      removeSection(section.id)
+        .then(function () {
+          setDeleting(false);
+          setModalOpen(false);
+          toast.toast({
+            title: "Section deleted"
+          });
+        })
+        .catch(function () {
+          setDeleting(false);
+          setModalOpen(false);
+          toast.toast({
+            title: "Failed to delete section",
+            variant: "destructive"
+          });
+        });
+    },
+    [section.id, removeSection]
+  );
+
+  const handleClose = useCallback(function () {
+    setModalOpen(false);
+  }, []);
+
+  const handleOpen = useCallback(function (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
+    e.stopPropagation();
+    setModalOpen(true);
+  }, []);
+
   return (
-    <div
-      style={style}
-      ref={newlyCreated ? newSectionRef : setNodeRef}
-      className={`p-2 mb-2 rounded cursor-pointer flex justify-start items-center ${active ? "bg-gray-300" : "hover:bg-gray-200"}`}
-      onClick={() => selectSection(section.id)}
-    >
-      <span {...attributes} {...listeners} className="block cursor-move">
-        <MdDragIndicator />
-      </span>
-      <div className="w-full flex items-center justify-between">
-        <p title={section.title}>{section.title}</p>
-        {showDelete && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              removeSection(section.id);
-            }}
-            className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
-          >
-            <FaRegTrashCan className="w-4 h-4" />
-          </button>
-        )}
+    <>
+      <PopUpModal
+        open={modalOpen}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+        isLoading={deleting}
+        darkLoader={false}
+        message="Do you want to delete this section?"
+        actionText="Delete"
+        oneButton={false}
+        bgColor="bg-primaryTwo"
+        textColor="text-[#FFFFF0]"
+        borderColor="border-[#FFFFF0]"
+      />
+      <div
+        style={style}
+        ref={newlyCreated ? newSectionRef : setNodeRef}
+        className={`p-2 mb-2 rounded cursor-pointer flex justify-start items-center ${active ? "bg-gray-300" : "hover:bg-gray-200"}`}
+        onClick={() => selectSection(section.id)}
+      >
+        <span {...attributes} {...listeners} className="block cursor-move">
+          <MdDragIndicator />
+        </span>
+        <div className="w-full flex items-center justify-between">
+          <p title={section.title}>{section.title}</p>
+          {showDelete && (
+            <button
+              onClick={handleOpen}
+              className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
+            >
+              <FaRegTrashCan className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 function ContentItems({ content }: { content: ContentItem }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: content.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: content.id });
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
@@ -437,49 +640,239 @@ function ContentItems({ content }: { content: ContentItem }) {
 
   const removeContentItem = useCourseStore((state) => state.removeContentItem);
 
+  const toast = useToast();
+
+  const [name, setName] = useState(content.name);
+  const [file, setFile] = useState<File | null>(null);
+
+  const statusColor = useMemo(
+    function () {
+      switch (content.status) {
+        case "starting":
+          return "text-blue-700 bg-blue-100";
+        case "uploading":
+          return "text-yellow-700 bg-yellow-100";
+        case "processing":
+          return "text-orange-700 bg-orange-100";
+        case "error":
+          return "text-rose-700 bg-rose-100";
+        case "done":
+          return "text-green-700 bg-green-100";
+        default:
+          return "text-gray-700 bg-gray-100";
+      }
+    },
+    [content.status]
+  );
+
+  const setContentItems = useCourseStore((state) => state.setContentItems);
+  const contentItems = useCourseStore(
+    (state) => state.sections[state.selectedSectionIndex].contents
+  );
+  const addToUploadQueue = useCourseStore((state) => state.addToUploadQueue);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleClose = useCallback(function () {
+    setModalOpen(false);
+  }, []);
+
+  const handleOpen = useCallback(function (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
+    e.stopPropagation();
+    setModalOpen(true);
+  }, []);
+
+  const handleSubmit = useCallback(
+    function (e: React.FormEvent<HTMLFormElement>) {
+      e.preventDefault();
+      setDeleting(true);
+      removeContentItem(content.id)
+        .then(function () {
+          setDeleting(false);
+          setModalOpen(false);
+          toast.toast({
+            title: "Content deleted"
+          });
+        })
+        .catch(function () {
+          setDeleting(false);
+          setModalOpen(false);
+          toast.toast({
+            title: "Failed to delete content",
+            variant: "destructive"
+          });
+        });
+    },
+    [content.id, removeContentItem]
+  );
+
+  function addContentItem() {
+    let updatedContent: ContentItem = {
+      ...content,
+      name
+    };
+
+    const ppttypes = [
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.ms-powerpoint",
+      "application/wps-office.pptx"
+    ];
+
+    if (!file) {
+      setContentItems(
+        contentItems.map((c) => (c.id === content.id ? updatedContent : c))
+      );
+      return;
+    }
+
+    if (!file.type.startsWith("video/") && !ppttypes.includes(file.type)) {
+      return;
+    }
+
+    updatedContent = {
+      ...content,
+      type: file.type.startsWith("video/") ? "VIDEO" : "PPT",
+      status: "waiting",
+      file,
+      name
+    };
+
+    setContentItems(
+      contentItems.map((c) => (c.id === content.id ? updatedContent : c))
+    );
+    addToUploadQueue(updatedContent.id);
+  }
+
+  function handleFileSelect(file: File | null) {
+    if (file) {
+      setFile(file);
+    }
+  }
+
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2"
-    >
-      <div className="flex items-center gap-2 w-full">
-        <span {...attributes} {...listeners} className="block cursor-move">
-          <MdDragIndicator />
-        </span>
-        <div className="flex items-center w-full">
-          {content.type === "video" ? (
-            <IoVideocamOutline className="mr-2" />
-          ) : (
-            <HiOutlineDocumentText className="mr-2" />
-          )}
-          <span
-            title={content.name}
-            className="cursor-text block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap"
-          >
-            {content.name}
-          </span>
+    <Dialog>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit course Media</DialogTitle>
+          <DialogDescription>
+            {
+              "Make changes to your course Media here. Click save when you're done."
+            }
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-5 py-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.currentTarget.value)}
+              className="col-span-3"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="file">File</Label>
+            <Input
+              type="file"
+              accept={content.type === "VIDEO" ? "video/*" : ".ppt,.pptx"}
+              onChange={(e) => {
+                handleFileSelect(e.target.files?.[0] ?? null);
+                // e.target.value = ''; // Reset input after handling file
+              }}
+              id="file"
+              className="col-span-3"
+            />
+          </div>
         </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" onClick={addContentItem}>
+              Save
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+
+      <PopUpModal
+        open={modalOpen}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+        isLoading={deleting}
+        darkLoader={false}
+        message="Do you want to delete this content?"
+        actionText="Delete"
+        oneButton={false}
+        bgColor="bg-primaryTwo"
+        textColor="text-[#FFFFF0]"
+        borderColor="border-[#FFFFF0]"
+      />
+
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={cn(
+          "bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2",
+          (content.status === "uploading" || content.status === "processing") && "cursor-not-allowed opacity-80"
+        )}
+      >
+        <div className="flex items-center gap-2 w-full">
+          <span 
+            {...(content.status === "uploading" || content.status === "processing" || content.status === "waiting"
+              ? {} 
+              : { ...attributes, ...listeners })} 
+            className={cn(
+              "block",
+              content.status === "uploading" || content.status === "processing"
+                ? "cursor-not-allowed"
+                : "cursor-move"
+            )}
+          >
+            <MdDragIndicator />
+          </span>
+          <div className="flex items-center w-full">
+            {content.type === "VIDEO" ? (
+              <IoVideocamOutline className="mr-2" />
+            ) : (
+              <HiOutlineDocumentText className="mr-2" />
+            )}
+            <span
+              title={content.name}
+              className="cursor-text block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap"
+            >
+              {content.name}
+            </span>
+          </div>
+        </div>
+        <p className={cn("p-2 rounded-md flex", statusColor)}>
+          <span>・</span>
+          {content.status}
+        </p>
+        {(content.status === "done" || content.status === "error") && (
+          <div className="flex gap-2">
+            <DialogTrigger asChild>
+              <button
+                className="text-red-500 hover:text-red-700 cursor-pointer"
+                type="button"
+                title="Edit"
+              >
+                <FaRegEdit className="w-4 h-4" />
+              </button>
+            </DialogTrigger>
+            <button
+              onClick={handleOpen}
+              title="Delete"
+              className="text-red-500 hover:text-red-700 cursor-pointer"
+              type="button"
+              disabled={deleting}
+            >
+              <FaRegTrashCan className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
-      <div className="flex gap-2">
-        <button
-          className="text-red-500 hover:text-red-700 cursor-pointer"
-          type="button"
-          title="Edit"
-        >
-          <FaRegEdit className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => {
-            removeContentItem(content.id);
-          }}
-          title="Delete"
-          className="text-red-500 hover:text-red-700 cursor-pointer"
-          type="button"
-        >
-          <FaRegTrashCan className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
+    </Dialog>
   );
 }

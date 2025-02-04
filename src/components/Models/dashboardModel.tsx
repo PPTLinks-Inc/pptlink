@@ -1,4 +1,4 @@
-import { LoadingAssetBig } from "../../assets/assets";
+import { LoadingAssetBig, LoadingAssetBig2 } from "../../assets/assets";
 import Modal from "./model";
 
 // eslint-disable-next-line react/prop-types
@@ -7,6 +7,7 @@ export default function PopUpModal({
   onClose,
   onSubmit,
   isLoading,
+  darkLoader = true,
   message,
   actionText,
   oneButton = false,
@@ -18,6 +19,7 @@ export default function PopUpModal({
   onClose: (() => void) | null;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
+  darkLoader?: boolean;
   message: string;
   actionText: string;
   oneButton: boolean;
@@ -42,7 +44,7 @@ export default function PopUpModal({
         </p>
         {isLoading ? (
           <div className="flex justify-center items-center mb-4">
-            <LoadingAssetBig />
+            {darkLoader ? <LoadingAssetBig /> : <LoadingAssetBig2 />}
           </div>
         ) : (
           <div
