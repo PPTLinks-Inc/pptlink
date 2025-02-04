@@ -182,6 +182,15 @@ export default function CourseCreationWorkflow() {
 
     if (!contentItems) return;
 
+    // Find the content item being dragged
+    const draggedItem = contentItems.find(item => item.id === active.id);
+    if (!draggedItem) return;
+
+    // Prevent dragging if item is being processed or uploaded
+    if (draggedItem.status === "processing" || draggedItem.status === "uploading") {
+      return;
+    }
+
     const originalPos = contentItems.findIndex((item) => item.id === active.id);
     const newPos = contentItems.findIndex((item) => item.id === over.id);
 
@@ -371,10 +380,11 @@ export default function CourseCreationWorkflow() {
                 accept="video/*"
                 multiple
                 onChange={(e) => {
-                  const numOfFiles = e.target.files?.length || 0;
-                  for (let i = 0; i < numOfFiles; i++) {
-                    handleFileSelect("VIDEO", e.target.files?.[i] || null);
-                  }
+                  if (!e.target.files?.length) return;
+                  Array.from(e.target.files).forEach(file => {
+                    handleFileSelect("VIDEO", file);
+                  });
+                  e.target.value = ''; // Reset input after handling files
                 }}
               />
               <input
@@ -384,10 +394,11 @@ export default function CourseCreationWorkflow() {
                 accept=".ppt,.pptx"
                 multiple
                 onChange={(e) => {
-                  const numOfFiles = e.target.files?.length || 0;
-                  for (let i = 0; i < numOfFiles; i++) {
-                    handleFileSelect("PPT", e.target.files?.[i] || null);
-                  }
+                  if (!e.target.files?.length) return;
+                  Array.from(e.target.files).forEach(file => {
+                    handleFileSelect("PPT", file);
+                  });
+                  e.target.value = ''; // Reset input after handling files
                 }}
               />
               <button
@@ -446,10 +457,60 @@ export default function CourseCreationWorkflow() {
 
         <div className="w-full sm:w-1/4 bg-slate-200 p-4 border-l overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Preview</h2>
+            <h2 className="text-xl font-bold">Course Preview</h2>
           </div>
           <div className="bg-slate-200 p-4 rounded">
-            No content items added yet
+            {sections.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="text-lg font-semibold">
+                  Total Sections: {sections.length}
+                </h3>
+                <div className="space-y-2">
+                  {sections.map((section) => {
+                    const videos = section.contents.filter(c => c.type === "VIDEO").length;
+                    const ppts = section.contents.filter(c => c.type === "PPT").length;
+                    const waiting = section.contents.filter(c => c.status === "waiting" || c.status === "starting");
+                    const uploading = section.contents.filter(c => c.status === "uploading");
+                    const processing = section.contents.filter(c => c.status === "processing");
+                    const errors = section.contents.filter(c => c.status === "error");
+
+                    return (
+                      <div key={section.id} className="p-2 rounded-md bg-gray-100">
+                        <p className="font-medium">{section.title}</p>
+                        <div className="text-sm text-gray-600 flex gap-3">
+                          <span>{videos} {videos === 1 ? "video" : "videos"}</span>
+                          <span>{ppts} {ppts === 1 ? "presentation" : "presentations"}</span>
+                        </div>
+                        <div className="mt-1 space-y-1">
+                          {waiting.length > 0 && (
+                            <div className="text-sm text-blue-600 flex items-center gap-2">
+                              <span>{waiting.length} waiting</span>
+                            </div>
+                          )}
+                          {uploading.length > 0 && (
+                            <div className="text-sm text-yellow-600 flex items-center gap-2">
+                              <span>{uploading.length} uploading</span>
+                            </div>
+                          )}
+                          {processing.length > 0 && (
+                            <div className="text-sm text-orange-600 flex items-center gap-2">
+                              <span>{processing.length} processing</span>
+                            </div>
+                          )}
+                          {errors.length > 0 && (
+                            <div className="text-sm text-rose-600 flex items-center gap-2">
+                              <span>{errors.length} failed</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <p>No sections added yet</p>
+            )}
           </div>
         </div>
       </div>
@@ -594,7 +655,7 @@ function ContentItems({ content }: { content: ContentItem }) {
         case "processing":
           return "text-orange-700 bg-orange-100";
         case "error":
-          return "text-red-700 bg-red-100";
+          return "text-rose-700 bg-rose-100";
         case "done":
           return "text-green-700 bg-green-100";
         default:
@@ -653,7 +714,6 @@ function ContentItems({ content }: { content: ContentItem }) {
       ...content,
       name
     };
-
 
     const ppttypes = [
       "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -717,9 +777,10 @@ function ContentItems({ content }: { content: ContentItem }) {
             <Label htmlFor="file">File</Label>
             <Input
               type="file"
-              accept=".ppt,.pptx,video/*"
+              accept={content.type === "VIDEO" ? "video/*" : ".ppt,.pptx"}
               onChange={(e) => {
-                handleFileSelect(e.target.files?.[0] || null);
+                handleFileSelect(e.target.files?.[0] ?? null);
+                // e.target.value = ''; // Reset input after handling file
               }}
               id="file"
               className="col-span-3"
@@ -752,10 +813,23 @@ function ContentItems({ content }: { content: ContentItem }) {
       <div
         ref={setNodeRef}
         style={style}
-        className="bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2"
+        className={cn(
+          "bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2",
+          (content.status === "uploading" || content.status === "processing") && "cursor-not-allowed opacity-80"
+        )}
       >
         <div className="flex items-center gap-2 w-full">
-          <span {...attributes} {...listeners} className="block cursor-move">
+          <span 
+            {...(content.status === "uploading" || content.status === "processing" || content.status === "waiting"
+              ? {} 
+              : { ...attributes, ...listeners })} 
+            className={cn(
+              "block",
+              content.status === "uploading" || content.status === "processing"
+                ? "cursor-not-allowed"
+                : "cursor-move"
+            )}
+          >
             <MdDragIndicator />
           </span>
           <div className="flex items-center w-full">

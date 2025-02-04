@@ -204,25 +204,36 @@ export default function CourseStoreProvider({
       });
     },
     uploadContent: async function (contentId) {
-      const selectedSection = get().sections[get().selectedSectionIndex];
-
-      const contentIndex = selectedSection.contents.findIndex(
-        (c) => c.id === contentId
-      );
-      if (contentIndex === -1) return;
-
-      const content = selectedSection.contents[contentIndex];
+      // Find the section containing the content
+      let targetSectionIndex = -1;
+      let targetSection = null;
+      let contentIndex = -1;
+    
+      // Search through all sections to find the content
+      for (let i = 0; i < get().sections.length; i++) {
+        const section = get().sections[i];
+        const index = section.contents.findIndex((c) => c.id === contentId);
+        if (index !== -1) {
+          targetSectionIndex = i;
+          targetSection = section;
+          contentIndex = index;
+          break;
+        }
+      }
+    
+      if (!targetSection || contentIndex === -1) return;
+    
+      const content = targetSection.contents[contentIndex];
       content.status = !content.file ? "error" : "starting";
-
+    
       set((state) => {
         const newSections = [...state.sections];
-        newSections[state.selectedSectionIndex].contents[contentIndex] =
-          content;
+        newSections[targetSectionIndex].contents[contentIndex] = content;
         return { sections: newSections };
       });
-
+    
       if (!content.file) return;
-
+    
       const characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let result = "";
@@ -230,67 +241,64 @@ export default function CourseStoreProvider({
         const randomIndex = Math.floor(Math.random() * characters.length);
         result += characters[randomIndex];
       }
-
+    
       try {
-        const { data } = await authFetch.get(
-          "/api/v1/course/generate-upload-url",
-          {
-            params: {
-              contentId: content.id,
-              courseId,
-              sectionId: selectedSection.id,
-              contentType: content.file.type,
-              key: `${Date.now()}_${result}.${content.type === "VIDEO" ? "mp4" : "pptx"}`,
-              contentOrder: contentIndex + 1,
-              name: content.file.name
-            }
+        const { data } = await authFetch.get("/api/v1/course/generate-upload-url", {
+          params: {
+            contentId: content.id,
+            courseId: get().courseId,
+            sectionId: targetSection.id,
+            contentType: content.file.type,
+            key: `${Date.now()}_${result}.${
+              content.type === "VIDEO" ? "mp4" : "pptx"
+            }`,
+            contentOrder: contentIndex + 1,
+            name: content.file.name
           }
-        );
-
+        });
+    
         set((state) => {
           const newSections = [...state.sections];
-          newSections[state.selectedSectionIndex].contents[contentIndex] = {
+          newSections[targetSectionIndex].contents[contentIndex] = {
             ...content,
             status: "uploading",
             id: data.contentId
           };
           return { sections: newSections };
         });
-
+    
         await standardFetch.put(data.signedUrl, content.file, {
           headers: {
             "Content-Type": content.file.type
           }
         });
-
+    
         set((state) => {
           const newSections = [...state.sections];
-          newSections[state.selectedSectionIndex].contents[contentIndex] = {
+          newSections[targetSectionIndex].contents[contentIndex] = {
             ...content,
             status: "processing"
           };
           return { sections: newSections };
         });
-
+    
         const intervalId = setInterval(async function () {
           const isDone = await checkProcessingStatus(
-            courseId,
-            selectedSection.id,
+            get().courseId,
+            targetSection.id,
             data.contentId,
             contentIndex,
-            get().selectedSectionIndex,
+            targetSectionIndex,
             set
           );
           if (isDone) {
             clearInterval(intervalId);
           }
         }, 10000);
-
-        console.log(data);
       } catch (error) {
         set((state) => {
           const newSections = [...state.sections];
-          newSections[state.selectedSectionIndex].contents[contentIndex] = {
+          newSections[targetSectionIndex].contents[contentIndex] = {
             ...content,
             status: "error"
           };
