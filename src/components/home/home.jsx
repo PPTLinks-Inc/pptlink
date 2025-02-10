@@ -304,16 +304,12 @@ export default function Home() {
           </div>
 
           <div className="_hidden flex justify-end items-center  gap-5 maxScreenMobile:justify-end container mx-auto h-fit bg-[transparent] py-4">
-            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-              <FaCaretLeft
-                onClick={() => scrollCardsTwo(true)}
-                className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+            <button onClick={() => scrollCardsTwo(true)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+              <FaCaretLeft className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
-            <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-              <FaCaretRight
-                onClick={() => scrollCardsTwo(false)}
-                className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+            <button onClick={() => scrollCardsTwo(false)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+              <FaCaretRight className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
               />
             </button>
           </div>
@@ -386,16 +382,12 @@ export default function Home() {
             </motion.h2>
 
             <div className="hidden maxScreenMobile:flex gap-5 justify-end w-full pb-4 h-fit bg-[transparent]">
-              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-                <FaCaretLeft
-                  onClick={() => scrollCards(true)}
-                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+              <button onClick={() => scrollCards(true)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+                <FaCaretLeft className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
                 />
               </button>
-              <button className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-                <FaCaretRight
-                  onClick={() => scrollCards(false)}
-                  className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+              <button onClick={() => scrollCards(false)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+                <FaCaretRight className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
                 />
               </button>
             </div>
