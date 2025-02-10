@@ -46,6 +46,16 @@ $primaryTwo: #191919;
   margin: auto;
 }
 
+.containerA4 {
+  width: 70%;
+  margin: auto;
+  text-align: justify;
+
+  @include is_mediaQuery_MaxWidth_Yes {
+    width: 90%;
+  }
+}
+
 // Scrollbar styles
 @supports (scrollbar-color: red blue) {
   * {

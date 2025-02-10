@@ -1,7 +1,7 @@
 export default function TermsAndServicesPage() {
   return (
     <div className="bg-primaryTwo text-white">
-      <div className="container">
+      <div className="containerA4">
         <h1 className="py-4 text-center text-2xl">PPTLinks Terms of Use</h1>
         <p className="py-2">Effective Date: January 2, 2025</p>
         <ol className="block w-full">

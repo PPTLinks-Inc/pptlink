@@ -13,6 +13,17 @@
   margin: auto;
 }
 
+.containerA4 {
+  width: 70%;
+  margin: auto;
+  text-align: justify;
+}
+@media screen and (max-width: 768px) {
+  .containerA4 {
+    width: 90%;
+  }
+}
+
 @supports (scrollbar-color: red blue) {
   * {
     scrollbar-width: thin;

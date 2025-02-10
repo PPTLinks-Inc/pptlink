@@ -86,6 +86,10 @@ const router = sentryCreateBrowserRouter(
           element: <Document />
         },
         {
+          path: "course/user/preview",
+          element: <CoursePreviewPage />
+        },
+        {
           path: "upload",
           element: (
             <UploadStoreProvider>
@@ -119,10 +123,6 @@ const router = sentryCreateBrowserRouter(
         {
           path: "/privacy-policy",
           element: <PrivacyPolicyPage />
-        },
-        {
-          path: "course/user/preview",
-          element: <CoursePreviewPage />
         }
       ]
     },

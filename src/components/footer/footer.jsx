@@ -41,7 +41,7 @@ export default function Footer() {
             </p>
             <Socials />
           </div>
-          <div className="footerrft w-3/5 flex justify-between align-top maxScreenMobile:flex-col maxScreenMobile:w-full">
+          <div className="footerrft w-3/5 flex justify-between gap-4 align-top maxScreenMobile:flex-col maxScreenMobile:w-full">
             <div>
               <h3 className="font-black mb-5 text-[1.2rem]">Quick Links</h3>
               <nav className="flex flex-col justify-between align-top">
@@ -130,7 +130,7 @@ export default function Footer() {
                 </a> */}
               </nav>
             </div>
-            <div className=" w-[300px]">
+            <div className="w-[300px]">
               <h3 className="font-black mb-5 text-[1.2rem] maxScreenMobile:mt-5">
                 Location
               </h3>
