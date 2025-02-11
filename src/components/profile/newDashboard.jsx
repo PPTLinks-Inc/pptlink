@@ -90,9 +90,9 @@ export default function NewDashboard() {
             <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 responsiveText">
               My Profile
             </span>
-            <div className="flex justify-center items-center w-[150px] aspect-square _bg-[red] border-[0.1px] border-[#FFFFF0] rounded-full relative mb-4">
+            <div className="flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] border-[#FFFFF0] rounded-full relative mb-4">
               <FaUser size="80" className="block" />
-              <button className="absolute text-xl bottom-0 right-0"><FaRegEdit /></button>
+              <button className="absolute text-xl bottom-[0.7rem] right-[0.7rem] bg-primaryTwo"><FaRegEdit /></button>
             </div>
             <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 responsiveText text-center">
               <h1 className="text-2xl mt-2">{user ? user.username : "--"}</h1>
