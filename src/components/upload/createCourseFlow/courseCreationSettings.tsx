@@ -253,6 +253,11 @@ export default function CourseCreationSettings() {
                   }}
                   initialFocus
                   numberOfMonths={2}
+                  disabled={(function(date) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return new Date(date) < today;
+                  })}
                 />
               </PopoverContent>
             </Popover>
@@ -282,6 +287,9 @@ export default function CourseCreationSettings() {
                   selected={startDate}
                   onSelect={(e) => e && updateValues(e, "startDate")}
                   initialFocus
+                  disabled={(function(date) {
+                    return new Date(enrollmentDate.to) > new Date(date) || new Date(enrollmentDate.from) > new Date(date);
+                  })}
                 />
               </PopoverContent>
             </Popover>

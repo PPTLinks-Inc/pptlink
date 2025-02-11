@@ -31,11 +31,11 @@ import { ROUTER_ID } from "@/constants/routes";
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext(undefined);
 
-type ActiveTab = "course" | "settings" | "profile" | "feedback" | "help";
+export type ActiveTab = "course" | "settings" | "profile" | "feedback" | "help";
 
 export default function CourseSideBarContextProvider({
   children,
-  isActive
+  isActive,
 }: {
   children: React.ReactNode;
   isActive: ActiveTab;
@@ -46,10 +46,8 @@ export default function CourseSideBarContextProvider({
 
   const courseName = useCourseStore((state) => state.name);
 
-  console.log("course data", data);
-
   const saveCourse = useMutation({
-    mutationFn: () => saveCourseData(),
+    mutationFn: () => saveCourseData(isActive),
     onSuccess: function () {
       toast.toast({
         title: "Saved"
