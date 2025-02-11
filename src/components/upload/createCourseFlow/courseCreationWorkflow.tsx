@@ -249,9 +249,7 @@ export default function CourseCreationWorkflow() {
       file,
       name: file.name,
       status: "starting",
-      id: `new-${(
-        Math.max(0, ...contentItems.map((s) => parseInt(s.id))) + 1
-      ).toString()}`
+      id: `new-${contentItems.length}`
     };
 
     setContentItems([...contentItems, newContentItem]);
