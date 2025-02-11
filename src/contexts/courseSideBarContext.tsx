@@ -20,12 +20,13 @@ import { MdHelpOutline } from "react-icons/md";
 import { AiOutlineProfile } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
 import React, { createContext } from "react";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useRouteLoaderData } from "react-router-dom";
 import { CourseData } from "@/store/courseStore";
 import { useCourseStore } from "@/store/courseStoreProvider";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingAssetSmall } from "@/assets/assets";
+import { ROUTER_ID } from "@/constants/routes";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext(undefined);
@@ -39,9 +40,13 @@ export default function CourseSideBarContextProvider({
   children: React.ReactNode;
   isActive: ActiveTab;
 }) {
-  const data = useLoaderData() as CourseData;
+  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
   const saveCourseData = useCourseStore((state) => state.saveCourseData);
   const toast = useToast();
+
+  const courseName = useCourseStore((state) => state.name);
+
+  console.log("course data", data);
 
   const saveCourse = useMutation({
     mutationFn: () => saveCourseData(),
@@ -134,7 +139,7 @@ export default function CourseSideBarContextProvider({
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <p>
-              <b>Course Builder:</b> {data.name}
+              <b>Course Builder:</b> {courseName}
             </p>
             <div className="ml-auto mr-0 flex justify-center items-center gap-4">
               <Button
