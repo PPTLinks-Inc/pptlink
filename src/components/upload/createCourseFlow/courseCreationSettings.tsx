@@ -1,101 +1,128 @@
-import { useState } from "react";
-// import Image from 'next/image';
-// import {
-//   BookOpen,
-//   HelpCircle,
-//   Settings,
-//   User,
-//   Bell,
-//   Menu,
-//   PlusIcon,
-//   Save,
-//   Send,
-//   DollarSign,
-//   Calendar,
-//   CreditCard,
-//   Users,
-//   Briefcase,
-//   GraduationCap,
-//   Lock,
-//   Eye,
-//   Trash2
-// } from "lucide-react";
-// import { Button } from "@/components/ui/button";
+import { useMemo, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { SlCalender } from "react-icons/sl";
+import formatDate from "@/lib/formatDate";
+import { useCourseStore } from "@/store/courseStoreProvider";
+import { Textarea } from "@/components/ui/textarea";
+import { useQuery } from "@tanstack/react-query";
+import { standardFetch } from "@/lib/axios";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-// import {
-//   Card,
-//   CardContent,
-//   CardHeader,
-//   CardTitle,
-//   CardDescription,
-//   CardFooter
-// } from "@/components/ui/card";
-// import {
-//   Tooltip,
-//   TooltipContent,
-//   TooltipProvider,
-//   TooltipTrigger
-// } from "@/components/ui/tooltip";
-// import { Alert, AlertDescription } from "@/components/ui/alert";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-type DeadlineOption = "never" | "1week" | "2weeks" | "1month";
 
 export default function CourseCreationSettings() {
-  const [courseSettings, setCourseSettings] = useState({
-    pricing: { currency: "naira", amount: "" },
-    registration: {
-      deadline: "never" as DeadlineOption,
-      calculatedDate: null as string | null
-    },
-    paymentInfo: "",
-    courseLevel: "beginner",
-    maxParticipants: "",
-    instructors: [
-      {
-        id: 1,
-        name: "",
-        email: "",
-        role: "",
-        experience: "",
-        expertise: [],
-        biography: "",
-        profileImage: null
-      }
-    ]
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await standardFetch.get<{ id: string; name: string }[]>(
+        "/api/v1/ppt/categories"
+      );
+
+      return data;
+    }
   });
 
-  const calculateDeadlineDate = (deadline: DeadlineOption): string | null => {
-    if (deadline === "never") return null;
-    const date = new Date();
-    switch (deadline) {
-      case "1week":
-        date.setDate(date.getDate() + 7);
-        break;
-      case "2weeks":
-        date.setDate(date.getDate() + 14);
-        break;
-      case "1month":
-        date.setMonth(date.getMonth() + 1);
-        break;
-      default:
-        return null;
-    }
-    return date.toLocaleDateString();
-  };
+  const enrollmentDateFrom = useCourseStore((state) => state.enrollmentDateFrom);
+  const enrollmentDateTo = useCourseStore((state) => state.enrollmentDateTo);
+
+  const enrollmentDate = useMemo(function () {
+    return {
+      from: enrollmentDateFrom,
+      to: enrollmentDateTo
+    };
+  }, [enrollmentDateFrom, enrollmentDateTo]);
+
+  const startDate = useCourseStore((state) => state.startDate);
+  const duration = useCourseStore((state) => state.duration);
+  const categoryId = useCourseStore((state) => state.categoryId);
+
+  const name = useCourseStore((state) => state.name);
+  const description = useCourseStore((state) => state.description);
+  const price = useCourseStore((state) => state.price);
+  const courseLevel = useCourseStore((state) => state.courseLevel);
+  const maxStudents = useCourseStore((state) => state.maxStudents);
+
+  const updateValues = useCourseStore((state) => state.updateValues);
+
+  const courseDurationValues = useMemo(function () {
+    return [
+      {
+        id: "ONE_WEEK",
+        value: "1 week"
+      },
+      {
+        id: "TWO_WEEKS",
+        value: "2 weeks"
+      },
+      {
+        id: "ONE_MONTH",
+        value: "1 month"
+      },
+      {
+        id: "TWO_MONTHS",
+        value: "2 months"
+      },
+      {
+        id: "THREE_MONTHS",
+        value: "3 months"
+      },
+      {
+        id: "FOUR_MONTHS",
+        value: "4 months"
+      },
+      {
+        id: "SIX_MONTHS",
+        value: "6 months"
+      },
+      {
+        id: "EIGHT_MONTHS",
+        value: "8 months"
+      },
+      {
+        id: "ONE_YEAR",
+        value: "1 year"
+      },
+      {
+        id: "TWO_YEARS",
+        value: "2 years"
+      }
+    ];
+  }, []);
 
   const isValidNumber = (value: string) => {
     return /^\d+$/.test(value) && Number(value) > 0;
   };
+
+  // Add memoization for course category selection handler
+  const handleCategoryChange = useCallback(
+    (value: string) => {
+      updateValues(value, "categoryId");
+    },
+    [updateValues]
+  );
+
+  // Add memoization for duration selection handler
+  const handleDurationChange = useCallback(
+    (value: string) => {
+      updateValues(value, "duration");
+    },
+    [updateValues]
+  );
 
   return (
     <div className="bg-slate-200 w-full h-full">
@@ -104,27 +131,58 @@ export default function CourseCreationSettings() {
         <p className="text-lg mt-2 ">Set up your course settings</p>
 
         <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">
-            Please input the currency in which your course should be charged
-          </h3>
+          <div className="space-y-4 mt-10">
+            <Label className="text-lg font-bold">Course Title</Label>
+
+            <Input
+              type="text"
+              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w-full"
+              value={name}
+              onChange={(e) => updateValues(e.target.value, "name")}
+            />
+          </div>
+          <div className="space-y-4 mt-10">
+            <Label className="text-lg font-bold">Course description</Label>
+
+            <Textarea value={description} onChange={(e) => updateValues(e.target.value, "description")} className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w-full"></Textarea>
+          </div>
+          <div className="space-y-4 mt-10">
+            <Label className="text-lg font-bold">Course catergory</Label>
+
+            <Select onValueChange={handleCategoryChange} value={categoryId}>
+              <SelectTrigger className="w-3/6 maxScreenMobile:w-full border-[0.5px] border-black">
+                <SelectValue
+                  placeholder={
+                    categoriesQuery.isLoading ? "Loading" : "Select category"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>
+                    {categoriesQuery.isLoading ? "Loading" : "Select category"}
+                  </SelectLabel>
+                  {categoriesQuery.data?.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="space-y-2 mt-2">
+            <h3 className="text-lg font-bold">
+              Please input the currency in which your course should be charged
+            </h3>
             <div className="flex space-x-4">
               <Label className="flex items-center">
                 <Input
                   type="radio"
                   name="currency"
                   value="naira"
-                  checked={courseSettings.pricing.currency === "naira"}
-                  onChange={(e) =>
-                    setCourseSettings((prevSettings) => ({
-                      ...prevSettings,
-                      pricing: {
-                        ...prevSettings.pricing,
-                        currency: e.target.value
-                      }
-                    }))
-                  }
-                  className={`mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] ${courseSettings.pricing.currency === "naira" ? "border-[#FFA500]" : "border-primaryTwo"}`}
+                  checked={true}
+                  className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
                 />
                 Naira (₦)
               </Label>
@@ -133,17 +191,9 @@ export default function CourseCreationSettings() {
                   type="radio"
                   name="currency"
                   value="usd"
-                  checked={courseSettings.pricing.currency === "usd"}
-                  onChange={(e) =>
-                    setCourseSettings((prevSettings) => ({
-                      ...prevSettings,
-                      pricing: {
-                        ...prevSettings.pricing,
-                        currency: e.target.value
-                      }
-                    }))
-                  }
-                  className={`mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] ${courseSettings.pricing.currency === "usd" ? "border-[#FFA500]" : "border-primaryTwo"}`}
+                  disabled
+                  checked={false}
+                  className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
                 />
                 USD ($)
               </Label>
@@ -154,86 +204,129 @@ export default function CourseCreationSettings() {
                 inputMode="numeric"
                 pattern="\d*"
                 min="0"
-                value={courseSettings.pricing.amount}
-                onChange={(e) =>
-                  setCourseSettings((prevSettings) => ({
-                    ...prevSettings,
-                    pricing: { ...prevSettings.pricing, amount: e.target.value }
-                  }))
-                }
-                placeholder={
-                  courseSettings.pricing.currency === "naira"
-                    ? "₦0.00"
-                    : "$0.00"
-                }
-                className={`pl-8 border-[0.5px] ${
-                  courseSettings.pricing.amount &&
-                  isValidNumber(courseSettings.pricing.amount)
-                    ? "border-[#FFA500]"
-                    : "border-primaryTwo"
-                }`}
+                placeholder="₦0.00"
+                className="pl-8 border-[0.5px] border-primaryTwo"
+                value={price}
+                onChange={(e) => {
+                  if (isValidNumber(e.target.value)) {
+                    updateValues(Number(e.target.value), "price");
+                  }
+                }}
               />
-              <span className="absolute left-2 top-2">
-                {courseSettings.pricing.currency === "naira" ? "₦" : "$"}
-              </span>
+              <span className="absolute left-2 top-2">₦</span>
             </div>
           </div>
         </div>
 
         <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">
-            Please input the expiration deadline for the course
-          </h3>
-          <Select
-            value={courseSettings.registration.deadline}
-            onValueChange={(value: DeadlineOption) =>
-              setCourseSettings((prevSettings) => ({
-                ...prevSettings,
-                registration: {
-                  ...prevSettings.registration,
-                  deadline: value,
-                  calculatedDate: calculateDeadlineDate(value)
-                }
-              }))
-            }
-          >
-            <SelectTrigger
-              className={`border-[0.5px] ${courseSettings.registration.deadline ? "border-[#FFA500]" : "border-primaryTwo"} w-3/6 maxScreenMobile:w-full`}
-            >
-              <SelectValue placeholder="Select deadline" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="never">Never (Always Open)</SelectItem>
-              <SelectItem value="1week">1 Week</SelectItem>
-              <SelectItem value="2weeks">2 Weeks</SelectItem>
-              <SelectItem value="1month">1 Month</SelectItem>
-            </SelectContent>
-            {courseSettings.registration.calculatedDate && (
-              <p className="text-sm text-gray-600">
-                Registration closes on:{" "}
-                {courseSettings.registration.calculatedDate}
-              </p>
-            )}
-          </Select>
+          <h3 className="text-lg font-bold">Set your cohort dates</h3>
+
+          <div>
+            <h5>Enrollment date</h5>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-3/6 maxScreenMobile:w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
+                  )}
+                >
+                  {enrollmentDate.from && enrollmentDate.to ? (
+                    <>
+                      {formatDate(enrollmentDate.from)} -{" "}
+                      {formatDate(enrollmentDate.to)}
+                    </>
+                  ) : (
+                    <span>Pick an enrollment dates</span>
+                  )}
+                  <SlCalender className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="range"
+                  selected={enrollmentDate}
+                  onSelect={(e) => {
+                    e &&
+                      updateValues(e?.from ?? new Date(), "enrollmentDateFrom");
+                    updateValues(e?.to ?? new Date(), "enrollmentDateTo");
+                  }}
+                  initialFocus
+                  numberOfMonths={2}
+                  disabled={(function(date) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return new Date(date) < today;
+                  })}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div>
+            <h5>Start date</h5>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-3/6 maxScreenMobile:w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
+                  )}
+                >
+                  {startDate ? (
+                    formatDate(startDate)
+                  ) : (
+                    <span>Pick a start date</span>
+                  )}
+                  <SlCalender className="ml-auto h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={(e) => e && updateValues(e, "startDate")}
+                  initialFocus
+                  disabled={(function(date) {
+                    return new Date(enrollmentDate.to) > new Date(date) || new Date(enrollmentDate.from) > new Date(date);
+                  })}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div>
+            <h5>Course duration</h5>
+            <Select onValueChange={handleDurationChange} value={duration}>
+              <SelectTrigger className="w-3/6 maxScreenMobile:w-full border-[0.5px] border-black">
+                <SelectValue placeholder="Select duration" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Select duration</SelectLabel>
+                  {courseDurationValues.map((duration) => (
+                    <SelectItem key={duration.id} value={duration.id}>
+                      {duration.value}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="space-y-4 mt-10">
           <h3 className="text-lg font-bold">Course Level</h3>
           <div className="flex space-x-4">
-            {["beginner", "intermediate", "expert"].map((level) => (
+            {["BEGINNER", "INTERMEDIATE", "EXPERT"].map((level) => (
               <Label key={level} className="flex items-center">
                 <Input
                   type="radio"
                   name="courseLevel"
                   value={level}
-                  checked={courseSettings.courseLevel === level}
-                  onChange={(e) =>
-                    setCourseSettings((prevSettings) => ({
-                      ...prevSettings,
-                      courseLevel: e.target.value
-                    }))
-                  }
-                  className="mr-2 border-[0.5px] border-primaryTwo"
+                  className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
+                  checked={courseLevel === level}
+                  onChange={() => updateValues(level, "courseLevel")}
                 />
                 <span className="capitalize">{level}</span>
               </Label>
@@ -252,15 +345,14 @@ export default function CourseCreationSettings() {
             pattern="\d*"
             min="1"
             max="20000"
-            value={courseSettings.maxParticipants}
-            onChange={(e) =>
-              setCourseSettings((prevSettings) => ({
-                ...prevSettings,
-                maxParticipants: e.target.value
-              }))
-            }
             placeholder="Leave blank for unlimited"
-            className={`border-[0.5px] ${courseSettings.maxParticipants && isValidNumber(courseSettings.maxParticipants) ? "border-[#FFA500]" : "border-primaryTwo"} w-3/6 maxScreenMobile:w-full`}
+            className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w-full"
+            value={maxStudents}
+            onChange={(e) => {
+              if (isValidNumber(e.target.value)) {
+                updateValues(Number(e.target.value), "maxStudents");
+              }
+            }}
           />
           <p className="text-sm text-gray-600">Maximum allowed: 20,000</p>
         </div>

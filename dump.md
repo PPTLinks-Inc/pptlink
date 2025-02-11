@@ -905,3 +905,47 @@ export default function LibraryPage() {
           </motion.div>
         </div>
       </div> */}
+
+
+
+<!-- ////////////////////////////////////////////// -->
+
+import { NavLink } from "react-router-dom";
+
+export default function InstructorCard({ img }) {
+    return (
+        <div className="border-2 border-[#FFFFF0] rounded-md p-3 aspect-square relative">
+            <div className="h-full flex flex-col">
+                <img
+                    src={img}
+                    alt={img}
+                    className="block mb-3 w-12 aspect-square border-0 rounded-full object-cover"
+                />
+                <div className="flex flex-col flex-1 justify-between gap-2">
+                    <div className="overflow-hidden">
+                        <h3 className="font-semibold text-base truncate">
+                            {"Ideation and Validation"}
+                        </h3>
+                        <p className="text-sm line-clamp-4">
+                            {"Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, dolor qui beatae corrupti at numquam delectus iusto quia in, dignissimos alias. Minus repudiandae at incidunt hic nihil unde nulla odit?"}
+                        </p>
+                    </div>
+                    <NavLink
+                        to={"#"}
+                        target="_blank"
+                        className="block underline mt-auto"
+                    >
+                        Learn More...
+                    </NavLink>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+
+
+
+

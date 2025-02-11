@@ -57,10 +57,27 @@ export default function CourseStoreProvider({
 
   const store = createStore<CourseStore>((set, get) => ({
     courseId: courseId,
+
+    name: data.name,
+    description: data.description,
+    categoryId: data.categoryId,
+    published: data.published,
+    price: data.price,
+    creatorId: data.creatorId,
+    enrollmentDateFrom: new Date(data.enrollmentDateFrom),
+    enrollmentDateTo: new Date(data.enrollmentDateTo),
+    startDate: new Date(data.startDate),
+    duration: data.duration,
+    courseLevel: data.courseLevel,
+    maxStudents: data.maxStudents,
+    updatedAt: new Date(data.updatedAt),
+    updateValues: (newValue, data) => {
+      set({ [data]: newValue });
+    },
     sections: data.CourseSection ?? [],
     setSections: (sections) => {
       set({ sections });
-      
+
       // Start checking processing content
       sections.forEach((section, sectionIndex) => {
         section.contents.forEach((content, contentIndex) => {
@@ -93,7 +110,9 @@ export default function CourseStoreProvider({
       });
     },
     removeContentItem: async (id: string) => {
-      await authFetch.delete(`/api/v1/course/delete-content/${get().courseId}/${get().sections[get().selectedSectionIndex].id}/${id}`);
+      await authFetch.delete(
+        `/api/v1/course/delete-content/${get().courseId}/${get().sections[get().selectedSectionIndex].id}/${id}`
+      );
 
       set((state) => {
         const newSections = [...state.sections];
@@ -170,70 +189,85 @@ export default function CourseStoreProvider({
         selectedSectionIndex: state.sections.findIndex((s) => s.id === id)
       }));
     },
-    saveCourseData: async () => {
-      const courseData = get().sections;
-        
-      await authFetch.put(`/api/v1/course/update-course-data/${get().courseId}`, courseData);
+    saveCourseData: async (currentTab) => {
+      if (currentTab === "course") {
+        const courseData = get().sections;
+
+        await authFetch.put(
+          `/api/v1/course/update-course-content/${get().courseId}`,
+          courseData
+        );
+      } else if (currentTab === "settings") {
+        const courseData = {
+          name: get().name,
+          description: get().description,
+          categoryId: get().categoryId,
+          price: get().price,
+          enrollmentDateFrom: get().enrollmentDateFrom.toISOString(),
+          enrollmentDateTo: get().enrollmentDateTo.toISOString(),
+          startDate: get().startDate.toISOString(),
+          duration: get().duration,
+          courseLevel: get().courseLevel,
+          maxStudents: get().maxStudents
+        };
+
+        await authFetch.put(
+          `/api/v1/course/update-course-settings/${get().courseId}`,
+          courseData
+        );
+      }
     },
     uploadQueue: [],
     canUpload: () => {
-      const activeUploads = get().sections
-        .flatMap(s => s.contents)
-        .filter(c => c.status === 'uploading' || c.status === 'starting')
-        .length;
+      const activeUploads = get()
+        .sections.flatMap((s) => s.contents)
+        .filter(
+          (c) => c.status === "uploading" || c.status === "starting"
+        ).length;
       return activeUploads < 3;
     },
     addToUploadQueue: (contentId: string) => {
-      set(state => ({
+      set((state) => ({
         uploadQueue: [...state.uploadQueue, contentId]
       }));
       get().processUploadQueue();
     },
     processUploadQueue: () => {
       if (!get().canUpload()) return;
-      
+
       const nextContentId = get().uploadQueue[0];
       if (!nextContentId) return;
 
-      set(state => ({
+      set((state) => ({
         uploadQueue: state.uploadQueue.slice(1)
       }));
 
-      get().uploadContent(nextContentId).finally(() => {
-        get().processUploadQueue();
-      });
+      get()
+        .uploadContent(nextContentId)
+        .finally(() => {
+          get().processUploadQueue();
+        });
     },
     uploadContent: async function (contentId) {
-      // Find the section containing the content
-      let targetSectionIndex = -1;
-      let targetSection = null;
-      let contentIndex = -1;
-    
-      // Search through all sections to find the content
-      for (let i = 0; i < get().sections.length; i++) {
-        const section = get().sections[i];
-        const index = section.contents.findIndex((c) => c.id === contentId);
-        if (index !== -1) {
-          targetSectionIndex = i;
-          targetSection = section;
-          contentIndex = index;
-          break;
-        }
-      }
-    
-      if (!targetSection || contentIndex === -1) return;
-    
-      const content = targetSection.contents[contentIndex];
+      const selectedSection = get().sections[get().selectedSectionIndex];
+
+      const contentIndex = selectedSection.contents.findIndex(
+        (c) => c.id === contentId
+      );
+      if (contentIndex === -1) return;
+
+      const content = selectedSection.contents[contentIndex];
       content.status = !content.file ? "error" : "starting";
-    
+
       set((state) => {
         const newSections = [...state.sections];
-        newSections[targetSectionIndex].contents[contentIndex] = content;
+        newSections[state.selectedSectionIndex].contents[contentIndex] =
+          content;
         return { sections: newSections };
       });
-    
+
       if (!content.file) return;
-    
+
       const characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let result = "";
@@ -241,64 +275,68 @@ export default function CourseStoreProvider({
         const randomIndex = Math.floor(Math.random() * characters.length);
         result += characters[randomIndex];
       }
-    
+
       try {
-        const { data } = await authFetch.get("/api/v1/course/generate-upload-url", {
-          params: {
-            contentId: content.id,
-            courseId: get().courseId,
-            sectionId: targetSection.id,
-            contentType: content.file.type,
-            key: `${Date.now()}_${result}.${
-              content.type === "VIDEO" ? "mp4" : "pptx"
-            }`,
-            contentOrder: contentIndex + 1,
-            name: content.file.name
+        const { data } = await authFetch.get(
+          "/api/v1/course/generate-upload-url",
+          {
+            params: {
+              contentId: content.id,
+              courseId,
+              sectionId: selectedSection.id,
+              contentType: content.file.type,
+              key: `${Date.now()}_${result}.${content.type === "VIDEO" ? "mp4" : "pptx"}`,
+              contentOrder: contentIndex + 1,
+              name: content.file.name
+            }
           }
-        });
-    
+        );
+
         set((state) => {
           const newSections = [...state.sections];
-          newSections[targetSectionIndex].contents[contentIndex] = {
+          newSections[state.selectedSectionIndex].contents[contentIndex] = {
             ...content,
             status: "uploading",
             id: data.contentId
           };
           return { sections: newSections };
         });
-    
+
         await standardFetch.put(data.signedUrl, content.file, {
           headers: {
             "Content-Type": content.file.type
           }
         });
-    
+
         set((state) => {
           const newSections = [...state.sections];
-          newSections[targetSectionIndex].contents[contentIndex] = {
+          newSections[state.selectedSectionIndex].contents[contentIndex] = {
             ...content,
-            status: "processing"
+            status: "processing",
+            id: data.contentId
           };
           return { sections: newSections };
         });
-    
+
         const intervalId = setInterval(async function () {
           const isDone = await checkProcessingStatus(
-            get().courseId,
-            targetSection.id,
+            courseId,
+            selectedSection.id,
             data.contentId,
             contentIndex,
-            targetSectionIndex,
+            get().selectedSectionIndex,
             set
           );
           if (isDone) {
             clearInterval(intervalId);
           }
         }, 10000);
+
+        console.log(data);
       } catch (error) {
         set((state) => {
           const newSections = [...state.sections];
-          newSections[targetSectionIndex].contents[contentIndex] = {
+          newSections[state.selectedSectionIndex].contents[contentIndex] = {
             ...content,
             status: "error"
           };

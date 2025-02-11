@@ -12,7 +12,7 @@ import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
 import * as Sentry from "@sentry/react";
 import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
-import CourseStoreProvider from "@/store/courseStoreProvider";
+import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
 
 // all lazy import
@@ -86,6 +86,10 @@ const router = sentryCreateBrowserRouter(
           element: <Document />
         },
         {
+          path: "course/user/preview",
+          element: <CoursePreviewPage />
+        },
+        {
           path: "upload",
           element: (
             <UploadStoreProvider>
@@ -119,10 +123,6 @@ const router = sentryCreateBrowserRouter(
         {
           path: "/privacy-policy",
           element: <PrivacyPolicyPage />
-        },
-        {
-          path: "course/user/preview",
-          element: <CoursePreviewPage />
         }
       ]
     },
@@ -161,57 +161,47 @@ const router = sentryCreateBrowserRouter(
       element: <CreatePath />
     },
     {
-      path: "/course/:courseId",
-      element: (
-        <Suspense
-          fallback={
-            <div className="flex justify-center items-center h-screen bg-primaryTwo">
-              <LoadingAssetBig2 />
-            </div>
-          }
-        >
-          <CourseStoreProvider>
+      path: "/course",
+      element: <CourseRoot />,
+      loader: CourseContentLoader,
+      children: [
+        {
+          path: ":courseId",
+          element: (
             <CourseSideBarContext isActive="course">
               <CourseCreationWorkflow />
             </CourseSideBarContext>
-          </CourseStoreProvider>
-        </Suspense>
-      ),
-      loader: CourseContentLoader
-    },
-    {
-      path: "/course/settings/:courseId",
-      element: (
-        <CourseStoreProvider>
-          <CourseSideBarContext isActive="settings">
-            <CourseCreationSettings />
-          </CourseSideBarContext>
-        </CourseStoreProvider>
-      )
-    },
-    {
-      path: "/course/profile/:courseId",
-      element: (
-        <CourseStoreProvider>
-          <CourseSideBarContext isActive="profile">
-            <CourseCreationProfile />
-          </CourseSideBarContext>
-        </CourseStoreProvider>
-      )
-    },
-    {
-      path: "/course/help",
-      element: (
-        <CourseStoreProvider>
-          <CourseSideBarContext isActive="help">
-            <CourseCreationHelp />
-          </CourseSideBarContext>
-        </CourseStoreProvider>
-      )
-    },
-    {
-      path: "/course/antidote",
-      element: <CourseCreationWorkflowTwo />
+          ),
+        },
+        {
+          path: "settings/:courseId",
+          element: (
+            <CourseSideBarContext isActive="settings">
+              <CourseCreationSettings />
+            </CourseSideBarContext>
+          ),
+        },
+        {
+          path: "profile/:courseId",
+          element: (
+            <CourseSideBarContext isActive="profile">
+              <CourseCreationProfile />
+            </CourseSideBarContext>
+          ),
+        },
+        {
+          path: "help",
+          element: (
+            <CourseSideBarContext isActive="help">
+              <CourseCreationHelp />
+            </CourseSideBarContext>
+          )
+        },
+        {
+          path: "antidote",
+          element: <CourseCreationWorkflowTwo />
+        }
+      ]
     }
   ],
   {
