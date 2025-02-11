@@ -1,3 +1,4 @@
+import { ActiveTab } from "@/contexts/courseSideBarContext";
 import { DateRange } from "react-day-picker";
 
 export interface ContentItem {
@@ -64,7 +65,7 @@ export interface CourseStore {
     addSection: () => Promise<{ order: number, id: string }>;
     removeSection: (id: string) => Promise<void>;
     selectSection: (id: string) => void;
-    saveCourseData: () => Promise<void>;
+    saveCourseData: (currentTab: ActiveTab) => Promise<void>;
     uploadQueue: string[];
     canUpload: () => boolean;
     addToUploadQueue: (contentId: string) => void;

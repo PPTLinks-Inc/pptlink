@@ -189,25 +189,33 @@ export default function CourseStoreProvider({
         selectedSectionIndex: state.sections.findIndex((s) => s.id === id)
       }));
     },
-    saveCourseData: async () => {
-      const courseData = {
-        name: get().name,
-        description: get().description,
-        categoryId: get().categoryId,
-        price: get().price,
-        enrollmentDateFrom: get().enrollmentDateFrom.toISOString(),
-        enrollmentDateTo: get().enrollmentDateTo.toISOString(),
-        startDate: get().startDate.toISOString(),
-        duration: get().duration,
-        courseLevel: get().courseLevel,
-        maxStudents: get().maxStudents,
-        sections: get().sections
-      };
+    saveCourseData: async (currentTab) => {
+      if (currentTab === "course") {
+        const courseData = get().sections;
 
-      await authFetch.put(
-        `/api/v1/course/update-course-data/${get().courseId}`,
-        courseData
-      );
+        await authFetch.put(
+          `/api/v1/course/update-course-content/${get().courseId}`,
+          courseData
+        );
+      } else if (currentTab === "settings") {
+        const courseData = {
+          name: get().name,
+          description: get().description,
+          categoryId: get().categoryId,
+          price: get().price,
+          enrollmentDateFrom: get().enrollmentDateFrom.toISOString(),
+          enrollmentDateTo: get().enrollmentDateTo.toISOString(),
+          startDate: get().startDate.toISOString(),
+          duration: get().duration,
+          courseLevel: get().courseLevel,
+          maxStudents: get().maxStudents
+        };
+
+        await authFetch.put(
+          `/api/v1/course/update-course-settings/${get().courseId}`,
+          courseData
+        );
+      }
     },
     uploadQueue: [],
     canUpload: () => {
@@ -304,7 +312,8 @@ export default function CourseStoreProvider({
           const newSections = [...state.sections];
           newSections[state.selectedSectionIndex].contents[contentIndex] = {
             ...content,
-            status: "processing"
+            status: "processing",
+            id: data.contentId
           };
           return { sections: newSections };
         });
