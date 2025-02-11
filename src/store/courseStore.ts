@@ -1,3 +1,5 @@
+import { DateRange } from "react-day-picker";
+
 export interface ContentItem {
     id: string;
     type: "VIDEO" | "PPT";
@@ -21,13 +23,37 @@ export interface CourseData {
     published: boolean;
     price: number;
     creatorId: string;
-    createdAt: string;
+    enrollmentDateFrom: string;
+    enrollmentDateTo: string;
+    startDate: string;
+    duration: string;
+    courseLevel: string;
+    maxStudents: number;
     updatedAt: string;
     CourseSection: Section[];
 }
 
+type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents";
+
 export interface CourseStore {
     courseId: string;
+
+    name: string;
+    description: string;
+    categoryId: string;
+    published: boolean;
+    price: number;
+    creatorId: string;
+    enrollmentDateFrom: Date;
+    enrollmentDateTo: Date;
+    startDate: Date;
+    duration: string;
+    courseLevel: string;
+    maxStudents: number;
+    updatedAt: Date;
+
+    updateValues: (newValue: string | number | boolean | Date | DateRange, data: dataTypes) => void;
+
     sections: Section[];
     setSections: (sections: Section[]) => void;
     selectedSectionIndex: number;
