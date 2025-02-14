@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Card from "../list/card";
+import ShowCourseCard from "../list/showCourseCard";
 import { CiSettings } from "react-icons/ci";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
@@ -10,6 +11,8 @@ import { FaUser } from "react-icons/fa6";
 import useUserPresentation from "../../hooks/useUserPresentation";
 import useUser from "../../hooks/useUser";
 import { FaRegEdit } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import { authFetch } from "../../lib/axios";
 
 export default function NewDashboard() {
   const [currentView, setCurrentView] = useState(1);
@@ -28,6 +31,16 @@ export default function NewDashboard() {
   });
 
   const presentationQuery = useUserPresentation({ enabled: currentView === 1 });
+
+  const myCourses = useQuery({
+    queryKey: ["myCourses", user.id],
+    enabled: currentView === 2,
+    queryFn: async function () {
+      const { data } = await authFetch.get(`/api/v1/course/user-courses`);
+
+      return data;
+    }
+  });
 
   useEffect(
     function () {
@@ -92,7 +105,9 @@ export default function NewDashboard() {
             </span>
             <div className="flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] border-[#FFFFF0] rounded-full relative mb-4">
               <FaUser size="80" className="block" />
-              <button className="absolute text-3xl bottom-[0.5rem] right-[0.5rem] bg-primaryTwo_"><FaRegEdit /></button>
+              <button className="absolute text-xl bottom-[0.7rem] right-[0.7rem] bg-primaryTwo">
+                <FaRegEdit />
+              </button>
             </div>
             <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 responsiveText text-center">
               <h1 className="text-2xl mt-2">{user ? user.username : "--"}</h1>
@@ -149,7 +164,7 @@ export default function NewDashboard() {
                 : ``
             }
           >
-            Library
+            Courses
           </button>
           <button
             onClick={handleView}
@@ -240,9 +255,11 @@ export default function NewDashboard() {
             </div>
             {/* end search */}
             <div
-              className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
+              className={`container min-h-screen flex flex-col md:flex-row gap-10 justify-center items-center _bg-[purple]`}
             >
-              <h1>No Librarey yet</h1>
+              {myCourses.data?.map((course) => (
+                <ShowCourseCard key={course.id} course={course} />
+              ))}
             </div>
           </div>
           <div

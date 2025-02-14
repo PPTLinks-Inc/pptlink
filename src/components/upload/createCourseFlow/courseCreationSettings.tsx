@@ -56,6 +56,7 @@ export default function CourseCreationSettings() {
   const price = useCourseStore((state) => state.price);
   const courseLevel = useCourseStore((state) => state.courseLevel);
   const maxStudents = useCourseStore((state) => state.maxStudents);
+  const thumbnail = useCourseStore((state) => state.thumbnail);
 
   const updateValues = useCourseStore((state) => state.updateValues);
 
@@ -136,7 +137,7 @@ export default function CourseCreationSettings() {
 
             <Input
               type="text"
-              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w-full"
+              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w/full"
               value={name}
               onChange={(e) => updateValues(e.target.value, "name")}
             />
@@ -144,13 +145,13 @@ export default function CourseCreationSettings() {
           <div className="space-y-4 mt-10">
             <Label className="text-lg font-bold">Course description</Label>
 
-            <Textarea value={description} onChange={(e) => updateValues(e.target.value, "description")} className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w-full"></Textarea>
+            <Textarea value={description} onChange={(e) => updateValues(e.target.value, "description")} className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w/full"></Textarea>
           </div>
           <div className="space-y-4 mt-10">
             <Label className="text-lg font-bold">Course catergory</Label>
 
             <Select onValueChange={handleCategoryChange} value={categoryId}>
-              <SelectTrigger className="w-3/6 maxScreenMobile:w-full border-[0.5px] border-black">
+              <SelectTrigger className="w-3/6 maxScreenMobile:w/full border-[0.5px] border-black">
                 <SelectValue
                   placeholder={
                     categoriesQuery.isLoading ? "Loading" : "Select category"
@@ -198,7 +199,7 @@ export default function CourseCreationSettings() {
                 USD ($)
               </Label>
             </div>
-            <div className="relative w-3/6 maxScreenMobile:w-full">
+            <div className="relative w-3/6 maxScreenMobile:w/full">
               <Input
                 type="text"
                 inputMode="numeric"
@@ -228,7 +229,7 @@ export default function CourseCreationSettings() {
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-3/6 maxScreenMobile:w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
+                    "w-3/6 maxScreenMobile:w/full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
                   )}
                 >
                   {enrollmentDate.from && enrollmentDate.to ? (
@@ -270,7 +271,7 @@ export default function CourseCreationSettings() {
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-3/6 maxScreenMobile:w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
+                    "w-3/6 maxScreenMobile:w/full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
                   )}
                 >
                   {startDate ? (
@@ -298,7 +299,7 @@ export default function CourseCreationSettings() {
           <div>
             <h5>Course duration</h5>
             <Select onValueChange={handleDurationChange} value={duration}>
-              <SelectTrigger className="w-3/6 maxScreenMobile:w-full border-[0.5px] border-black">
+              <SelectTrigger className="w-3/6 maxScreenMobile:w/full border-[0.5px] border-black">
                 <SelectValue placeholder="Select duration" />
               </SelectTrigger>
               <SelectContent>
@@ -334,6 +335,8 @@ export default function CourseCreationSettings() {
           </div>
         </div>
 
+        
+
         <div className="space-y-4 mt-10">
           <h3 className="text-lg font-bold">
             Please input the maximum amount of students that is allowed to take
@@ -346,7 +349,7 @@ export default function CourseCreationSettings() {
             min="1"
             max="20000"
             placeholder="Leave blank for unlimited"
-            className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w-full"
+            className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w/full"
             value={maxStudents}
             onChange={(e) => {
               if (isValidNumber(e.target.value)) {
@@ -355,6 +358,34 @@ export default function CourseCreationSettings() {
             }}
           />
           <p className="text-sm text-gray-600">Maximum allowed: 20,000</p>
+        </div>
+
+        <div className="space-y-4 mt-10">
+          <h3 className="text-lg font-bold">Course Thumbnail</h3>
+          <div className="flex flex-col gap-4">
+            {thumbnail && (
+              <div className="relative w-[18rem] aspect-[2/2.5] rounded-lg overflow-hidden border-[0.1px] shadow-white shadow-inner">
+                <img
+                  src={typeof thumbnail === 'string' ? thumbnail : URL.createObjectURL(thumbnail)}
+                  alt="Course thumbnail"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-primaryTwo/25"></div>
+              </div>
+            )}
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  updateValues(file, 'thumbnail');
+                }
+              }}
+              className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w/full cursor-pointer"
+            />
+            <p className="text-sm text-gray-600">Recommended size: 800x1000 pixels (2:2.5 aspect ratio)</p>
+          </div>
         </div>
       </div>
     </div>
