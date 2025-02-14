@@ -60,6 +60,7 @@ export default function CourseStoreProvider({
 
     name: data.name,
     description: data.description,
+    thumbnail: data.thumbnail,
     categoryId: data.categoryId,
     published: data.published,
     price: data.price,
@@ -198,18 +199,22 @@ export default function CourseStoreProvider({
           courseData
         );
       } else if (currentTab === "settings") {
-        const courseData = {
-          name: get().name,
-          description: get().description,
-          categoryId: get().categoryId,
-          price: get().price,
-          enrollmentDateFrom: get().enrollmentDateFrom.toISOString(),
-          enrollmentDateTo: get().enrollmentDateTo.toISOString(),
-          startDate: get().startDate.toISOString(),
-          duration: get().duration,
-          courseLevel: get().courseLevel,
-          maxStudents: get().maxStudents
-        };
+        const courseData = new FormData();
+        courseData.append("name", get().name);
+        courseData.append("description", get().description);
+        courseData.append("categoryId", get().categoryId);
+        courseData.append("price", get().price.toString());
+        courseData.append("enrollmentDateFrom", get().enrollmentDateFrom.toISOString());
+        courseData.append("enrollmentDateTo", get().enrollmentDateTo.toISOString());
+        courseData.append("startDate", get().startDate.toISOString());
+        courseData.append("duration", get().duration);
+        courseData.append("courseLevel", get().courseLevel);
+        courseData.append("maxStudents", get().maxStudents.toString());
+
+        const thumbnail = get().thumbnail;
+        if (thumbnail instanceof File) {
+          courseData.append("thumbnail", thumbnail);
+        }
 
         await authFetch.put(
           `/api/v1/course/update-course-settings/${get().courseId}`,
