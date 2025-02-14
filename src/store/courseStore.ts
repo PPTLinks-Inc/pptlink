@@ -18,8 +18,7 @@ export interface CourseData {
     id: string;
     name: string;
     description: string;
-    thumbnail: string;
-    thumbnailKey: string;
+    thumbnail: string | null;
     categoryId: string;
     published: boolean;
     price: number;
@@ -34,13 +33,14 @@ export interface CourseData {
     CourseSection: Section[];
 }
 
-type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents";
+type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents" | "thumbnail";
 
 export interface CourseStore {
     courseId: string;
 
     name: string;
     description: string;
+    thumbnail: File | string | null;
     categoryId: string;
     published: boolean;
     price: number;
@@ -53,7 +53,7 @@ export interface CourseStore {
     maxStudents: number;
     updatedAt: Date;
 
-    updateValues: (newValue: string | number | boolean | Date | DateRange, data: dataTypes) => void;
+    updateValues: (newValue: string | number | boolean | Date | DateRange | File | null, data: dataTypes) => void;
 
     sections: Section[];
     setSections: (sections: Section[]) => void;

@@ -14,6 +14,7 @@ import * as Sentry from "@sentry/react";
 import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
+import { CoursePreviewLoader } from "@/components/upload/createCourseFlow/coursePreviewPage";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -86,8 +87,9 @@ const router = sentryCreateBrowserRouter(
           element: <Document />
         },
         {
-          path: "course/user/preview",
-          element: <CoursePreviewPage />
+          path: "course/preview/:id",
+          element: <CoursePreviewPage />,
+          loader: CoursePreviewLoader
         },
         {
           path: "upload",
@@ -171,7 +173,7 @@ const router = sentryCreateBrowserRouter(
             <CourseSideBarContext isActive="course">
               <CourseCreationWorkflow />
             </CourseSideBarContext>
-          ),
+          )
         },
         {
           path: "settings/:courseId",
@@ -179,7 +181,7 @@ const router = sentryCreateBrowserRouter(
             <CourseSideBarContext isActive="settings">
               <CourseCreationSettings />
             </CourseSideBarContext>
-          ),
+          )
         },
         {
           path: "profile/:courseId",
@@ -187,7 +189,7 @@ const router = sentryCreateBrowserRouter(
             <CourseSideBarContext isActive="profile">
               <CourseCreationProfile />
             </CourseSideBarContext>
-          ),
+          )
         },
         {
           path: "help",
