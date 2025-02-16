@@ -149,8 +149,8 @@ export default function CoursePreviewPage() {
           Courses in this Program
         </h2>
         {/* start */}
-        {Array.from({ length: 4 }, (_, i) => i + 1).map((idx) => (
-          <div key={idx} className="container !pb-4">
+        {data.CourseSection.map((section) => (
+          <div key={section.id} className="container !pb-4">
             <AccordionWrapper
               isDark={false}
               isBorder={false}
@@ -160,7 +160,7 @@ export default function CoursePreviewPage() {
                     Course 1-47 minutes
                   </span>
                   <span className="block w-fit text-primaryTwo text-xl capitalize">
-                    Welcome to UI/UX Course
+                    {section.title}
                   </span>
                 </p>
               }
@@ -168,12 +168,12 @@ export default function CoursePreviewPage() {
             >
               <div className="md:my-4_ pt-4 grid grid-cols-4 auto-rows-max grid-flow-row gap-4 maxScreen:grid-cols-3  maxSmallMobile:snap_scrolling maxSmallMobile:grid-cols-none maxSmallMobile:grid-rows-none maxSmallMobile:!flex !h-fit maxSmallMobile:!overflow-x-auto maxSmallMobile:!overflow-y-hidden maxSmallMobile:pt-4_ maxSmallMobile:pr-2 maxSmallMobile:pb-2_ maxSmallMobile:!scroll-smooth">
                 {/* start */}
-                {Array.from({ length: 1 + idx }, (_, i) => i + 1).map(
-                  (idx2) => (
+                {section.contents.map(
+                  (content) => (
                     <CourseCard
-                      key={idx2.toString()}
+                      key={content.id}
                       img={"/team/yoh.jpg"}
-                      type={1 + idx2}
+                      content={content}
                     />
                   )
                 )}
