@@ -6,6 +6,7 @@ interface User {
     email: string;
     username: string;
     presentations: number;
+    courses: number;
 };
 
 export default function useUser() {
@@ -22,9 +23,10 @@ export default function useUser() {
             const email = searchParams.get('email');
             const presentations = searchParams.get('presentations');
             const token = searchParams.get('token');
+            const courses = searchParams.get('courses');
             
 
-            if (token && id && username && email && presentations) {
+            if (token && id && username && email && presentations && courses) {
                 localStorage.setItem('accessToken', token);
 
                 if (window.opener) {
@@ -45,7 +47,8 @@ export default function useUser() {
                     id,
                     username,
                     email,
-                    presentations: parseInt(presentations)
+                    presentations: parseInt(presentations),
+                    courses: parseInt(courses)
                 });
 
                 setAuthFetchToken(token);

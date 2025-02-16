@@ -121,7 +121,7 @@ export default function NewDashboard() {
                 </span>
                 <span className="text-2xl">|</span>
                 <span className="flax flex-col justify-between items-center">
-                  <span className="block w-fit mx-auto">0</span>
+                  <span className="block w-fit mx-auto">{user ? user.courses : "--"}</span>
                   <span className="block w-fit mx-auto">Courses</span>
                 </span>
               </div>

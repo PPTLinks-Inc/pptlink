@@ -37,6 +37,9 @@ const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 const RequestPasswordResetLink = lazy(
   () => import("./components/sign/requestPasswordResetLink")
 );
+const RequestEmailVerificationLink = lazy(
+  () => import("./components/sign/requestEmailVerificationLink")
+);
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
 
 const CourseCreationWorkflow = lazy(
@@ -151,6 +154,10 @@ const router = sentryCreateBrowserRouter(
       element: <RequestPasswordResetLink />
     },
     {
+      path: "/verify-email",
+      element: <RequestEmailVerificationLink />
+    },
+    {
       path: "/pay",
       element: <Pay />
     },
@@ -166,6 +173,7 @@ const router = sentryCreateBrowserRouter(
       path: "/course",
       element: <CourseRoot />,
       loader: CourseContentLoader,
+      id: "courseRoot",
       children: [
         {
           path: ":courseId",

@@ -9,7 +9,7 @@ export enum MIC_STATE {
 export const SERVER_URL = import.meta.env.VITE_BACKEND_URL || "https://api.pptlinks.com";
 // export const SERVER_URL = "https://verbose-telegram-q44qrpxqrvpcgjr-4000.app.github.dev";
 
-export const ROUTER_ID = "9";
+export const ROUTER_ID = "courseRoot";
 
 export const AGORA_APP_ID = "33672aae3d8d48f4b83292008db3986e";
 
