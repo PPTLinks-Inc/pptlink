@@ -31,6 +31,17 @@ export interface CourseData {
     maxStudents: number;
     updatedAt: string;
     CourseSection: Section[];
+    instructor: {
+        id: string;
+        experience: string;
+        role: string;
+        bio: string;
+        photo: string;
+        user: {
+            email: string;
+            username: string;
+        }
+    }[];
 }
 
 type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents" | "thumbnail";
@@ -52,6 +63,18 @@ export interface CourseStore {
     courseLevel: string;
     maxStudents: number;
     updatedAt: Date;
+
+    instructor: {
+        id: string;
+        experience: string;
+        role: string;
+        bio: string;
+        photo: File | string | null;
+        user: {
+            email: string;
+            username: string;
+        }
+    }[];
 
     updateValues: (newValue: string | number | boolean | Date | DateRange | File | null, data: dataTypes) => void;
 

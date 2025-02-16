@@ -72,6 +72,9 @@ export default function CourseStoreProvider({
     courseLevel: data.courseLevel,
     maxStudents: data.maxStudents,
     updatedAt: new Date(data.updatedAt),
+
+    instructor: data.instructor ?? [],
+
     updateValues: (newValue, data) => {
       set({ [data]: newValue });
     },
