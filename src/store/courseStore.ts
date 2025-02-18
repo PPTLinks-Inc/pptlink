@@ -18,8 +18,7 @@ export interface CourseData {
     id: string;
     name: string;
     description: string;
-    thumbnail: string;
-    thumbnailKey: string;
+    thumbnail: string | null;
     categoryId: string;
     published: boolean;
     price: number;
@@ -32,15 +31,27 @@ export interface CourseData {
     maxStudents: number;
     updatedAt: string;
     CourseSection: Section[];
+    instructor: {
+        id: string;
+        experience: string;
+        role: string;
+        bio: string;
+        photo: string;
+        user: {
+            email: string;
+            username: string;
+        }
+    }[];
 }
 
-type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents";
+type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents" | "thumbnail";
 
 export interface CourseStore {
     courseId: string;
 
     name: string;
     description: string;
+    thumbnail: File | string | null;
     categoryId: string;
     published: boolean;
     price: number;
@@ -53,7 +64,19 @@ export interface CourseStore {
     maxStudents: number;
     updatedAt: Date;
 
-    updateValues: (newValue: string | number | boolean | Date | DateRange, data: dataTypes) => void;
+    instructor: {
+        id: string;
+        experience: string;
+        role: string;
+        bio: string;
+        photo: File | string | null;
+        user: {
+            email: string;
+            username: string;
+        }
+    }[];
+
+    updateValues: (newValue: string | number | boolean | Date | DateRange | File | null, data: dataTypes) => void;
 
     sections: Section[];
     setSections: (sections: Section[]) => void;

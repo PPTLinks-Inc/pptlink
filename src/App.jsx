@@ -14,6 +14,7 @@ import * as Sentry from "@sentry/react";
 import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
+import { CoursePreviewLoader } from "@/components/upload/createCourseFlow/coursePreviewPage";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -35,6 +36,9 @@ const SupperUpload = lazy(() => import("./components/upload/supperUpload"));
 const ResetPasswordPage = lazy(() => import("./components/sign/resetPassword"));
 const RequestPasswordResetLink = lazy(
   () => import("./components/sign/requestPasswordResetLink")
+);
+const RequestEmailVerificationLink = lazy(
+  () => import("./components/sign/requestEmailVerificationLink")
 );
 const CreatePath = lazy(() => import("./components/createNew/createPath"));
 
@@ -86,8 +90,9 @@ const router = sentryCreateBrowserRouter(
           element: <Document />
         },
         {
-          path: "course/user/preview",
-          element: <CoursePreviewPage />
+          path: "course/preview/:id",
+          element: <CoursePreviewPage />,
+          loader: CoursePreviewLoader
         },
         {
           path: "upload",
@@ -149,6 +154,10 @@ const router = sentryCreateBrowserRouter(
       element: <RequestPasswordResetLink />
     },
     {
+      path: "/verify-email",
+      element: <RequestEmailVerificationLink />
+    },
+    {
       path: "/pay",
       element: <Pay />
     },
@@ -164,6 +173,7 @@ const router = sentryCreateBrowserRouter(
       path: "/course",
       element: <CourseRoot />,
       loader: CourseContentLoader,
+      id: "courseRoot",
       children: [
         {
           path: ":courseId",
@@ -171,7 +181,7 @@ const router = sentryCreateBrowserRouter(
             <CourseSideBarContext isActive="course">
               <CourseCreationWorkflow />
             </CourseSideBarContext>
-          ),
+          )
         },
         {
           path: "settings/:courseId",
@@ -179,7 +189,7 @@ const router = sentryCreateBrowserRouter(
             <CourseSideBarContext isActive="settings">
               <CourseCreationSettings />
             </CourseSideBarContext>
-          ),
+          )
         },
         {
           path: "profile/:courseId",
@@ -187,7 +197,7 @@ const router = sentryCreateBrowserRouter(
             <CourseSideBarContext isActive="profile">
               <CourseCreationProfile />
             </CourseSideBarContext>
-          ),
+          )
         },
         {
           path: "help",

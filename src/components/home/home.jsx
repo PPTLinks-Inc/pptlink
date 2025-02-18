@@ -103,22 +103,7 @@ export default function Home() {
       transition: { duration: 1, staggerChildren: 0.5 }
     }
   };
-  const containerVarient = {
-    initial: {
-      y: 20,
-      opacity: 0
-    },
-    inView: {
-      y: 0,
-      opacity: 100,
-      transition: {
-        duration: 1,
-        staggerChildren: 0.2,
-        type: "spring",
-        stiffness: 120
-      }
-    }
-  };
+
   const secondVarient = {
     initial: {
       y: 50,

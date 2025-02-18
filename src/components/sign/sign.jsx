@@ -72,6 +72,11 @@ export default function SignPage() {
         const redirectUrl = searchParams.get("redirect") || "/";
         navigate(redirectUrl);
       }
+    },
+    onError: ({ response }) => {
+      if (response.data.errorType === "EMAIL_NOT_VERIFIED") {
+        navigate(`/verify-email?email=${values.email}`);
+      }
     }
   });
 
@@ -97,6 +102,8 @@ export default function SignPage() {
       }
     }
   });
+
+  const [serverMessage] = useState(searchParams.get("message"));
 
   function handleSubmition(e) {
     e.preventDefault();
@@ -350,6 +357,13 @@ export default function SignPage() {
                     : signup.error.message}
                 </p>
               )}
+
+              {serverMessage && (
+                <p className="text-[green] text-center font-bold text-xl">
+                  {serverMessage}
+                </p>
+              )}
+
               <div
                 className={`flex justify-between items-center gap-4 ${!isResetPage && "mb-8"} ${!isSignupPage && "!flex-col"} maxScreenMobile:flex-col`}
               >
