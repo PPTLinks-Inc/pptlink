@@ -7,7 +7,7 @@ import CourseCard from "../../list/courseCard";
 import InstructorCard from "../../list/instructorCard";
 import useUser from "../../../hooks/useUser";
 import { authFetch } from "../../../lib/axios";
-import { useMemo } from "react";
+import { useState } from "react";
 
 export async function CoursePreviewLoader({ params }) {
   const { data } = await authFetch.get(
@@ -23,14 +23,11 @@ export default function CoursePreviewPage() {
 
   const data = useLoaderData();
 
-  const price = useMemo(
-    function () {
-      return new Intl.NumberFormat("en-NG", {
-        style: "currency",
-        currency: "NGN"
-      }).format(data.price);
-    },
-    [data.price]
+  const [price] = useState(
+    new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN"
+    }).format(data.price)
   );
 
   return (
@@ -186,8 +183,8 @@ export default function CoursePreviewPage() {
         </h3>
         <div className="instructors container my-4 grid grid-cols-4 auto-rows-max grid-flow-row gap-4 maxScreen:grid-cols-3 maxScreenMobile:grid-cols-2 maxSmallMobile:grid-cols-1">
           {/* start */}
-          {Array.from({ length: 4 }, (_, i) => i + 1).map((idx) => (
-            <InstructorCard key={idx.toString()} img={"/team/imoh.jpg"} />
+          {data.instructors.map((instructor) => (
+            <InstructorCard key={instructor.id} data={instructor} />
           ))}
           {/* end */}
         </div>

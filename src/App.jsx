@@ -60,6 +60,9 @@ const CoursePreviewPage = lazy(
 const CourseCreationWorkflowTwo = lazy(
   () => import("./components/upload/createCourseFlow/courseCreationWorkflowTwo")
 );
+const CourseAcceptInvitation = lazy(
+  () => import("./components/upload/createCourseFlow/courseInvite")
+);
 const TermsAndServicesPage = lazy(
   () => import("./components/Terms_and_policy_page/termsAndServices")
 );
@@ -168,6 +171,10 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/create",
       element: <CreatePath />
+    },
+    {
+      path: "/course/invitation",
+      element: <CourseAcceptInvitation />
     },
     {
       path: "/course",
