@@ -31,15 +31,19 @@ export interface CourseData {
     maxStudents: number;
     updatedAt: string;
     CourseSection: Section[];
-    instructor: {
+    instructors: {
         id: string;
-        experience: string;
-        role: string;
-        bio: string;
-        photo: string;
-        user: {
-            email: string;
-            username: string;
+        status: "PENDING" | "APPROVED" | "REJECTED";
+        instructor: {
+            experience?: string;
+            role?: string;
+            bio?: string;
+            photo?: string;
+            user: {
+                id: string;
+                email: string;
+                username: string;
+            }
         }
     }[];
 }
@@ -64,15 +68,19 @@ export interface CourseStore {
     maxStudents: number;
     updatedAt: Date;
 
-    instructor: {
+    instructors: {
         id: string;
-        experience: string;
-        role: string;
-        bio: string;
-        photo: File | string | null;
-        user: {
-            email: string;
-            username: string;
+        status: "PENDING" | "APPROVED" | "REJECTED";
+        instructor: {
+            experience?: string;
+            role?: string;
+            bio?: string;
+            photo?: string;
+            user: {
+                id: string;
+                email: string;
+                username: string;
+            }
         }
     }[];
 
@@ -94,4 +102,7 @@ export interface CourseStore {
     addToUploadQueue: (contentId: string) => void;
     processUploadQueue: () => void;
     uploadContent: (contentId: string) => Promise<void>;
+
+    addInstructor: (instructorId: string) => Promise<void>;
+    removeInstructor: (instructorId: string) => Promise<void>;
 }
