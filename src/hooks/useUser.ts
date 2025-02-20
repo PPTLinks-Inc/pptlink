@@ -52,7 +52,9 @@ export default function useUser() {
                 });
 
                 setAuthFetchToken(token);
-                location.replace("/");
+                const redirect = localStorage.getItem("redirect") ?? "/";
+                localStorage.removeItem("redirect");
+                location.replace(redirect);
             } else {
                 const { data } = await authFetch.get("/api/v1/auth/user");
                 return data.user as User;

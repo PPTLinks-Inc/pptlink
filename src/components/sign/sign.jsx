@@ -69,7 +69,7 @@ export default function SignPage() {
       } else {
         setUser(data.user);
         setAuthFetchToken(data.token);
-        const redirectUrl = searchParams.get("redirect") || "/";
+        const redirectUrl = searchParams.get("redirect") ?? "/";
         navigate(redirectUrl);
       }
     },
