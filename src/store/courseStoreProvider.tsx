@@ -4,6 +4,7 @@ import { ContentItem, CourseData, CourseStore } from "./courseStore";
 import { authFetch, standardFetch } from "@/lib/axios";
 import { useLoaderData, useParams } from "react-router-dom";
 import safeAwait from "@/util/safeAwait";
+import { toast } from "@/hooks/use-toast";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
@@ -73,7 +74,7 @@ export default function CourseStoreProvider({
     maxStudents: data.maxStudents,
     updatedAt: new Date(data.updatedAt),
 
-    instructor: data.instructor ?? [],
+    instructors: data.instructors ?? [],
 
     updateValues: (newValue, data) => {
       set({ [data]: newValue });
@@ -207,8 +208,14 @@ export default function CourseStoreProvider({
         courseData.append("description", get().description);
         courseData.append("categoryId", get().categoryId);
         courseData.append("price", get().price.toString());
-        courseData.append("enrollmentDateFrom", get().enrollmentDateFrom.toISOString());
-        courseData.append("enrollmentDateTo", get().enrollmentDateTo.toISOString());
+        courseData.append(
+          "enrollmentDateFrom",
+          get().enrollmentDateFrom.toISOString()
+        );
+        courseData.append(
+          "enrollmentDateTo",
+          get().enrollmentDateTo.toISOString()
+        );
         courseData.append("startDate", get().startDate.toISOString());
         courseData.append("duration", get().duration);
         courseData.append("courseLevel", get().courseLevel);
@@ -351,6 +358,84 @@ export default function CourseStoreProvider({
           return { sections: newSections };
         });
       }
+    },
+    addInstructor: async (instructorId: string) => {
+      const toastId = toast({
+        title: "Creating instructor",
+        duration: 10000
+      });
+
+      const [err, res] = await safeAwait(authFetch.post<{
+        id: string;
+        email: string;
+        username: string;
+      }>("/api/v1/course/add-instructor", {
+        courseId: get().courseId,
+        instructorId
+      }));
+
+      if (err) {
+        toastId.dismiss();
+        toast({
+          title: "Error",
+          description: "Failed to add instructor",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const data = res.data;
+
+      set((state) => ({
+        instructors: [
+          ...state.instructors,
+          {
+            id: data.id,
+            status: "PENDING",
+            instructor: {
+              experience: "",
+              role: "",
+              bio: "",
+              photo: "",
+              user: {
+                id: data.id,
+                email: data.email,
+                username: data.username
+              }
+            }
+          }
+        ]
+      }));
+
+      toastId.dismiss();
+      toast({
+        title: "Success",
+        description: "Instructor added successfully"
+      });
+    },
+    removeInstructor: async (instructorId: string) => {
+      set((state) => ({
+        instructors: state.instructors.filter(
+          (instructor) => instructor.id !== instructorId
+        )
+      }));
+      const [err] = await safeAwait(authFetch.delete(
+        `/api/v1/course/delete-instructor/${get().courseId}/${instructorId}`
+      ));
+
+      if (err) {
+        toast({
+          title: "Error",
+          description: "Failed to remove instructor",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Instructor removed successfully"
+      });
     }
   }));
 
