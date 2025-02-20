@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,20 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaUser } from "react-icons/fa6";
 import { useCourseStore } from "@/store/courseStoreProvider";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList } from "@/components/ui/command";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { useQuery } from "@tanstack/react-query";
+import { authFetch } from "@/lib/axios";
+import { useDebounce } from "@/hooks/useDebounce";
+import { LoadingAssetSmall } from "@/assets/assets";
 
 type BankOption =
   | "Select Bank"
@@ -32,8 +44,16 @@ interface AccountProfileDetails {
   isValidAccount: boolean;
 }
 
+interface InstructorSearchResult {
+  id: string;
+  email: string;
+  username: string;
+}
+
 export default function CourseCreationProfile() {
-  const instructors = useCourseStore((state) => state.instructor);
+  const instructors = useCourseStore((state) => state.instructors);
+  const addInstructor = useCourseStore((state) => state.addInstructor);
+  const removeInstructor = useCourseStore((state) => state.removeInstructor);
 
   const [accountProfileDetails, setAccountProfileDetails] =
     useState<AccountProfileDetails>({
@@ -43,248 +63,338 @@ export default function CourseCreationProfile() {
       isValidAccount: false
     });
 
+  const [searchEmail, setSearchEmail] = useState("");
+  const [selectedInstructor, setSelectedInstructor] =
+    useState<InstructorSearchResult | null>(null);
+
+  const instructorSearchQuery = useQuery({
+    queryKey: ["instructorSearch", searchEmail],
+    queryFn: async () => {
+      if (!searchEmail) return [];
+      const { data } = await authFetch.get<InstructorSearchResult[]>(
+        `/api/v1/course/search-instructor?instructorEmail=${searchEmail}`
+      );
+      return data;
+    },
+    enabled: searchEmail.length > 0
+  });
+
+  const handleSearch = useCallback((value: string) => {
+    setSearchEmail(value);
+  }, []);
+
+  const debouncedSearch = useDebounce(handleSearch, 500);
+
   const isValidNumber = (value: string) => {
     return /^\d+$/.test(value) && Number(value) > 0;
   };
 
-  return (
-    <div className="bg-slate-200 w-full h-full">
-      <div className="text-primaryTwo container py-4">
-        <h1 className="text-2xl font-bold">Course Creation Profile</h1>
-        <p className="text-lg mt-2 ">Set up your course profile</p>
+  const handleSaveInstructor = async () => {
+    if (!selectedInstructor) return;
 
-        <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">Pease enter your bank details</h3>
-          <div className="relative w-3/6 maxScreenMobile:w-full">
-            <Label htmlFor="accountName" className="text-sm">
-              Account number
-            </Label>
+    try {
+      await addInstructor(selectedInstructor.id);
+      setSelectedInstructor(null);
+      setSearchEmail("");
+    } catch (error) {
+      console.error("Failed to add instructor:", error);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add instructor</DialogTitle>
+          <DialogDescription>
+            Search for an instructor by email address.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-5 py-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email">Email</Label>
             <Input
-              type="text"
-              inputMode="numeric"
-              pattern="\d*{10}"
-              min="0"
-              value={accountProfileDetails.accountNumber}
-              id="accountName"
-              onChange={(e) =>
-                setAccountProfileDetails((prev) => ({
-                  ...prev,
-                  accountNumber: e.target.value
-                }))
-              }
-              placeholder="e.g 0123456789"
-              className={`pl-2 border-[0.5px] mt-2 ${
-                accountProfileDetails.accountNumber &&
-                isValidNumber(accountProfileDetails.accountNumber)
-                  ? "border-[#FFA500]"
-                  : "border-primaryTwo"
-              }`}
+              type="email"
+              placeholder="Search with email"
+              onChange={(e) => debouncedSearch(e.target.value)}
             />
           </div>
 
-          <div className="mt-10">
-            <Label htmlFor="accountName" className="text-sm pb-2">
-              Select bank name
-            </Label>
-            <Select
-              value={accountProfileDetails.bankName}
-              onValueChange={(value: BankOption) =>
-                setAccountProfileDetails((prev) => ({
-                  ...prev,
-                  bankName: value
-                }))
-              }
+          <div className="space-y-2">
+            {instructorSearchQuery.isLoading && (
+              <div className="flex justify-center">
+                <LoadingAssetSmall />
+              </div>
+            )}
+            {instructorSearchQuery.data?.length === 0 && searchEmail && (
+              <p className="text-sm text-gray-500">No instructors found</p>
+            )}
+            {instructorSearchQuery.data?.map((instructor) => (
+              <Label
+                key={instructor.id}
+                className="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
+              >
+                <Input
+                  type="radio"
+                  name="instructor"
+                  value={instructor.id}
+                  checked={selectedInstructor?.id === instructor.id}
+                  onChange={() => setSelectedInstructor(instructor)}
+                  className="w-4 h-4"
+                />
+                <div>
+                  <p className="font-medium">{instructor.username}</p>
+                  <p className="text-sm text-gray-500">{instructor.email}</p>
+                </div>
+              </Label>
+            ))}
+          </div>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              disabled={!selectedInstructor}
+              onClick={handleSaveInstructor}
             >
-              <SelectTrigger
-                className={`border-[0.5px] mt-2 ${
-                  accountProfileDetails.bankName !== "Select Bank"
+              Save
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+      <div className="bg-slate-200 w-full h-full">
+        <div className="text-primaryTwo container py-4">
+          <h1 className="text-2xl font-bold">Course Creation Profile</h1>
+          <p className="text-lg mt-2 ">Set up your course profile</p>
+
+          <div className="space-y-4 mt-10">
+            <h3 className="text-lg font-bold">Pease enter your bank details</h3>
+            <div className="relative w-3/6 maxScreenMobile:w-full">
+              <Label htmlFor="accountName" className="text-sm">
+                Account number
+              </Label>
+              <Input
+                type="text"
+                inputMode="numeric"
+                pattern="\d*{10}"
+                min="0"
+                value={accountProfileDetails.accountNumber}
+                id="accountName"
+                onChange={(e) =>
+                  setAccountProfileDetails((prev) => ({
+                    ...prev,
+                    accountNumber: e.target.value
+                  }))
+                }
+                placeholder="e.g 0123456789"
+                className={`pl-2 border-[0.5px] mt-2 ${
+                  accountProfileDetails.accountNumber &&
+                  isValidNumber(accountProfileDetails.accountNumber)
                     ? "border-[#FFA500]"
                     : "border-primaryTwo"
-                } w-3/6 maxScreenMobile:w-full`}
+                }`}
+              />
+            </div>
+
+            <div className="mt-10">
+              <Label htmlFor="accountName" className="text-sm pb-2">
+                Select bank name
+              </Label>
+              <Select
+                value={accountProfileDetails.bankName}
+                onValueChange={(value: BankOption) =>
+                  setAccountProfileDetails((prev) => ({
+                    ...prev,
+                    bankName: value
+                  }))
+                }
               >
-                <SelectValue placeholder="Select Bank" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Select Bank">Select Bank</SelectItem>
-                <SelectItem value="FCMB">FCMB</SelectItem>
-                <SelectItem value="First Bank">First Bank</SelectItem>
-                <SelectItem value="Fidelity Bank">Fidelity Bank</SelectItem>
-                <SelectItem value="GT Bank">GT Bank</SelectItem>
-              </SelectContent>
-            </Select>
+                <SelectTrigger
+                  className={`border-[0.5px] mt-2 ${
+                    accountProfileDetails.bankName !== "Select Bank"
+                      ? "border-[#FFA500]"
+                      : "border-primaryTwo"
+                  } w-3/6 maxScreenMobile:w-full`}
+                >
+                  <SelectValue placeholder="Select Bank" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Select Bank">Select Bank</SelectItem>
+                  <SelectItem value="FCMB">FCMB</SelectItem>
+                  <SelectItem value="First Bank">First Bank</SelectItem>
+                  <SelectItem value="Fidelity Bank">Fidelity Bank</SelectItem>
+                  <SelectItem value="GT Bank">GT Bank</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <p className={`text-green-700 font-bold text-lg`}>
+              Found ✔ Raymond Amem Aondoakura
+            </p>
           </div>
 
-          <p className={`text-green-700 font-bold text-lg`}>
-            Found ✔ Raymond Amem Aondoakura
-          </p>
-        </div>
-
-        <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">Instructor(s) Details</h3>
-          {instructors.map((instructor, index) => (
-            <Card
-              key={instructor.id}
-              className="bg-slate-200 shadow-primaryTwo"
-            >
-              <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                  <span>Instructor {index + 1}</span>
-                  {instructors.length > 1 && index + 1 !== 1 && (
-                    <Button variant="destructive" size="sm">
-                      Remove
-                    </Button>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-4">
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden">
-                    {index + 1 === 1 ? (
-                      <img
-                        src="../../../../public/team/imoh.jpg"
-                        alt="imoh knight"
-                        className="block w-full h-full object-cover"
-                      />
-                    ) : (
-                      <FaUser size="80" className="block" />
+          <div className="space-y-4 mt-10">
+            <h3 className="text-lg font-bold">Instructor(s) Details</h3>
+            {instructors.map(({ id: instructorId, instructor, status }, index) => (
+              <Card
+                key={instructorId}
+                className="bg-slate-200 shadow-primaryTwo"
+              >
+                <CardHeader>
+                  <CardTitle className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <span>Instructor {index + 1}</span>
+                      {status === "PENDING" && (
+                      <span className="text-yellow-500 text-sm">(Pending Invite)</span>
+                      )}
+                      {status === "REJECTED" && (
+                      <span className="text-red-500 text-sm">(Rejected Invite)</span>
+                      )}
+                    </div>
+                    {index !== 0 && (
+                      <Button variant="destructive" size="sm" onClick={() => removeInstructor(instructorId)}>
+                        Remove
+                      </Button>
                     )}
-                  </div>
-                  <div>
-                    <input
-                      type="file"
-                      id={`image-upload-${instructor.id}`}
-                      className="hidden"
-                      accept="image/*"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        document
-                          .getElementById(`image-upload-${instructor.id}`)
-                          ?.click()
-                      }
-                      className={`${index + 1 >= 2 && "pointer-events-none cursor-not-allowed bg-black/20"}`}
-                    >
-                      Select Image
-                    </Button>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2 ">
-                    <Label htmlFor={`name-${instructor.id}`}>Full Name</Label>
-                    <div className="w-full">
-                      <Input
-                        id={`name-${instructor.id}`}
-                        value={instructor.user.username}
-                        placeholder="Full Name"
-                        className="border-[0.5px] border-primaryTwo"
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative w-20 h-20 rounded-full overflow-hidden">
+                      {instructor.photo ? (
+                        <img
+                          src={instructor.photo}
+                          alt="Instructor Profile image"
+                          className="block w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FaUser size="80" className="block" />
+                      )}
+                    </div>
+                    <div>
+                      <input
+                        type="file"
+                        id={`image-upload-${instructorId}`}
+                        className="hidden"
+                        accept="image/*"
                       />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          document
+                            .getElementById(`image-upload-${instructorId}`)
+                            ?.click()
+                        }
+                        disabled={status !== "APPROVED"}
+                      >
+                        Select Image
+                      </Button>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`email-${instructor.id}`}>
-                      Email Address
-                    </Label>
-                    <div className="w-full">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className="border-[0.5px] border-primaryTwo w-full bg-transparent"
-                          >
-                            <span className="truncate w-full text-left">
-                              {instructor.user.email}
-                            </span>
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[500px] p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="Search Email..."
-                              className="h-9"
-                            />
-                            <CommandList>
-                              <CommandEmpty>No email found.</CommandEmpty>
-                              <CommandGroup>
-
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                  <div
-                    className={`space-y-2 ${index + 1 >= 2 && "pointer-events-none cursor-not-allowed"}`}
-                  >
-                    <Label htmlFor={`role-${instructor.id}`}>Role/Title</Label>
-                    <div
-                      className={`w-full relative ${index + 1 >= 2 && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
-                    >
-                      <Input
-                        id={`role-${instructor.id}`}
-                        value={instructor.role}
-                        placeholder="Role/Title"
-                        className="border-[0.5px] border-primaryTwo"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    className={`space-y-2 ${index + 1 >= 2 && "pointer-events-none cursor-not-allowed"}`}
-                  >
-                    <Label htmlFor={`experience-${instructor.id}`}>
-                      Experience
-                    </Label>
-                    <div
-                      className={`w-full relative ${index + 1 >= 2 && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
-                    >
-                      <Select value={instructor.experience}>
-                        <SelectTrigger
-                          id={`experience-${instructor.id}`}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2 ">
+                      <Label htmlFor={`name-${instructorId}`}>Full Name</Label>
+                      <div className="w-full">
+                        <Input
+                          id={`name-${instructorId}`}
+                          value={instructor.user.username}
+                          placeholder="Full Name"
                           className="border-[0.5px] border-primaryTwo"
-                        >
-                          <SelectValue placeholder="Select Experience" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value=" ">Select Experience</SelectItem>
-                          {[1, 2, 3, 4, 5, "5+", "10+"].map((years) => (
-                            <SelectItem key={years} value={years.toString()}>
-                              {years} years
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`email-${instructorId}`}>
+                        Email Address
+                      </Label>
+                      <div className="w-full">
+                        <Input
+                          id={`email-${instructorId}`}
+                          value={instructor.user.email}
+                          placeholder="Email Address"
+                          className="border-[0.5px] border-primaryTwo"
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="space-y-2"
+                    >
+                      <Label htmlFor={`role-${instructorId}`}>Role/Title</Label>
+                      <div
+                        className="w-full"
+                      >
+                        <Input
+                          id={`role-${instructorId}`}
+                          value={instructor.role}
+                          placeholder="Role/Title"
+                          className="border-[0.5px] border-primaryTwo"
+                          disabled={status !== "APPROVED"}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="space-y-2"
+                    >
+                      <Label htmlFor={`experience-${instructorId}`}>
+                        Experience
+                      </Label>
+                      <div
+                        className="w-full"
+                      >
+                        <Select value={instructor.experience} disabled={status !== "APPROVED"}>
+                          <SelectTrigger
+                            id={`experience-${instructorId}`}
+                            className="border-[0.5px] border-primaryTwo"
+                          >
+                            <SelectValue placeholder="Select Experience" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value=" ">Select Experience</SelectItem>
+                            {[1, 2, 3, 4, 5, "5+", "10+"].map((years) => (
+                              <SelectItem key={years} value={years.toString()}>
+                                {years} years
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  className={`space-y-2 ${index + 1 >= 2 && "pointer-events-none cursor-not-allowed"}`}
-                >
-                  <Label htmlFor={`biography-${instructor.id}`}>
-                    Biography
-                  </Label>
                   <div
-                    className={`w-full relative ${index + 1 >= 2 && "overflow-hidden !border-0 !rounded !before:border-0 !before:rounded before:!absolute before:!block before:!top-0 before:!left-0 before:!right-0 before:!bottom-0 before:!bg-black/20"}`}
+                    className="space-y-2"
                   >
-                    <Textarea
-                      id={`biography-${instructor.id}`}
-                      value={instructor.bio}
-                      placeholder="Enter instructor biography..."
-                      className="min-h-[100px] resize-none border-[0.5px] border-primaryTwo"
-                    />
+                    <Label htmlFor={`biography-${instructorId}`}>
+                      Biography
+                    </Label>
+                    <div
+                      className="w-full"
+                    >
+                      <Textarea
+                        id={`biography-${instructorId}`}
+                        value={instructor.bio}
+                        placeholder="Enter instructor biography..."
+                        className="min-h-[100px] resize-none border-[0.5px] border-primaryTwo"
+                        disabled={status !== "APPROVED"}
+                      />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-          <Button className="w-full">
-            <PlusIcon className="w-4 h-4 mr-2" />
-            Add Instructor
-          </Button>
+                </CardContent>
+              </Card>
+            ))}
+            <DialogTrigger asChild>
+              <Button className="w-full">
+                <PlusIcon className="w-4 h-4 mr-2" />
+                Add Instructor
+              </Button>
+            </DialogTrigger>
+          </div>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }

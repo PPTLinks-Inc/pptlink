@@ -11,12 +11,7 @@ import { useMemo } from "react";
 
 export async function CoursePreviewLoader({ params }) {
   const { data } = await authFetch.get(
-    `/api/v1/course/user-courses/${params.id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-      }
-    }
+    `/api/v1/course/user-courses/${params.id}`
   );
 
   return data;
@@ -28,12 +23,15 @@ export default function CoursePreviewPage() {
 
   const data = useLoaderData();
 
-  const price = useMemo(function() {
-    return new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency: "NGN"
-    }).format(data.price);
-  }, [data.price]);
+  const price = useMemo(
+    function () {
+      return new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN"
+      }).format(data.price);
+    },
+    [data.price]
+  );
 
   return (
     <>
@@ -111,7 +109,10 @@ export default function CoursePreviewPage() {
                 Enroll Now
               </Link>
             ) : (
-              <Link to={`/course/${data.id}`} className="flex justify-between items-center gap-3 py-4 `w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">
+              <Link
+                to={`/course/${data.id}`}
+                className="flex justify-between items-center gap-3 py-4 `w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+              >
                 Edit Course
               </Link>
             )}
@@ -156,9 +157,6 @@ export default function CoursePreviewPage() {
               isBorder={false}
               title={
                 <p className="w-full px-6 py-4 bg-[#FFFFF0] border-0 !rounded-md !font-normal">
-                  <span className="block w-fit text-[#FFA500] text- mb-1 uppercase">
-                    Course 1-47 minutes
-                  </span>
                   <span className="block w-fit text-primaryTwo text-xl capitalize">
                     {section.title}
                   </span>
@@ -168,15 +166,13 @@ export default function CoursePreviewPage() {
             >
               <div className="md:my-4_ pt-4 grid grid-cols-4 auto-rows-max grid-flow-row gap-4 maxScreen:grid-cols-3  maxSmallMobile:snap_scrolling maxSmallMobile:grid-cols-none maxSmallMobile:grid-rows-none maxSmallMobile:!flex !h-fit maxSmallMobile:!overflow-x-auto maxSmallMobile:!overflow-y-hidden maxSmallMobile:pt-4_ maxSmallMobile:pr-2 maxSmallMobile:pb-2_ maxSmallMobile:!scroll-smooth">
                 {/* start */}
-                {section.contents.map(
-                  (content) => (
-                    <CourseCard
-                      key={content.id}
-                      img={"/team/yoh.jpg"}
-                      content={content}
-                    />
-                  )
-                )}
+                {section.contents.map((content) => (
+                  <CourseCard
+                    key={content.id}
+                    img={"/team/yoh.jpg"}
+                    content={content}
+                  />
+                ))}
                 {/* end */}
               </div>
             </AccordionWrapper>

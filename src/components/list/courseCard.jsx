@@ -63,7 +63,19 @@ export default function CourseCard({ content }) {
             {content.type === "VIDEO" && (
               <>
                 <strong>Duration: </strong>
-                <em>4 minutes+</em>
+                <em>
+                  {(() => {
+                    const seconds = content.videoMedia.duration;
+                    const hours = Math.floor(seconds / 3600);
+                    const minutes = Math.floor((seconds % 3600) / 60);
+                    const remainingSeconds = seconds % 60;
+                    
+                    if (hours > 0) {
+                      return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+                    }
+                    return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+                  })()}
+                </em>
               </>
             )}
           </p>
