@@ -116,15 +116,15 @@ export default function NewDashboard() {
             <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 responsiveText">
               My Profile
             </span>
-            <div className="flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] border-[#FFFFF0] rounded-full relative mb-4">
+            <div className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] ${currentView !== 3 ? "border-[#FFFFF0]" : "border-black"} rounded-full relative mb-4`}>
               <FaUser size="80" className="block" />
-              <button className="absolute text-xl bottom-[0.7rem] right-[0.7rem] bg-primaryTwo">
+              <button className={`absolute text-xl bottom-[0.7rem] right-[0.7rem] ${currentView !== 3 ? "bg-primaryTwo !text-[#FFFFF0]" : "bg-[#FFFFF0]"} text-primaryTwo`}>
                 <FaRegEdit />
               </button>
             </div>
             <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 responsiveText text-center">
               <h1 className="text-2xl mt-2">{user ? user.username : "--"}</h1>
-              <p>Legacy Paradigm Executive</p>
+              {/* <p>Legacy Paradigm Executive</p> */}
               <div className="flex justify-between items-center gap-4">
                 <span className="flax flex-col justify-between items-center">
                   <span className="block w-fit mx-auto">
@@ -204,13 +204,13 @@ export default function NewDashboard() {
               />
             </div>
             {/* end search */}
-            {currentView == 1 && (
+            {currentView == 1 ? (
               <>
                 <div
-                  className={`w-full min-h-screen flex justify-center items-center _bg-[purple]`}
+                  className={`w-full min-h-screen flex justify-center items-center`}
                 >
                   {presentationQuery?.data && (
-                    <div className="dashboard_cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
+                    <div className="dashboard_cards_wrapper w-full min-h-screen mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
                       {presentationQuery.data.pages.flat().map((presentation) => (
                         <Card
                           key={presentation.id}
@@ -245,9 +245,7 @@ export default function NewDashboard() {
                     </div>
                   ))}
               </>
-            )}
-
-            {currentView == 2 && (
+            ) : currentView == 2 ? (
               <>
                 <div
                   className={`w-full min-h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start p-4`}
@@ -257,12 +255,10 @@ export default function NewDashboard() {
                   ))}
                 </div>
               </>
-            )}
-
-            {currentView == 3 && (
+            ) : currentView == 3 && (
               <>
                 <div
-                  className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
+                  className={`w-full min-h-screen flex justify-center items-center`}
                 >
                   <h1>No History yet</h1>
                 </div>
