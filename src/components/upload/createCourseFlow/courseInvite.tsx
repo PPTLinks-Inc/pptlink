@@ -93,7 +93,7 @@ export default function CourseInvite() {
               <p>Successfully joined as course instructor</p>
               <p className="w-3/5 text-center">
                 Go to{" "}
-                <Link to="/dashboard" className="text-[#FFA500]">
+                <Link to="/dashboard?tab=2" className="text-[#FFA500]">
                   Dashboard
                 </Link>
               </p>
