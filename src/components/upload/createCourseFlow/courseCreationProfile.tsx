@@ -465,10 +465,10 @@ export default function CourseCreationProfile() {
               )
             )}
             <DialogTrigger asChild>
-              <Button className="w-full">
+              {isCreator && <Button className="w-full">
                 <PlusIcon className="w-4 h-4 mr-2" />
                 Add Instructor
-              </Button>
+              </Button>}
             </DialogTrigger>
           </div>
         </div>
