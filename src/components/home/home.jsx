@@ -285,7 +285,7 @@ export default function Home() {
             <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software</span>
             <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
             <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
-            <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Barting</span>
+            <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Health</span>
           </div>
 
           <div className="_hidden flex justify-end items-center  gap-5 maxScreenMobile:justify-end container mx-auto h-fit bg-[transparent] py-4">
