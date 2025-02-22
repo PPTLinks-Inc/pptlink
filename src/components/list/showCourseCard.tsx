@@ -14,7 +14,7 @@ export default function ShowCourseCard({ course }: { course: CourseType }) {
   return (
     <NavLink
     style={{ ["--image-url" as string]: `url(${course.thumbnail})` }} 
-      className={`snap_scrolling_child min-w-[18rem] grow-0 shrink-0 basis-[18rem] !aspect-[2/2.5] bg-[image:var(--image-url)] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/40 cursor-pointer shadow-white shadow-inner z-10`}
+      className={`snap_scrolling_child min-w-[16rem] grow-0 shrink-0 basis-[16rem] !aspect-[2/2.5] bg-[image:var(--image-url)] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-black/40 cursor-pointer shadow-white shadow-inner z-10`}
       to={`/course/preview/${course.id}`}
     >
       <div className="z-10">
