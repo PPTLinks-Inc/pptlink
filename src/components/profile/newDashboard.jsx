@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Card from "../list/card";
 import ShowCourseCard from "../list/showCourseCard";
@@ -15,12 +16,24 @@ import { useQuery } from "@tanstack/react-query";
 import { authFetch } from "../../lib/axios";
 
 export default function NewDashboard() {
-  const [currentView, setCurrentView] = useState(1);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [currentView, setCurrentView] = useState(parseInt(searchParams.get("tab") || "1"));
   const { userQuery } = useUser();
   const user = userQuery.data;
 
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (!tab) {
+      navigate("?tab=1", { replace: true });
+    } else {
+      setCurrentView(parseInt(tab));
+    }
+  }, [searchParams, navigate]);
+
   const handleView = (e) => {
-    setCurrentView(parseInt(e.target.dataset.view));
+    const view = parseInt(e.target.dataset.view);
+    navigate(`?tab=${view}`);
   };
 
   const intersectionRef = useRef(null);
@@ -33,7 +46,7 @@ export default function NewDashboard() {
   const presentationQuery = useUserPresentation({ enabled: currentView === 1 });
 
   const myCourses = useQuery({
-    queryKey: ["myCourses", user.id],
+    queryKey: ["myCourses", user?.id],
     enabled: currentView === 2,
     queryFn: async function () {
       const { data } = await authFetch.get(`/api/v1/course/user-courses`);
@@ -251,6 +264,30 @@ export default function NewDashboard() {
                 </div>
               </>
             )}
+          </div>
+          <div
+            className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
+          >
+            {/* search */}
+            <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
+              <input
+                type="text"
+                name="searcher"
+                placeholder="Search for Libraries"
+                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
+              />
+              <img
+                src={searchImg}
+                alt={searchImg}
+                className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
+              />
+            </div>
+            {/* end search */}
+            <div
+              className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
+            >
+              <h1>No History yet</h1>
+            </div>
           </div>
 
           <div ref={intersectionRef}></div>

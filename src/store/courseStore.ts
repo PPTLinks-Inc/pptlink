@@ -50,6 +50,14 @@ export interface CourseData {
 
 type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents" | "thumbnail";
 
+export interface InstructorProfileUpdate {
+    id: string;
+    role?: string;
+    experience?: string;
+    bio?: string;
+    photo?: File;
+}
+
 export interface CourseStore {
     courseId: string;
 
@@ -75,7 +83,7 @@ export interface CourseStore {
             experience?: string;
             role?: string;
             bio?: string;
-            photo?: string;
+            photo?: string | File;
             user: {
                 id: string;
                 email: string;
@@ -105,4 +113,11 @@ export interface CourseStore {
 
     addInstructor: (instructorId: string) => Promise<void>;
     removeInstructor: (instructorId: string) => Promise<void>;
+    setInstructors: (instructors: CourseStore['instructors']) => void;
+    updateInstructor: (instructorId: string, updates: {
+        role?: string;
+        experience?: string;
+        bio?: string;
+        photo?: string | File;
+    }) => void;
 }

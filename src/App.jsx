@@ -122,7 +122,17 @@ const router = sentryCreateBrowserRouter(
         },
         {
           path: "dashboard",
-          element: <NewDashboard />
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <NewDashboard />
+            </Suspense>
+          )
         },
         {
           path: "/terms-and-services",
@@ -174,7 +184,17 @@ const router = sentryCreateBrowserRouter(
     },
     {
       path: "/course/invitation",
-      element: <CourseAcceptInvitation />
+      element: (
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen bg-primaryTwo">
+              <LoadingAssetBig2 />
+            </div>
+          }
+        >
+          <CourseAcceptInvitation />
+        </Suspense>
+      )
     },
     {
       path: "/course",
@@ -185,25 +205,49 @@ const router = sentryCreateBrowserRouter(
         {
           path: ":courseId",
           element: (
-            <CourseSideBarContext isActive="course">
-              <CourseCreationWorkflow />
-            </CourseSideBarContext>
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <CourseSideBarContext isActive="course">
+                <CourseCreationWorkflow />
+              </CourseSideBarContext>
+            </Suspense>
           )
         },
         {
           path: "settings/:courseId",
           element: (
-            <CourseSideBarContext isActive="settings">
-              <CourseCreationSettings />
-            </CourseSideBarContext>
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <CourseSideBarContext isActive="settings">
+                <CourseCreationSettings />
+              </CourseSideBarContext>
+            </Suspense>
           )
         },
         {
           path: "profile/:courseId",
           element: (
-            <CourseSideBarContext isActive="profile">
-              <CourseCreationProfile />
-            </CourseSideBarContext>
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <CourseSideBarContext isActive="profile">
+                <CourseCreationProfile />
+              </CourseSideBarContext>
+            </Suspense>
           )
         },
         {
