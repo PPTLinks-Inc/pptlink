@@ -6,11 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CourseCard from "../../list/courseCard";
 import InstructorCard from "../../list/instructorCard";
 import useUser from "../../../hooks/useUser";
-import { authFetch } from "../../../lib/axios";
+import { standardFetch } from "../../../lib/axios";
 import { useState } from "react";
 
 export async function CoursePreviewLoader({ params }) {
-  const { data } = await authFetch.get(
+  const { data } = await standardFetch.get(
     `/api/v1/course/user-courses/${params.id}`
   );
 
@@ -19,16 +19,17 @@ export async function CoursePreviewLoader({ params }) {
 
 export default function CoursePreviewPage() {
   const { userQuery } = useUser();
-  const user = userQuery.data;
-
   const data = useLoaderData();
-
   const [price] = useState(
     new Intl.NumberFormat("en-NG", {
       style: "currency",
       currency: "NGN"
     }).format(data.price)
   );
+
+  // Check if user is logged in and has data
+  const isUserLoggedIn = !userQuery.isError && userQuery.data;
+  const isCreator = isUserLoggedIn && data.creatorId === userQuery.data.id;
 
   return (
     <>
@@ -98,19 +99,19 @@ export default function CoursePreviewPage() {
             </span>
           </div>
           <div className="flex justify-between items-center gap-3 py-4">
-            {data.creatorId !== user.id ? (
+            {isCreator ? (
               <Link
-                to="/pay"
-                className="flex justify-between items-center gap-3 py-4 `w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                to={`/course/${data.id}`}
+                className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
               >
-                Enroll Now
+                Edit Course
               </Link>
             ) : (
               <Link
-                to={`/course/${data.id}`}
-                className="flex justify-between items-center gap-3 py-4 `w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                to={isUserLoggedIn ? "/pay" : `/signin?redirect=/pay`}
+                className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
               >
-                Edit Course
+                {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
               </Link>
             )}
             <span className="text-[#FFA500] font-bold text-xl">{price}</span>
@@ -166,7 +167,6 @@ export default function CoursePreviewPage() {
                 {section.contents.map((content) => (
                   <CourseCard
                     key={content.id}
-                    img={"/team/yoh.jpg"}
                     content={content}
                   />
                 ))}
