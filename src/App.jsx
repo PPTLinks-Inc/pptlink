@@ -122,7 +122,17 @@ const router = sentryCreateBrowserRouter(
         },
         {
           path: "dashboard",
-          element: <NewDashboard />
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <NewDashboard />
+            </Suspense>
+          )
         },
         {
           path: "/terms-and-services",

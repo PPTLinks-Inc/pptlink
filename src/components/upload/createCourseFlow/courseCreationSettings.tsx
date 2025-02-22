@@ -24,8 +24,14 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { CourseData } from "@/store/courseStore";
+import { ROUTER_ID } from "@/constants/routes";
+import { useRouteLoaderData } from "react-router-dom";
+import useUser from "@/hooks/useUser";
 
 export default function CourseCreationSettings() {
+  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  const { userQuery } = useUser();
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -124,6 +130,23 @@ export default function CourseCreationSettings() {
     },
     [updateValues]
   );
+
+
+  if (data.creatorId !== userQuery.data?.id) {
+    return (
+      <div className="bg-slate-200 w-full h-full">
+        <div className="text-primaryTwo container py-4">
+          <h1 className="text-2xl font-bold">Course Creation Settings</h1>
+          <p className="text-lg mt-2 ">Set up your course settings</p>
+          <div className="space-y-4 mt-10">
+            <p className="text-lg font-bold">
+              You do not have permission to view this page
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-slate-200 w-full h-full">
