@@ -54,6 +54,27 @@ export default function CourseCreationProfile() {
   const instructors = useCourseStore((state) => state.instructors);
   const addInstructor = useCourseStore((state) => state.addInstructor);
   const removeInstructor = useCourseStore((state) => state.removeInstructor);
+  const updateInstructor = useCourseStore((state) => state.updateInstructor);
+
+  const handleInputChange = (instructorId: string, field: string, value: string) => {
+    updateInstructor(instructorId, {
+      [field]: value
+    });
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, instructorId: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Preview image immediately
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      updateInstructor(instructorId, {
+        photo: file
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const [accountProfileDetails, setAccountProfileDetails] =
     useState<AccountProfileDetails>({
@@ -263,7 +284,7 @@ export default function CourseCreationProfile() {
                     <div className="relative w-20 h-20 rounded-full overflow-hidden">
                       {instructor.photo ? (
                         <img
-                          src={instructor.photo}
+                          src={typeof instructor.photo === 'string' ? instructor.photo : URL.createObjectURL(instructor.photo)}
                           alt="Instructor Profile image"
                           className="block w-full h-full object-cover"
                         />
@@ -277,6 +298,7 @@ export default function CourseCreationProfile() {
                         id={`image-upload-${instructorId}`}
                         className="hidden"
                         accept="image/*"
+                        onChange={(e) => handleImageUpload(e, instructorId)}
                       />
                       <Button
                         variant="outline"
@@ -330,10 +352,11 @@ export default function CourseCreationProfile() {
                       >
                         <Input
                           id={`role-${instructorId}`}
-                          value={instructor.role}
+                          value={instructor.role || ''}
                           placeholder="Role/Title"
                           className="border-[0.5px] border-primaryTwo"
                           disabled={status !== "APPROVED"}
+                          onChange={(e) => handleInputChange(instructorId, 'role', e.target.value)}
                         />
                       </div>
                     </div>
@@ -346,7 +369,11 @@ export default function CourseCreationProfile() {
                       <div
                         className="w-full"
                       >
-                        <Select value={instructor.experience} disabled={status !== "APPROVED"}>
+                        <Select 
+                          value={instructor.experience || ''}
+                          onValueChange={(value) => handleInputChange(instructorId, 'experience', value)}
+                          disabled={status !== "APPROVED"}
+                        >
                           <SelectTrigger
                             id={`experience-${instructorId}`}
                             className="border-[0.5px] border-primaryTwo"
@@ -376,10 +403,11 @@ export default function CourseCreationProfile() {
                     >
                       <Textarea
                         id={`biography-${instructorId}`}
-                        value={instructor.bio}
+                        value={instructor.bio || ''}
                         placeholder="Enter instructor biography..."
                         className="min-h-[100px] resize-none border-[0.5px] border-primaryTwo"
                         disabled={status !== "APPROVED"}
+                        onChange={(e) => handleInputChange(instructorId, 'bio', e.target.value)}
                       />
                     </div>
                   </div>

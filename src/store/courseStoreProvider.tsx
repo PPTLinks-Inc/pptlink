@@ -230,6 +230,37 @@ export default function CourseStoreProvider({
           `/api/v1/course/update-course-settings/${get().courseId}`,
           courseData
         );
+      } else if (currentTab === "profile") {
+        const instructorUpdates = get()
+          .instructors.filter((i) => i.status === "APPROVED")
+          .map(({ id, instructor }) => ({
+            id,
+            role: instructor.role,
+            experience: instructor.experience,
+            bio: instructor.bio
+          }));
+
+        const formData = new FormData();
+
+        // Add instructor data as JSON string
+        formData.append("instructors", JSON.stringify(instructorUpdates));
+
+        // Add any instructor photos that are Files
+        get().instructors.forEach(({ instructor, id }) => {
+          if (instructor.photo instanceof File) {
+            formData.append(`photos.${id}`, instructor.photo);
+          }
+        });
+
+        await authFetch.put(
+          `/api/v1/course/update-course-profile/${get().courseId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+        );
       }
     },
     uploadQueue: [],
@@ -365,14 +396,16 @@ export default function CourseStoreProvider({
         duration: 10000
       });
 
-      const [err, res] = await safeAwait(authFetch.post<{
-        id: string;
-        email: string;
-        username: string;
-      }>("/api/v1/course/add-instructor", {
-        courseId: get().courseId,
-        instructorId
-      }));
+      const [err, res] = await safeAwait(
+        authFetch.post<{
+          id: string;
+          email: string;
+          username: string;
+        }>("/api/v1/course/add-instructor", {
+          courseId: get().courseId,
+          instructorId
+        })
+      );
 
       if (err) {
         toastId.dismiss();
@@ -419,9 +452,11 @@ export default function CourseStoreProvider({
           (instructor) => instructor.id !== instructorId
         )
       }));
-      const [err] = await safeAwait(authFetch.delete(
-        `/api/v1/course/delete-instructor/${get().courseId}/${instructorId}`
-      ));
+      const [err] = await safeAwait(
+        authFetch.delete(
+          `/api/v1/course/delete-instructor/${get().courseId}/${instructorId}`
+        )
+      );
 
       if (err) {
         toast({
@@ -436,6 +471,26 @@ export default function CourseStoreProvider({
         title: "Success",
         description: "Instructor removed successfully"
       });
+    },
+    setInstructors: (instructors) => {
+      set({ instructors });
+    },
+
+    updateInstructor: (instructorId, updates) => {
+      set((state) => ({
+        instructors: state.instructors.map((instructor) => {
+          if (instructor.id === instructorId) {
+            return {
+              ...instructor,
+              instructor: {
+                ...instructor.instructor,
+                ...updates
+              }
+            };
+          }
+          return instructor;
+        })
+      }));
     }
   }));
 
