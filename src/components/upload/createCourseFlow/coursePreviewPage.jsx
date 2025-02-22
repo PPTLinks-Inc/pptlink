@@ -29,7 +29,7 @@ export default function CoursePreviewPage() {
 
   // Check if user is logged in and has data
   const isUserLoggedIn = !userQuery.isError && userQuery.data;
-  const isCreator = isUserLoggedIn && data.creatorId === userQuery.data.id;
+  const isCreator = isUserLoggedIn && ((data.creatorId === userQuery.data?.id) || (data.instructors.find(({instructor}) => instructor.user.id === userQuery.data?.id)));
 
   return (
     <>
