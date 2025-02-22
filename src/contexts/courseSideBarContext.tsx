@@ -27,6 +27,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingAssetSmall } from "@/assets/assets";
 import { ROUTER_ID } from "@/constants/routes";
+import useUser from "@/hooks/useUser";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext(undefined);
@@ -44,6 +45,8 @@ export default function CourseSideBarContextProvider({
   const saveCourseData = useCourseStore((state) => state.saveCourseData);
   const toast = useToast();
 
+  const { userQuery } = useUser();
+
   const courseName = useCourseStore((state) => state.name);
 
   const saveCourse = useMutation({
@@ -60,6 +63,8 @@ export default function CourseSideBarContextProvider({
       });
     }
   });
+
+  const isCreator = data.creatorId === userQuery.data?.id
 
   return (
     <CourseSideBarContext.Provider value={undefined}>
@@ -85,7 +90,7 @@ export default function CourseSideBarContextProvider({
                 <span className="text-lg">Courses</span>
               </Link>
             </SidebarMenuButton>
-            <SidebarMenuButton
+            {isCreator && <SidebarMenuButton
               isActive={isActive === "settings"}
               tooltip="Course Settings"
               className="mx-auto"
@@ -95,7 +100,7 @@ export default function CourseSideBarContextProvider({
                 <GoGear />
                 <span className="text-lg">Settings</span>
               </Link>
-            </SidebarMenuButton>
+            </SidebarMenuButton>}
             <SidebarMenuButton
               isActive={isActive === "profile"}
               tooltip="Course profile"
@@ -156,12 +161,12 @@ export default function CourseSideBarContextProvider({
                 )}
               </Button>
 
-              <Button
+              {isCreator && <Button
                 className="ml-auto bg-primaryTwo text-white border-white"
                 variant="outline"
               >
                 <span>Next</span>
-              </Button>
+              </Button>}
             </div>
           </header>
           <div className="bg-primaryTwo h-full">{children}</div>

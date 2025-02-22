@@ -46,7 +46,7 @@ export default function NewDashboard() {
   const presentationQuery = useUserPresentation({ enabled: currentView === 1 });
 
   const myCourses = useQuery({
-    queryKey: ["myCourses", user.id],
+    queryKey: ["myCourses", user?.id],
     enabled: currentView === 2,
     queryFn: async function () {
       const { data } = await authFetch.get(`/api/v1/course/user-courses`);
@@ -268,50 +268,6 @@ export default function NewDashboard() {
                 </div>
               </>
             )}
-          </div>
-          <div
-            className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[gold] ${currentView == 2 ? "block" : "hidden"}`}
-          >
-            {/* search */}
-            <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
-              <input
-                type="text"
-                name="searcher"
-                placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
-              />
-              <img
-                src={searchImg}
-                alt={searchImg}
-                className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
-              />
-            </div>
-            {/* end search */}
-            <div
-              className={`container min-h-screen flex flex-col md:flex-row gap-10 justify-center items-center _bg-[purple]`}
-            >
-              {myCourses.isLoading ? (
-                <div className="flex items-center justify-center w-full h-[40px]">
-                  <LoadingAssetBig2 />
-                </div>
-              ) : myCourses.isError ? (
-                <div className="flex justify-center flex-col items-center gap-3">
-                  <p className="text-white">Failed to fetch courses</p>
-                  <button
-                    onClick={() => myCourses.refetch()}
-                    className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
-                  >
-                    Retry
-                  </button>
-                </div>
-              ) : myCourses.data?.length === 0 ? (
-                <p className="text-white">No courses found</p>
-              ) : (
-                myCourses.data?.map((course) => (
-                  <ShowCourseCard key={course.id} course={course} />
-                ))
-              )}
-            </div>
           </div>
           <div
             className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
