@@ -161,7 +161,7 @@ export default function CoursePreviewPage() {
               }
               className="transition-all duration-300"
             >
-              <div className="md:my-4_ pt-4 grid grid-cols-4 auto-rows-max grid-flow-row gap-4 maxScreen:grid-cols-3  maxSmallMobile:snap_scrolling maxSmallMobile:grid-cols-none maxSmallMobile:grid-rows-none maxSmallMobile:!flex !h-fit maxSmallMobile:!overflow-x-auto maxSmallMobile:!overflow-y-hidden maxSmallMobile:pt-4_ maxSmallMobile:pr-2 maxSmallMobile:pb-2_ maxSmallMobile:!scroll-smooth">
+              <div className="pt-4 grid grid-cols-4 auto-rows-fr grid-flow-row gap-4 maxScreen:grid-cols-3  maxSmallMobile:snap_scrolling maxSmallMobile:grid-cols-none maxSmallMobile:grid-rows-none maxSmallMobile:!flex !h-fit maxSmallMobile:!overflow-x-auto maxSmallMobile:!overflow-y-hidden maxSmallMobile:pr-2  maxSmallMobile:!scroll-smooth">
                 {/* start */}
                 {section.contents.map((content) => (
                   <CourseCard

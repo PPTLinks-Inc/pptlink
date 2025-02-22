@@ -944,6 +944,20 @@ export default function InstructorCard({ img }) {
 }
 
 
+<!-- //////////////////////////////// -->
+<div className="md:my-4_ pt-4 grid grid-cols-4 auto-rows-fr grid-flow-row gap-4 maxScreen:grid-cols-3 items-stretch">
+
+<motion.div
+  initial={{ y: 30, opacity: 0 }}
+  whileInView={{
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, type: "tween" }
+  }}
+  viewport={{ once: true }}
+  className="card snap_scrolling_child w-full h-full rounded-lg cursor-pointer border border-[#FFFFF0] relative flex flex-col"
+>
+
 
 
 

@@ -15,7 +15,7 @@ export default function CourseCard({ content }) {
           transition: { duration: 0.5, type: "tween" }
         }}
         viewport={{ once: true }}
-        className="card snap_scrolling_child w-full maxSmallMobile:!min-w-[285px] maxSmallMobile:!max-w-[285px] rounded-lg !pt-0 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[#FFFFF0] relative"
+        className="card snap_scrolling_child w-full maxSmallMobile:!min-w-[285px] maxSmallMobile:!max-w-[285px] rounded-lg !pt-0 cursor-pointer maxSmallMobile:aspect-[1/1.2] border border-[#FFFFF0] relative"
       >
         <span className="block !w-full h-fit mb-4 z-10 border-none rounded-t-[0.33rem] bg-[#FFFFF0]">
           <span
@@ -50,7 +50,7 @@ export default function CourseCard({ content }) {
         </div>
 
         <div
-          className={`card_body pb-5 maxScreenMobile:pb-2 text-white mx-4 maxScreenMobile:mx-2`}
+          className={`card_body pb-5 maxScreenMobile:pb-2 text-white mx-4 maxScreenMobile:mx-2 min-h-[120px]`}
         >
           <h3 title={content.name} className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
             {content.name}
@@ -69,7 +69,7 @@ export default function CourseCard({ content }) {
                     const hours = Math.floor(seconds / 3600);
                     const minutes = Math.floor((seconds % 3600) / 60);
                     const remainingSeconds = seconds % 60;
-                    
+
                     if (hours > 0) {
                       return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
                     }
@@ -84,7 +84,7 @@ export default function CourseCard({ content }) {
         <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
           <span className="block my-[0.2px] py-2 w-3/6 bg-[#FFA500] border-none rounded-lg"></span>
           <span className="text-black !text-[0.7rem] font-bold my-[0.2px] z-10 absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-            16%
+            50%
           </span>
         </div>
       </motion.div>
