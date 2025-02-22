@@ -95,11 +95,11 @@ export default function NewDashboard() {
           <div
             className={`container relative h-fit py-6 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}
           >
-            <span
+            <button
               className={`absolute top-8 right-8 text-2xl font-bold ${currentView !== 3 ? "text-[#FFA500]" : ""}`}
             >
               <CiSettings />
-            </span>
+            </button>
             <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 responsiveText">
               My Profile
             </span>
@@ -125,14 +125,7 @@ export default function NewDashboard() {
                   <span className="block w-fit mx-auto">Courses</span>
                 </span>
               </div>
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                dolor sit amet, consetetur.
-              </p>
+              <p>This is a placeholder text, click on the settings Icon to edit your profile.</p>
             </div>
           </div>
         </div>
@@ -179,8 +172,9 @@ export default function NewDashboard() {
           </button>
         </div>
         <div className="w-full h-fit">
+          {/* ////////////////////////////////////Cards///////////////////////////////////////////// */}
           <div
-            className={`public_presentations container pt-12 pb-5 h-fit ${currentView == 1 ? "block" : "hidden"}`}
+            className={`public_presentations container pt-12 pb-5 h-fit block ${currentView == 1 ? "_block" : "_hidden"}`}
           >
             {/* search */}
             <div className="w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border border-white relative mb-5">
@@ -197,94 +191,70 @@ export default function NewDashboard() {
               />
             </div>
             {/* end search */}
-            <div
-              className={`w-full min-h-screen flex justify-center items-center _bg-[purple]`}
-            >
-              {presentationQuery?.data && (
-                <div className="dashboard_cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
-                  {presentationQuery.data.pages.flat().map((presentation) => (
-                    <Card
-                      key={presentation.id}
-                      presentation={presentation}
-                      refresh={presentationQuery.refetch}
-                    />
+            {currentView == 1 && (
+              <>
+                <div
+                  className={`w-full min-h-screen flex justify-center items-center _bg-[purple]`}
+                >
+                  {presentationQuery?.data && (
+                    <div className="dashboard_cards_wrapper w-full mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
+                      {presentationQuery.data.pages.flat().map((presentation) => (
+                        <Card
+                          key={presentation.id}
+                          presentation={presentation}
+                          refresh={presentationQuery.refetch}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  {presentationQuery.isLoading && (
+                    <div className="flex items-center justify-center w-full h-[40px]">
+                      <LoadingAssetBig2 />
+                    </div>
+                  )}
+                </div>
+                {presentationQuery.isFetchingNextPage && (
+                  <div className="flex items-center justify-center w-full h-[40px]">
+                    <LoadingAssetSmall2 />
+                  </div>
+                )}
+
+                {presentationQuery.isError ||
+                  (presentationQuery.isFetchNextPageError && (
+                    <div className="flex justify-center flex-col items-center gap-3">
+                      <p className="text-whte">Failed to fetch</p>
+                      <button
+                        onClick={() => presentationQuery.fetchNextPage()}
+                        className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                      >
+                        Load more
+                      </button>
+                    </div>
+                  ))}
+              </>
+            )}
+
+            {currentView == 2 && (
+              <>
+                <div
+                  className={`w-full min-h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start p-4`}
+                >
+                  {myCourses.data?.map((course) => (
+                    <ShowCourseCard key={course.id} course={course} />
                   ))}
                 </div>
-              )}
-              {presentationQuery.isLoading && (
-                <div className="flex items-center justify-center w-full h-[40px]">
-                  <LoadingAssetBig2 />
-                </div>
-              )}
-            </div>
-
-            {presentationQuery.isFetchingNextPage && (
-              <div className="flex items-center justify-center w-full h-[40px]">
-                <LoadingAssetSmall2 />
-              </div>
+              </>
             )}
-            {presentationQuery.isError ||
-              (presentationQuery.isFetchNextPageError && (
-                <div className="flex justify-center flex-col items-center gap-3">
-                  <p className="text-whte">Failed to fetch</p>
-                  <button
-                    onClick={() => presentationQuery.fetchNextPage()}
-                    className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
-                  >
-                    Load more
-                  </button>
+
+            {currentView == 3 && (
+              <>
+                <div
+                  className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
+                >
+                  <h1>No History yet</h1>
                 </div>
-              ))}
-          </div>
-          <div
-            className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[gold] ${currentView == 2 ? "block" : "hidden"}`}
-          >
-            {/* search */}
-            <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
-              <input
-                type="text"
-                name="searcher"
-                placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
-              />
-              <img
-                src={searchImg}
-                alt={searchImg}
-                className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
-              />
-            </div>
-            {/* end search */}
-            <div
-              className={`container min-h-screen flex flex-col md:flex-row gap-10 justify-center items-center _bg-[purple]`}
-            >
-              {myCourses.data?.map((course) => (
-                <ShowCourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          </div>
-          <div
-            className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
-          >
-            {/* search */}
-            <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
-              <input
-                type="text"
-                name="searcher"
-                placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
-              />
-              <img
-                src={searchImg}
-                alt={searchImg}
-                className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
-              />
-            </div>
-            {/* end search */}
-            <div
-              className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
-            >
-              <h1>No History yet</h1>
-            </div>
+              </>
+            )}
           </div>
 
           <div ref={intersectionRef}></div>
