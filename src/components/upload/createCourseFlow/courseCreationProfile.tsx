@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,21 +33,6 @@ import { useRouteLoaderData } from "react-router-dom";
 import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
 
-type BankOption =
-  | "Select Bank"
-  | "FCMB"
-  | "GT Bank"
-  | "First Bank"
-  | "Fidelity Bank";
-
-// Define main state interface
-interface AccountProfileDetails {
-  accountName: string;
-  accountNumber: string;
-  bankName: BankOption;
-  isValidAccount: boolean;
-}
-
 interface InstructorSearchResult {
   id: string;
   email: string;
@@ -61,6 +46,9 @@ export default function CourseCreationProfile() {
   const addInstructor = useCourseStore((state) => state.addInstructor);
   const removeInstructor = useCourseStore((state) => state.removeInstructor);
   const updateInstructor = useCourseStore((state) => state.updateInstructor);
+  const accountVerification = useCourseStore((state) => state.accountVerification);
+  const updateAccountVerification = useCourseStore((state) => state.updateAccountVerification);
+  const verifyAccount = useCourseStore((state) => state.verifyAccount);
 
   const handleInputChange = (
     instructorId: string,
@@ -89,13 +77,15 @@ export default function CourseCreationProfile() {
     reader.readAsDataURL(file);
   };
 
-  const [accountProfileDetails, setAccountProfileDetails] =
-    useState<AccountProfileDetails>({
-      accountName: "",
-      accountNumber: "",
-      bankName: "Select Bank" as BankOption,
-      isValidAccount: false
-    });
+  const isCreator = data.creatorId === userQuery.data?.id;
+
+  useEffect(() => {
+    const { accountNumber, bankCode } = accountVerification;
+    
+    if (accountNumber.length === 10 && bankCode) {
+      verifyAccount();
+    }
+  }, [accountVerification.accountNumber, accountVerification.bankCode]);
 
   const [searchEmail, setSearchEmail] = useState("");
   const [selectedInstructor, setSelectedInstructor] =
@@ -113,15 +103,31 @@ export default function CourseCreationProfile() {
     enabled: searchEmail.length > 0
   });
 
+  const banksQuery = useQuery({
+    queryKey: ["banks"],
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    queryFn: async () => {
+      const { data } = await authFetch.get<{
+        status: string;
+        message: string;
+        data: {
+          id: string;
+          code: string;
+          name: string;
+        }[];
+      }>("/api/v1/payment/get-all-banks");
+      return data;
+    }
+  });
+
+  
+
   const handleSearch = useCallback((value: string) => {
     setSearchEmail(value);
   }, []);
 
   const debouncedSearch = useDebounce(handleSearch, 500);
-
-  const isValidNumber = (value: string) => {
-    return /^\d+$/.test(value) && Number(value) > 0;
-  };
 
   const handleSaveInstructor = async () => {
     if (!selectedInstructor) return;
@@ -134,8 +140,6 @@ export default function CourseCreationProfile() {
       console.error("Failed to add instructor:", error);
     }
   };
-
-  const isCreator = data.creatorId === userQuery.data?.id;
 
   return (
     <Dialog>
@@ -215,61 +219,58 @@ export default function CourseCreationProfile() {
                 <Input
                   type="text"
                   inputMode="numeric"
-                  pattern="\d*{10}"
-                  min="0"
-                  value={accountProfileDetails.accountNumber}
+                  pattern="\d*"
+                  maxLength={10}
+                  value={accountVerification.accountNumber}
                   id="accountName"
-                  onChange={(e) =>
-                    setAccountProfileDetails((prev) => ({
-                      ...prev,
-                      accountNumber: e.target.value
-                    }))
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    updateAccountVerification({ accountNumber: value });
+                  }}
                   placeholder="e.g 0123456789"
-                  className={`pl-2 border-[0.5px] mt-2 ${
-                    accountProfileDetails.accountNumber &&
-                    isValidNumber(accountProfileDetails.accountNumber)
-                      ? "border-[#FFA500]"
-                      : "border-primaryTwo"
+                  className={`pl-2 border-[0.5px] mt-2 border-primaryTwo ${
+                    accountVerification.accountNumber.length === 10 ? 'border-green-500' : ''
                   }`}
                 />
+                {accountVerification.accountNumber.length > 0 && accountVerification.accountNumber.length < 10 && (
+                  <p className="text-sm text-yellow-600 mt-1">Account number must be 10 digits</p>
+                )}
               </div>
 
               <div className="mt-10">
-                <Label htmlFor="accountName" className="text-sm pb-2">
+                <Label htmlFor="bankName" className="text-sm pb-2">
                   Select bank name
                 </Label>
-                <Select
-                  value={accountProfileDetails.bankName}
-                  onValueChange={(value: BankOption) =>
-                    setAccountProfileDetails((prev) => ({
-                      ...prev,
-                      bankName: value
-                    }))
-                  }
-                >
-                  <SelectTrigger
-                    className={`border-[0.5px] mt-2 ${
-                      accountProfileDetails.bankName !== "Select Bank"
-                        ? "border-[#FFA500]"
-                        : "border-primaryTwo"
-                    } w-3/6 maxScreenMobile:w-full`}
+                <div>
+                  <select
+                    id="bankName"
+                    className="border-[0.5px] border-primaryTwo rounded mt-2 w-3/6 maxScreenMobile:w-full bg-transparent p-2"
+                    value={accountVerification.bankCode}
+                    onChange={(e) => {
+                      updateAccountVerification({ bankCode: e.target.value });
+                    }}
                   >
-                    <SelectValue placeholder="Select Bank" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Select Bank">Select Bank</SelectItem>
-                    <SelectItem value="FCMB">FCMB</SelectItem>
-                    <SelectItem value="First Bank">First Bank</SelectItem>
-                    <SelectItem value="Fidelity Bank">Fidelity Bank</SelectItem>
-                    <SelectItem value="GT Bank">GT Bank</SelectItem>
-                  </SelectContent>
-                </Select>
+                    <option value="">Select Bank</option>
+                    {banksQuery.data?.data.map((bank) => (
+                      <option key={bank.id} value={bank.code}>
+                        {bank.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              <p className={`text-green-700 font-bold text-lg`}>
-                Found ✔ Raymond Amem Aondoakura
-              </p>
+              {accountVerification.isVerifying && (
+                <p className="text-blue-600">Verifying account details...</p>
+              )}
+              {accountVerification.verificationError && (
+                <p className="text-red-600">{accountVerification.verificationError}</p>
+              )}
+              {accountVerification.isValidAccount && (
+                <p className="text-green-700 font-bold text-lg">
+                  Found ✔ {accountVerification.accountName}
+                </p>
+              )}
             </div>
           )}
 
@@ -278,197 +279,205 @@ export default function CourseCreationProfile() {
             {instructors.map(
               ({ id: instructorId, instructor, status }, index) => (
                 <>
-                  {(userQuery.data?.id === instructor.user.id || isCreator) && <Card
-                    key={instructorId}
-                    className="bg-slate-200 shadow-primaryTwo"
-                  >
-                    <CardHeader>
-                      <CardTitle className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <span>Instructor {index + 1}</span>
-                          {status === "PENDING" && (
-                            <span className="text-yellow-500 text-sm">
-                              (Pending Invite)
-                            </span>
+                  {(userQuery.data?.id === instructor.user.id || isCreator) && (
+                    <Card
+                      key={instructorId}
+                      className="bg-slate-200 shadow-primaryTwo"
+                    >
+                      <CardHeader>
+                        <CardTitle className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <span>Instructor {index + 1}</span>
+                            {status === "PENDING" && (
+                              <span className="text-yellow-500 text-sm">
+                                (Pending Invite)
+                              </span>
+                            )}
+                            {status === "REJECTED" && (
+                              <span className="text-red-500 text-sm">
+                                (Rejected Invite)
+                              </span>
+                            )}
+                          </div>
+                          {index !== 0 && isCreator && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => removeInstructor(instructorId)}
+                            >
+                              Remove
+                            </Button>
                           )}
-                          {status === "REJECTED" && (
-                            <span className="text-red-500 text-sm">
-                              (Rejected Invite)
-                            </span>
-                          )}
-                        </div>
-                        {index !== 0 && isCreator && (
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeInstructor(instructorId)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="relative w-20 h-20 rounded-full overflow-hidden">
-                          {instructor.photo ? (
-                            <img
-                              src={
-                                typeof instructor.photo === "string"
-                                  ? instructor.photo
-                                  : URL.createObjectURL(instructor.photo)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center space-x-4">
+                          <div className="relative w-20 h-20 rounded-full overflow-hidden">
+                            {instructor.photo ? (
+                              <img
+                                src={
+                                  typeof instructor.photo === "string"
+                                    ? instructor.photo
+                                    : URL.createObjectURL(instructor.photo)
+                                }
+                                alt="Instructor Profile image"
+                                className="block w-full h-full object-cover"
+                              />
+                            ) : (
+                              <FaUser size="80" className="block" />
+                            )}
+                          </div>
+                          <div>
+                            <input
+                              type="file"
+                              id={`image-upload-${instructorId}`}
+                              className="hidden"
+                              accept="image/*"
+                              onChange={(e) =>
+                                handleImageUpload(e, instructorId)
                               }
-                              alt="Instructor Profile image"
-                              className="block w-full h-full object-cover"
                             />
-                          ) : (
-                            <FaUser size="80" className="block" />
-                          )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                document
+                                  .getElementById(
+                                    `image-upload-${instructorId}`
+                                  )
+                                  ?.click()
+                              }
+                              disabled={status !== "APPROVED"}
+                            >
+                              Select Image
+                            </Button>
+                          </div>
                         </div>
-                        <div>
-                          <input
-                            type="file"
-                            id={`image-upload-${instructorId}`}
-                            className="hidden"
-                            accept="image/*"
-                            onChange={(e) => handleImageUpload(e, instructorId)}
-                          />
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              document
-                                .getElementById(`image-upload-${instructorId}`)
-                                ?.click()
-                            }
-                            disabled={status !== "APPROVED"}
-                          >
-                            Select Image
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2 ">
-                          <Label htmlFor={`name-${instructorId}`}>
-                            Full Name
-                          </Label>
-                          <div className="w-full">
-                            <Input
-                              id={`name-${instructorId}`}
-                              value={instructor.user.username}
-                              placeholder="Full Name"
-                              className="border-[0.5px] border-primaryTwo"
-                              readOnly
-                              disabled
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2 ">
+                            <Label htmlFor={`name-${instructorId}`}>
+                              Full Name
+                            </Label>
+                            <div className="w-full">
+                              <Input
+                                id={`name-${instructorId}`}
+                                value={instructor.user.username}
+                                placeholder="Full Name"
+                                className="border-[0.5px] border-primaryTwo"
+                                readOnly
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`email-${instructorId}`}>
+                              Email Address
+                            </Label>
+                            <div className="w-full">
+                              <Input
+                                id={`email-${instructorId}`}
+                                value={instructor.user.email}
+                                placeholder="Email Address"
+                                className="border-[0.5px] border-primaryTwo"
+                                readOnly
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`role-${instructorId}`}>
+                              Role/Title
+                            </Label>
+                            <div className="w-full">
+                              <Input
+                                id={`role-${instructorId}`}
+                                value={instructor.role || ""}
+                                placeholder="Role/Title"
+                                className="border-[0.5px] border-primaryTwo"
+                                disabled={status !== "APPROVED"}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    instructorId,
+                                    "role",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor={`experience-${instructorId}`}>
+                              Experience
+                            </Label>
+                            <div className="w-full">
+                              <Select
+                                value={instructor.experience || ""}
+                                onValueChange={(value) =>
+                                  handleInputChange(
+                                    instructorId,
+                                    "experience",
+                                    value
+                                  )
+                                }
+                                disabled={status !== "APPROVED"}
+                              >
+                                <SelectTrigger
+                                  id={`experience-${instructorId}`}
+                                  className="border-[0.5px] border-primaryTwo"
+                                >
+                                  <SelectValue placeholder="Select Experience" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value=" ">
+                                    Select Experience
+                                  </SelectItem>
+                                  {[1, 2, 3, 4, 5, "5+", "10+"].map((years) => (
+                                    <SelectItem
+                                      key={years}
+                                      value={years.toString()}
+                                    >
+                                      {years} years
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor={`email-${instructorId}`}>
-                            Email Address
+                          <Label htmlFor={`biography-${instructorId}`}>
+                            Biography
                           </Label>
                           <div className="w-full">
-                            <Input
-                              id={`email-${instructorId}`}
-                              value={instructor.user.email}
-                              placeholder="Email Address"
-                              className="border-[0.5px] border-primaryTwo"
-                              readOnly
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`role-${instructorId}`}>
-                            Role/Title
-                          </Label>
-                          <div className="w-full">
-                            <Input
-                              id={`role-${instructorId}`}
-                              value={instructor.role || ""}
-                              placeholder="Role/Title"
-                              className="border-[0.5px] border-primaryTwo"
+                            <Textarea
+                              id={`biography-${instructorId}`}
+                              value={instructor.bio || ""}
+                              placeholder="Enter instructor biography..."
+                              className="min-h-[100px] resize-none border-[0.5px] border-primaryTwo"
                               disabled={status !== "APPROVED"}
                               onChange={(e) =>
                                 handleInputChange(
                                   instructorId,
-                                  "role",
+                                  "bio",
                                   e.target.value
                                 )
                               }
                             />
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`experience-${instructorId}`}>
-                            Experience
-                          </Label>
-                          <div className="w-full">
-                            <Select
-                              value={instructor.experience || ""}
-                              onValueChange={(value) =>
-                                handleInputChange(
-                                  instructorId,
-                                  "experience",
-                                  value
-                                )
-                              }
-                              disabled={status !== "APPROVED"}
-                            >
-                              <SelectTrigger
-                                id={`experience-${instructorId}`}
-                                className="border-[0.5px] border-primaryTwo"
-                              >
-                                <SelectValue placeholder="Select Experience" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value=" ">
-                                  Select Experience
-                                </SelectItem>
-                                {[1, 2, 3, 4, 5, "5+", "10+"].map((years) => (
-                                  <SelectItem
-                                    key={years}
-                                    value={years.toString()}
-                                  >
-                                    {years} years
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`biography-${instructorId}`}>
-                          Biography
-                        </Label>
-                        <div className="w-full">
-                          <Textarea
-                            id={`biography-${instructorId}`}
-                            value={instructor.bio || ""}
-                            placeholder="Enter instructor biography..."
-                            className="min-h-[100px] resize-none border-[0.5px] border-primaryTwo"
-                            disabled={status !== "APPROVED"}
-                            onChange={(e) =>
-                              handleInputChange(
-                                instructorId,
-                                "bio",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>}
+                      </CardContent>
+                    </Card>
+                  )}
                 </>
               )
             )}
             <DialogTrigger asChild>
-              {isCreator && <Button className="w-full">
-                <PlusIcon className="w-4 h-4 mr-2" />
-                Add Instructor
-              </Button>}
+              {isCreator && (
+                <Button className="w-full">
+                  <PlusIcon className="w-4 h-4 mr-2" />
+                  Add Instructor
+                </Button>
+              )}
             </DialogTrigger>
           </div>
         </div>
