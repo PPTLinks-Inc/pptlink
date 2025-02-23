@@ -46,6 +46,11 @@ export interface CourseData {
             }
         }
     }[];
+    accountDetails: {
+        accountNumber: string;
+        accountName: string;
+        bankCode: string;
+    } | null;
 }
 
 type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents" | "thumbnail";
@@ -56,6 +61,15 @@ export interface InstructorProfileUpdate {
     experience?: string;
     bio?: string;
     photo?: File;
+}
+
+export interface AccountVerificationState {
+  accountName: string;
+  accountNumber: string;
+  bankCode: string;
+  isValidAccount: boolean;
+  isVerifying: boolean;
+  verificationError: string;
 }
 
 export interface CourseStore {
@@ -92,6 +106,16 @@ export interface CourseStore {
         }
     }[];
 
+    accountDetails: {
+        accountNumber: string;
+        accountName: string;
+        bankCode: string;
+    } | null;
+
+    accountVerification: AccountVerificationState;
+    updateAccountVerification: (updates: Partial<AccountVerificationState>) => void;
+    verifyAccount: () => Promise<void>;
+
     updateValues: (newValue: string | number | boolean | Date | DateRange | File | null, data: dataTypes) => void;
 
     sections: Section[];
@@ -120,4 +144,6 @@ export interface CourseStore {
         bio?: string;
         photo?: string | File;
     }) => void;
+
+    updateAccountDetails: (details: NonNullable<CourseStore['accountDetails']>) => void;
 }

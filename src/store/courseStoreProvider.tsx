@@ -76,6 +76,8 @@ export default function CourseStoreProvider({
 
     instructors: data.instructors ?? [],
 
+    accountDetails: data.accountDetails ?? null,
+
     updateValues: (newValue, data) => {
       set({ [data]: newValue });
     },
@@ -252,15 +254,40 @@ export default function CourseStoreProvider({
           }
         });
 
-        await authFetch.put(
-          `/api/v1/course/update-course-profile/${get().courseId}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data"
-            }
+        // Only save account details if verification was successful
+        if (get().accountVerification.isValidAccount) {
+          const accountDetails = get().accountDetails;
+          if (accountDetails) {
+            await Promise.all([
+              authFetch.put(
+                `/api/v1/course/update-course-profile/${get().courseId}`,
+                formData,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data"
+                  }
+                }
+              ),
+              authFetch.put(
+                `/api/v1/payment/update-account-details/${get().courseId}`,
+                {
+                  account_number: accountDetails.accountNumber,
+                  account_bank: accountDetails.bankCode
+                }
+              )
+            ]);
           }
-        );
+        } else {
+          await authFetch.put(
+            `/api/v1/course/update-course-profile/${get().courseId}`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            }
+          );
+        }
       }
     },
     uploadQueue: [],
@@ -491,6 +518,101 @@ export default function CourseStoreProvider({
           return instructor;
         })
       }));
+    },
+
+    accountVerification: {
+      accountName: data.accountDetails?.accountName ?? "",
+      accountNumber: data.accountDetails?.accountNumber ?? "",
+      bankCode: data.accountDetails?.bankCode ?? "",
+      isValidAccount: false,
+      isVerifying: false,
+      verificationError: ""
+    },
+
+    updateAccountDetails: (details) => {
+      set({ accountDetails: details });
+    },
+
+    updateAccountVerification: (updates) => {
+      set((state) => ({
+        accountVerification: {
+          ...state.accountVerification,
+          ...updates
+        }
+      }));
+    },
+
+    verifyAccount: async () => {
+      const state = get();
+      const { accountNumber, bankCode } = state.accountVerification;
+
+      if (!accountNumber || !bankCode) return;
+
+      set((state) => ({
+        accountVerification: {
+          ...state.accountVerification,
+          isVerifying: true,
+          isValidAccount: false,
+          accountName: "",
+          verificationError: ""
+        }
+      }));
+
+      try {
+        const { data } = await authFetch.post<{
+          status: string;
+          message: string;
+          data: {
+            account_number: string;
+            account_name: string;
+          };
+        }>("/api/v1/payment/verify-account-number", {
+          account_number: accountNumber,
+          account_bank: bankCode
+        });
+
+        if (data.status === "error") {
+          set((state) => ({
+            accountVerification: {
+              ...state.accountVerification,
+              isVerifying: false,
+              isValidAccount: false,
+              accountName: "",
+              verificationError: data.message
+            }
+          }));
+          return;
+        }
+
+        // Update both accountVerification and accountDetails
+        const verifiedDetails = {
+          accountNumber,
+          bankCode,
+          accountName: data.data.account_name
+        };
+
+        set((state) => ({
+          accountVerification: {
+            ...state.accountVerification,
+            isVerifying: false,
+            isValidAccount: true,
+            accountName: data.data.account_name,
+            verificationError: ""
+          },
+          accountDetails: verifiedDetails
+        }));
+
+      } catch (error) {
+        set((state) => ({
+          accountVerification: {
+            ...state.accountVerification,
+            isVerifying: false,
+            isValidAccount: false,
+            accountName: "",
+            verificationError: "Failed to verify account"
+          }
+        }));
+      }
     }
   }));
 
