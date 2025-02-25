@@ -14,6 +14,7 @@ import useUser from "../../hooks/useUser";
 import { FaRegEdit } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { authFetch } from "../../lib/axios";
+import { CiSearch } from "react-icons/ci";
 
 export default function NewDashboard() {
   const [searchParams] = useSearchParams();
@@ -109,7 +110,7 @@ export default function NewDashboard() {
             className={`container relative h-fit py-6 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}
           >
             <button
-              className={`absolute top-8 right-8 text-2xl font-bold ${currentView !== 3 ? "text-[#FFA500]" : ""}`}
+              className={`absolute top-8 right-8 text-3xl font-bold ${currentView !== 3 && "text-[#FFFFF0]"}`}
             >
               <CiSettings />
             </button>
@@ -187,21 +188,17 @@ export default function NewDashboard() {
         <div className="w-full h-fit">
           {/* ////////////////////////////////////Cards///////////////////////////////////////////// */}
           <div
-            className={`public_presentations container pt-12 pb-5 h-fit block ${currentView == 1 ? "_block" : "_hidden"}`}
+            className={`public_presentations container pt-12 pb-5 h-fit block`}
           >
             {/* search */}
-            <div className="w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border border-white relative mb-5">
+            <div className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border ${currentView != 3 ? "border-white" : "border-black"} relative mb-5`}>
               <input
                 type="text"
                 name="searcher"
                 placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
+                className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] ${currentView != 3 ? "bg-primaryTwo text-white" : "bg-[#FFFFF0] !text-black"}`}
               />
-              <img
-                src={searchImg}
-                alt={searchImg}
-                className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
-              />
+              <span className={`block w-fit text-[#FFFFF0] ${currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}><CiSearch /></span>
             </div>
             {/* end search */}
             {currentView == 1 ? (
@@ -264,30 +261,6 @@ export default function NewDashboard() {
                 </div>
               </>
             )}
-          </div>
-          <div
-            className={`w-full min-h-screen flex flex-col justify-center items-center pt-12 _bg-[purple] ${currentView == 3 ? "block" : "hidden"}`}
-          >
-            {/* search */}
-            <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
-              <input
-                type="text"
-                name="searcher"
-                placeholder="Search for Libraries"
-                className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
-              />
-              <img
-                src={searchImg}
-                alt={searchImg}
-                className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
-              />
-            </div>
-            {/* end search */}
-            <div
-              className={`container _w-full min-h-screen flex justify-center items-center _bg-[purple]`}
-            >
-              <h1>No History yet</h1>
-            </div>
           </div>
 
           <div ref={intersectionRef}></div>
