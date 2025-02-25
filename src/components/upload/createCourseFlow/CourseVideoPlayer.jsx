@@ -56,7 +56,7 @@ export default function CourseVideoPlayer() {
         >
           <FaArrowLeft size={20} />
         </button>
-        <p>{data.name}</p>
+        <p className="md:w-full w-10/12 truncate">{data.name}</p>
       </header>
 
       <div className="flex-1 w-full">

@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import videojs from "video.js";
+import "videojs-youtube";
+import "videojs-landscape-fullscreen";
 import "video.js/dist/video-js.css";
 
 export const VideoJS = (props) => {
@@ -22,10 +24,28 @@ export const VideoJS = (props) => {
         onReady && onReady(player);
       }));
 
+      player.landscapeFullscreen({
+        fullscreen: {
+          enterOnRotate: true,
+          exitOnRotate: true,
+          alwaysInLandscapeMode: true,
+          iOS: true
+        }
+      });
+
       // You could update an existing player in the `else` block here
       // on prop change, for example:
     } else {
       const player = playerRef.current;
+
+      player.landscapeFullscreen({
+        fullscreen: {
+          enterOnRotate: true,
+          exitOnRotate: true,
+          alwaysInLandscapeMode: true,
+          iOS: true
+        }
+      });
 
       player.src(options.sources);
     }
@@ -44,7 +64,10 @@ export const VideoJS = (props) => {
   }, [playerRef]);
 
   return (
-    <div data-vjs-player className="h-screen md:h-fit w-full flex items-center md:items-start justify-center">
+    <div
+      data-vjs-player
+      className="h-screen md:h-fit w-full flex items-center md:items-start justify-center"
+    >
       <div ref={videoRef} className="w-full max-w-[90vw] 2xl:max-w-[70vw]" />
     </div>
   );
