@@ -6,12 +6,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CourseCard from "../../list/courseCard";
 import InstructorCard from "../../list/instructorCard";
 import useUser from "../../../hooks/useUser";
-import { standardFetch } from "../../../lib/axios";
+import { authFetch } from "../../../lib/axios";
 import { useState } from "react";
 
 export async function CoursePreviewLoader({ params }) {
-  const { data } = await standardFetch.get(
-    `/api/v1/course/user-courses/${params.id}`
+  const { data } = await authFetch.get(
+    `/api/v1/course/user-courses/${params.id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    }
   );
 
   return data;
@@ -168,6 +173,9 @@ export default function CoursePreviewPage() {
                   <CourseCard
                     key={content.id}
                     content={content}
+                    locked={!data.access}
+                    courseId={data.id}
+                    sectionId={section.id}
                   />
                 ))}
                 {/* end */}

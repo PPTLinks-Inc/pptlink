@@ -46,8 +46,12 @@ export default function CourseCreationProfile() {
   const addInstructor = useCourseStore((state) => state.addInstructor);
   const removeInstructor = useCourseStore((state) => state.removeInstructor);
   const updateInstructor = useCourseStore((state) => state.updateInstructor);
-  const accountVerification = useCourseStore((state) => state.accountVerification);
-  const updateAccountVerification = useCourseStore((state) => state.updateAccountVerification);
+  const accountVerification = useCourseStore(
+    (state) => state.accountVerification
+  );
+  const updateAccountVerification = useCourseStore(
+    (state) => state.updateAccountVerification
+  );
   const verifyAccount = useCourseStore((state) => state.verifyAccount);
 
   const handleInputChange = (
@@ -81,7 +85,7 @@ export default function CourseCreationProfile() {
 
   useEffect(() => {
     const { accountNumber, bankCode } = accountVerification;
-    
+
     if (accountNumber.length === 10 && bankCode) {
       verifyAccount();
     }
@@ -120,8 +124,6 @@ export default function CourseCreationProfile() {
       return data;
     }
   });
-
-  
 
   const handleSearch = useCallback((value: string) => {
     setSearchEmail(value);
@@ -224,17 +226,22 @@ export default function CourseCreationProfile() {
                   value={accountVerification.accountNumber}
                   id="accountName"
                   onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
+                    const value = e.target.value.replace(/\D/g, "");
                     updateAccountVerification({ accountNumber: value });
                   }}
                   placeholder="e.g 0123456789"
                   className={`pl-2 border-[0.5px] mt-2 border-primaryTwo ${
-                    accountVerification.accountNumber.length === 10 ? 'border-green-500' : ''
+                    accountVerification.accountNumber.length === 10
+                      ? "border-green-500"
+                      : ""
                   }`}
                 />
-                {accountVerification.accountNumber.length > 0 && accountVerification.accountNumber.length < 10 && (
-                  <p className="text-sm text-yellow-600 mt-1">Account number must be 10 digits</p>
-                )}
+                {accountVerification.accountNumber.length > 0 &&
+                  accountVerification.accountNumber.length < 10 && (
+                    <p className="text-sm text-yellow-600 mt-1">
+                      Account number must be 10 digits
+                    </p>
+                  )}
               </div>
 
               <div className="mt-10">
@@ -264,7 +271,9 @@ export default function CourseCreationProfile() {
                 <p className="text-blue-600">Verifying account details...</p>
               )}
               {accountVerification.verificationError && (
-                <p className="text-red-600">{accountVerification.verificationError}</p>
+                <p className="text-red-600">
+                  {accountVerification.verificationError}
+                </p>
               )}
               {accountVerification.isValidAccount && (
                 <p className="text-green-700 font-bold text-lg">
@@ -431,14 +440,16 @@ export default function CourseCreationProfile() {
                                   <SelectItem value=" ">
                                     Select Experience
                                   </SelectItem>
-                                  {[1, 2, 3, 4, 5, "5+", "10+"].map((years) => (
-                                    <SelectItem
-                                      key={years}
-                                      value={years.toString()}
-                                    >
-                                      {years} years
-                                    </SelectItem>
-                                  ))}
+                                  {["1", "2", "3", "4", "5+", "10+"].map(
+                                    (years) => (
+                                      <SelectItem
+                                        key={years}
+                                        value={years.toString()}
+                                      >
+                                        {years} years
+                                      </SelectItem>
+                                    )
+                                  )}
                                 </SelectContent>
                               </Select>
                             </div>

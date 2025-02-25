@@ -3,8 +3,18 @@
 import { motion } from "framer-motion";
 import { CiFileOn } from "react-icons/ci";
 import { CiPlay1 } from "react-icons/ci";
+import { IoMdLock } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
-export default function CourseCard({ content }) {
+export default function CourseCard({ content, locked, courseId, sectionId }) {
+  const navigate = useNavigate();
+
+  function viewContent() {
+    if (content.type === "VIDEO") {
+      navigate(`/course/video/${courseId}/${sectionId}/${content.id}`);
+    }
+  }
+
   return (
     <>
       <motion.div
@@ -16,6 +26,7 @@ export default function CourseCard({ content }) {
         }}
         viewport={{ once: true }}
         className="card snap_scrolling_child w-full maxSmallMobile:!min-w-[285px] maxSmallMobile:!max-w-[285px] rounded-lg !pt-0 cursor-pointer maxSmallMobile:aspect-[1/1.2] border border-[#FFFFF0] relative"
+        onClick={viewContent}
       >
         <span className="block !w-full h-fit mb-4 z-10 border-none rounded-t-[0.33rem] bg-[#FFFFF0]">
           <span
@@ -25,9 +36,7 @@ export default function CourseCard({ content }) {
             <span
               className={`flex justify-between items-center gap-2 ${content?.live !== undefined && "hidden"}`}
             >
-              <span
-                className="block w-fit h-fit p-1 bg-[red] border-none rounded-full"
-              ></span>
+              <span className="block w-fit h-fit p-1 bg-[red] border-none rounded-full"></span>
               <span>Live</span>
             </span>
           </span>
@@ -45,14 +54,23 @@ export default function CourseCard({ content }) {
             <div className="w-full aspect-[1/0.8] h-full bg-black/50 flex justify-center items-center" />
           )}
           <span className="absolute top-0 left-0 right-0 bottom-0 z-10 pointer-events-none text-6xl font-black flex justify-center items-center bg-black/50 border-none rounded-[0.33rem]">
-            {content.type === "VIDEO" ? <CiPlay1 /> : <CiFileOn />}
+            {locked ? (
+              <IoMdLock />
+            ) : content.type === "VIDEO" ? (
+              <CiPlay1 />
+            ) : (
+              <CiFileOn />
+            )}
           </span>
         </div>
 
         <div
           className={`card_body pb-5 maxScreenMobile:pb-2 text-white mx-4 maxScreenMobile:mx-2 min-h-[120px]`}
         >
-          <h3 title={content.name} className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
+          <h3
+            title={content.name}
+            className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis"
+          >
             {content.name}
           </h3>
           <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
@@ -71,9 +89,9 @@ export default function CourseCard({ content }) {
                     const remainingSeconds = seconds % 60;
 
                     if (hours > 0) {
-                      return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+                      return `${hours}:${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
                     }
-                    return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+                    return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
                   })()}
                 </em>
               </>
