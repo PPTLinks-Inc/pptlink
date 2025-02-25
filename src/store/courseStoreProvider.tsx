@@ -392,6 +392,7 @@ export default function CourseStoreProvider({
         });
 
         const intervalId = setInterval(async function () {
+          console.log("CHECKING...");
           const isDone = await checkProcessingStatus(
             courseId,
             selectedSection.id,
