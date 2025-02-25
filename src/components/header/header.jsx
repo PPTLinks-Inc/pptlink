@@ -81,10 +81,10 @@ export default function Header({ isBackMenu, handleDropdown }) {
           className="w-3/5 flex flex-row justify-end !items-center gap-4 maxScreen:gap-4 maxScreenMobile:justify-end">
 
           <span className={`hidden bg-[#FFFFF0] p-1 text-primaryTwo ${isBackMenu && "border-primaryTwo"} text-[1.3rem] 
-          !border-[0.1px] maxScreenMobile:rounded-sm maxScreenMobile:!block`}><CiSearch /></span>
+          !border-[0.1px] maxScreenMobile:rounded-sm maxScreenMobile:!block pointer-events-none`}><CiSearch /></span>
 
           <label htmlFor="searchAnything" className="flex justify-center items-center w-3/5 h-fit relative overflow-y-hidden maxScreenMobile:hidden">
-            <span className={`block text-xl absolute top-[50%] -translate-y-[50%] left-3 maxScreenMobile:text-3xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm`}><CiSearch /></span>
+            <span className={`block text-xl absolute top-[50%] -translate-y-[50%] left-3 maxScreenMobile:text-3xl maxScreenMobile:border-2 maxScreenMobile:rounded-sm pointer-events-none`}><CiSearch /></span>
             <input
               type="text"
               id="searchAnything"

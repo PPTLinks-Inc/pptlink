@@ -26,7 +26,8 @@ const Root = lazy(() => import("./components/root/root"));
 const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Library = lazy(() => import("./components/library/library"));
 const SignPage = lazy(() => import("./components/sign/sign"));
-const Pay = lazy(() => import("./components/pay/pay"));
+// const Pay = lazy(() => import("./components/pay/pay"));
+const Payment = lazy(() => import("./components/pay/payment"));
 const About = lazy(() => import("./components/about-us/about"));
 const Document = lazy(() => import("./components/document/document"));
 const NewDashboard = lazy(() => import("./components/profile/newDashboard"));
@@ -112,7 +113,11 @@ const router = sentryCreateBrowserRouter(
         {
           path: "library",
           element: <Library />
-        }
+        },
+        {
+          path: "/pay",
+          element: <Payment />
+        },
       ]
     },
     {
@@ -189,10 +194,10 @@ const router = sentryCreateBrowserRouter(
       path: "/verify-email",
       element: <RequestEmailVerificationLink />
     },
-    {
-      path: "/pay",
-      element: <Pay />
-    },
+    // {
+    //   path: "/pay",
+    //   element: <Pay />
+    // },
     {
       path: "/reset-password",
       element: <ResetPasswordPage />

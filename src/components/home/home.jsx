@@ -267,7 +267,8 @@ export default function Home() {
             }}
             viewport={{ once: true }}
             className="container text-4xl font-extrabold text-center maxScreenMobile:text-3xl maxScreenMobile:font-bold !mb-2">
-            All the skills you need in one place
+            {/* All the skills you need in one place */}
+            Checkout all available courses
           </motion.h2>
           <motion.p
             initial={{ y: 30, opacity: 0 }}
