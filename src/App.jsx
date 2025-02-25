@@ -15,6 +15,7 @@ import { CourseContentLoader } from "./components/upload/createCourseFlow/course
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
 import { CoursePreviewLoader } from "@/components/upload/createCourseFlow/coursePreviewPage";
+import { VideoPlayerLoader } from "@/components/upload/createCourseFlow/CourseVideoPlayer";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -62,6 +63,9 @@ const CourseCreationWorkflowTwo = lazy(
 );
 const CourseAcceptInvitation = lazy(
   () => import("./components/upload/createCourseFlow/courseInvite")
+);
+const CourseVideoPlayer = lazy(
+  () => import("./components/upload/createCourseFlow/CourseVideoPlayer")
 );
 const TermsAndServicesPage = lazy(
   () => import("./components/Terms_and_policy_page/termsAndServices")
@@ -153,6 +157,21 @@ const router = sentryCreateBrowserRouter(
       ),
       errorElement: <InterfaceNotFound />,
       loader: presentationLoader
+    },
+    {
+      path: "/course/video/:courseId/:sectionId/:contentId",
+      element: (
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen bg-primaryTwo">
+              <LoadingAssetBig2 />
+            </div>
+          }
+        >
+          <CourseVideoPlayer />
+        </Suspense>
+      ),
+      loader: VideoPlayerLoader
     },
     {
       path: "/signin",
