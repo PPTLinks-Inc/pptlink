@@ -55,30 +55,30 @@ export default function Payment() {
                     </p>
                     <span className="text-[#FFA500] font-bold text-xl">{"$108,570.00"}</span>
                     <h2 className="text-3xl font-bold mb-2 mt-6">Payment Options</h2>
-                    <form className="block w-full pt-2">
+                    <form method="POST" action="https://checkout.flutterwave.com/v3/hosted/pay" className="block w-full pt-2">
                         <div className="w-full flex flex-wrap justify-start items-center gap-10 mb-40 maxSmallMobile:flex-wrap-none maxSmallMobile:flex-col maxSmallMobile:mb-10">
-                            <label htmlFor="option1" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full">
+                            <label htmlFor="option1" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full cursor-pointer">
                                 <span className="block text-3xl"><MdCreditCard /></span>
                                 <span>Credit/Debit</span>
                                 <span className="block w-fit aspect-square border-none rounded-full">
                                     <input type="radio" name="paymentOptions" id="option1" className="block w-5 aspect-square accent-[#FFA500] border-[#FFA500] rounded-full" />
                                 </span>
                             </label>
-                            <label htmlFor="option2" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full">
+                            <label htmlFor="option2" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full cursor-pointer">
                                 <span className="block text-3xl"><BsBank /></span>
                                 <span>Bank Transfer</span>
                                 <span className="block w-fit aspect-square border-none rounded-full">
                                     <input type="radio" name="paymentOptions" id="option2" className="block w-5 aspect-square accent-[#FFA500] border-[#FFA500] rounded-full" />
                                 </span>
                             </label>
-                            <label htmlFor="option3" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full">
+                            <label htmlFor="option3" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full !cursor-not-allowed pointer-events-none relative before:absolute before:top-0 before:left-0 before:bottom-0 before:right-0 before:bg-black/60 before:rounded-md">
                                 <span className="block text-3xl"><IoMdPhonePortrait /></span>
                                 <span>USSD</span>
                                 <span className="block w-fit aspect-square border-none rounded-full">
                                     <input type="radio" name="paymentOptions" id="option3" className="block w-5 aspect-square accent-[#FFA500] border-[#FFA500] rounded-full" />
                                 </span>
                             </label>
-                            <label htmlFor="option4" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full">
+                            <label htmlFor="option4" className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full !cursor-not-allowed pointer-events-none relative before:absolute before:top-0 before:left-0 before:bottom-0 before:right-0 before:bg-black/60 before:rounded-md">
                                 <span className="block text-3xl"><IoQrCode /></span>
                                 <span>QR Code</span>
                                 <span className="block w-fit aspect-square border-none rounded-full">
@@ -86,6 +86,17 @@ export default function Payment() {
                                 </span>
                             </label>
                         </div>
+
+                        <input type="hidden" name="public_key" value="FLWPUBK_TEST-SANDBOXDEMOKEY-X" />
+                        <input type="hidden" name="tx_ref" value="bitethtx-019203" />
+                        <input type="hidden" name="amount" value="3400" />
+                        <input type="hidden" name="currency" value="NGN" />
+                        <input type="hidden" name="redirect_url" value="https://demoredirect.localhost.me/" />
+                        <input type="hidden" name="meta[token]" value="54" />
+                        <input type="hidden" name="customer[name]" value="Jesse Pinkman" />
+                        <input type="hidden" name="customer[email]" value="jessepinkman@walterwhite.org" />
+                        <input type="hidden" name="configurations[session_duration]" value="10" />
+                        <input type="hidden" name="configurations[max_retry_attempt]" value="5" />
 
                         <button type="submit" className="text-xl text-[#FFA500] block w-fit mx-auto border border-[#FFA500] px-10 py-2 rounded-md font-bold maxScreenMobile:w-full">Proceed To payment</button>
                     </form>
