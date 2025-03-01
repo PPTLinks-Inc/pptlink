@@ -196,7 +196,7 @@ export default function CourseStoreProvider({
         selectedSectionIndex: state.sections.findIndex((s) => s.id === id)
       }));
     },
-    saveCourseData: async (currentTab) => {
+    saveCourseData: async (currentTab, userId) => {
       if (currentTab === "course") {
         const courseData = get().sections;
 
@@ -258,6 +258,7 @@ export default function CourseStoreProvider({
         if (get().accountVerification.isValidAccount) {
           const accountDetails = get().accountDetails;
           if (accountDetails) {
+            const isCreator = get().creatorId === userId;
             await Promise.all([
               authFetch.put(
                 `/api/v1/course/update-course-profile/${get().courseId}`,
@@ -268,7 +269,7 @@ export default function CourseStoreProvider({
                   }
                 }
               ),
-              authFetch.put(
+              isCreator && authFetch.put(
                 `/api/v1/payment/update-account-details/${get().courseId}`,
                 {
                   account_number: accountDetails.accountNumber,
