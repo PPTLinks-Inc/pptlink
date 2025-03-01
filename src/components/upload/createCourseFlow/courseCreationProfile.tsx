@@ -42,6 +42,7 @@ interface InstructorSearchResult {
 export default function CourseCreationProfile() {
   const data = useRouteLoaderData(ROUTER_ID) as CourseData;
   const { userQuery } = useUser();
+  const courseCreatorId = useCourseStore((state) => state.creatorId); 
   const instructors = useCourseStore((state) => state.instructors);
   const addInstructor = useCourseStore((state) => state.addInstructor);
   const removeInstructor = useCourseStore((state) => state.removeInstructor);
@@ -86,10 +87,10 @@ export default function CourseCreationProfile() {
   useEffect(() => {
     const { accountNumber, bankCode } = accountVerification;
 
-    if (accountNumber.length === 10 && bankCode) {
+    if (accountNumber.length === 10 && bankCode && userQuery.data?.id === courseCreatorId) {
       verifyAccount();
     }
-  }, [accountVerification.accountNumber, accountVerification.bankCode]);
+  }, [accountVerification.accountNumber, accountVerification.bankCode, userQuery.data?.id, courseCreatorId]);
 
   const [searchEmail, setSearchEmail] = useState("");
   const [selectedInstructor, setSelectedInstructor] =
@@ -111,6 +112,7 @@ export default function CourseCreationProfile() {
     queryKey: ["banks"],
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    enabled: userQuery.data?.id === courseCreatorId,
     queryFn: async () => {
       const { data } = await authFetch.get<{
         status: string;

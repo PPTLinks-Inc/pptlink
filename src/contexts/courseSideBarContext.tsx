@@ -50,7 +50,7 @@ export default function CourseSideBarContextProvider({
   const courseName = useCourseStore((state) => state.name);
 
   const saveCourse = useMutation({
-    mutationFn: () => saveCourseData(isActive),
+    mutationFn: () => saveCourseData(isActive, userQuery.data?.id ?? ""),
     onSuccess: function () {
       toast.toast({
         title: "Saved"
