@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import searchImg from "/team/pptlink_resources/Icon material-search.png";
 import Card from "../list/card";
 import ShowCourseCard from "../list/showCourseCard";
 import { CiSettings } from "react-icons/ci";

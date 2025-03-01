@@ -128,7 +128,7 @@ export interface CourseStore {
     addSection: () => Promise<{ order: number, id: string }>;
     removeSection: (id: string) => Promise<void>;
     selectSection: (id: string) => void;
-    saveCourseData: (currentTab: ActiveTab) => Promise<void>;
+    saveCourseData: (currentTab: ActiveTab, userId: string) => Promise<void>;
     uploadQueue: string[];
     canUpload: () => boolean;
     addToUploadQueue: (contentId: string) => void;
