@@ -58,18 +58,8 @@ export default function CoursePreviewPage() {
               <p>This allows you to send important updates, reminders, and announcements to all your students at once. Whether you need to share lesson schedules, homework assignments, or study tips, this is your space to keep students informed and engaged.</p>
               <textarea name="courseBulkMessage" id="courseBulkMessage" className="resize-none"></textarea>
               <div>
-                <button
-                  onClick={setOpen(false)}
-                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-                >
-                  Send Message
-                </button>
+                <button>Cancel</button>
+                <button>Send Message</button>
               </div>
             </div>
           </div>
@@ -155,7 +145,7 @@ export default function CoursePreviewPage() {
               ) : (
                 <Link
                   to={isUserLoggedIn ? "/pay" : `/signin?redirect=/pay`}
-                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                 >
                   {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
                 </Link>
@@ -165,7 +155,7 @@ export default function CoursePreviewPage() {
 
             <button
               onClick={setOpen(true)}
-              className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+              className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
             >
               Course Messages
             </button>
