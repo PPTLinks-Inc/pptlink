@@ -5,6 +5,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
 import sms from "/team/pptlink_resources/Group 33.png";
+import purchased from "../../../public/purchased.svg";
 import AccordionWrapper from "../accordion/accordion";
 import Card from "../list/card";
 import { LoadingAssetSmall } from "../../assets/assets";
@@ -319,7 +320,10 @@ export default function Home() {
                   className="snap_scrolling_child min-w-[18rem] grow-0 shrink-0 basis-[15rem] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-primaryTwo/25 cursor-pointer shadow-white shadow-inner z-10"
                   to="/libraryPage"
                 >
-                  <div className="z-10">
+                  <div className="absolute top-3 left-0 w-full h-full _bg-black/40 z-0 rounded-lg">
+                    <img src={purchased} alt={purchased} className="block h-[1.5rem]" />
+                  </div>
+                  <div className="z-10 pt-4">
                     <p className="text-md font-light mb-1">Software Development</p>
                     <h4 className="text-2xl font-bold">Mobile Development Basics</h4>
                   </div>
