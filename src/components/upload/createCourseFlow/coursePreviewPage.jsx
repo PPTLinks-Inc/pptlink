@@ -11,6 +11,7 @@ import { useState } from "react";
 import { MdAccessTime } from "react-icons/md";
 import { GiNetworkBars } from "react-icons/gi";
 import { FiEdit } from "react-icons/fi";
+import Modal from "../../Models/model";
 
 export async function CoursePreviewLoader({ params }) {
   const { data } = await authFetch.get(
@@ -26,6 +27,7 @@ export async function CoursePreviewLoader({ params }) {
 }
 
 export default function CoursePreviewPage() {
+  const [open, setOpen] = useState(false);
   const { userQuery } = useUser();
   const data = useLoaderData();
   const [price] = useState(
@@ -35,12 +37,44 @@ export default function CoursePreviewPage() {
     }).format(data.price)
   );
 
+
+
   // Check if user is logged in and has data
   const isUserLoggedIn = !userQuery.isError && userQuery.data;
   const isCreator = isUserLoggedIn && ((data.creatorId === userQuery.data?.id) || (data.instructors.find(({ instructor }) => instructor.user.id === userQuery.data?.id)));
 
   return (
     <>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        <div
+          className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-0 rounded-md bg-[red]"
+        >
+          <h4 className="container py-4">Course Messages</h4>
+          <div className="p-4 border-t-[1px] border-t-white">
+            <div className="">
+              <p>This allows you to send important updates, reminders, and announcements to all your students at once. Whether you need to share lesson schedules, homework assignments, or study tips, this is your space to keep students informed and engaged.</p>
+              <textarea name="courseBulkMessage" id="courseBulkMessage" className="resize-none"></textarea>
+              <div>
+                <button
+                  onClick={setOpen(false)}
+                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                >
+                  Send Message
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
       <Helmet>
         <title>{`Library - PPTLinks `}</title>
         <meta
@@ -121,7 +155,7 @@ export default function CoursePreviewPage() {
               ) : (
                 <Link
                   to={isUserLoggedIn ? "/pay" : `/signin?redirect=/pay`}
-                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                 >
                   {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
                 </Link>
@@ -129,12 +163,12 @@ export default function CoursePreviewPage() {
               <span className="text-[#FFA500] font-bold text-xl">{price}</span>
             </span>
 
-            <Link
-              to={`#`}
-              className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+            <button
+              onClick={setOpen(true)}
+              className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
             >
               Course Messages
-            </Link>
+            </button>
           </div>
         </div>
       </div>
