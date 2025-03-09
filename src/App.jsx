@@ -115,9 +115,19 @@ const router = sentryCreateBrowserRouter(
           element: <Library />
         },
         {
-          path: "/pay",
-          element: <Payment />
-        },
+          path: "/pay/:courseId",
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <Payment />
+            </Suspense>
+          )
+        }
       ]
     },
     {
@@ -194,10 +204,6 @@ const router = sentryCreateBrowserRouter(
       path: "/verify-email",
       element: <RequestEmailVerificationLink />
     },
-    // {
-    //   path: "/pay",
-    //   element: <Pay />
-    // },
     {
       path: "/reset-password",
       element: <ResetPasswordPage />

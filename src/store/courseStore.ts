@@ -53,7 +53,7 @@ export interface CourseData {
     } | null;
 }
 
-type dataTypes = "name" | "description" | "categoryId" | "published" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents" | "thumbnail";
+type dataTypes = "name" | "description" | "categoryId" | "price" | "enrollmentDateFrom" | "enrollmentDateTo" | "startDate" | "duration" | "courseLevel" | "maxStudents" | "thumbnail";
 
 export interface InstructorProfileUpdate {
     id: string;
@@ -146,4 +146,14 @@ export interface CourseStore {
     }) => void;
 
     updateAccountDetails: (details: NonNullable<CourseStore['accountDetails']>) => void;
+
+    validateSettings: () => boolean;
+    validateProfile: () => boolean;
+    validateContent: () => boolean;
+    validateCourse: () => boolean;
+    getNextIncompleteTab: () => "course" | "settings" | "profile";
+
+    canPublish: boolean;
+
+    togglePublish: () => Promise<void>;
 }
