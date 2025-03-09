@@ -14,7 +14,7 @@ import { FiEdit } from "react-icons/fi";
 
 export async function CoursePreviewLoader({ params }) {
   const { data } = await authFetch.get(
-    `/api/v1/course/user-courses/${params.id}`,
+    `/api/v1/course/user-courses/${params.id}?brief=false`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`
@@ -37,12 +37,17 @@ export default function CoursePreviewPage() {
 
   // Check if user is logged in and has data
   const isUserLoggedIn = !userQuery.isError && userQuery.data;
-  const isCreator = isUserLoggedIn && ((data.creatorId === userQuery.data?.id) || (data.instructors.find(({ instructor }) => instructor.user.id === userQuery.data?.id)));
+  const isCreator =
+    isUserLoggedIn &&
+    (data.creatorId === userQuery.data?.id ||
+      data.instructors.find(
+        ({ instructor }) => instructor.user.id === userQuery.data?.id
+      ));
 
   return (
     <>
       <Helmet>
-        <title>{`Library - PPTLinks `}</title>
+        <title>{`${data.name} - PPTLinks `}</title>
         <meta
           name="description"
           content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
@@ -106,11 +111,14 @@ export default function CoursePreviewPage() {
               25+ enrolled
             </span>
             <span className="block w-fit responsiveTex text-white">
-              Created by <Link to={"#"} className="underline text-white">{"Amem A. Raymond"}</Link>
+              Created by{" "}
+              <Link to={"#"} className="underline text-white">
+                {data.instructors[0].instructor.user.username}
+              </Link>
             </span>
           </div>
-          <div className="w-full flex justify-between items-center gap-3 py-4 maxSmallMobile:flex-col maxSmallMobile:items-start">
-            <span className="flex items-center gap-3">
+          <div className="w-full maxSmallMobile:w-full">
+            <div className="flex justify-between items-center gap-3 py-4">
               {isCreator ? (
                 <Link
                   to={`/course/${data.id}`}
@@ -119,22 +127,27 @@ export default function CoursePreviewPage() {
                   Edit Course
                 </Link>
               ) : (
-                <Link
-                  to={isUserLoggedIn ? "/pay" : `/signin?redirect=/pay`}
-                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-                >
-                  {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
-                </Link>
+                data.published && (
+                  <Link
+                    to={
+                      isUserLoggedIn
+                        ? `/pay/${data.id}`
+                        : `/signin?redirect=/pay/${data.id}`
+                    }
+                    className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                  >
+                    {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
+                  </Link>
+                )
               )}
               <span className="text-[#FFA500] font-bold text-xl">{price}</span>
-            </span>
-
-            <Link
-              to={`#`}
-              className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-            >
-              Course Messages
-            </Link>
+              <Link
+                to={`#`}
+                className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+              >
+                Course Messages
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -144,19 +157,21 @@ export default function CoursePreviewPage() {
             <>
               {" "}
               <p className="lowercase flex items-center gap-2">
-                <span><MdAccessTime /></span>
                 <span>
-                  {data.duration.split("_").join(" ")}
+                  <MdAccessTime />
                 </span>
+                <span>{data.duration.split("_").join(" ")}</span>
               </p>
               <p className="lowercase flex items-center gap-2">
-                <span><GiNetworkBars /></span>
                 <span>
-                  {data.courseLevel}
+                  <GiNetworkBars />
                 </span>
+                <span>{data.courseLevel}</span>
               </p>
               <p className="lowercase flex items-center gap-2">
-                <span><FiEdit /></span>
+                <span>
+                  <FiEdit />
+                </span>
                 <span>
                   Last updated{" "}
                   {new Date(data.updatedAt).toLocaleDateString("en-NG", {
