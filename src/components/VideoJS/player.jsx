@@ -24,6 +24,8 @@ export const VideoJS = (props) => {
         onReady && onReady(player);
       }));
 
+      // player.log.level('debug')
+
       player.landscapeFullscreen({
         fullscreen: {
           enterOnRotate: true,

@@ -20,7 +20,7 @@ import { MdHelpOutline } from "react-icons/md";
 import { AiOutlineProfile } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
 import React, { createContext } from "react";
-import { Link, useRouteLoaderData } from "react-router-dom";
+import { Link, useRouteLoaderData, useNavigate } from "react-router-dom";
 import { CourseData } from "@/store/courseStore";
 import { useCourseStore } from "@/store/courseStoreProvider";
 import { useMutation } from "@tanstack/react-query";
@@ -28,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LoadingAssetSmall } from "@/assets/assets";
 import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
+import { cn } from "@/lib/utils";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext(undefined);
@@ -36,7 +37,7 @@ export type ActiveTab = "course" | "settings" | "profile" | "feedback" | "help";
 
 export default function CourseSideBarContextProvider({
   children,
-  isActive,
+  isActive
 }: {
   children: React.ReactNode;
   isActive: ActiveTab;
@@ -46,8 +47,17 @@ export default function CourseSideBarContextProvider({
   const toast = useToast();
 
   const { userQuery } = useUser();
+  const navigate = useNavigate();
 
   const courseName = useCourseStore((state) => state.name);
+
+  const published = useCourseStore((state) => state.published);
+  const isPublishable = useCourseStore((state) => state.canPublish);
+  const toggleCoursePublish = useCourseStore((state) => state.togglePublish);
+
+  const togglePublish = useMutation({
+    mutationFn: () => toggleCoursePublish()
+  });
 
   const saveCourse = useMutation({
     mutationFn: () => saveCourseData(isActive, userQuery.data?.id ?? ""),
@@ -64,15 +74,43 @@ export default function CourseSideBarContextProvider({
     }
   });
 
-  const isCreator = data.creatorId === userQuery.data?.id
+  const isCreator = data.creatorId === userQuery.data?.id;
+
+  const nextIncompleteTab = useCourseStore((state) =>
+    state.getNextIncompleteTab()
+  );
+
+  const handleNextOrPublish = () => {
+    if (published) {
+      toast.toast({
+        title: "Unpublishing course",
+        description: "Your course is being unpublished..."
+      });
+      togglePublish.mutate();
+      // TODO: Implement unpublish logic
+    } else if (isPublishable) {
+      toast.toast({
+        title: "Publishing course",
+        description: "Your course is being published..."
+      });
+      togglePublish.mutate();
+      // TODO: Implement publish logic
+    } else {
+      if (nextIncompleteTab === "course") {
+        navigate(`/course/${data.id}`);
+        return;
+      }
+      navigate(`/course/${nextIncompleteTab}/${data.id}`);
+    }
+  };
 
   return (
     <CourseSideBarContext.Provider value={undefined}>
       <SidebarProvider defaultOpen={false}>
         <Sidebar collapsible="icon">
           <SidebarHeader>
-            <SidebarMenuButton asChild tooltip="Go to Home">
-              <Link to="/">
+            <SidebarMenuButton asChild tooltip="Go to Course Dashboard">
+              <Link to="/dashboard?tab=2">
                 <img src={logo_white} className="block w-8 aspect-square" />
                 <span className="font-bold">PPTLinks</span>
               </Link>
@@ -90,17 +128,19 @@ export default function CourseSideBarContextProvider({
                 <span className="text-lg">Courses</span>
               </Link>
             </SidebarMenuButton>
-            {isCreator && <SidebarMenuButton
-              isActive={isActive === "settings"}
-              tooltip="Course Settings"
-              className="mx-auto"
-              asChild
-            >
-              <Link to={`/course/settings/${data.id}`}>
-                <GoGear />
-                <span className="text-lg">Settings</span>
-              </Link>
-            </SidebarMenuButton>}
+            {isCreator && (
+              <SidebarMenuButton
+                isActive={isActive === "settings"}
+                tooltip="Course Settings"
+                className="mx-auto"
+                asChild
+              >
+                <Link to={`/course/settings/${data.id}`}>
+                  <GoGear />
+                  <span className="text-lg">Settings</span>
+                </Link>
+              </SidebarMenuButton>
+            )}
             <SidebarMenuButton
               isActive={isActive === "profile"}
               tooltip="Course profile"
@@ -161,12 +201,32 @@ export default function CourseSideBarContextProvider({
                 )}
               </Button>
 
-              {isCreator && <Button
-                className="ml-auto bg-primaryTwo text-white border-white"
-                variant="outline"
-              >
-                <span>Next</span>
-              </Button>}
+              {isCreator && (
+                <Button
+                  className={cn(
+                    "ml-auto border-white",
+                    published
+                      ? "bg-rose-600 hover:bg-red-700 text-white"
+                      : isPublishable
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : "bg-primaryTwo text-white"
+                  )}
+                  variant="outline"
+                  onClick={handleNextOrPublish}
+                >
+                  {togglePublish.isPending ? (
+                    <LoadingAssetSmall />
+                  ) : (
+                    <span>
+                      {published
+                        ? "Unpublish"
+                        : isPublishable
+                          ? "Publish"
+                          : "Next"}
+                    </span>
+                  )}
+                </Button>
+              )}
             </div>
           </header>
           <div className="bg-primaryTwo h-full">{children}</div>
