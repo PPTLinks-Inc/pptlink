@@ -8,6 +8,9 @@ import InstructorCard from "../../list/instructorCard";
 import useUser from "../../../hooks/useUser";
 import { authFetch } from "../../../lib/axios";
 import { useState } from "react";
+import { MdAccessTime } from "react-icons/md";
+import { GiNetworkBars } from "react-icons/gi";
+import { FiEdit } from "react-icons/fi";
 
 export async function CoursePreviewLoader({ params }) {
   const { data } = await authFetch.get(
@@ -34,7 +37,7 @@ export default function CoursePreviewPage() {
 
   // Check if user is logged in and has data
   const isUserLoggedIn = !userQuery.isError && userQuery.data;
-  const isCreator = isUserLoggedIn && ((data.creatorId === userQuery.data?.id) || (data.instructors.find(({instructor}) => instructor.user.id === userQuery.data?.id)));
+  const isCreator = isUserLoggedIn && ((data.creatorId === userQuery.data?.id) || (data.instructors.find(({ instructor }) => instructor.user.id === userQuery.data?.id)));
 
   return (
     <>
@@ -82,7 +85,7 @@ export default function CoursePreviewPage() {
           <p className="text-[0.9rem] pb-3 w-2/5 maxScreenMobile:w-4/5 maxSmallMobile:w-full maxSmallMobile:text-justify">
             {data.description}
           </p>
-          <div className="relative flex items-center justify-between gap-4 w-fit">
+          <div className="relative flex maxSmallMobile:!flex-col items-center justify-between gap-4 w-fit maxSmallMobile:w-full maxSmallMobile:items-start maxSmallMobile:gap-2">
             <span className="flex -space-x-4">
               {Array.from({ length: 5 }, (_, i) => i + 1).map((index) => (
                 <Avatar
@@ -99,27 +102,39 @@ export default function CoursePreviewPage() {
                 </Avatar>
               ))}
             </span>
-            <span className="block w-fit responsiveTex text-white">
+            <span className="block w-fit responsiveTex text-white mr-1">
               25+ enrolled
             </span>
+            <span className="block w-fit responsiveTex text-white">
+              Created by <Link to={"#"} className="underline text-white">{"Amem A. Raymond"}</Link>
+            </span>
           </div>
-          <div className="flex justify-between items-center gap-3 py-4">
-            {isCreator ? (
-              <Link
-                to={`/course/${data.id}`}
-                className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-              >
-                Edit Course
-              </Link>
-            ) : (
-              <Link
-                to={isUserLoggedIn ? "/pay" : `/signin?redirect=/pay`}
-                className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-              >
-                {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
-              </Link>
-            )}
-            <span className="text-[#FFA500] font-bold text-xl">{price}</span>
+          <div className="w-full flex justify-between items-center gap-3 py-4 maxSmallMobile:flex-col maxSmallMobile:items-start">
+            <span className="flex items-center gap-3">
+              {isCreator ? (
+                <Link
+                  to={`/course/${data.id}`}
+                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                >
+                  Edit Course
+                </Link>
+              ) : (
+                <Link
+                  to={isUserLoggedIn ? "/pay" : `/signin?redirect=/pay`}
+                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                >
+                  {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
+                </Link>
+              )}
+              <span className="text-[#FFA500] font-bold text-xl">{price}</span>
+            </span>
+
+            <Link
+              to={`#`}
+              className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+            >
+              Course Messages
+            </Link>
           </div>
         </div>
       </div>
@@ -128,21 +143,28 @@ export default function CoursePreviewPage() {
           {data.courseLevel && data.duration && (
             <>
               {" "}
-              <p className="capitalize">
-                <span>#</span>
-                {data.courseLevel}
+              <p className="lowercase flex items-center gap-2">
+                <span><MdAccessTime /></span>
+                <span>
+                  {data.duration.split("_").join(" ")}
+                </span>
               </p>
-              <p className="capitalize">
-                <span>#</span>
-                {data.duration.split("_").join(" ")}
+              <p className="lowercase flex items-center gap-2">
+                <span><GiNetworkBars /></span>
+                <span>
+                  {data.courseLevel}
+                </span>
               </p>
-              <p className="capitalize">
-                <span>#</span>Last Uploaded{" "}
-                {new Date(data.updatedAt).toLocaleDateString("en-NG", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric"
-                })}
+              <p className="lowercase flex items-center gap-2">
+                <span><FiEdit /></span>
+                <span>
+                  Last updated{" "}
+                  {new Date(data.updatedAt).toLocaleDateString("en-NG", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                  })}
+                </span>
               </p>
             </>
           )}
