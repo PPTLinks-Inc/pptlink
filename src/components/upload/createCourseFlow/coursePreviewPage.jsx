@@ -37,8 +37,6 @@ export default function CoursePreviewPage() {
     }).format(data.price)
   );
 
-
-
   // Check if user is logged in and has data
   const isUserLoggedIn = !userQuery.isError && userQuery.data;
   const isCreator =
