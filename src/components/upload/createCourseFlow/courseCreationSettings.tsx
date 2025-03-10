@@ -63,6 +63,7 @@ export default function CourseCreationSettings() {
   const courseLevel = useCourseStore((state) => state.courseLevel);
   const maxStudents = useCourseStore((state) => state.maxStudents);
   const thumbnail = useCourseStore((state) => state.thumbnail);
+  const published = useCourseStore((state) => state.published);
 
   const updateValues = useCourseStore((state) => state.updateValues);
 
@@ -207,6 +208,7 @@ export default function CourseCreationSettings() {
                   value="naira"
                   checked={true}
                   className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
+                  disabled={published}
                 />
                 Naira (₦)
               </Label>
@@ -236,6 +238,7 @@ export default function CourseCreationSettings() {
                     updateValues(Number(e.target.value), "price");
                   }
                 }}
+                disabled={published}
               />
               <span className="absolute left-2 top-2">₦</span>
             </div>
@@ -254,6 +257,7 @@ export default function CourseCreationSettings() {
                   className={cn(
                     "w-3/6 maxScreenMobile:w/full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
                   )}
+                  disabled={published}
                 >
                   {enrollmentDate.from && enrollmentDate.to ? (
                     <>
@@ -296,6 +300,7 @@ export default function CourseCreationSettings() {
                   className={cn(
                     "w-3/6 maxScreenMobile:w/full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
                   )}
+                  disabled={published}
                 >
                   {startDate ? (
                     formatDate(startDate)
@@ -321,7 +326,7 @@ export default function CourseCreationSettings() {
 
           <div>
             <h5>Course duration</h5>
-            <Select onValueChange={handleDurationChange} value={duration}>
+            <Select onValueChange={handleDurationChange} value={duration} disabled={published}>
               <SelectTrigger className="w-3/6 maxScreenMobile:w/full border-[0.5px] border-black">
                 <SelectValue placeholder="Select duration" />
               </SelectTrigger>
@@ -379,6 +384,7 @@ export default function CourseCreationSettings() {
                 updateValues(Number(e.target.value), "maxStudents");
               }
             }}
+            disabled={published}
           />
           <p className="text-sm text-gray-600">Maximum allowed: 20,000</p>
         </div>

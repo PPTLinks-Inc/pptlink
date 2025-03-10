@@ -29,6 +29,7 @@ import { LoadingAssetSmall } from "@/assets/assets";
 import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
+import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext(undefined);
@@ -66,7 +67,19 @@ export default function CourseSideBarContextProvider({
         title: "Saved"
       });
     },
-    onError: function () {
+    onError: function (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const { response } = error;
+        if (response) {
+          toast.toast({
+            title: "Error",
+            description: response.data.message,
+            variant: "destructive"
+          });
+          return;
+        }
+      }
       toast.toast({
         title: "Error",
         variant: "destructive"
