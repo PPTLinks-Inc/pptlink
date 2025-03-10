@@ -1,28 +1,86 @@
 import { Helmet } from "react-helmet";
+import { useParams, useNavigate } from "react-router-dom";
 import LogoBlack from "../../images/Logo-Black.png";
-import { MdCreditCard } from "react-icons/md";
-import { BsBank } from "react-icons/bs";
-import { IoMdPhonePortrait } from "react-icons/io";
-import { IoQrCode } from "react-icons/io5";
 import useUser from "../../hooks/useUser";
-import { useState } from "react";
+import { useMemo } from "react";
+import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { FLW_PUBLIC_KEY } from "../../constants/routes";
+import { useQuery } from "@tanstack/react-query";
+import { authFetch } from "../../lib/axios";
+import { LoadingAssetBig2 } from "../../assets/assets";
 
 export default function Payment() {
   const { userQuery } = useUser();
   const user = userQuery.data;
-  const coursePrice = 108570.0; // Price in NGN
-  const [selectedPayment, setSelectedPayment] = useState("card");
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // You can use selectedPayment here to determine payment flow
-    e.target.submit();
+  // const [selectedPayment, setSelectedPayment] = useState("card");
+
+  const navigate = useNavigate();
+  const { courseId } = useParams();
+
+  const { data: courseData, isLoading } = useQuery({
+    queryKey: ["course-payment", courseId],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await authFetch.get(
+        `/api/v1/course/user-courses/${courseId}?brief=true`
+      );
+
+      return data;
+    }
+  });
+
+  const price = useMemo(
+    function () {
+      return new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN"
+      }).format(courseData?.price);
+    },
+    [courseData?.price]
+  );
+
+  const handleFlutterPayment = useFlutterwave({
+    public_key: FLW_PUBLIC_KEY,
+    tx_ref: `pptlink-${Date.now()}-${user?.id}`,
+    amount: courseData?.price,
+    currency: "NGN",
+    payment_options: "card,bank",
+    customer: {
+      email: user?.email,
+      name: user?.username
+    },
+    customizations: {
+      title: courseData?.name,
+      logo: "https://pptlinks.com/imgs/BLACK.png"
+    },
+    meta: {
+      course_id: courseId,
+      user_id: user?.id
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-primaryTwo">
+        <LoadingAssetBig2 />
+      </div>
+    );
+  }
+
+  const handleSubmit = () => {
+    handleFlutterPayment({
+      callback: () => {
+        closePaymentModal(); // this will close the modal programmatically
+
+        navigate(`/course/preview/${courseId}`, { replace: true });
+      }
+    });
   };
 
   return (
     <>
       <Helmet>
-        <title>{`Pay - PPTLinks `}</title>
+        <title>{`Pay - ${courseData?.name ?? ""} `}</title>
         <meta
           name="description"
           content="Make your powerpoint presentations payment for a course"
@@ -56,136 +114,21 @@ export default function Payment() {
       <div className="min-h-[50vh] py-10 _text-black bg-primaryTwo">
         <div className="container">
           <h1 className="text-3xl maxScreenMobile:text-2xl font-[400] uppercase mb-1">
-            Learn JavaScript in 1 Hour 😎
+            {courseData?.name}
           </h1>
           <p className="uppercase text-[#FFA500]">Paid Program</p>
           <p className="text-[0.9rem] pb-3 w-2/5 maxScreenMobile:w-4/5 maxSmallMobile:w-full maxSmallMobile:text-justify">
-            This is a brief course on JavaScript that will take you from a
-            beginner to a pro in just 1 hour. This course is designed to help
-            you understand the basics of JavaScript and how to use it to build
-            web applications.
+            {courseData?.description}
           </p>
-          <span className="text-[#FFA500] font-bold text-xl">
-            {`₦${coursePrice.toLocaleString()}`}
-          </span>
-          <h2 className="text-3xl font-bold mb-2 mt-6">Payment Options</h2>
-          <form
-            onSubmit={handleSubmit}
-            method="POST"
-            action="https://checkout.flutterwave.com/v3/hosted/pay"
-            className="block w-full pt-2"
-          >
-            <div className="w-full flex flex-wrap justify-start items-center gap-10 mb-40 maxSmallMobile:flex-wrap-none maxSmallMobile:flex-col maxSmallMobile:mb-10">
-              <label
-                htmlFor="option1"
-                className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full cursor-pointer"
-              >
-                <span className="block text-3xl">
-                  <MdCreditCard />
-                </span>
-                <span>Credit/Debit</span>
-                <span className="block w-fit aspect-square border-none rounded-full">
-                  <input
-                    type="radio"
-                    name="paymentOptions"
-                    id="option1"
-                    value="card"
-                    onChange={(e) => setSelectedPayment(e.target.value)}
-                    className="block w-5 aspect-square accent-[#FFA500] border-[#FFA500] rounded-full"
-                  />
-                </span>
-              </label>
-              <label
-                htmlFor="option2"
-                className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full cursor-pointer"
-              >
-                <span className="block text-3xl">
-                  <BsBank />
-                </span>
-                <span>Bank Transfer</span>
-                <span className="block w-fit aspect-square border-none rounded-full">
-                  <input
-                    type="radio"
-                    name="paymentOptions"
-                    id="option2"
-                    value="bank"
-                    onChange={(e) => setSelectedPayment(e.target.value)}
-                    className="block w-5 aspect-square accent-[#FFA500] border-[#FFA500] rounded-full"
-                  />
-                </span>
-              </label>
-              <label
-                htmlFor="option3"
-                className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full !cursor-not-allowed pointer-events-none relative before:absolute before:top-0 before:left-0 before:bottom-0 before:right-0 before:bg-black/60 before:rounded-md"
-              >
-                <span className="block text-3xl">
-                  <IoMdPhonePortrait />
-                </span>
-                <span>USSD</span>
-                <span className="block w-fit aspect-square border-none rounded-full">
-                  <input
-                    type="radio"
-                    name="paymentOptions"
-                    id="option3"
-                    value="ussd"
-                    onChange={(e) => setSelectedPayment(e.target.value)}
-                    className="block w-5 aspect-square accent-[#FFA500] border-[#FFA500] rounded-full"
-                  />
-                </span>
-              </label>
-              <label
-                htmlFor="option4"
-                className="flex justify-between items-center gap-2 min-w-fit w-[calc((100%/4)-40px)] border border-[#FFA500] rounded-md p-2 maxSmallMobile:w-full !cursor-not-allowed pointer-events-none relative before:absolute before:top-0 before:left-0 before:bottom-0 before:right-0 before:bg-black/60 before:rounded-md"
-              >
-                <span className="block text-3xl">
-                  <IoQrCode />
-                </span>
-                <span>QR Code</span>
-                <span className="block w-fit aspect-square border-none rounded-full">
-                  <input
-                    type="radio"
-                    name="paymentOptions"
-                    id="option4"
-                    value="qr"
-                    onChange={(e) => setSelectedPayment(e.target.value)}
-                    className="block w-5 aspect-square accent-[#FFA500] border-[#FFA500] rounded-full"
-                  />
-                </span>
-              </label>
-            </div>
-
-            <input
-              type="hidden"
-              name="public_key"
-              value={FLW_PUBLIC_KEY}
-            />
-            <input type="hidden" name="tx_ref" value="bitethtx-019203" />
-            <input type="hidden" name="amount" value={coursePrice} />
-            <input type="hidden" name="currency" value="NGN" />
-            <input
-              type="hidden"
-              name="redirect_url"
-              value="https://demoredirect.localhost.me/"
-            />
-            <input type="hidden" name="meta[courseId]" value="54" />
-            <input
-              type="hidden"
-              name="customer[name]"
-              value={`${user ? user.username : ""}`}
-            />
-            <input
-              type="hidden"
-              name="customer[email]"
-              value={`${user ? user.email : ""}`}
-            />
-
+          <span className="text-[#FFA500] font-bold text-xl">{price}</span>
+          <div className="block w-full pt-2">
             <button
-              type="submit"
               className="text-xl text-[#FFA500] block w-fit mx-auto border border-[#FFA500] px-10 py-2 rounded-md font-bold maxScreenMobile:w-full"
+              onClick={handleSubmit}
             >
               Proceed To payment
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </>
