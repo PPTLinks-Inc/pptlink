@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import purchased from "../../../public/purchased.svg";
+// import purchased from "../../../public/purchasVector.svg";
 
 export type CourseType = {
   id: string;
@@ -20,9 +20,32 @@ export default function ShowCourseCard({ course }: { course: CourseType }) {
       to={`/course/preview/${course.id}`}
     >
       <div className="absolute top-3 left-0 w-full h-full _bg-black/40 z-0 rounded-lg">
-        <img src={purchased} alt={purchased} className="block h-[1.5rem]" />
+        <div className="relative w-full">
+          {/* <img src={purchased} alt={purchased} className="block h-[1.5rem]" /> */}
+          <svg
+            width="176"
+            height="32"
+            viewBox="0 0 176 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M0 32H176L147.294 16.3137L176 0H0V32Z" fill={"gold"} />
+          </svg>
+          {/* <svg
+            width="176"
+            height="26"
+            viewBox="0 0 176 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M0 32H176L147.294 16.3137L176 0H0V32Z" fill={"gold"} />
+          </svg> */}
+          <span className="block w-[35%] absolute top-[50%] -translate-y-[50%] left-0 bg-transparent pl-2 text-sm">
+            {"Pendding"}
+          </span>
+        </div>
       </div>
-      <div className="z-10 pt-4">
+      <div className="z-10 pt-6">
         <p className="text-md font-light mb-1">{course.category}</p>
         <h4 className="text-2xl font-bold">{course.name}</h4>
       </div>
