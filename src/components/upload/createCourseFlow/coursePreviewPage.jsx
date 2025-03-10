@@ -164,7 +164,7 @@ export default function CoursePreviewPage() {
               )}
               <span className="text-[#FFA500] font-bold text-xl">{price}</span>
               <button
-                onClick={setOpen(true)}
+                onClick={() => setOpen(true)}
                 className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
               >
                 Course Messages
