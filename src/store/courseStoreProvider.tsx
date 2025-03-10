@@ -5,6 +5,7 @@ import { authFetch, standardFetch } from "@/lib/axios";
 import { useLoaderData, useParams } from "react-router-dom";
 import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
+import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
@@ -703,6 +704,15 @@ export default function CourseStoreProvider({
               `/api/v1/course//toggle-publish/${state.courseId}`
             )
           );
+
+          if (axios.isAxiosError(err)) {
+            toast({
+              title: "Error",
+              description: err.response?.data.message,
+              variant: "destructive"
+            });
+            return;
+          }
 
           if (err) {
             toast({
