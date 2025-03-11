@@ -53,16 +53,19 @@ export default function CoursePreviewPage() {
         onClose={() => setOpen(false)}
       >
         <div
-          className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-0 rounded-md bg-[red]"
+          className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-[0.5px] rounded-md bg-black text-white"
         >
-          <h4 className="container py-4">Course Messages</h4>
-          <div className="p-4 border-t-[1px] border-t-white">
-            <div className="">
-              <p>This allows you to send important updates, reminders, and announcements to all your students at once. Whether you need to share lesson schedules, homework assignments, or study tips, this is your space to keep students informed and engaged.</p>
-              <textarea name="courseBulkMessage" id="courseBulkMessage" className="resize-none"></textarea>
-              <div>
-                <button>Cancel</button>
-                <button>Send Message</button>
+          <h4 className="container py-6">Course Messages</h4>
+          <div className="pt-4 !border-t-[0.1px] border-t-white">
+            <div className="container">
+              <p className="text-md leading-8">This allows you to send important updates, reminders, and announcements to all your students at once. Whether you need to share lesson schedules, homework assignments, or study tips, this is your space to keep students informed and engaged.</p>
+              <textarea name="courseBulkMessage" id="courseBulkMessage" rows={4} className="block w-full mt-4 border-[0.5px] border-[white] rounded-md p-4 resize-none bg-black"></textarea>
+              <div className="flex items-center justify-between mt-4 pb-10">
+                <button onClick={() => setOpen(false)} className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Cancel</button>
+                <button onClick={() => {
+                  alert("Message sent successfully!")
+                  setOpen(false)
+                  }} className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Send Message</button>
               </div>
             </div>
           </div>
