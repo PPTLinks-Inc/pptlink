@@ -11,6 +11,7 @@ import { useState } from "react";
 import { MdAccessTime } from "react-icons/md";
 import { GiNetworkBars } from "react-icons/gi";
 import { FiEdit } from "react-icons/fi";
+import EnvelopeWithCheckmarkIcon from "/envelopeWithCheckmarkIcon.png";
 import Modal from "../../Models/model";
 
 export async function CoursePreviewLoader({ params }) {
@@ -27,7 +28,12 @@ export async function CoursePreviewLoader({ params }) {
 }
 
 export default function CoursePreviewPage() {
-  const [open, setOpen] = useState(false);
+  const [sendMessage, setSendMessage] = useState({
+    message: "",
+    openMessageModal: false,
+    isMessageSent: false,
+    error: false
+  });
   const { userQuery } = useUser();
   const data = useLoaderData();
   const [price] = useState(
@@ -46,26 +52,69 @@ export default function CoursePreviewPage() {
         ({ instructor }) => instructor.user.id === userQuery.data?.id
       ));
 
+  const handleBulkMessage = async () => {
+    if (sendMessage.message.length <= 15) {
+      setSendMessage({ ...sendMessage, error: true })
+      return
+    }
+    // const response = await authFetch.post(`/api/v1/course/${data.id}/bulk-message`, {
+    //   message: bulkMessage
+    // }, {
+    //   headers: {
+    //     Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    //   }
+    // })
+    // if (response.status === 200) {
+    setSendMessage({ ...sendMessage, message: "", isMessageSent: true, error: false })
+    // }
+  }
+
+  const handleCancelBtn = () => {
+    setSendMessage({ ...sendMessage, message: "", openMessageModal: false, isMessageSent: false, error: false })
+  }
+
+  // useEffect(function () {
+  //   console.log(sendMessage.message.length > 0 ? sendMessage.message : "No message")
+  // }, [sendMessage.message])
+
   return (
     <>
       <Modal
-        open={open}
-        onClose={() => setOpen(false)}
+        open={sendMessage.openMessageModal}
+        onClose={() => setSendMessage({ ...sendMessage, openMessageModal: false })}
+        title="Course Messages"
       >
         <div
-          className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-[0.5px] rounded-md bg-black text-white"
+          className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-md bg-black text-white"
         >
           <h4 className="container py-6">Course Messages</h4>
-          <div className="pt-4 !border-t-[0.1px] border-t-white">
+          <div className="pt-4 !border-t-[0.1px] border-t-[#FFFFF0]">
             <div className="container">
-              <p className="text-md leading-8">This allows you to send important updates, reminders, and announcements to all your students at once. Whether you need to share lesson schedules, homework assignments, or study tips, this is your space to keep students informed and engaged.</p>
-              <textarea name="courseBulkMessage" id="courseBulkMessage" rows={4} className="block w-full mt-4 border-[0.5px] border-[white] rounded-md p-4 resize-none bg-black"></textarea>
+              {sendMessage.openMessageModal && !sendMessage.isMessageSent ?
+                <>
+                  <p className="text-md leading-8">This allows you to send important updates, reminders, and announcements to all your students at once. Whether you need to share lesson schedules, homework assignments, or study tips, this is your space to keep students informed and engaged.</p>
+                  <textarea
+                    name="courseBulkMessage"
+                    id="courseBulkMessage"
+                    value={sendMessage.message}
+                    placeholder="Type your message here, minimum of 15 characters"
+                    onChange={(e) => setSendMessage({ ...sendMessage, message: e.target.value })}
+                    rows={4}
+                    className={`block w-full mt-4 border-[0.5px] ${sendMessage.error ? "border-[red]" : "border-[#FFFFF0]"} rounded-md p-4 resize-none bg-black`}
+                  />
+                </>
+                :
+                <>
+                  <h4 className="text-4xl font-bold text-center mt-4">Successful</h4>
+                  <div className="my-8 w-fit h-fit mx-auto">
+                    <img src={EnvelopeWithCheckmarkIcon} alt={EnvelopeWithCheckmarkIcon} className="block" />
+                  </div>
+                  <p className="text-md leading-8 text-center mb-4 text-sm">Your message has been sent to all students in this course.</p>
+                </>
+              }
               <div className="flex items-center justify-between mt-4 pb-10">
-                <button onClick={() => setOpen(false)} className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Cancel</button>
-                <button onClick={() => {
-                  alert("Message sent successfully!")
-                  setOpen(false)
-                  }} className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Send Message</button>
+                <button onClick={handleCancelBtn} className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Cancel</button>
+                <button onClick={handleBulkMessage} className={`flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0] ${sendMessage.openMessageModal && sendMessage.isMessageSent && "hidden"}`}>Send Message</button>
               </div>
             </div>
           </div>
@@ -143,31 +192,33 @@ export default function CoursePreviewPage() {
             </span>
           </div>
           <div className="w-full maxSmallMobile:w-full">
-            <div className="flex justify-between items-center gap-3 py-4">
-              {isCreator ? (
-                <Link
-                  to={`/course/${data.id}`}
-                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-                >
-                  Edit Course
-                </Link>
-              ) : (
-                data.published && (
+            <div className="flex justify-between items-center gap-3 py-4 maxSmallMobile:flex-col">
+              <div className="w-fit flex items-center gap-3 maxSmallMobile:ml-0 maxSmallMobile:mr-auto">
+                {isCreator ? (
                   <Link
-                    to={
-                      isUserLoggedIn
-                        ? `/pay/${data.id}`
-                        : `/signin?redirect=/pay/${data.id}`
-                    }
+                    to={`/course/${data.id}`}
                     className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                   >
-                    {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
+                    Edit Course
                   </Link>
-                )
-              )}
-              <span className="text-[#FFA500] font-bold text-xl">{price}</span>
+                ) : (
+                  data.published && (
+                    <Link
+                      to={
+                        isUserLoggedIn
+                          ? `/pay/${data.id}`
+                          : `/signin?redirect=/pay/${data.id}`
+                      }
+                      className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                    >
+                      {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
+                    </Link>
+                  )
+                )}
+                <span className="text-[#FFA500] font-bold text-xl">{price}</span>
+              </div>
               <button
-                onClick={() => setOpen(true)}
+                onClick={() => setSendMessage({ ...sendMessage, openMessageModal: true })}
                 className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
               >
                 Course Messages
