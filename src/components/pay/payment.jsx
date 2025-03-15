@@ -122,12 +122,12 @@ export default function Payment() {
           </p>
           <span className="text-[#FFA500] font-bold text-xl">{price}</span>
           <div className="block w-full pt-2">
-            <button
+            {courseData.published && <button
               className="text-xl text-[#FFA500] block w-fit mx-auto border border-[#FFA500] px-10 py-2 rounded-md font-bold maxScreenMobile:w-full"
               onClick={handleSubmit}
             >
               Proceed To payment
-            </button>
+            </button>}
           </div>
         </div>
       </div>

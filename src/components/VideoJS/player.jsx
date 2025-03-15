@@ -4,6 +4,8 @@ import videojs from "video.js";
 import "videojs-youtube";
 import "videojs-landscape-fullscreen";
 import "video.js/dist/video-js.css";
+import "videojs-contrib-quality-levels";
+import qalitySelectorHls from "videojs-quality-selector-hls";
 
 export const VideoJS = (props) => {
   const videoRef = React.useRef(null);
@@ -11,44 +13,49 @@ export const VideoJS = (props) => {
   const { options, onReady } = props;
 
   React.useEffect(() => {
-    // Make sure Video.js player is only initialized once
     if (!playerRef.current) {
-      // The Video.js player needs to be _inside_ the component el for React 18 Strict Mode.
       const videoElement = document.createElement("video-js");
-
       videoElement.classList.add("vjs-big-play-centered");
       videoRef.current.appendChild(videoElement);
 
-      const player = (playerRef.current = videojs(videoElement, options, () => {
-        videojs.log("player is ready");
-        onReady && onReady(player);
-      }));
+      // Register plugins before creating player instance
+      videojs.registerPlugin("qalitySelectorHls", qalitySelectorHls);
 
-      // player.log.level('debug')
+      const player = (playerRef.current = videojs(
+        videoElement,
+        {
+          ...options,
+          html5: {
+            hls: {
+              enableLowInitialPlaylist: true,
+              smoothQualityChange: true,
+              overrideNative: true
+            }
+          }
+        },
+        () => {
+          videojs.log("player is ready");
 
-      player.landscapeFullscreen({
-        fullscreen: {
-          enterOnRotate: true,
-          exitOnRotate: true,
-          alwaysInLandscapeMode: true,
-          iOS: true
+          try {
+            // Initialize plugins in correct order
+            player.qalitySelectorHls();
+            player.landscapeFullscreen({
+              fullscreen: {
+                enterOnRotate: true,
+                exitOnRotate: true,
+                alwaysInLandscapeMode: true,
+                iOS: true
+              }
+            });
+          } catch (error) {
+            console.error("Plugin initialization error:", error);
+          }
+
+          onReady && onReady(player);
         }
-      });
-
-      // You could update an existing player in the `else` block here
-      // on prop change, for example:
+      ));
     } else {
       const player = playerRef.current;
-
-      player.landscapeFullscreen({
-        fullscreen: {
-          enterOnRotate: true,
-          exitOnRotate: true,
-          alwaysInLandscapeMode: true,
-          iOS: true
-        }
-      });
-
       player.src(options.sources);
     }
   }, [options, videoRef]);
