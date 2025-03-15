@@ -27,6 +27,9 @@ export default function CourseVideoPlayer() {
     controls: true,
     responsive: true,
     fluid: true,
+    preload: "auto",
+    width: "640",
+    height: "360",
     sources: [
       {
         src: data.videoMedia.master_playlist
@@ -50,10 +53,7 @@ export default function CourseVideoPlayer() {
   return (
     <div className="w-full h-screen flex flex-col">
       <header className="fixed md:static w-full p-4 bg-gray-800 text-white flex items-center gap-4">
-        <button 
-          onClick={() => navigate(-1)} 
-          className="hover:text-gray-300"
-        >
+        <button onClick={() => navigate(-1)} className="hover:text-gray-300">
           <FaArrowLeft size={20} />
         </button>
         <p className="md:w-full w-10/12 truncate">{data.name}</p>
