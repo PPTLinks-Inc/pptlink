@@ -236,6 +236,10 @@ export default function CourseStoreProvider({
               courseData.append("thumbnail", thumbnail);
             }
 
+            // Add timezone information
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            courseData.append("timezone", timezone);
+
             await authFetch.put(
               `/api/v1/course/update-course-settings/${get().courseId}`,
               courseData
