@@ -202,7 +202,7 @@ export default function CoursePreviewPage() {
                     Edit Course
                   </Link>
                 ) : (
-                  data.published && (
+                  data.published && !data.access && (
                     <Link
                       to={
                         isUserLoggedIn
@@ -215,14 +215,14 @@ export default function CoursePreviewPage() {
                     </Link>
                   )
                 )}
-                <span className="text-[#FFA500] font-bold text-xl">{price}</span>
+                {!isCreator && data.access ? <span className="text-[#FFA500] font-bold text-xl">PAID</span> : <span className="text-[#FFA500] font-bold text-xl">{price}</span>}
               </div>
-              <button
+              {isCreator && <button
                 onClick={() => setSendMessage({ ...sendMessage, openMessageModal: true })}
                 className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
               >
                 Course Messages
-              </button>
+              </button>}
             </div>
           </div>
         </div>
