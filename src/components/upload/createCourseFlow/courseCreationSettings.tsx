@@ -229,8 +229,8 @@ export default function CourseCreationSettings() {
                 type="text"
                 inputMode="numeric"
                 pattern="\d*"
-                min="0"
-                placeholder="₦0.00"
+                min="4000"
+                placeholder="₦4000.00"
                 className="pl-8 border-[0.5px] border-primaryTwo"
                 value={price}
                 onChange={(e) => {
