@@ -19,7 +19,7 @@ import { FaRegSave } from "react-icons/fa";
 import { MdHelpOutline } from "react-icons/md";
 import { AiOutlineProfile } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
-import React, { createContext } from "react";
+import React, { createContext, useEffect } from "react";
 import { Link, useRouteLoaderData, useNavigate } from "react-router-dom";
 import { CourseData } from "@/store/courseStore";
 import { useCourseStore } from "@/store/courseStoreProvider";
@@ -30,6 +30,7 @@ import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import axios from "axios";
+import { AlertCircle } from "lucide-react";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext(undefined);
@@ -109,13 +110,41 @@ export default function CourseSideBarContextProvider({
       togglePublish.mutate();
       // TODO: Implement publish logic
     } else {
+      if (nextIncompleteTab === isActive) {
+        toast.toast({
+          title: "Error",
+          description: "Please complete the current tab before proceeding",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       if (nextIncompleteTab === "course") {
         navigate(`/course/${data.id}`);
         return;
       }
+
       navigate(`/course/${nextIncompleteTab}/${data.id}`);
     }
   };
+
+  const getMissingRequirements = useCourseStore((state) =>
+    state.getMissingRequirements
+  );
+  const setMissingRequirements = useCourseStore((state) => state.setMissingRequirements);
+  // Use a separate effect to handle initial requirements check
+  useEffect(() => {
+    const requirements = getMissingRequirements(isActive);
+    if (requirements.length > 0) {
+      // Only update if we actually have missing requirements
+      setMissingRequirements(isActive, requirements);
+    }
+  }, [isActive]);
+
+  // Get missing requirements from store only when needed
+  const missingRequirements = useCourseStore(state => 
+    state.missingRequirements[isActive] || []
+  );
 
   return (
     <CourseSideBarContext.Provider value={undefined}>
@@ -191,6 +220,27 @@ export default function CourseSideBarContextProvider({
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
+          {missingRequirements.length > 0 && (
+            <div className="bg-yellow-50 p-4 border-b border-yellow-200">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <AlertCircle className="h-5 w-5 text-yellow-600" />
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-yellow-800">
+                    Missing requirements for {isActive}:
+                  </h3>
+                  <div className="mt-2 text-sm text-yellow-700">
+                    <ul className="list-disc list-inside">
+                      {missingRequirements.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <header className="flex h-16 shrink-0 items-center gap-2 px-4 bg-slate-200 border-b-[1px] border-b-white">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
@@ -209,7 +259,7 @@ export default function CourseSideBarContextProvider({
                 ) : (
                   <>
                     <FaRegSave />
-                    <span>Save</span>
+                    <span>{`Save ${isActive} data`}</span>
                   </>
                 )}
               </Button>
@@ -235,7 +285,7 @@ export default function CourseSideBarContextProvider({
                         ? "Unpublish"
                         : isPublishable
                           ? "Publish"
-                          : "Next"}
+                          : "Next section"}
                     </span>
                   )}
                 </Button>
