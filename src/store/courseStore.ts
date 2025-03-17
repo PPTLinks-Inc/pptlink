@@ -72,6 +72,12 @@ export interface AccountVerificationState {
   verificationError: string;
 }
 
+export interface MissingRequirements {
+  settings: string[];
+  profile: string[];
+  course: string[];
+}
+
 export interface CourseStore {
     courseId: string;
 
@@ -156,4 +162,11 @@ export interface CourseStore {
     canPublish: boolean;
 
     togglePublish: () => Promise<void>;
+
+    getMissingRequirements: (tab: ActiveTab) => string[];
+
+    missingRequirements: {
+        [key in ActiveTab]?: string[];
+    };
+    setMissingRequirements: (tab: ActiveTab, requirements: string[]) => void;
 }

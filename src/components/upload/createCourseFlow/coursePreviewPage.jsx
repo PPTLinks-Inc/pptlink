@@ -26,7 +26,6 @@ export default function CoursePreviewPage() {
     error: false
   });
   const { userQuery } = useUser();
-  // const data = useLoaderData();
   const params = useParams();
 
   const { data, isLoading, error, refetch } = useQuery({
