@@ -11,11 +11,13 @@ import { motion } from "framer-motion";
 import { authFetch, standardFetch } from "../../lib/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CreatePath() {
   const navigate = useNavigate();
   const [isError, setIsError] = useState("");
   const [stage, setStage] = useState(1);
+  const toast = useToast();
   const [create, setCreate] = useState<{
     type: string;
     category: string;
@@ -60,6 +62,22 @@ export default function CreatePath() {
     },
     onSuccess: function ({ data }) {
       navigate(`/course/${data.id}`);
+    },
+    onError: function (error) {
+      if (error instanceof AxiosError) {
+        toast.toast({
+          title: "Error",
+          description: error.response?.data?.message || error.message || "An error occurred",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast.toast({
+        title: "Error",
+        description: "Something went wrong",
+        variant: "destructive"
+      });
     }
   });
   const courseCreating = courseCreateMutation.isPending;
@@ -432,34 +450,6 @@ export default function CreatePath() {
                   onChange={handleFileChange}
                 />
               </motion.div>
-
-              {/* <motion.div
-                initial={{ y: 10, opacity: 0 }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                  transition: {
-                    duration: 0.5,
-                    type: "spring", // Changed from "tween"
-                    stiffness: 200,
-                    damping: 10
-                  }
-                }}
-                viewport={{ once: true }}
-                className={`p-8 maxScreenMobile:p-4 flex flex-col justify-center items-center border-[1px] ${create.dontHave ? "border-[#FFA500]" : "border-white"} rounded-md`}
-                onClick={() =>
-                  setCreate({ ...create, file: null, dontHave: true })
-                }
-              >
-                <div>
-                  <h6 className="text-md font-semibold text-center mb-2">
-                    I don&apos;t have one
-                  </h6>
-                  <p className="text-sm text-center">
-                    Skip these for now, I&apos;ll do this later
-                  </p>
-                </div>
-              </motion.div> */}
             </div>
           </>
         )}
