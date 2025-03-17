@@ -14,7 +14,6 @@ import * as Sentry from "@sentry/react";
 import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
-import { CoursePreviewLoader } from "@/components/upload/createCourseFlow/coursePreviewPage";
 import { VideoPlayerLoader } from "@/components/upload/createCourseFlow/CourseVideoPlayer";
 
 // all lazy import
@@ -99,8 +98,17 @@ const router = sentryCreateBrowserRouter(
         },
         {
           path: "course/preview/:id",
-          element: <CoursePreviewPage />,
-          loader: CoursePreviewLoader
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <CoursePreviewPage />
+            </Suspense>
+          )
         },
         {
           path: "upload",
