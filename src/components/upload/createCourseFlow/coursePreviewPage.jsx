@@ -61,7 +61,7 @@ export default function CoursePreviewPage() {
     return (
       <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
         {axios.isAxiosError(error) ? (
-          <p>{error.response?.data?.message || error.message || 'An error occurred'}</p>
+          <p>{error.response?.data?.message || error.message || "An error occurred"}</p>
         ) : (
           <p>Something went wrong</p>
         )}
