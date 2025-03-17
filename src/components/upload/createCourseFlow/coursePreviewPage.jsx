@@ -30,7 +30,7 @@ export default function CoursePreviewPage() {
   const params = useParams();
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["course", params.id],
+    queryKey: ["course", "preview", params.id],
     queryFn: async function () {
       const { data } = await authFetch.get(
         `/api/v1/course/user-courses/${params.id}?brief=false`
