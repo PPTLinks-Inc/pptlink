@@ -93,8 +93,8 @@ export default function CourseSideBarContextProvider({
 
   const isCreator = data.creatorId === userQuery.data?.id;
 
-  const nextIncompleteTab = useCourseStore((state) =>
-    state.getNextIncompleteTab()
+  const getNextIncompleteTab = useCourseStore((state) =>
+    state.getNextIncompleteTab
   );
 
   const handleNextOrPublish = () => {
@@ -112,6 +112,7 @@ export default function CourseSideBarContextProvider({
       togglePublish.mutate();
       // TODO: Implement publish logic
     } else {
+      const nextIncompleteTab = getNextIncompleteTab();
       if (nextIncompleteTab === isActive) {
         toast.toast({
           title: "Error",
