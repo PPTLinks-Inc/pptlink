@@ -2,11 +2,11 @@ import { createContext, useContext, useRef } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
 import { ContentItem, CourseData, CourseStore } from "./courseStore";
 import { authFetch, standardFetch } from "@/lib/axios";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
-import { ActiveTab } from "@/contexts/courseSideBarContext";
+import useCourseContent from "@/hooks/useCourseContent";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
@@ -57,7 +57,8 @@ export default function CourseStoreProvider({
     throw new Error("Course ID is required");
   }
 
-  const data = useLoaderData() as CourseData;
+  // const data = useLoaderData() as CourseData;
+  const data = useCourseContent(courseId) as CourseData;
 
   // Only create the store once and reuse it
   if (!storeRef.current) {
@@ -307,7 +308,6 @@ export default function CourseStoreProvider({
         // After successful save, check if course can be published
         const isValid = get().validateCourse();
         set({ canPublish: isValid });
-        isValid && set({ missingRequirements: {} });
       },
       uploadQueue: [],
       canUpload: () => {
@@ -737,79 +737,6 @@ export default function CourseStoreProvider({
           title: "Success",
           description: res.data.message
         });
-      },
-      missingRequirements: {},
-
-      setMissingRequirements: (tab: ActiveTab, requirements: string[]) => {
-        set((state) => ({
-          missingRequirements: {
-            ...state.missingRequirements,
-            [tab]: requirements
-          }
-        }));
-      },
-
-      getMissingRequirements: (tab: ActiveTab) => {
-        const state = get();
-        const missing: string[] = [];
-
-        if (tab === "settings") {
-          const dateFrom = new Date(state.enrollmentDateFrom);
-          dateFrom.setHours(0, 0, 0, 0);
-          const dateTo = new Date(state.enrollmentDateTo);
-          dateTo.setHours(0, 0, 0, 0);
-          const startDate = new Date(state.startDate);
-          startDate.setHours(0, 0, 0, 0);
-
-          const dateNow = new Date();
-          dateNow.setHours(0, 0, 0, 0);
-
-          const isValidDate =
-            dateFrom <= dateTo && dateTo <= startDate && dateNow <= dateFrom;
-          if (!state.name) missing.push("Course title");
-          if (!state.description) missing.push("Course description");
-          if (!state.categoryId) missing.push("Category");
-          if (!state.price) missing.push("Price");
-          if (!state.enrollmentDateFrom || !state.enrollmentDateTo)
-            missing.push("Enrollment dates");
-          if (!state.startDate) missing.push("Start date");
-          if (!isValidDate) missing.push("Invalid date range");
-          if (!state.duration) missing.push("Course duration");
-          if (!state.courseLevel) missing.push("Course level");
-          if (!state.maxStudents) missing.push("Maximum students");
-          if (!state.thumbnail) missing.push("Course thumbnail");
-        }
-
-        if (tab === "profile") {
-          if (!state.accountDetails) missing.push("Payment details");
-          if (!state.instructors.length)
-            missing.push("At least one instructor");
-          state.instructors.forEach((instructor, index) => {
-            if (!instructor.instructor.role)
-              missing.push(`Instructor ${index + 1} role`);
-            if (!instructor.instructor.experience)
-              missing.push(`Instructor ${index + 1} experience`);
-            if (!instructor.instructor.bio)
-              missing.push(`Instructor ${index + 1} bio`);
-          });
-        }
-
-        if (tab === "course") {
-          if (!state.sections.length) missing.push("At least one section");
-          state.sections.forEach((section, index) => {
-            if (!section.contents.length)
-              missing.push(`Content in section ${index + 1}`);
-            section.contents.forEach((content, contentIndex) => {
-              if (content.status !== "done")
-                missing.push(
-                  `Upload for content ${contentIndex + 1} in section ${index + 1}`
-                );
-            });
-          });
-        }
-
-        get().setMissingRequirements(tab, missing);
-        return missing;
       }
     }));
   }

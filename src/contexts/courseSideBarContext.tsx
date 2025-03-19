@@ -19,23 +19,24 @@ import { FaRegSave } from "react-icons/fa";
 import { MdHelpOutline } from "react-icons/md";
 import { AiOutlineProfile } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
-import React, { createContext, useEffect } from "react";
-import { Link, useRouteLoaderData, useNavigate } from "react-router-dom";
+import React, { createContext } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { CourseData } from "@/store/courseStore";
 import { useCourseStore } from "@/store/courseStoreProvider";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingAssetSmall } from "@/assets/assets";
-import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import axios from "axios";
-import { AlertCircle } from "lucide-react";
+import useCourseContent from "@/hooks/useCourseContent";
+import { ActiveTab } from "@/types/course";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const CourseSideBarContext = createContext(undefined);
+interface CourseSideBarContextType {
+  isActive: ActiveTab;
+}
 
-export type ActiveTab = "course" | "settings" | "profile" | "feedback" | "help";
+export const CourseSideBarContext = createContext<CourseSideBarContextType>({ isActive: "course" });
 
 export default function CourseSideBarContextProvider({
   children,
@@ -44,7 +45,9 @@ export default function CourseSideBarContextProvider({
   children: React.ReactNode;
   isActive: ActiveTab;
 }) {
-  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  const params = useParams();
+  // const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  const data = useCourseContent(params.courseId as string) as CourseData;
   const saveCourseData = useCourseStore((state) => state.saveCourseData);
   const toast = useToast();
 
@@ -101,7 +104,6 @@ export default function CourseSideBarContextProvider({
         description: "Your course is being unpublished..."
       });
       togglePublish.mutate();
-      // TODO: Implement unpublish logic
     } else if (isPublishable) {
       toast.toast({
         title: "Publishing course",
@@ -128,26 +130,8 @@ export default function CourseSideBarContextProvider({
     }
   };
 
-  const getMissingRequirements = useCourseStore((state) =>
-    state.getMissingRequirements
-  );
-  const setMissingRequirements = useCourseStore((state) => state.setMissingRequirements);
-  // Use a separate effect to handle initial requirements check
-  useEffect(() => {
-    const requirements = getMissingRequirements(isActive);
-    if (requirements.length > 0) {
-      // Only update if we actually have missing requirements
-      setMissingRequirements(isActive, requirements);
-    }
-  }, [isActive]);
-
-  // Get missing requirements from store only when needed
-  const missingRequirements = useCourseStore(state => 
-    state.missingRequirements[isActive] || []
-  );
-
   return (
-    <CourseSideBarContext.Provider value={undefined}>
+    <CourseSideBarContext.Provider value={{ isActive }}>
       <SidebarProvider defaultOpen={false}>
         <Sidebar collapsible="icon">
           <SidebarHeader>
@@ -220,27 +204,6 @@ export default function CourseSideBarContextProvider({
           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
-          {missingRequirements.length > 0 && (
-            <div className="bg-yellow-50 p-4 border-b border-yellow-200">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <AlertCircle className="h-5 w-5 text-yellow-600" />
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-yellow-800">
-                    Missing requirements for {isActive}:
-                  </h3>
-                  <div className="mt-2 text-sm text-yellow-700">
-                    <ul className="list-disc list-inside">
-                      {missingRequirements.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           <header className="flex h-16 shrink-0 items-center gap-2 px-4 bg-slate-200 border-b-[1px] border-b-white">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
