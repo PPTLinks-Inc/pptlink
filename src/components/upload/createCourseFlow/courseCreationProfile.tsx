@@ -28,9 +28,6 @@ import { useQuery } from "@tanstack/react-query";
 import { authFetch } from "@/lib/axios";
 import { useDebounce } from "@/hooks/useDebounce";
 import { LoadingAssetSmall } from "@/assets/assets";
-import { CourseData } from "@/store/courseStore";
-import { useRouteLoaderData } from "react-router-dom";
-import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
 
 interface InstructorSearchResult {
@@ -40,7 +37,7 @@ interface InstructorSearchResult {
 }
 
 export default function CourseCreationProfile() {
-  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  // const data = useRouteLoaderData(ROUTER_ID) as CourseData;
   const { userQuery } = useUser();
   const courseCreatorId = useCourseStore((state) => state.creatorId); 
   const instructors = useCourseStore((state) => state.instructors);
@@ -82,7 +79,7 @@ export default function CourseCreationProfile() {
     reader.readAsDataURL(file);
   };
 
-  const isCreator = data.creatorId === userQuery.data?.id;
+  const isCreator = courseCreatorId === userQuery.data?.id;
 
   useEffect(() => {
     const { accountNumber, bankCode } = accountVerification;

@@ -20,17 +20,17 @@ import { MdHelpOutline } from "react-icons/md";
 import { AiOutlineProfile } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
 import React, { createContext, useEffect } from "react";
-import { Link, useRouteLoaderData, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { CourseData } from "@/store/courseStore";
 import { useCourseStore } from "@/store/courseStoreProvider";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingAssetSmall } from "@/assets/assets";
-import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import { AlertCircle } from "lucide-react";
+import useCourseContent from "@/hooks/useCourseContent";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseSideBarContext = createContext(undefined);
@@ -44,7 +44,9 @@ export default function CourseSideBarContextProvider({
   children: React.ReactNode;
   isActive: ActiveTab;
 }) {
-  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  const params = useParams();
+  // const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  const data = useCourseContent(params.courseId as string) as CourseData;
   const saveCourseData = useCourseStore((state) => state.saveCourseData);
   const toast = useToast();
 

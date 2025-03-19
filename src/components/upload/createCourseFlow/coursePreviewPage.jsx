@@ -13,8 +13,7 @@ import { GiNetworkBars } from "react-icons/gi";
 import { FiEdit } from "react-icons/fi";
 import EnvelopeWithCheckmarkIcon from "/envelopeWithCheckmarkIcon.png";
 import Modal from "../../Models/model";
-import { useQuery } from "@tanstack/react-query";
-import { LoadingAssetBig2 } from "../../../assets/assets";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "../../ui/button";
 
@@ -28,7 +27,7 @@ export default function CoursePreviewPage() {
   const { userQuery } = useUser();
   const params = useParams();
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, error, refetch } = useSuspenseQuery({
     queryKey: ["course", "preview", params.id],
     queryFn: async function () {
       const { data } = await authFetch.get(
@@ -49,7 +48,7 @@ export default function CoursePreviewPage() {
     [data?.price]
   );
 
-  if (isLoading) {
+  /* if (isLoading) {
     return (
         <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
           <LoadingAssetBig2 />
@@ -57,7 +56,7 @@ export default function CoursePreviewPage() {
           <p>Loading Course data...</p>
         </div>
     );
-  } else if (error) {
+  } else */ if (error) {
     return (
       <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
         {axios.isAxiosError(error) ? (
@@ -87,21 +86,13 @@ export default function CoursePreviewPage() {
       setSendMessage({ ...sendMessage, error: true });
       return;
     }
-    // const response = await authFetch.post(`/api/v1/course/${data.id}/bulk-message`, {
-    //   message: bulkMessage
-    // }, {
-    //   headers: {
-    //     Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-    //   }
-    // })
-    // if (response.status === 200) {
+
     setSendMessage({
       ...sendMessage,
       message: "",
       isMessageSent: true,
       error: false
     });
-    // }
   };
 
   const handleCancelBtn = () => {
@@ -113,10 +104,6 @@ export default function CoursePreviewPage() {
       error: false
     });
   };
-
-  // useEffect(function () {
-  //   console.log(sendMessage.message.length > 0 ? sendMessage.message : "No message")
-  // }, [sendMessage.message])
 
   return (
     <>

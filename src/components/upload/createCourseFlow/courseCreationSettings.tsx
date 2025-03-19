@@ -24,13 +24,10 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { CourseData } from "@/store/courseStore";
-import { ROUTER_ID } from "@/constants/routes";
-import { useRouteLoaderData } from "react-router-dom";
 import useUser from "@/hooks/useUser";
 
 export default function CourseCreationSettings() {
-  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  // const data = useRouteLoaderData(ROUTER_ID) as CourseData;
   const { userQuery } = useUser();
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
@@ -43,6 +40,7 @@ export default function CourseCreationSettings() {
     }
   });
 
+  const creatorId = useCourseStore((state) => state.creatorId);
   const enrollmentDateFrom = useCourseStore((state) => state.enrollmentDateFrom);
   const enrollmentDateTo = useCourseStore((state) => state.enrollmentDateTo);
 
@@ -133,7 +131,7 @@ export default function CourseCreationSettings() {
   );
 
 
-  if (data.creatorId !== userQuery.data?.id) {
+  if (creatorId !== userQuery.data?.id) {
     return (
       <div className="bg-slate-200 w-full h-full">
         <div className="text-primaryTwo container py-4">

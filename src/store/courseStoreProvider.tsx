@@ -2,11 +2,12 @@ import { createContext, useContext, useRef } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
 import { ContentItem, CourseData, CourseStore } from "./courseStore";
 import { authFetch, standardFetch } from "@/lib/axios";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import { ActiveTab } from "@/contexts/courseSideBarContext";
+import useCourseContent from "@/hooks/useCourseContent";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
@@ -57,7 +58,8 @@ export default function CourseStoreProvider({
     throw new Error("Course ID is required");
   }
 
-  const data = useLoaderData() as CourseData;
+  // const data = useLoaderData() as CourseData;
+  const data = useCourseContent(courseId) as CourseData;
 
   // Only create the store once and reuse it
   if (!storeRef.current) {
