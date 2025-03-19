@@ -1,24 +1,37 @@
 import { authFetch } from "@/lib/axios";
 import { useRef } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import VideoJS from "@/components/VideoJS/player";
 import { FaArrowLeft } from "react-icons/fa6";
-
-export async function VideoPlayerLoader({ params }) {
-  const { data } = await authFetch.get(
-    `/api/v1/course/media/${params.courseId}/${params.sectionId}/${params.contentId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-      }
-    }
-  );
-
-  return data;
-}
+import { useSuspenseQuery } from "@tanstack/react-query";
+import useUser from "../../../hooks/useUser";
 
 export default function CourseVideoPlayer() {
-  const data = useLoaderData();
+  const params = useParams();
+  const { userQuery } = useUser();
+  const user = userQuery.data;
+  const { data } = useSuspenseQuery({
+    queryKey: [
+      "video-media",
+      user?.id,
+      params.courseId,
+      params.sectionId,
+      params.contentId
+    ],
+    queryFn: async function () {
+      const { data } = await authFetch.get(
+        `/api/v1/course/media/${params.courseId}/${params.sectionId}/${params.contentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        }
+      );
+
+      return data;
+    },
+    enabled: !!user
+  });
   const playerRef = useRef(null);
   const navigate = useNavigate();
 

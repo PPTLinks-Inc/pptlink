@@ -1,5 +1,6 @@
 import { authFetch, setAuthFetchToken } from "@/lib/axios";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import safeAwait from "@/util/safeAwait";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
 interface User {
     id: string;
@@ -12,7 +13,7 @@ interface User {
 export default function useUser() {
     const queryClient = useQueryClient();
 
-    const userQuery = useQuery({
+    const userQuery = useSuspenseQuery({
         queryKey: ["user"],
         refetchOnReconnect: false,
         refetchOnWindowFocus: false,
@@ -56,8 +57,14 @@ export default function useUser() {
                 localStorage.removeItem("redirect");
                 location.replace(redirect);
             } else {
-                const { data } = await authFetch.get("/api/v1/auth/user");
-                return data.user as User;
+                const [err, res] = await safeAwait(authFetch.get("/api/v1/auth/user"));
+
+                if (err) {
+                    return null;
+                }
+
+
+                return res.data.user as User;
             }
         }
     });
@@ -68,7 +75,9 @@ export default function useUser() {
 
     function logOut() {
         localStorage.removeItem("accessToken");
+        setAuthFetchToken(undefined);
         queryClient.clear();
+        window.location.href = '/signin';
     }
 
     return { userQuery, setUser, logOut };

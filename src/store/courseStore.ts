@@ -1,4 +1,4 @@
-import { ActiveTab } from "@/contexts/courseSideBarContext";
+import { ActiveTab } from "@/types/course";
 import { DateRange } from "react-day-picker";
 
 export interface ContentItem {
@@ -162,11 +162,4 @@ export interface CourseStore {
     canPublish: boolean;
 
     togglePublish: () => Promise<void>;
-
-    getMissingRequirements: (tab: ActiveTab) => string[];
-
-    missingRequirements: {
-        [key in ActiveTab]?: string[];
-    };
-    setMissingRequirements: (tab: ActiveTab, requirements: string[]) => void;
 }
