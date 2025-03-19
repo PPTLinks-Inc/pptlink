@@ -739,6 +739,9 @@ export default function CourseStoreProvider({
         });
       }
     }));
+
+    // Run initial validation when store is created
+    storeRef.current.setState({ canPublish: storeRef.current.getState().validateCourse() });
   }
 
   return (
