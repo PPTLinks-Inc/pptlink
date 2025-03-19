@@ -1,0 +1,1 @@
+export type ActiveTab = "course" | "settings" | "profile" | "feedback" | "help"; 
