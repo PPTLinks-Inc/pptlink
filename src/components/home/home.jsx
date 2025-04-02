@@ -243,13 +243,13 @@ export default function Home() {
                 <Link
                   onClick={handleCreateClick}
                   to="#"
-                  className="block w-fit px-6 py-1 bg-[#FFFFF0] text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
+                  className="block w-fit px-6 py-1 bg-[#FFFFF0] font-normal text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
                 >
                   Create Now
                 </Link>
                 <Link
                   to="/signin"
-                  className={`block w-fit px-6 py-1 text-[#FFFFF0] responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
+                  className={`block w-fit px-6 py-1 text-[#FFFFF0] font-normal responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
                 >
                   Sign In
                 </Link>
