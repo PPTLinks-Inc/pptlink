@@ -382,7 +382,7 @@ export default function SignPage() {
                     id="fullname"
                     name="fullname"
                     placeholder="Full Name"
-                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${fullNameErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${values.fullName !== "" && "border-[#FFA500]"} ${fullNameErr && "border-[red] outline-offset-2"}`}
                   />
                   {fullNameErr && (
                     <p className="text-[red] pl-2 absolute top-[100]">
@@ -405,7 +405,7 @@ export default function SignPage() {
                     id="email"
                     name="email"
                     placeholder="eg: example@gmail.com"
-                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${emailErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                    className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${values.email !== "" && "border-[#FFA500]"} ${emailErr && "border-[red] outline-offset-2"}`}
                   />
                   {emailErr && (
                     <p className="text-[red] pl-2 absolute top-[100]">
@@ -445,7 +445,7 @@ export default function SignPage() {
                       id="password"
                       name="password"
                       placeholder="**********"
-                      className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${passwordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                      className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${values.password !== "" && "border-[#FFA500]"} ${passwordErr && "border-[red] outline-offset-2"}`}
                     />
                   </div>
                   {passwordErr && (
@@ -487,7 +487,7 @@ export default function SignPage() {
                       id="confirmpassword"
                       name="confirmpassword"
                       placeholder="**********"
-                      className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${confirmPasswordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                      className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${values.confirmPassword !== "" && "border-[#FFA500]"} ${confirmPasswordErr && "border-[red] outline-offset-2"}`}
                     />
                   </div>
                   {confirmPasswordErr && (

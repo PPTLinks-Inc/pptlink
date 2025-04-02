@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-// import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import logo_white from "/imgs/WHITE.png";
@@ -14,6 +14,7 @@ import useUser from "../../hooks/useUser";
 // import { Input } from "@/components/ui/input"
 
 export default function Header({ isBackMenu, handleDropdown }) {
+  const [search, setSearch] = useState("");
   const location = useLocation();
   const getlocation = () => location.pathname === "/document";
   const getDashboardLocation = () => location.pathname === "/dashboard";
@@ -88,8 +89,10 @@ export default function Header({ isBackMenu, handleDropdown }) {
             <input
               type="text"
               id="searchAnything"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search for anything..."
-              className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-primaryTwo" : "border-primaryTwo text-primaryTwo bg-[#FFFFF0]"}`}
+              className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-primaryTwo" : "border-primaryTwo text-primaryTwo bg-[#FFFFF0]"} ${search !== "" && "!border-[#FFA500]"}`}
             />
           </label>
 

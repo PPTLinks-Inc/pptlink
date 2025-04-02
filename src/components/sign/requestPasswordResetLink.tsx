@@ -66,7 +66,7 @@ export default function RequestPasswordResetLink() {
                   id="email"
                   name="email"
                   placeholder="Enter your email address"
-                  className="block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border-none"
+                  className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${email !== "" ? "border !border-[#FFA500]" : "border-none"}`}
                 />
               </div>
             </div>

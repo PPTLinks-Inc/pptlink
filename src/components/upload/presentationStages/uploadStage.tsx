@@ -740,7 +740,7 @@ export default function UploadStage() {
           type="text"
           id="title"
           {...register("title")}
-          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.title?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${watch("title")?.length > 0 && "border-[#FFA500]"} ${errors.title?.message && "border-[red] outline-offset-2"}`}
         />
         {errors.title?.message && (
           <p className="text-[red]">{errors.title?.message?.toString()}</p>
@@ -753,7 +753,7 @@ export default function UploadStage() {
         </label>
         <textarea
           id="textarea"
-          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md resize-none ${errors.description?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md resize-none border ${watch("description")?.length > 0 && "border-[#FFA500]"} ${errors.description?.message && "border-[red] outline-offset-2"}`}
           rows={5}
           cols={50}
           {...register("description")}
@@ -773,7 +773,7 @@ export default function UploadStage() {
           </label>
           <select
             id="publicSelector"
-            className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.privacy?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+            className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${watch("privacy")?.length > 0 && "border-[#FFA500]"} ${errors.privacy?.message && "border-[red] outline-offset-2"}`}
             {...register("privacy")}
           >
             <option value="PUBLIC">Public</option>
@@ -791,7 +791,7 @@ export default function UploadStage() {
           </label>
           <select
             id="downloadSelector"
-            className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.downloadable?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+            className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${watch("downloadable")?.length > 0 && "border-[#FFA500]"} ${errors.downloadable?.message && "border-[red] outline-offset-2"}`}
             {...register("downloadable")}
           >
             <option value="YES">Yes</option>
@@ -815,7 +815,7 @@ export default function UploadStage() {
               <select
                 title="category"
                 id="categorySelector"
-                className="block w-[60%] text-lg _maxScreenMobile:w-[85%] p-2 mr-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2"
+                className={`block w-[60%] text-lg _maxScreenMobile:w-[85%] p-2 mr-2 !border-[0px] !border-none bg-white outline outline-[white] indent-2 ${watch("category")?.length > 0 && "border border-[#FFA500]"}`}
                 {...register("category")}
               >
                 <option value="" disabled className="text-[gray]">
@@ -851,7 +851,7 @@ export default function UploadStage() {
                 id="title"
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
-                className="block w-[60%] p-2 indent-8 border-none border-primaryTwo border-r-0 rounded-tl-md rounded-bl-md"
+                className={`block w-[60%] p-2 indent-8 border-none border-primaryTwo border-r-0 rounded-tl-md rounded-bl-md`}
                 placeholder="ADD CATEGORY"
               />
               <button

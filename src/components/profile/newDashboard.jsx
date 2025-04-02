@@ -18,9 +18,8 @@ import { CiSearch } from "react-icons/ci";
 export default function NewDashboard() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [currentView, setCurrentView] = useState(
-    parseInt(searchParams.get("tab") || "1")
-  );
+  const [currentView, setCurrentView] = useState(parseInt(searchParams.get("tab") || "1"));
+  const [search, setSearch] = useState("");
   const { userQuery } = useUser();
   const user = userQuery.data;
 
@@ -201,12 +200,12 @@ export default function NewDashboard() {
             className={`public_presentations container pt-12 pb-5 h-fit block`}
           >
             {/* search */}
-            <div
-              className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border ${currentView != 3 ? "border-white" : "border-black"} relative mb-5`}
-            >
+            <div className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border ${currentView != 3 ? "border-white" : "border-black"} ${search !== "" && "!border-[#FFA500]"} relative mb-5`}>
               <input
                 type="text"
                 name="searcher"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search for Libraries"
                 className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] ${currentView != 3 ? "bg-primaryTwo text-white" : "bg-[#FFFFF0] !text-black"}`}
               />

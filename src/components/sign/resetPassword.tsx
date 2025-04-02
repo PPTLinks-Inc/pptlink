@@ -71,11 +71,13 @@ export default function ResetPasswordPage() {
             className="block w-10 aspect-square"
           />
         </Link>
-        {!validateTokenQuery.isLoading && !validateTokenQuery.isError && !resetPasswordMutation.isSuccess && (
-          <p className="text-[1.7rem] font-[900] mx-auto maxSmallMobile:responsiveText maxSmallMobile:font-[500]">
-            Welcome To Password Reset
-          </p>
-        )}
+        {!validateTokenQuery.isLoading &&
+          !validateTokenQuery.isError &&
+          !resetPasswordMutation.isSuccess && (
+            <p className="text-[1.7rem] font-[900] mx-auto maxSmallMobile:responsiveText maxSmallMobile:font-[500]">
+              Welcome To Password Reset
+            </p>
+          )}
       </div>
 
       {validateTokenQuery.isLoading &&
@@ -154,7 +156,7 @@ export default function ResetPasswordPage() {
                           id="password"
                           name="password"
                           placeholder="**********"
-                          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${passwordErr ? "border border-[red] outline-offset-2" : "border-none"}`}
+                          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${values.password !== "" && "border-[#FFA500]"} ${passwordErr && "border-[red] outline-offset-2"}`}
                         />
                       </div>
                       {passwordErr && (

@@ -453,7 +453,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgName: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
+                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgName !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-2 text-white indent-4`}
                         placeholder="Enter fullname"
                         required
                       />
@@ -473,7 +473,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgEmail: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
+                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgEmail !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-2 text-white indent-4`}
                         placeholder="Enter email"
                         required
                       />
@@ -496,7 +496,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgPhone: e.target.value });
                         }}
-                        className="block w-full bg-transparent border-[1px] border-solid border-white rounded-md py-2 text-white indent-4"
+                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-2 text-white indent-4`}
                         placeholder="Enter phone number"
                         required
                       />
@@ -515,7 +515,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgReason: e.target.value });
                         }}
-                        className="bg-primaryTwo border-[1px] border-white rounded-md text-white block w-full py-[0.5rem]"
+                        className={`bg-primaryTwo border-[1px] ${values.msgReason !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md text-white block w-full py-[0.5rem]`}
                       >
                         <option value="" disabled>
                           Reason for writing?
@@ -575,7 +575,7 @@ export default function Home() {
                       onChange={(e) => {
                         setValues({ ...values, msg: e.target.value });
                       }}
-                      className="block w-full !h-32 bg-transparent border-[1px] border-solid border-white rounded-md py-1 indent-4 resize-none text-white"
+                      className={`block w-full !h-32 bg-transparent border-[1px] border-solid ${values.msg !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-1 indent-4 resize-none text-white`}
                     ></textarea>
                   </div>
                   <button
