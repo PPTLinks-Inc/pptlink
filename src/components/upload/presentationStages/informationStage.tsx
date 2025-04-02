@@ -263,7 +263,7 @@ export default function InformationStage() {
           type="text"
           id="presenterName"
           {...register("presenterName")}
-          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.presenterName?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${watch("presenterName")?.length > 0 && "border-[#FFA500]"} ${errors.presenterName?.message && "border-[red] outline-offset-2"}`}
         />
         {errors.presenterName?.message && (
           <p className="text-[red]">
@@ -278,7 +278,7 @@ export default function InformationStage() {
         </label>
         <textarea
           id="BioOptional"
-          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md resize-none ${errors.bio?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md resize-none border ${watch("bio")?.length > 0 && "border-[#FFA500]"} ${errors.bio?.message && "border-[red] outline-offset-2"}`}
           rows={5}
           cols={50}
           {...register("bio")}
@@ -296,7 +296,7 @@ export default function InformationStage() {
         <input
           type="text"
           id="socialMediaLink"
-          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md ${errors.socialLinks?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+          className={`block w-full indent-4 py-2 focus:outline focus:outline-[1px] shadow-md rounded-md border ${watch("socialLinks")?.length > 0 && "border-[#FFA500]"} ${errors.socialLinks?.message && "border-[red] outline-offset-2"}`}
           {...register("socialLinks")}
         />
         {errors.socialLinks?.message && (
@@ -333,7 +333,7 @@ export default function InformationStage() {
                 Selection
               </label>
               <div
-                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${errors.date?.message ? "border border-[red] outline-offset-2" : "border-none"}`}
+                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg border ${watch("date") !== undefined && "border-[#FFA500]"} ${errors.date?.message && "border-[red] outline-offset-2"}`}
               >
                 <Controller
                   name="date"
@@ -391,11 +391,7 @@ export default function InformationStage() {
                 <span className="w-full text-xl font-bold">*</span>Start Time
               </label>
               <div
-                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${
-                  errors.startTime?.message
-                    ? "border border-[red] outline-offset-2"
-                    : "border-none"
-                }`}
+                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg border ${watch("startTime") !== "" && "border-[#FFA500]"} ${errors.startTime?.message && "border border-[red] outline-offset-2"}`}
               >
                 <input
                   type="time"
@@ -449,10 +445,9 @@ export default function InformationStage() {
                 (Optional)
               </label>
               <div
-                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg ${
+                className={`relative bg-white w-full h-fit flex justify-between items-center rounded-md overflow-hidden indent-4 py-1 focus:outline focus:outline-[1px] shadow-lg border ${watch("endTime") !== "" && "border-[#FFA500]"} ${
                   errors.endTime?.message
-                    ? "border border-[red] outline-offset-2"
-                    : "border-none"
+                    && "border border-[red] outline-offset-2"
                 }`}
               >
                 <input
