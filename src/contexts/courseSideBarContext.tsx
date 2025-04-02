@@ -20,21 +20,23 @@ import { MdHelpOutline } from "react-icons/md";
 import { AiOutlineProfile } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
 import React, { createContext } from "react";
-import { Link, useRouteLoaderData, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { CourseData } from "@/store/courseStore";
 import { useCourseStore } from "@/store/courseStoreProvider";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { LoadingAssetSmall } from "@/assets/assets";
-import { ROUTER_ID } from "@/constants/routes";
 import useUser from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import axios from "axios";
+import useCourseContent from "@/hooks/useCourseContent";
+import { ActiveTab } from "@/types/course";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const CourseSideBarContext = createContext(undefined);
+interface CourseSideBarContextType {
+  isActive: ActiveTab;
+}
 
-export type ActiveTab = "course" | "settings" | "profile" | "feedback" | "help";
+export const CourseSideBarContext = createContext<CourseSideBarContextType>({ isActive: "course" });
 
 export default function CourseSideBarContextProvider({
   children,
@@ -43,7 +45,9 @@ export default function CourseSideBarContextProvider({
   children: React.ReactNode;
   isActive: ActiveTab;
 }) {
-  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  const params = useParams();
+  // const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  const data = useCourseContent(params.courseId as string) as CourseData;
   const saveCourseData = useCourseStore((state) => state.saveCourseData);
   const toast = useToast();
 
@@ -89,8 +93,8 @@ export default function CourseSideBarContextProvider({
 
   const isCreator = data.creatorId === userQuery.data?.id;
 
-  const nextIncompleteTab = useCourseStore((state) =>
-    state.getNextIncompleteTab()
+  const getNextIncompleteTab = useCourseStore((state) =>
+    state.getNextIncompleteTab
   );
 
   const handleNextOrPublish = () => {
@@ -100,7 +104,6 @@ export default function CourseSideBarContextProvider({
         description: "Your course is being unpublished..."
       });
       togglePublish.mutate();
-      // TODO: Implement unpublish logic
     } else if (isPublishable) {
       toast.toast({
         title: "Publishing course",
@@ -109,16 +112,27 @@ export default function CourseSideBarContextProvider({
       togglePublish.mutate();
       // TODO: Implement publish logic
     } else {
+      const nextIncompleteTab = getNextIncompleteTab();
+      if (nextIncompleteTab === isActive) {
+        toast.toast({
+          title: "Error",
+          description: "Please complete the current tab before proceeding",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       if (nextIncompleteTab === "course") {
         navigate(`/course/${data.id}`);
         return;
       }
+
       navigate(`/course/${nextIncompleteTab}/${data.id}`);
     }
   };
 
   return (
-    <CourseSideBarContext.Provider value={undefined}>
+    <CourseSideBarContext.Provider value={{ isActive }}>
       <SidebarProvider defaultOpen={false}>
         <Sidebar collapsible="icon">
           <SidebarHeader>
@@ -209,7 +223,7 @@ export default function CourseSideBarContextProvider({
                 ) : (
                   <>
                     <FaRegSave />
-                    <span>Save</span>
+                    <span>{`Save ${isActive} data`}</span>
                   </>
                 )}
               </Button>
@@ -235,7 +249,7 @@ export default function CourseSideBarContextProvider({
                         ? "Unpublish"
                         : isPublishable
                           ? "Publish"
-                          : "Next"}
+                          : "Next section"}
                     </span>
                   )}
                 </Button>

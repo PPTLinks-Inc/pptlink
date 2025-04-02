@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import AccordionWrapper from "../../accordion/accordion";
 import LogoBlack from "../../../images/Logo-Black.png";
@@ -7,25 +7,15 @@ import CourseCard from "../../list/courseCard";
 import InstructorCard from "../../list/instructorCard";
 import useUser from "../../../hooks/useUser";
 import { authFetch } from "../../../lib/axios";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MdAccessTime } from "react-icons/md";
 import { GiNetworkBars } from "react-icons/gi";
 import { FiEdit } from "react-icons/fi";
 import EnvelopeWithCheckmarkIcon from "/envelopeWithCheckmarkIcon.png";
 import Modal from "../../Models/model";
-
-export async function CoursePreviewLoader({ params }) {
-  const { data } = await authFetch.get(
-    `/api/v1/course/user-courses/${params.id}?brief=false`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-      }
-    }
-  );
-
-  return data;
-}
+import { useSuspenseQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { Button } from "../../ui/button";
 
 export default function CoursePreviewPage() {
   const [sendMessage, setSendMessage] = useState({
@@ -35,13 +25,52 @@ export default function CoursePreviewPage() {
     error: false
   });
   const { userQuery } = useUser();
-  const data = useLoaderData();
-  const [price] = useState(
-    new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency: "NGN"
-    }).format(data.price)
+  const params = useParams();
+
+  const { data, error, refetch } = useSuspenseQuery({
+    queryKey: ["course", "preview", params.id],
+    queryFn: async function () {
+      const { data } = await authFetch.get(
+        `/api/v1/course/user-courses/${params.id}?brief=false`
+      );
+
+      return data;
+    }
+  });
+
+  const price = useMemo(
+    function () {
+      return new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN"
+      }).format(data?.price ?? 0);
+    },
+    [data?.price]
   );
+
+  /* if (isLoading) {
+    return (
+        <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
+          <LoadingAssetBig2 />
+
+          <p>Loading Course data...</p>
+        </div>
+    );
+  } else */ if (error) {
+    return (
+      <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
+        {axios.isAxiosError(error) ? (
+          <p>{error.response?.data?.message || error.message || "An error occurred"}</p>
+        ) : (
+          <p>Something went wrong</p>
+        )}
+
+        <Button onClick={() => refetch()} variant="outline" className="mt-4 text-primaryTwo">
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   // Check if user is logged in and has data
   const isUserLoggedIn = !userQuery.isError && userQuery.data;
@@ -54,67 +83,95 @@ export default function CoursePreviewPage() {
 
   const handleBulkMessage = async () => {
     if (sendMessage.message.length <= 15) {
-      setSendMessage({ ...sendMessage, error: true })
-      return
+      setSendMessage({ ...sendMessage, error: true });
+      return;
     }
-    // const response = await authFetch.post(`/api/v1/course/${data.id}/bulk-message`, {
-    //   message: bulkMessage
-    // }, {
-    //   headers: {
-    //     Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-    //   }
-    // })
-    // if (response.status === 200) {
-    setSendMessage({ ...sendMessage, message: "", isMessageSent: true, error: false })
-    // }
-  }
+
+    setSendMessage({
+      ...sendMessage,
+      message: "",
+      isMessageSent: true,
+      error: false
+    });
+  };
 
   const handleCancelBtn = () => {
-    setSendMessage({ ...sendMessage, message: "", openMessageModal: false, isMessageSent: false, error: false })
-  }
-
-  // useEffect(function () {
-  //   console.log(sendMessage.message.length > 0 ? sendMessage.message : "No message")
-  // }, [sendMessage.message])
+    setSendMessage({
+      ...sendMessage,
+      message: "",
+      openMessageModal: false,
+      isMessageSent: false,
+      error: false
+    });
+  };
 
   return (
     <>
       <Modal
         open={sendMessage.openMessageModal}
-        onClose={() => setSendMessage({ ...sendMessage, openMessageModal: false })}
+        onClose={() =>
+          setSendMessage({ ...sendMessage, openMessageModal: false })
+        }
         title="Course Messages"
       >
-        <div
-          className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-md bg-black text-white"
-        >
+        <div className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-md bg-black text-white">
           <h4 className="container py-6">Course Messages</h4>
           <div className="pt-4 !border-t-[0.1px] border-t-[#FFFFF0]">
             <div className="container">
-              {sendMessage.openMessageModal && !sendMessage.isMessageSent ?
+              {sendMessage.openMessageModal && !sendMessage.isMessageSent ? (
                 <>
-                  <p className="text-md leading-8">This allows you to send important updates, reminders, and announcements to all your students at once. Whether you need to share lesson schedules, homework assignments, or study tips, this is your space to keep students informed and engaged.</p>
+                  <p className="text-md leading-8">
+                    This allows you to send important updates, reminders, and
+                    announcements to all your students at once. Whether you need
+                    to share lesson schedules, homework assignments, or study
+                    tips, this is your space to keep students informed and
+                    engaged.
+                  </p>
                   <textarea
                     name="courseBulkMessage"
                     id="courseBulkMessage"
                     value={sendMessage.message}
                     placeholder="Type your message here, minimum of 15 characters"
-                    onChange={(e) => setSendMessage({ ...sendMessage, message: e.target.value })}
+                    onChange={(e) =>
+                      setSendMessage({
+                        ...sendMessage,
+                        message: e.target.value
+                      })
+                    }
                     rows={4}
                     className={`block w-full mt-4 border-[0.5px] ${sendMessage.error ? "border-[red]" : "border-[#FFFFF0]"} rounded-md p-4 resize-none bg-black`}
                   />
                 </>
-                :
+              ) : (
                 <>
-                  <h4 className="text-4xl font-bold text-center mt-4">Successful</h4>
+                  <h4 className="text-4xl font-bold text-center mt-4">
+                    Successful
+                  </h4>
                   <div className="my-8 w-fit h-fit mx-auto">
-                    <img src={EnvelopeWithCheckmarkIcon} alt={EnvelopeWithCheckmarkIcon} className="block" />
+                    <img
+                      src={EnvelopeWithCheckmarkIcon}
+                      alt={EnvelopeWithCheckmarkIcon}
+                      className="block"
+                    />
                   </div>
-                  <p className="text-md leading-8 text-center mb-4 text-sm">Your message has been sent to all students in this course.</p>
+                  <p className="text-md leading-8 text-center mb-4 text-sm">
+                    Your message has been sent to all students in this course.
+                  </p>
                 </>
-              }
+              )}
               <div className="flex items-center justify-between mt-4 pb-10">
-                <button onClick={handleCancelBtn} className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]">Cancel</button>
-                <button onClick={handleBulkMessage} className={`flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0] ${sendMessage.openMessageModal && sendMessage.isMessageSent && "hidden"}`}>Send Message</button>
+                <button
+                  onClick={handleCancelBtn}
+                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleBulkMessage}
+                  className={`flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0] ${sendMessage.openMessageModal && sendMessage.isMessageSent && "hidden"}`}
+                >
+                  Send Message
+                </button>
               </div>
             </div>
           </div>
@@ -202,7 +259,8 @@ export default function CoursePreviewPage() {
                     Edit Course
                   </Link>
                 ) : (
-                  data.published && !data.access && (
+                  data.published &&
+                  !data.access && (
                     <Link
                       to={
                         isUserLoggedIn
@@ -215,14 +273,24 @@ export default function CoursePreviewPage() {
                     </Link>
                   )
                 )}
-                {!isCreator && data.access ? <span className="text-[#FFA500] font-bold text-xl">PAID</span> : <span className="text-[#FFA500] font-bold text-xl">{price}</span>}
+                {!isCreator && data.access ? (
+                  <span className="text-[#FFA500] font-bold text-xl">PAID</span>
+                ) : (
+                  <span className="text-[#FFA500] font-bold text-xl">
+                    {price}
+                  </span>
+                )}
               </div>
-              {isCreator && <button
-                onClick={() => setSendMessage({ ...sendMessage, openMessageModal: true })}
-                className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
-              >
-                Course Messages
-              </button>}
+              {isCreator && (
+                <button
+                  onClick={() =>
+                    setSendMessage({ ...sendMessage, openMessageModal: true })
+                  }
+                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                >
+                  Course Messages
+                </button>
+              )}
             </div>
           </div>
         </div>

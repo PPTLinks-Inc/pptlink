@@ -24,13 +24,10 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { CourseData } from "@/store/courseStore";
-import { ROUTER_ID } from "@/constants/routes";
-import { useRouteLoaderData } from "react-router-dom";
 import useUser from "@/hooks/useUser";
 
 export default function CourseCreationSettings() {
-  const data = useRouteLoaderData(ROUTER_ID) as CourseData;
+  // const data = useRouteLoaderData(ROUTER_ID) as CourseData;
   const { userQuery } = useUser();
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
@@ -43,16 +40,9 @@ export default function CourseCreationSettings() {
     }
   });
 
+  const creatorId = useCourseStore((state) => state.creatorId);
   const enrollmentDateFrom = useCourseStore((state) => state.enrollmentDateFrom);
   const enrollmentDateTo = useCourseStore((state) => state.enrollmentDateTo);
-
-  const enrollmentDate = useMemo(function () {
-    return {
-      from: enrollmentDateFrom,
-      to: enrollmentDateTo
-    };
-  }, [enrollmentDateFrom, enrollmentDateTo]);
-
   const startDate = useCourseStore((state) => state.startDate);
   const duration = useCourseStore((state) => state.duration);
   const categoryId = useCourseStore((state) => state.categoryId);
@@ -133,7 +123,7 @@ export default function CourseCreationSettings() {
   );
 
 
-  if (data.creatorId !== userQuery.data?.id) {
+  if (creatorId !== userQuery.data?.id) {
     return (
       <div className="bg-slate-200 w-full h-full">
         <div className="text-primaryTwo container py-4">
@@ -229,8 +219,8 @@ export default function CourseCreationSettings() {
                 type="text"
                 inputMode="numeric"
                 pattern="\d*"
-                min="0"
-                placeholder="₦0.00"
+                min="4000"
+                placeholder="₦4000.00"
                 className="pl-8 border-[0.5px] border-primaryTwo"
                 value={price}
                 onChange={(e) => {
@@ -248,80 +238,111 @@ export default function CourseCreationSettings() {
         <div className="space-y-4 mt-10">
           <h3 className="text-lg font-bold">Set your cohort dates</h3>
 
-          <div>
-            <h5>Enrollment date</h5>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-3/6 maxScreenMobile:w/full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
-                  )}
-                  disabled={published}
-                >
-                  {enrollmentDate.from && enrollmentDate.to ? (
-                    <>
-                      {formatDate(enrollmentDate.from)} -{" "}
-                      {formatDate(enrollmentDate.to)}
-                    </>
-                  ) : (
-                    <span>Pick an enrollment dates</span>
-                  )}
-                  <SlCalender className="ml-auto h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="range"
-                  selected={enrollmentDate}
-                  onSelect={(e) => {
-                    e &&
-                      updateValues(e?.from ?? new Date(), "enrollmentDateFrom");
-                    updateValues(e?.to ?? new Date(), "enrollmentDateTo");
-                  }}
-                  initialFocus
-                  numberOfMonths={2}
-                  disabled={(function(date) {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    return new Date(date) < today;
-                  })}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          <div className="w-3/6 maxScreenMobile:w-full">
+            <div className="flex gap-6 flex-wrap">
+              <div className="flex-1">
+                <h5>Enrollment start date</h5>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
+                      )}
+                      disabled={published}
+                    >
+                      {enrollmentDateFrom ? (
+                        formatDate(enrollmentDateFrom)
+                      ) : (
+                        <span>Pick an enrollment start date</span>
+                      )}
+                      <SlCalender className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={enrollmentDateFrom}
+                      onSelect={(date) => date && updateValues(date, "enrollmentDateFrom")}
+                      initialFocus
+                      disabled={(date) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return date < today;
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
-          <div>
-            <h5>Start date</h5>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-3/6 maxScreenMobile:w/full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
-                  )}
-                  disabled={published}
-                >
-                  {startDate ? (
-                    formatDate(startDate)
-                  ) : (
-                    <span>Pick a start date</span>
-                  )}
-                  <SlCalender className="ml-auto h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={startDate}
-                  onSelect={(e) => e && updateValues(e, "startDate")}
-                  initialFocus
-                  disabled={(function(date) {
-                    return new Date(enrollmentDate.to) > new Date(date) || new Date(enrollmentDate.from) > new Date(date);
-                  })}
-                />
-              </PopoverContent>
-            </Popover>
+              <div className="flex-1">
+                <h5>Enrollment end date</h5>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
+                      )}
+                      disabled={published}
+                    >
+                      {enrollmentDateTo ? (
+                        formatDate(enrollmentDateTo)
+                      ) : (
+                        <span>Pick an enrollment end date</span>
+                      )}
+                      <SlCalender className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={enrollmentDateTo}
+                      onSelect={(date) => date && updateValues(date, "enrollmentDateTo")}
+                      initialFocus
+                      disabled={(date) => {
+                        if (!enrollmentDateFrom) return true;
+                        return date < enrollmentDateFrom;
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <h5>Start date</h5>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
+                    )}
+                    disabled={published}
+                  >
+                    {startDate ? (
+                      formatDate(startDate)
+                    ) : (
+                      <span>Pick a start date</span>
+                    )}
+                    <SlCalender className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={(date) => date && updateValues(date, "startDate")}
+                    initialFocus
+                    disabled={(date) => {
+                      if (!enrollmentDateTo) return true;
+                      return date < enrollmentDateTo;
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
 
           <div>

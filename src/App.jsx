@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { AnimatePresence } from "framer-motion";
 import { LoadingAssetBig2 } from "./assets/assets";
 import PresentationContextProvider, {
@@ -11,11 +12,8 @@ import { Toaster } from "@/components/ui/toaster";
 import useUser from "./hooks/useUser";
 import { setAuthFetchToken } from "./lib/axios";
 import * as Sentry from "@sentry/react";
-import { CourseContentLoader } from "./components/upload/createCourseFlow/courseCreationWorkflow";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
-import { CoursePreviewLoader } from "@/components/upload/createCourseFlow/coursePreviewPage";
-import { VideoPlayerLoader } from "@/components/upload/createCourseFlow/CourseVideoPlayer";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -99,8 +97,17 @@ const router = sentryCreateBrowserRouter(
         },
         {
           path: "course/preview/:id",
-          element: <CoursePreviewPage />,
-          loader: CoursePreviewLoader
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center h-screen bg-primaryTwo">
+                  <LoadingAssetBig2 />
+                </div>
+              }
+            >
+              <CoursePreviewPage />
+            </Suspense>
+          )
         },
         {
           path: "upload",
@@ -185,8 +192,7 @@ const router = sentryCreateBrowserRouter(
         >
           <CourseVideoPlayer />
         </Suspense>
-      ),
-      loader: VideoPlayerLoader
+      )
     },
     {
       path: "/signin",
@@ -229,7 +235,6 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/course",
       element: <CourseRoot />,
-      loader: CourseContentLoader,
       id: "courseRoot",
       children: [
         {
@@ -314,8 +319,7 @@ function App() {
   // const location = useLocation();
 
   return (
-    // <ErrorBoundary>
-    <>
+    <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <AnimatePresence exit>
         {/* <Router> */}
         <Suspense
@@ -334,8 +338,7 @@ function App() {
         </Suspense>
       </AnimatePresence>
       <Toaster />
-    </>
-    // </ErrorBoundary>
+    </ErrorBoundary>
   );
 }
 

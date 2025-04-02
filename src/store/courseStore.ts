@@ -1,4 +1,4 @@
-import { ActiveTab } from "@/contexts/courseSideBarContext";
+import { ActiveTab } from "@/types/course";
 import { DateRange } from "react-day-picker";
 
 export interface ContentItem {
@@ -70,6 +70,12 @@ export interface AccountVerificationState {
   isValidAccount: boolean;
   isVerifying: boolean;
   verificationError: string;
+}
+
+export interface MissingRequirements {
+  settings: string[];
+  profile: string[];
+  course: string[];
 }
 
 export interface CourseStore {

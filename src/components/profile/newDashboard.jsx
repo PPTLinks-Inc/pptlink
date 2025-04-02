@@ -117,9 +117,13 @@ export default function NewDashboard() {
             <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 responsiveText">
               My Profile
             </span>
-            <div className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] ${currentView !== 3 ? "border-[#FFFFF0]" : "border-black"} rounded-full relative mb-4`}>
+            <div
+              className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] ${currentView !== 3 ? "border-[#FFFFF0]" : "border-black"} rounded-full relative mb-4`}
+            >
               <FaUser size="80" className="block" />
-              <button className={`absolute text-xl bottom-[0.7rem] right-[0.7rem] ${currentView !== 3 ? "bg-primaryTwo !text-[#FFFFF0]" : "bg-[#FFFFF0]"} text-primaryTwo`}>
+              <button
+                className={`absolute text-xl bottom-[0.7rem] right-[0.7rem] ${currentView !== 3 ? "bg-primaryTwo !text-[#FFFFF0]" : "bg-[#FFFFF0]"} text-primaryTwo`}
+              >
                 <FaRegEdit />
               </button>
             </div>
@@ -135,11 +139,16 @@ export default function NewDashboard() {
                 </span>
                 <span className="text-2xl">|</span>
                 <span className="flax flex-col justify-between items-center">
-                  <span className="block w-fit mx-auto">{user ? user.courses : "--"}</span>
+                  <span className="block w-fit mx-auto">
+                    {user ? user.courses : "--"}
+                  </span>
                   <span className="block w-fit mx-auto">Courses</span>
                 </span>
               </div>
-              <p>This is a placeholder text, click on the settings Icon to edit your profile.</p>
+              <p>
+                This is a placeholder text, click on the settings Icon to edit
+                your profile.
+              </p>
             </div>
           </div>
         </div>
@@ -200,7 +209,11 @@ export default function NewDashboard() {
                 placeholder="Search for Libraries"
                 className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] ${currentView != 3 ? "bg-primaryTwo text-white" : "bg-[#FFFFF0] !text-black"}`}
               />
-              <span className={`block w-fit text-[#FFFFF0] ${currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}><CiSearch /></span>
+              <span
+                className={`block w-fit text-[#FFFFF0] ${currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}
+              >
+                <CiSearch />
+              </span>
             </div>
             {/* end search */}
             {currentView == 1 ? (
@@ -210,13 +223,15 @@ export default function NewDashboard() {
                 >
                   {presentationQuery?.data && (
                     <div className="dashboard_cards_wrapper w-full min-h-screen mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
-                      {presentationQuery.data.pages.flat().map((presentation) => (
-                        <Card
-                          key={presentation.id}
-                          presentation={presentation}
-                          refresh={presentationQuery.refetch}
-                        />
-                      ))}
+                      {presentationQuery.data.pages
+                        .flat()
+                        .map((presentation) => (
+                          <Card
+                            key={presentation.id}
+                            presentation={presentation}
+                            refresh={presentationQuery.refetch}
+                          />
+                        ))}
                     </div>
                   )}
                   {presentationQuery.isLoading && (
@@ -246,6 +261,11 @@ export default function NewDashboard() {
               </>
             ) : currentView == 2 ? (
               <>
+                {myCourses.isLoading && (
+                  <div className="flex items-center justify-center w-full h-[40px]">
+                    <LoadingAssetBig2 />
+                  </div>
+                )}
                 <div
                   className={`w-full min-h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start p-4`}
                 >
@@ -253,15 +273,28 @@ export default function NewDashboard() {
                     <ShowCourseCard key={course.id} course={course} />
                   ))}
                 </div>
+                {myCourses.isError && (
+                    <div className="flex justify-center flex-col items-center gap-3">
+                      <p className="text-whte">Failed to Course</p>
+                      <button
+                        onClick={() => myCourses.refetch()}
+                        className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  )}
               </>
-            ) : currentView == 3 && (
-              <>
-                <div
-                  className={`w-full min-h-screen flex justify-center items-center`}
-                >
-                  <h1>No History yet</h1>
-                </div>
-              </>
+            ) : (
+              currentView == 3 && (
+                <>
+                  <div
+                    className={`w-full min-h-screen flex justify-center items-center`}
+                  >
+                    <h1>No History yet</h1>
+                  </div>
+                </>
+              )
             )}
           </div>
 

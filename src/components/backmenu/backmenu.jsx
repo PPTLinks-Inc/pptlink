@@ -12,11 +12,7 @@ export default function Backmenu({ backmenu, handleDropdown }) {
 
   const handlePresentationBtn = () => {
     if (!user) return navigate('/signin');
-
-    if (user) {
-      logOut();
-      return navigate('/signin');
-    }
+    logOut();
   };
 
   const buttontext = () => {
