@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
 import { motion } from "framer-motion";
@@ -16,6 +16,7 @@ import useUser from "../../hooks/useUser";
 export default function Header({ isBackMenu, handleDropdown }) {
   const [search, setSearch] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
   const getlocation = () => location.pathname === "/document";
   const getDashboardLocation = () => location.pathname === "/dashboard";
   const getUploadLocation = () => location.pathname === "/upload";
@@ -24,6 +25,16 @@ export default function Header({ isBackMenu, handleDropdown }) {
   // context
   const { userQuery } = useUser();
   const user = userQuery.data;
+
+  const handleCreateClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      // Redirect to login with return URL
+      navigate('/signin?redirect=/create');
+    } else {
+      navigate('/create');
+    }
+  };
 
   const containertVarients = {
     hidden: {
@@ -97,10 +108,10 @@ export default function Header({ isBackMenu, handleDropdown }) {
           </label>
 
           <Link
-            to={!user ? "/signin" : getUploadLocation() ? "/dashboard" : getDashboardLocation() ? "/upload" : "/dashboard"}
-            className={`${!user && "!hidden"} flex justify-center items-center w-fit md:px-6 md:py-[0.35rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-primaryTwo md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-primaryTwo md:text-primaryTwo"}`}
+            to={!user ? "/signin" : getUploadLocation() ? "/dashboard" : getDashboardLocation() ? "/create" : "/dashboard"}
+            className={`${!user && "!hidden"} !font-normal flex justify-center items-center w-fit md:px-6 md:py-[0.35rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-primaryTwo md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-primaryTwo md:text-primaryTwo"}`}
           >
-            <span className="block text-sm maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation() ? "Dashboard" : getDashboardLocation() ? "Upload" : "Dashboard"}</span>
+            <span className="block text-sm maxScreenMobile:hidden">{!user ? "Sign In" : getUploadLocation() ? "Dashboard" : getDashboardLocation() ? "Create Now" : "Dashboard"}</span>
             {!user ? "Sign In" : getUploadLocation() ?
               <span className="hidden maxScreenMobile:block w-fit h-fit text-4xl -mb-3"><CiUser /></span> : getDashboardLocation() ?
                 <span className={`hidden maxScreenMobile:block w-fit h-fit text-3xl -mb-3 text-[#FFFFF0] ${isBackMenu && "text-primaryTwo"}`}><FiUploadCloud /></span> :

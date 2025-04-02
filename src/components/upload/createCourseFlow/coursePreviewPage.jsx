@@ -139,7 +139,7 @@ export default function CoursePreviewPage() {
                       })
                     }
                     rows={4}
-                    className={`block w-full mt-4 border-[0.5px] ${sendMessage.error ? "border-[red]" : "border-[#FFFFF0]"} rounded-md p-4 resize-none bg-black`}
+                    className={`block w-full mt-4 border-[0.5px] ${sendMessage.message !== "" ? "border-[#FFA500]" : "border-[#FFFFF0]"} ${sendMessage.error && "!border-[red]"} rounded-md p-4 resize-none bg-black`}
                   />
                 </>
               ) : (
@@ -162,13 +162,13 @@ export default function CoursePreviewPage() {
               <div className="flex items-center justify-between mt-4 pb-10">
                 <button
                   onClick={handleCancelBtn}
-                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                  className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBulkMessage}
-                  className={`flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0] ${sendMessage.openMessageModal && sendMessage.isMessageSent && "hidden"}`}
+                  className={`flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0] ${sendMessage.openMessageModal && sendMessage.isMessageSent && "hidden"}`}
                 >
                   Send Message
                 </button>
@@ -254,7 +254,7 @@ export default function CoursePreviewPage() {
                 {isCreator ? (
                   <Link
                     to={`/course/${data.id}`}
-                    className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                    className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                   >
                     Edit Course
                   </Link>
@@ -267,7 +267,7 @@ export default function CoursePreviewPage() {
                           ? `/pay/${data.id}`
                           : `/signin?redirect=/pay/${data.id}`
                       }
-                      className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                      className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                     >
                       {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
                     </Link>
@@ -286,7 +286,7 @@ export default function CoursePreviewPage() {
                   onClick={() =>
                     setSendMessage({ ...sendMessage, openMessageModal: true })
                   }
-                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-bold h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                 >
                   Course Messages
                 </button>
