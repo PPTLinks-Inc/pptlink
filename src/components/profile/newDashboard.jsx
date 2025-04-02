@@ -197,7 +197,7 @@ export default function NewDashboard() {
         <div className="w-full h-fit">
           {/* ////////////////////////////////////Cards///////////////////////////////////////////// */}
           <div
-            className={`public_presentations container pt-12 pb-5 h-fit block`}
+            className={`public_presentations container pt-12 pb-5 h-fit block relative`}
           >
             {/* search */}
             <div className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border ${currentView != 3 ? "border-white" : "border-black"} ${search !== "" && "!border-[#FFA500]"} relative mb-5`}>
@@ -262,7 +262,7 @@ export default function NewDashboard() {
             ) : currentView == 2 ? (
               <>
                 {myCourses.isLoading && (
-                  <div className="flex items-center justify-center w-full h-[40px]">
+                  <div className="flex items-center justify-center absolute top-0 left-0 w-full h-full">
                     <LoadingAssetBig2 />
                   </div>
                 )}
