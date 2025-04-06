@@ -13,16 +13,14 @@ import { GiNetworkBars } from "react-icons/gi";
 import { FiEdit } from "react-icons/fi";
 import EnvelopeWithCheckmarkIcon from "/envelopeWithCheckmarkIcon.png";
 import Modal from "../../Models/model";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "../../ui/button";
 
 export default function CoursePreviewPage() {
   const [sendMessage, setSendMessage] = useState({
     message: "",
-    openMessageModal: false,
-    isMessageSent: false,
-    error: false
+    openMessageModal: false
   });
   const { userQuery } = useUser();
   const params = useParams();
@@ -47,6 +45,16 @@ export default function CoursePreviewPage() {
     },
     [data?.price]
   );
+  
+  const sendMessageMutation = useMutation({
+    mutationFn: async ({ message, courseId }) => {
+      const { data } = await authFetch.post(`/api/v1/course/send-message/${courseId}`, {
+        message,
+        courseId
+      });
+      return data;
+    }
+  });
 
   /* if (isLoading) {
     return (
@@ -81,44 +89,40 @@ export default function CoursePreviewPage() {
         ({ instructor }) => instructor.user.id === userQuery.data?.id
       ));
 
-  const handleBulkMessage = async () => {
+  const handleBulkMessage = () => {
     if (sendMessage.message.length <= 15) {
-      setSendMessage({ ...sendMessage, error: true });
       return;
     }
 
-    setSendMessage({
-      ...sendMessage,
-      message: "",
-      isMessageSent: true,
-      error: false
+    sendMessageMutation.mutate({
+      message: sendMessage.message,
+      courseId: params.id
     });
   };
 
   const handleCancelBtn = () => {
     setSendMessage({
-      ...sendMessage,
       message: "",
-      openMessageModal: false,
-      isMessageSent: false,
-      error: false
+      openMessageModal: false
     });
+    sendMessageMutation.reset();
   };
 
   return (
     <>
       <Modal
         open={sendMessage.openMessageModal}
-        onClose={() =>
-          setSendMessage({ ...sendMessage, openMessageModal: false })
-        }
+        onClose={() => {
+          setSendMessage({ ...sendMessage, openMessageModal: false });
+          sendMessageMutation.reset();
+        }}
         title="Course Messages"
       >
         <div className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-md bg-black text-white">
           <h4 className="container py-6">Course Messages</h4>
           <div className="pt-4 !border-t-[0.1px] border-t-[#FFFFF0]">
             <div className="container">
-              {sendMessage.openMessageModal && !sendMessage.isMessageSent ? (
+              {!sendMessageMutation.isSuccess ? (
                 <>
                   <p className="text-md leading-8">
                     This allows you to send important updates, reminders, and
@@ -139,8 +143,21 @@ export default function CoursePreviewPage() {
                       })
                     }
                     rows={4}
-                    className={`block w-full mt-4 border-[0.5px] ${sendMessage.message !== "" ? "border-[#FFA500]" : "border-[#FFFFF0]"} ${sendMessage.error && "!border-[red]"} rounded-md p-4 resize-none bg-black`}
+                    className={`block w-full mt-4 border-[0.5px] ${
+                      sendMessage.message !== "" ? "border-[#FFA500]" : "border-[#FFFFF0]"
+                    } ${
+                      (sendMessage.message.length <= 15 || sendMessageMutation.isError) && "!border-[red]"
+                    } rounded-md p-4 resize-none bg-black`}
                   />
+                  {(sendMessage.message.length <= 15 || sendMessageMutation.isError) && (
+                    <p className="text-red-500 text-sm mt-2">
+                      {sendMessage.message.length <= 15
+                        ? "Message must be longer than 15 characters"
+                        : axios.isAxiosError(sendMessageMutation.error)
+                        ? sendMessageMutation.error.response?.data?.error || "Failed to send message"
+                        : "Something went wrong"}
+                    </p>
+                  )}
                 </>
               ) : (
                 <>
@@ -168,9 +185,12 @@ export default function CoursePreviewPage() {
                 </button>
                 <button
                   onClick={handleBulkMessage}
-                  className={`flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0] ${sendMessage.openMessageModal && sendMessage.isMessageSent && "hidden"}`}
+                  disabled={sendMessageMutation.isPending}
+                  className={`flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0] ${
+                    sendMessageMutation.isSuccess && "hidden"
+                  }`}
                 >
-                  Send Message
+                  {sendMessageMutation.isPending ? "Sending..." : "Send Message"}
                 </button>
               </div>
             </div>
