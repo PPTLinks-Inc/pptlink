@@ -183,11 +183,14 @@ export default function CourseCreationWorkflow() {
     if (!contentItems) return;
 
     // Find the content item being dragged
-    const draggedItem = contentItems.find(item => item.id === active.id);
+    const draggedItem = contentItems.find((item) => item.id === active.id);
     if (!draggedItem) return;
 
     // Prevent dragging if item is being processed or uploaded
-    if (draggedItem.status === "processing" || draggedItem.status === "uploading") {
+    if (
+      draggedItem.status === "processing" ||
+      draggedItem.status === "uploading"
+    ) {
       return;
     }
 
@@ -358,6 +361,7 @@ export default function CourseCreationWorkflow() {
           <div className="sticky top-0 bg-primaryTwo">
             <div className="flex justify-between items-center mb-4 bg-primaryTwo">
               <input
+                id="title"
                 ref={titleInputRef}
                 type="text"
                 value={sections[selectedSectionIndex].title}
@@ -368,6 +372,9 @@ export default function CourseCreationWorkflow() {
                 }}
                 onBlur={(e) => handleTitleBlur(e.target.value)}
               />
+              <label htmlFor="title" className="cursor-pointer mb-2">
+                <FaRegEdit color="#fff" size={30} />
+              </label>
             </div>
 
             <div className="flex space-x-2 mb-4">
@@ -379,10 +386,10 @@ export default function CourseCreationWorkflow() {
                 multiple
                 onChange={(e) => {
                   if (!e.target.files?.length) return;
-                  Array.from(e.target.files).forEach(file => {
+                  Array.from(e.target.files).forEach((file) => {
                     handleFileSelect("VIDEO", file);
                   });
-                  e.target.value = ''; // Reset input after handling files
+                  e.target.value = ""; // Reset input after handling files
                 }}
               />
               <input
@@ -393,10 +400,10 @@ export default function CourseCreationWorkflow() {
                 multiple
                 onChange={(e) => {
                   if (!e.target.files?.length) return;
-                  Array.from(e.target.files).forEach(file => {
+                  Array.from(e.target.files).forEach((file) => {
                     handleFileSelect("PPT", file);
                   });
-                  e.target.value = ''; // Reset input after handling files
+                  e.target.value = ""; // Reset input after handling files
                 }}
               />
               <button
@@ -465,19 +472,39 @@ export default function CourseCreationWorkflow() {
                 </h3>
                 <div className="space-y-2">
                   {sections.map((section) => {
-                    const videos = section.contents.filter(c => c.type === "VIDEO").length;
-                    const ppts = section.contents.filter(c => c.type === "PPT").length;
-                    const waiting = section.contents.filter(c => c.status === "waiting" || c.status === "starting");
-                    const uploading = section.contents.filter(c => c.status === "uploading");
-                    const processing = section.contents.filter(c => c.status === "processing");
-                    const errors = section.contents.filter(c => c.status === "error");
+                    const videos = section.contents.filter(
+                      (c) => c.type === "VIDEO"
+                    ).length;
+                    const ppts = section.contents.filter(
+                      (c) => c.type === "PPT"
+                    ).length;
+                    const waiting = section.contents.filter(
+                      (c) => c.status === "waiting" || c.status === "starting"
+                    );
+                    const uploading = section.contents.filter(
+                      (c) => c.status === "uploading"
+                    );
+                    const processing = section.contents.filter(
+                      (c) => c.status === "processing"
+                    );
+                    const errors = section.contents.filter(
+                      (c) => c.status === "error"
+                    );
 
                     return (
-                      <div key={section.id} className="p-2 rounded-md bg-gray-100">
+                      <div
+                        key={section.id}
+                        className="p-2 rounded-md bg-gray-100"
+                      >
                         <p className="font-medium">{section.title}</p>
                         <div className="text-sm text-gray-600 flex gap-3">
-                          <span>{videos} {videos === 1 ? "video" : "videos"}</span>
-                          <span>{ppts} {ppts === 1 ? "presentation" : "presentations"}</span>
+                          <span>
+                            {videos} {videos === 1 ? "video" : "videos"}
+                          </span>
+                          <span>
+                            {ppts}{" "}
+                            {ppts === 1 ? "presentation" : "presentations"}
+                          </span>
                         </div>
                         <div className="mt-1 space-y-1">
                           {waiting.length > 0 && (
@@ -813,14 +840,17 @@ function ContentItems({ content }: { content: ContentItem }) {
         style={style}
         className={cn(
           "bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2",
-          (content.status === "uploading" || content.status === "processing") && "cursor-not-allowed opacity-80"
+          (content.status === "uploading" || content.status === "processing") &&
+            "cursor-not-allowed opacity-80"
         )}
       >
         <div className="flex items-center gap-2 w-full">
-          <span 
-            {...(content.status === "uploading" || content.status === "processing" || content.status === "waiting"
-              ? {} 
-              : { ...attributes, ...listeners })} 
+          <span
+            {...(content.status === "uploading" ||
+            content.status === "processing" ||
+            content.status === "waiting"
+              ? {}
+              : { ...attributes, ...listeners })}
             className={cn(
               "block",
               content.status === "uploading" || content.status === "processing"
