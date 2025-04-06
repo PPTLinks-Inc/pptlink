@@ -8,16 +8,16 @@ import { FLW_PUBLIC_KEY } from "../../constants/routes";
 import { useQuery } from "@tanstack/react-query";
 import { authFetch } from "../../lib/axios";
 import { LoadingAssetBig2 } from "../../assets/assets";
+import axios from "axios";
 
 export default function Payment() {
   const { userQuery } = useUser();
   const user = userQuery.data;
-  // const [selectedPayment, setSelectedPayment] = useState("card");
 
   const navigate = useNavigate();
   const { courseId } = useParams();
 
-  const { data: courseData, isLoading } = useQuery({
+  const { data: courseData, isLoading, error } = useQuery({
     queryKey: ["course-payment", courseId],
     enabled: !!user,
     queryFn: async () => {
@@ -63,6 +63,18 @@ export default function Payment() {
     return (
       <div className="flex justify-center items-center h-screen bg-primaryTwo">
         <LoadingAssetBig2 />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-primaryTwo">
+        <p className="text-red-500 font-bold text-lg">
+          {axios.isAxiosError(error)
+            ? error?.response?.data?.message
+            : "An error occurred while fetching the course data."}
+        </p>
       </div>
     );
   }
