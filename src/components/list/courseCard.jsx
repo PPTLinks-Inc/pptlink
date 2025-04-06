@@ -10,6 +10,9 @@ export default function CourseCard({ content, locked, courseId, sectionId }) {
   const navigate = useNavigate();
 
   function viewContent() {
+    if (locked) {
+      return;
+    }
     if (content.type === "VIDEO") {
       navigate(`/course/video/${courseId}/${sectionId}/${content.id}`);
     }

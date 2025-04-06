@@ -9,7 +9,7 @@ export type CourseType = {
   thumbnail: string;
   category: string;
   creator: string;
-  accessType: "NONE" | "PURCHASED" | "DRAFT" | "CREATOR" | "INSTRUCTOR";
+  accessType: "NONE" | "Purchased" | "Draft" | "Creator" | "Tutoring";
 };
 
 export default function ShowCourseCard({ course }: { course: CourseType }) {
@@ -36,14 +36,14 @@ export default function ShowCourseCard({ course }: { course: CourseType }) {
               <path
                 d="M0 32H176L147.294 16.3137L176 0H0V32Z"
                 fill={
-                  course.accessType === "PURCHASED"
-                    ? "gold"
-                    : course.accessType === "CREATOR"
-                      ? "#FF4D4D"
-                      : course.accessType === "INSTRUCTOR"
-                        ? "#4CAF50"
-                        : course.accessType === "DRAFT"
-                          ? "#424242"
+                  course.accessType === "Purchased"
+                    ? "#0082fb"
+                    : course.accessType === "Creator"
+                      ? "#31aa4d"
+                      : course.accessType === "Tutoring"
+                        ? "#fda910"
+                        : course.accessType === "Draft"
+                          ? "#b3b3b3"
                           : "#666666"
                 }
               />

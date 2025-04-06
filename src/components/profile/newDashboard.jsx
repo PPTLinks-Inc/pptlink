@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Card from "../list/card";
 import ShowCourseCard from "../list/showCourseCard";
@@ -15,10 +15,19 @@ import { useQuery } from "@tanstack/react-query";
 import { authFetch } from "../../lib/axios";
 import { CiSearch } from "react-icons/ci";
 
+// eslint-disable-next-line react/prop-types
+const TabContent = memo(function TabContent({ isActive, children }) {
+  return (
+    <div className={`tab-content ${isActive ? "active" : ""}`}>{children}</div>
+  );
+});
+
 export default function NewDashboard() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [currentView, setCurrentView] = useState(parseInt(searchParams.get("tab") || "1"));
+  const [currentView, setCurrentView] = useState(
+    parseInt(searchParams.get("tab") || "1")
+  );
   const [search, setSearch] = useState("");
   const { userQuery } = useUser();
   const user = userQuery.data;
@@ -31,11 +40,6 @@ export default function NewDashboard() {
       setCurrentView(parseInt(tab));
     }
   }, [searchParams, navigate]);
-
-  const handleView = (e) => {
-    const view = parseInt(e.target.dataset.view);
-    navigate(`?tab=${view}`);
-  };
 
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
@@ -56,6 +60,16 @@ export default function NewDashboard() {
     }
   });
 
+  const paidCourses = useQuery({
+    queryKey: ["paidCourses", user?.id],
+    enabled: currentView === 3,
+    queryFn: async function () {
+      const { data } = await authFetch.get(`/api/v1/course/paid-courses`);
+
+      return data;
+    }
+  });
+
   useEffect(
     function () {
       if (intersection && intersection?.isIntersecting) {
@@ -64,6 +78,11 @@ export default function NewDashboard() {
     },
     [intersection, intersection?.isIntersecting, presentationQuery]
   );
+
+  const handleView = (e) => {
+    const view = parseInt(e.target.dataset.view);
+    navigate(`?tab=${view}`);
+  };
 
   return (
     <div className="w-full relative h-fit">
@@ -102,15 +121,26 @@ export default function NewDashboard() {
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
-      <section
-        className={`relative ${currentView === 3 ? "before:bg-[#FFFFF0] text-primaryTwo" : "bg-primaryTwo"}`}
-      >
+      <style>
+        {`
+          .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+          }
+          .tab-content.active {
+            display: block;
+            opacity: 1;
+          }
+        `}
+      </style>
+      <section className={`relative bg-primaryTwo`}>
         <div className={`w-full h-fit pt-6`}>
           <div
-            className={`container relative h-fit py-6 flex flex-col justify-between items-center ${currentView === 3 ? "bg-[#FFFFF0] rounded-t-lg" : "backdrop_el"} rounded-t-md`}
+            className={`container relative h-fit py-6 flex flex-col justify-between items-center backdrop_el rounded-t-md`}
           >
             <button
-              className={`absolute top-8 right-8 text-3xl font-bold ${currentView !== 3 && "text-[#FFFFF0]"}`}
+              className={`absolute top-8 right-8 text-3xl font-bold text-[#FFFFF0]`}
             >
               <CiSettings />
             </button>
@@ -118,11 +148,11 @@ export default function NewDashboard() {
               My Profile
             </span>
             <div
-              className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] ${currentView !== 3 ? "border-[#FFFFF0]" : "border-black"} rounded-full relative mb-4`}
+              className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] border-[#FFFFF0] rounded-full relative mb-4`}
             >
               <FaUser size="80" className="block" />
               <button
-                className={`absolute text-xl bottom-[0.7rem] right-[0.7rem] ${currentView !== 3 ? "bg-primaryTwo !text-[#FFFFF0]" : "bg-[#FFFFF0]"} text-primaryTwo`}
+                className={`absolute text-xl bottom-[0.7rem] right-[0.7rem] bg-primaryTwo !text-[#FFFFF0]`}
               >
                 <FaRegEdit />
               </button>
@@ -154,45 +184,54 @@ export default function NewDashboard() {
         </div>
       </section>
 
-      <section
-        className={`py-5 h-fit ${currentView === 3 ? "bg-[#FFFFF0] text-primaryTwo" : "bg-primaryTwo text-white"}`}
-      >
+      <section className={`py-5 h-fit bg-primaryTwo text-white`}>
         <div
-          className={`${currentView == 3 ? "bg-[#FFFFF0] container_" : "bg-primaryTwo"} h-fit flex justify-evenly items-center border-b-2 ${currentView === 3 ? "border-b-primaryTwo" : "border-b-white"}`}
+          className={`bg-primaryTwo h-fit flex justify-evenly items-center border-b-2 border-b-white`}
         >
           <button
             onClick={handleView}
             data-view="1"
             className={
               currentView === 1
-                ? `block w-[8rem] ${currentView === 3 ? "text-primaryTwo" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-primaryTwo" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[primaryTwo]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-primaryTwo bg-primaryTwo"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
-            Upload
+            Presentations
           </button>
           <button
             onClick={handleView}
             data-view="2"
             className={
               currentView === 2
-                ? `block w-[8rem] ${currentView === 3 ? "text-primaryTwo" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-primaryTwo" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[primaryTwo]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-primaryTwo bg-primaryTwo"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
-            Courses
+            My courses
           </button>
           <button
             onClick={handleView}
             data-view="3"
             className={
               currentView === 3
-                ? `block w-[8rem] ${currentView === 3 ? "text-primaryTwo" : "text-white"} p-2 border-2 ${currentView === 3 ? "border-primaryTwo" : "border-white"} ${currentView === 3 ? "!border-b-[white]" : "!border-b-[primaryTwo]"} _!z-10 before:block before:w-full before:h-fit before:py-2 ${currentView === 3 ? "before:bg-[#FFFFF0] bg-[#FFFFF0]" : "before:bg-primaryTwo bg-primaryTwo"} relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                : ``
+            }
+          >
+            Paid courses
+          </button>
+          {/* <button
+            onClick={handleView}
+            data-view="4"
+            className={
+              currentView === 4
+                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
             History
-          </button>
+          </button> */}
         </div>
         <div className="w-full h-fit">
           {/* ////////////////////////////////////Cards///////////////////////////////////////////// */}
@@ -200,14 +239,16 @@ export default function NewDashboard() {
             className={`public_presentations container pt-12 pb-5 h-fit block relative`}
           >
             {/* search */}
-            <div className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border ${currentView != 3 ? "border-white" : "border-black"} ${search !== "" && "!border-[#FFA500]"} relative mb-5`}>
+            <div
+              className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border border-white ${search !== "" && "!border-[#FFA500]"} relative mb-5`}
+            >
               <input
                 type="text"
                 name="searcher"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search for Libraries"
-                className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] ${currentView != 3 ? "bg-primaryTwo text-white" : "bg-[#FFFFF0] !text-black"}`}
+                className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white`}
               />
               <span
                 className={`block w-fit text-[#FFFFF0] ${currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}
@@ -216,50 +257,48 @@ export default function NewDashboard() {
               </span>
             </div>
             {/* end search */}
-            {currentView == 1 ? (
-              <>
-                <div
-                  className={`w-full min-h-screen flex justify-center items-center`}
-                >
-                  {presentationQuery?.data && (
-                    <div className="dashboard_cards_wrapper w-full min-h-screen mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
-                      {presentationQuery.data.pages
-                        .flat()
-                        .map((presentation) => (
-                          <Card
-                            key={presentation.id}
-                            presentation={presentation}
-                            refresh={presentationQuery.refetch}
-                          />
-                        ))}
-                    </div>
-                  )}
-                  {presentationQuery.isLoading && (
-                    <div className="flex items-center justify-center w-full h-[40px]">
-                      <LoadingAssetBig2 />
-                    </div>
-                  )}
-                </div>
-                {presentationQuery.isFetchingNextPage && (
-                  <div className="flex items-center justify-center w-full h-[40px]">
-                    <LoadingAssetSmall2 />
+            <TabContent isActive={currentView === 1}>
+              <div
+                className={`w-full min-h-screen flex justify-center items-center`}
+              >
+                {presentationQuery?.data && (
+                  <div className="dashboard_cards_wrapper w-full min-h-screen mt-20 maxScreenMobile:mt-0 mb-10 maxScreenMobile:mb-10 scroll-smooth">
+                    {presentationQuery.data.pages.flat().map((presentation) => (
+                      <Card
+                        key={presentation.id}
+                        presentation={presentation}
+                        refresh={presentationQuery.refetch}
+                      />
+                    ))}
                   </div>
                 )}
+                {presentationQuery.isLoading && (
+                  <div className="flex items-center justify-center w-full h-[40px]">
+                    <LoadingAssetBig2 />
+                  </div>
+                )}
+              </div>
+              {presentationQuery.isFetchingNextPage && (
+                <div className="flex items-center justify-center w-full h-[40px]">
+                  <LoadingAssetSmall2 />
+                </div>
+              )}
 
-                {presentationQuery.isError ||
-                  (presentationQuery.isFetchNextPageError && (
-                    <div className="flex justify-center flex-col items-center gap-3">
-                      <p className="text-whte">Failed to fetch</p>
-                      <button
-                        onClick={() => presentationQuery.fetchNextPage()}
-                        className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
-                      >
-                        Load more
-                      </button>
-                    </div>
-                  ))}
-              </>
-            ) : currentView == 2 ? (
+              {presentationQuery.isError ||
+                (presentationQuery.isFetchNextPageError && (
+                  <div className="flex justify-center flex-col items-center gap-3">
+                    <p className="text-whte">Failed to fetch</p>
+                    <button
+                      onClick={() => presentationQuery.fetchNextPage()}
+                      className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                    >
+                      Load more
+                    </button>
+                  </div>
+                ))}
+            </TabContent>
+
+            <TabContent isActive={currentView === 2}>
               <>
                 {myCourses.isLoading && (
                   <div className="flex items-center justify-center absolute top-0 left-0 w-full h-full">
@@ -274,28 +313,54 @@ export default function NewDashboard() {
                   ))}
                 </div>
                 {myCourses.isError && (
-                    <div className="flex justify-center flex-col items-center gap-3">
-                      <p className="text-whte">Failed to Course</p>
-                      <button
-                        onClick={() => myCourses.refetch()}
-                        className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
-                      >
-                        Retry
-                      </button>
-                    </div>
-                  )}
-              </>
-            ) : (
-              currentView == 3 && (
-                <>
-                  <div
-                    className={`w-full min-h-screen flex justify-center items-center`}
-                  >
-                    <h1>No History yet</h1>
+                  <div className="flex justify-center flex-col items-center gap-3">
+                    <p className="text-whte">Failed to Course</p>
+                    <button
+                      onClick={() => myCourses.refetch()}
+                      className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                    >
+                      Retry
+                    </button>
                   </div>
-                </>
-              )
-            )}
+                )}
+              </>
+            </TabContent>
+
+            <TabContent isActive={currentView === 3}>
+              <>
+                {paidCourses.isLoading && (
+                  <div className="flex items-center justify-center absolute top-0 left-0 w-full h-full">
+                    <LoadingAssetBig2 />
+                  </div>
+                )}
+                <div
+                  className={`w-full min-h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start p-4`}
+                >
+                  {paidCourses.data?.map((course) => (
+                    <ShowCourseCard key={course.id} course={course} />
+                  ))}
+                </div>
+                {paidCourses.isError && (
+                  <div className="flex justify-center flex-col items-center gap-3">
+                    <p className="text-whte">Failed to Course</p>
+                    <button
+                      onClick={() => paidCourses.refetch()}
+                      className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+              </>
+            </TabContent>
+
+            {/* <TabContent isActive={currentView === 4}>
+              <div
+                className={`w-full min-h-screen flex justify-center items-center`}
+              >
+                <h1>History</h1>
+              </div>
+            </TabContent> */}
           </div>
 
           <div ref={intersectionRef}></div>

@@ -41,7 +41,9 @@ export default function CourseCreationSettings() {
   });
 
   const creatorId = useCourseStore((state) => state.creatorId);
-  const enrollmentDateFrom = useCourseStore((state) => state.enrollmentDateFrom);
+  const enrollmentDateFrom = useCourseStore(
+    (state) => state.enrollmentDateFrom
+  );
   const enrollmentDateTo = useCourseStore((state) => state.enrollmentDateTo);
   const startDate = useCourseStore((state) => state.startDate);
   const duration = useCourseStore((state) => state.duration);
@@ -102,10 +104,6 @@ export default function CourseCreationSettings() {
     ];
   }, []);
 
-  const isValidNumber = (value: string) => {
-    return /^\d+$/.test(value) && Number(value) > 0;
-  };
-
   // Add memoization for course category selection handler
   const handleCategoryChange = useCallback(
     (value: string) => {
@@ -122,7 +120,6 @@ export default function CourseCreationSettings() {
     [updateValues]
   );
 
-
   if (creatorId !== userQuery.data?.id) {
     return (
       <div className="bg-slate-200 w-full h-full">
@@ -136,7 +133,7 @@ export default function CourseCreationSettings() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -159,7 +156,11 @@ export default function CourseCreationSettings() {
           <div className="space-y-4 mt-10">
             <Label className="text-lg font-bold">Course description</Label>
 
-            <Textarea value={description} onChange={(e) => updateValues(e.target.value, "description")} className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w/full"></Textarea>
+            <Textarea
+              value={description}
+              onChange={(e) => updateValues(e.target.value, "description")}
+              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w/full"
+            ></Textarea>
           </div>
           <div className="space-y-4 mt-10">
             <Label className="text-lg font-bold">Course catergory</Label>
@@ -218,15 +219,12 @@ export default function CourseCreationSettings() {
               <Input
                 type="text"
                 inputMode="numeric"
-                pattern="\d*"
-                min="4000"
                 placeholder="₦4000.00"
+                min="4000"
                 className="pl-8 border-[0.5px] border-primaryTwo"
                 value={price}
                 onChange={(e) => {
-                  if (isValidNumber(e.target.value)) {
-                    updateValues(Number(e.target.value), "price");
-                  }
+                  updateValues(Number(e.target.value), "price");
                 }}
                 disabled={published}
               />
@@ -263,7 +261,9 @@ export default function CourseCreationSettings() {
                     <Calendar
                       mode="single"
                       selected={enrollmentDateFrom}
-                      onSelect={(date) => date && updateValues(date, "enrollmentDateFrom")}
+                      onSelect={(date) =>
+                        date && updateValues(date, "enrollmentDateFrom")
+                      }
                       initialFocus
                       disabled={(date) => {
                         const today = new Date();
@@ -298,7 +298,9 @@ export default function CourseCreationSettings() {
                     <Calendar
                       mode="single"
                       selected={enrollmentDateTo}
-                      onSelect={(date) => date && updateValues(date, "enrollmentDateTo")}
+                      onSelect={(date) =>
+                        date && updateValues(date, "enrollmentDateTo")
+                      }
                       initialFocus
                       disabled={(date) => {
                         if (!enrollmentDateFrom) return true;
@@ -347,7 +349,11 @@ export default function CourseCreationSettings() {
 
           <div>
             <h5>Course duration</h5>
-            <Select onValueChange={handleDurationChange} value={duration} disabled={published}>
+            <Select
+              onValueChange={handleDurationChange}
+              value={duration}
+              disabled={published}
+            >
               <SelectTrigger className="w-3/6 maxScreenMobile:w/full border-[0.5px] border-black">
                 <SelectValue placeholder="Select duration" />
               </SelectTrigger>
@@ -384,8 +390,6 @@ export default function CourseCreationSettings() {
           </div>
         </div>
 
-        
-
         <div className="space-y-4 mt-10">
           <h3 className="text-lg font-bold">
             Please input the maximum amount of students that is allowed to take
@@ -401,9 +405,7 @@ export default function CourseCreationSettings() {
             className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w/full"
             value={maxStudents}
             onChange={(e) => {
-              if (isValidNumber(e.target.value)) {
-                updateValues(Number(e.target.value), "maxStudents");
-              }
+              updateValues(Number(e.target.value), "maxStudents");
             }}
             disabled={published}
           />
@@ -416,7 +418,11 @@ export default function CourseCreationSettings() {
             {thumbnail && (
               <div className="relative w-[18rem] aspect-[2/2.5] rounded-lg overflow-hidden border-[0.1px] shadow-white shadow-inner">
                 <img
-                  src={typeof thumbnail === 'string' ? thumbnail : URL.createObjectURL(thumbnail)}
+                  src={
+                    typeof thumbnail === "string"
+                      ? thumbnail
+                      : URL.createObjectURL(thumbnail)
+                  }
                   alt="Course thumbnail"
                   className="w-full h-full object-cover"
                 />
@@ -429,12 +435,14 @@ export default function CourseCreationSettings() {
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
-                  updateValues(file, 'thumbnail');
+                  updateValues(file, "thumbnail");
                 }
               }}
               className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w/full cursor-pointer"
             />
-            <p className="text-sm text-gray-600">Recommended size: 800x1000 pixels (2:2.5 aspect ratio)</p>
+            <p className="text-sm text-gray-600">
+              Recommended size: 800x1000 pixels (2:2.5 aspect ratio)
+            </p>
           </div>
         </div>
       </div>
