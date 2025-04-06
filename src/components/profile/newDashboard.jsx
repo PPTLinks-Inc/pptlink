@@ -18,7 +18,11 @@ import { CiSearch } from "react-icons/ci";
 // eslint-disable-next-line react/prop-types
 const TabContent = memo(function TabContent({ isActive, children }) {
   return (
-    <div className={`tab-content ${isActive ? "active" : ""}`}>{children}</div>
+    <div 
+      className={`${isActive ? 'block opacity-100' : 'hidden opacity-0'} transition-opacity duration-200 ease-in-out`}
+    >
+      {children}
+    </div>
   );
 });
 
@@ -121,19 +125,6 @@ export default function NewDashboard() {
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
-      <style>
-        {`
-          .tab-content {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-          }
-          .tab-content.active {
-            display: block;
-            opacity: 1;
-          }
-        `}
-      </style>
       <section className={`relative bg-primaryTwo`}>
         <div className={`w-full h-fit pt-6`}>
           <div
