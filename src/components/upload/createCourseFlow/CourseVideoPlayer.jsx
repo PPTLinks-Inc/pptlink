@@ -15,12 +15,11 @@ export default function CourseVideoPlayer() {
       "video-media",
       user?.id,
       params.courseId,
-      params.sectionId,
       params.contentId
     ],
     queryFn: async function () {
       const { data } = await authFetch.get(
-        `/api/v1/course/media/${params.courseId}/${params.sectionId}/${params.contentId}`,
+        `/api/v1/course/media/video/${params.courseId}/${params.contentId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`

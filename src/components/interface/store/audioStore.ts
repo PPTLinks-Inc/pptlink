@@ -236,7 +236,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 rtm.publish(presentation.liveId, "END_AUDIO"),
                 authFetch.put(
                     `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
-                    {},
+                    presentation.course,
                     { params: { endOrStart: "end", userUid } }
                 )
             ]));
@@ -271,7 +271,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         const { data } = await authFetch.get<{
             rtcToken: string;
         }>(`/api/v1/ppt/presentations/present/token/${presentation.liveId}`, {
-            params: { userUid }
+            params: { userUid, courseId: presentation.course?.courseId, contentId: presentation.course?.contentId }
         });
         useRtmStore.setState((state) => ({
             token: {
@@ -321,7 +321,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                         rtcToken: string;
                     }>(
                         `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
-                        {},
+                        presentation.course,
                         { params: { userUid: tokens?.rtcUid, endOrStart: "start" } }
                     );
                     const [err, response] = await safeAwait(axiosPromise);
