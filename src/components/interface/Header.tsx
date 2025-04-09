@@ -7,8 +7,9 @@ import ShareAPI from "./Share";
 import { LoadingAssetSmall2 } from "../../assets/assets";
 import { usepresentationStore } from "./store/presentationStore";
 import { useMutation } from "@tanstack/react-query";
-import SplitButton from "@/components/ui/split-button";
+// import SplitButton from "@/components/ui/split-button";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 export default function Header({ actionsActive }: { actionsActive: boolean }) {
   const { fullScreenShow, isMobilePhone } = useContext(PresentationContext);
@@ -42,32 +43,55 @@ export default function Header({ actionsActive }: { actionsActive: boolean }) {
       <ShareAPI />
       {((orientation.type.includes("portrait") && isMobilePhone) ||
         (!isMobilePhone && !fullScreenShow)) && (
-        <a href="/" className={cn("text-white text-lg hover:underline", presentation?.User !== "HOST" && "absolute left-1/2 transform -translate-x-1/2")}>
+        <a
+          href="/"
+          className={cn(
+            "text-white text-lg hover:underline",
+            presentation?.User !== "HOST" &&
+              "absolute left-1/2 transform -translate-x-1/2"
+          )}
+        >
           PPTLinks
         </a>
       )}
       {presentation?.User === "HOST" ? (
-        <SplitButton
-          primaryLabel={
-            presentation.status !== "NOT_LIVE" ? "End Live" : "Go Live"
-          }
-          options={["Edit", "Delete"]}
-          onPrimaryClick={() => togglePresentationLive.mutate()}
-          onOptionClick={(option) => console.log(option)}
-          icon={
-            togglePresentationLive.isPending ? (
-              <LoadingAssetSmall2 />
-            ) : (
-              <BsRecord2 size={32} />
-            )
-          }
-          backgroundColor={
+        <Button
+          onClick={() => togglePresentationLive.mutate()}
+          className={cn(
+            "text-white flex items-center gap-2 px-4 py-2",
             presentation.status !== "NOT_LIVE"
               ? "bg-rose-500 hover:bg-rose-600"
               : "bg-green-500 hover:bg-green-600"
-          }
-        />
+          )}
+        >
+          {togglePresentationLive.isPending ? (
+            <LoadingAssetSmall2 />
+          ) : (
+            <BsRecord2 size={32} />
+          )}
+          {presentation.status !== "NOT_LIVE" ? "End Live" : "Go Live"}
+        </Button>
       ) : (
+        // <SplitButton
+        //   primaryLabel={
+        //     presentation.status !== "NOT_LIVE" ? "End Live" : "Go Live"
+        //   }
+        //   options={["Edit", "Delete"]}
+        //   onPrimaryClick={() => togglePresentationLive.mutate()}
+        //   onOptionClick={(option) => console.log(option)}
+        //   icon={
+        //     togglePresentationLive.isPending ? (
+        //       <LoadingAssetSmall2 />
+        //     ) : (
+        //       <BsRecord2 size={32} />
+        //     )
+        //   }
+        //   backgroundColor={
+        //     presentation.status !== "NOT_LIVE"
+        //       ? "bg-rose-500 hover:bg-rose-600"
+        //       : "bg-green-500 hover:bg-green-600"
+        //   }
+        // />
         <div className="w-[150px] h-[40px]"></div>
       )}
     </header>

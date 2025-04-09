@@ -181,7 +181,7 @@ const router = sentryCreateBrowserRouter(
       loader: presentationLoader
     },
     {
-      path: "/course/video/:courseId/:sectionId/:contentId",
+      path: "/course/video/:courseId/:contentId",
       element: (
         <Suspense
           fallback={
@@ -193,6 +193,16 @@ const router = sentryCreateBrowserRouter(
           <CourseVideoPlayer />
         </Suspense>
       )
+    },
+    {
+      path: "/course/ppt/:courseId/:contentId",
+      element: (
+        <PresentationContextProvider>
+          <Interface />
+        </PresentationContextProvider>
+      ),
+      errorElement: <InterfaceNotFound />,
+      loader: presentationLoader
     },
     {
       path: "/signin",

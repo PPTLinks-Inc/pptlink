@@ -40,7 +40,25 @@ const contextValues = {
 
 export const PresentationContext = createContext(contextValues);
 
-export async function presentationLoader({ params }: LoaderFunctionArgs<any>) {
+export async function presentationLoader({
+  params,
+  request
+}: LoaderFunctionArgs<any>) {
+  if (request.url.includes("/course/ppt/")) {
+    console.log("course ppt");
+    const { data } = await authFetch.get<{
+      sucess: boolean;
+      presentation: presentationData;
+    }>(`/api/v1/course/media/ppt/${params.courseId}/${params.contentId}`, {
+      params: { userUid: localStorage.getItem("TheUserUid") },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    });
+
+    return data;
+  }
+
   const { data } = await authFetch.get<{
     sucess: boolean;
     presentation: presentationData;
@@ -117,13 +135,25 @@ const PresentationContextProvider = (props: { children: any }) => {
   };
 
   const presentationQuery = useQuery<presentationData>({
-    queryKey: ["presentation", params.id],
+    queryKey: ["presentation", params?.id ?? params?.courseId],
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     queryFn: async () => {
       setUserName(prevUsername || user?.username || "");
-      setPresentation(data.presentation);
+
+      const presentation: presentationData = {
+        ...data.presentation,
+        course:
+          params?.courseId && params?.contentId
+            ? {
+                courseId: params.courseId,
+                contentId: params.contentId
+              }
+            : undefined
+      };
+
+      setPresentation(presentation);
 
       setToken({
         rtmToken: data.presentation.rtc.rtmToken,
@@ -439,7 +469,7 @@ const PresentationContextProvider = (props: { children: any }) => {
   useUnmount(function () {
     queryClient.removeQueries({
       exact: true,
-      queryKey: ["presentation", params.id]
+      queryKey: ["presentation", params?.id ?? params?.courseId]
     });
     queryClient.removeQueries({
       exact: true,

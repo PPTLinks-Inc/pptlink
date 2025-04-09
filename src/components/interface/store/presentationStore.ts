@@ -191,7 +191,8 @@ export const usepresentationStore = create<presentationStore>((set, get) => ({
             const rtm = useRtmStore.getState().rtm;
             if (!presentations) throw new Error("No presentation data");
             await authFetch.put(
-                `/api/v1/ppt/presentations/make-live/${presentations.id}`
+                `/api/v1/ppt/presentations/make-live/${presentations.id}`,
+                get().presentation.course
             );
             await rtm?.publish(presentations.liveId, "LIVE");
 

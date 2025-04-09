@@ -45,13 +45,16 @@ export default function CoursePreviewPage() {
     },
     [data?.price]
   );
-  
+
   const sendMessageMutation = useMutation({
     mutationFn: async ({ message, courseId }) => {
-      const { data } = await authFetch.post(`/api/v1/course/send-message/${courseId}`, {
-        message,
-        courseId
-      });
+      const { data } = await authFetch.post(
+        `/api/v1/course/send-message/${courseId}`,
+        {
+          message,
+          courseId
+        }
+      );
       return data;
     }
   });
@@ -68,12 +71,20 @@ export default function CoursePreviewPage() {
     return (
       <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
         {axios.isAxiosError(error) ? (
-          <p>{error.response?.data?.message || error.message || "An error occurred"}</p>
+          <p>
+            {error.response?.data?.message ||
+              error.message ||
+              "An error occurred"}
+          </p>
         ) : (
           <p>Something went wrong</p>
         )}
 
-        <Button onClick={() => refetch()} variant="outline" className="mt-4 text-primaryTwo">
+        <Button
+          onClick={() => refetch()}
+          variant="outline"
+          className="mt-4 text-primaryTwo"
+        >
           Retry
         </Button>
       </div>
@@ -144,18 +155,26 @@ export default function CoursePreviewPage() {
                     }
                     rows={4}
                     className={`block w-full mt-4 border-[0.5px] ${
-                      sendMessage.message !== "" ? "border-[#FFA500]" : "border-[#FFFFF0]"
+                      sendMessage.message !== ""
+                        ? "border-[#FFA500]"
+                        : "border-[#FFFFF0]"
                     } ${
-                      (sendMessage.message.length <= 15 || sendMessageMutation.isError) && "!border-[red]"
+                      ((sendMessage.message.length > 0 &&
+                        sendMessage.message.length <= 15) ||
+                        sendMessageMutation.isError) &&
+                      "!border-[red]"
                     } rounded-md p-4 resize-none bg-black`}
                   />
-                  {(sendMessage.message.length <= 15 || sendMessageMutation.isError) && (
+                  {((sendMessage.message.length > 0 &&
+                    sendMessage.message.length <= 15) ||
+                    sendMessageMutation.isError) && (
                     <p className="text-red-500 text-sm mt-2">
                       {sendMessage.message.length <= 15
                         ? "Message must be longer than 15 characters"
                         : axios.isAxiosError(sendMessageMutation.error)
-                        ? sendMessageMutation.error.response?.data?.error || "Failed to send message"
-                        : "Something went wrong"}
+                          ? sendMessageMutation.error.response?.data?.error ||
+                            "Failed to send message"
+                          : "Something went wrong"}
                     </p>
                   )}
                 </>
@@ -190,7 +209,10 @@ export default function CoursePreviewPage() {
                     sendMessageMutation.isSuccess && "hidden"
                   }`}
                 >
-                  {sendMessageMutation.isPending ? "Sending..." : "Send Message"}
+                  {/* Mark: Change this to loading animation */}
+                  {sendMessageMutation.isPending
+                    ? "Sending..."
+                    : "Send Message"}
                 </button>
               </div>
             </div>
@@ -376,7 +398,6 @@ export default function CoursePreviewPage() {
                     content={content}
                     locked={!data.access}
                     courseId={data.id}
-                    sectionId={section.id}
                   />
                 ))}
                 {/* end */}

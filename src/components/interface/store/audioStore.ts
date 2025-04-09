@@ -96,12 +96,31 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             screenShareEnabled: false, iAmScreenSharing: false, screenShareMinimized: false
         }));
     },
-    setMicState: async function (micState) {
+    setMicState: async function (micState) { /* Mark: mic state */
         set({ micState });
+        const localAudioTrack = get().audioTracks?.localAudioTrack;
+        const rtcClient = get().rtcClient;
+        if (!localAudioTrack || !rtcClient) {
+            return;
+        }
+        
         if (micState === MIC_STATE.CAN_SPK) {
             get().audioTracks?.localAudioTrack?.setMuted(false);
+            const [publishErr] = await safeAwait(rtcClient.publish(localAudioTrack));
+            if (publishErr) {
+                throw new Error("Failed to create audio track");
+            }
         } else {
             get().audioTracks?.localAudioTrack?.setMuted(true);
+            const [unpublishErr] = await safeAwait(rtcClient.unpublish(localAudioTrack));
+            if (unpublishErr) {
+                toast({
+                    title: "Error",
+                    variant: "destructive",
+                    description: "Failed to create audio track"
+                });
+                return;
+            }
         }
         const presentation = usepresentationStore.getState().presentation;
         const userName = usepresentationStore.getState().userName;
@@ -236,7 +255,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 rtm.publish(presentation.liveId, "END_AUDIO"),
                 authFetch.put(
                     `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
-                    {},
+                    presentation.course,
                     { params: { endOrStart: "end", userUid } }
                 )
             ]));
@@ -271,7 +290,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         const { data } = await authFetch.get<{
             rtcToken: string;
         }>(`/api/v1/ppt/presentations/present/token/${presentation.liveId}`, {
-            params: { userUid }
+            params: { userUid, courseId: presentation.course?.courseId, contentId: presentation.course?.contentId }
         });
         useRtmStore.setState((state) => ({
             token: {
@@ -321,7 +340,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                         rtcToken: string;
                     }>(
                         `/api/v1/ppt/presentations/make-audio/${presentation.id}`,
-                        {},
+                        presentation.course,
                         { params: { userUid: tokens?.rtcUid, endOrStart: "start" } }
                     );
                     const [err, response] = await safeAwait(axiosPromise);
@@ -485,11 +504,6 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             ANS: true
         }));
         if (localAudioTrackErr) {
-            throw new Error("Failed to create audio track");
-        }
-
-        const [publishErr] = await safeAwait(rtcClient.publish(localAudioTrack));
-        if (publishErr) {
             throw new Error("Failed to create audio track");
         }
 
