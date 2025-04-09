@@ -14,7 +14,10 @@ export interface presentationData {
         rtcToken: string | undefined;
         rtmToken: string;
     }
-
+    course?: {
+        courseId: string;
+        contentId: string;
+    }
 }
 export interface PresentationContextI {
     fullScreenShow: boolean;

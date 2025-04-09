@@ -6,7 +6,7 @@ import { CiPlay1 } from "react-icons/ci";
 import { IoMdLock } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
-export default function CourseCard({ content, locked, courseId, sectionId }) {
+export default function CourseCard({ content, locked, courseId }) {
   const navigate = useNavigate();
 
   function viewContent() {
@@ -14,7 +14,9 @@ export default function CourseCard({ content, locked, courseId, sectionId }) {
       return;
     }
     if (content.type === "VIDEO") {
-      navigate(`/course/video/${courseId}/${sectionId}/${content.id}`);
+      navigate(`/course/video/${courseId}/${content.id}`);
+    } else if (content.type === "PPT") {
+      navigate(`/course/ppt/${courseId}/${content.id}`);
     }
   }
 
@@ -36,12 +38,14 @@ export default function CourseCard({ content, locked, courseId, sectionId }) {
             className={`w-[90%] mx-auto text-black font-bold py-1 flex justify-start items-center ${content?.live === undefined && "justify-between"}`}
           >
             <span>{content.type}</span>
-            <span
-              className={`flex justify-between items-center gap-2 ${content?.live !== undefined && "hidden"}`}
-            >
-              <span className="block w-fit h-fit p-1 bg-[red] border-none rounded-full"></span>
-              <span>Live</span>
-            </span>
+            {content.type === "PPT" && (
+              <span
+                className={`flex justify-between items-center gap-2 ${content.presentationStatus !== "LIVE" && "hidden"}`}
+              >
+                <span className="block w-fit h-fit p-1 bg-[red] border-none rounded-full"></span>
+                <span>Live</span>
+              </span>
+            )}
           </span>
         </span>
 
@@ -76,10 +80,10 @@ export default function CourseCard({ content, locked, courseId, sectionId }) {
           >
             {content.name}
           </h3>
-          <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
+          {/* <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
             <strong>Tutor: </strong>
             <em>{"Imoh Yohanna"}</em>
-          </p>
+          </p> */}
           <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
             {content.type === "VIDEO" && (
               <>
@@ -102,12 +106,12 @@ export default function CourseCard({ content, locked, courseId, sectionId }) {
           </p>
         </div>
 
-        <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
+        {/* <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
           <span className="block my-[0.2px] py-2 w-3/6 bg-[#FFA500] border-none rounded-lg"></span>
           <span className="text-black !text-[0.7rem] font-bold my-[0.2px] z-10 absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
             50%
           </span>
-        </div>
+        </div> */}
       </motion.div>
     </>
   );
