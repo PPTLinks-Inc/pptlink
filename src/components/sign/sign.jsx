@@ -98,7 +98,8 @@ export default function SignPage() {
       } else {
         setUser(data.user);
         setAuthFetchToken(data.token);
-        navigate("/");
+        const redirectUrl = searchParams.get("redirect") ?? "/";
+        navigate(redirectUrl);
       }
     }
   });
@@ -208,7 +209,7 @@ export default function SignPage() {
     if (isResetPage) {
       setModal(false);
       setIsResetPage(!isResetPage);
-      navigate("/signin");
+      navigate("/signin" + window.location.search);
     } else {
       setIsSignupPage(!isSignupPage);
     }
