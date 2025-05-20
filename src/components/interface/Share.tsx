@@ -1,9 +1,13 @@
 import { toast } from "@/hooks/use-toast";
 import { CiShare2 } from "react-icons/ci";
 import { FaRegCopy } from "react-icons/fa6";
+interface ShareAPIProps {
+  addClass?: string;
+  fitSize?: boolean;
+}
 
 // eslint-disable-next-line react/prop-types
-function ShareAPI() {
+function ShareAPI({ addClass, fitSize = false }: ShareAPIProps) {
   const shareAvailable = navigator?.share ? true : false;
 
   const shareData = {
@@ -12,9 +16,9 @@ function ShareAPI() {
     url: window.location.href
   };
   function shareLink() {
-    navigator
-      .share(shareData)
-      .catch(() => {/*  */});
+    navigator.share(shareData).catch(() => {
+      /*  */
+    });
   }
 
   function copyLink() {
@@ -25,19 +29,23 @@ function ShareAPI() {
   }
 
   return (
-    <div className="flex justify-between items-center p-2">
-      <p className="text-lg bg-slate-400 text-primaryTwo p-2 flex items-center rounded-md gap-1">
+    <div
+      className={`flex justify-between items-center ${!fitSize ? "p-2" : "h-full w-fit"} ${addClass}`}
+    >
+      <p
+        className={`text-lg bg-slate-400 text-primaryTwo ${!fitSize ? "p-2" : " w-16"} flex items-center justify-center h-full rounded-md gap-1`}
+      >
         {shareAvailable ? (
           <button
             onClick={shareLink}
-            className="bg-blue-500 text-primaryTwo p-2 rounded-md"
+            className={`bg-blue-500 text-primaryTwo ${!fitSize && "p-2"} rounded-md`}
           >
             <CiShare2 />
           </button>
         ) : (
           <button
             onClick={copyLink}
-            className="bg-blue-500 text-primaryTwo p-2 rounded-md"
+            className={`bg-blue-500 text-primaryTwo ${!fitSize && "p-2"} rounded-md`}
           >
             <FaRegCopy />
           </button>
