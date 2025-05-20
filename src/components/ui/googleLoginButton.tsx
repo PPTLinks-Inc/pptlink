@@ -3,7 +3,10 @@ import "./googleLoginButton.css";
 
 export default function googleLoginButton() {
   return (
-    <a href={`${SERVER_URL}/api/v1/auth/oauth/google`} className="gsi-material-button">
+    <a onMouseDown={() => {
+      const redirect = new URLSearchParams(location.search).get("redirect");
+      localStorage.setItem("redirect", redirect ?? "/");
+    }} href={`${SERVER_URL}/api/v1/auth/oauth/google`} className="gsi-material-button">
       <div className="gsi-material-button-state"></div>
       <div className="gsi-material-button-content-wrapper">
         <div className="gsi-material-button-icon">
