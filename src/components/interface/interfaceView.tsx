@@ -15,7 +15,7 @@ import { PiHandWaving } from "react-icons/pi";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdOutlineScreenShare } from "react-icons/md";
 // import { IoReturnUpBackOutline } from "react-icons/io5";
-import { IoSendOutline, IoImages } from "react-icons/io5";
+import { IoImages } from "react-icons/io5"; //IoSendOutline
 import { MdOutlineStopScreenShare } from "react-icons/md";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 // import { ScrollArea } from "@/components/ui/scroll-area";
@@ -459,15 +459,38 @@ export default function InterfaceView() {
               className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.controls ? "hidden" : "grid"}`}
             >
               <button
-              onClick={() => {setSideBar(false)}}
-               className="text-white block w-fit h-fit p-1 border-none rounded-sm absolute top-2 right-2"><IoClose size={20} /></button>
+                onClick={() => {
+                  setSideBar(false);
+                }}
+                className="text-white block w-fit h-fit p-1 border-none rounded-sm absolute top-2 right-2"
+              >
+                <IoClose size={20} />
+              </button>
               <ScrollArea className="h-[calc(100vh-150px)] w-full border-none py-8 px-2">
-                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8"><LiaPenNibSolid size={20} /><span className="text-sm">Pen</span></button>
-                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8"><IoMusicalNotesOutline size={20} /><span className="text-sm">Music</span></button>
-                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8"><GoBell size={20} /><span className="text-sm">Ping audience</span></button>
-                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8"><CgFileAdd size={20} /><span className="text-sm">Add slides</span></button>
-                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8"><AiOutlineUsergroupAdd size={20} /><span className="text-sm">Co-host</span></button>
-                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8"><CgPoll size={20} /><span className="text-sm">Pull</span></button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <LiaPenNibSolid size={20} />
+                  <span className="text-sm">Pen</span>
+                </button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <IoMusicalNotesOutline size={20} />
+                  <span className="text-sm">Music</span>
+                </button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <GoBell size={20} />
+                  <span className="text-sm">Ping audience</span>
+                </button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <CgFileAdd size={20} />
+                  <span className="text-sm">Add slides</span>
+                </button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <AiOutlineUsergroupAdd size={20} />
+                  <span className="text-sm">Co-host</span>
+                </button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <CgPoll size={20} />
+                  <span className="text-sm">Pull</span>
+                </button>
               </ScrollArea>
             </div>
           </div>
