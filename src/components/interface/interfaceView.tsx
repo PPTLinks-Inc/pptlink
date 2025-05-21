@@ -459,9 +459,7 @@ export default function InterfaceView() {
               className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.controls ? "hidden" : "grid"}`}
             >
               <button
-                onClick={() => {
-                  setSideBar(false);
-                }}
+                onClick={() => setSideBar(!sideBar)}
                 className="text-white block w-fit h-fit p-1 border-none rounded-sm absolute top-2 right-2"
               >
                 <IoClose size={20} />
