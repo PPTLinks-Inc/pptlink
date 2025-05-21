@@ -182,7 +182,7 @@ const router = sentryCreateBrowserRouter(
       loader: presentationLoader
     },
     {
-      path: "/interfaceView",
+      path: "/interface-view",
       element: <InterfaceView />
     },
     {
