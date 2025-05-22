@@ -14,6 +14,9 @@ import { LoadingAssetBig2 } from "@/assets/assets";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { authFetch } from "@/lib/axios";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
+
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
 
 export default function SupperUpload() {
   const scrollableRef = useRef<HTMLDivElement>(null);
@@ -27,7 +30,7 @@ export default function SupperUpload() {
     }
   }, [currentView]);
 
-  const uploadStore = useContext(UploadContext)
+  const uploadStore = useContext(UploadContext);
 
   const editPresentationQuery = useQuery({
     queryKey: ["editPresentation", searchParams.get("edit")],
@@ -104,21 +107,21 @@ export default function SupperUpload() {
               <p className="text-center">Fetching presentation data</p>
             </div>
           ) : (
-            <>
+            <ConvexProvider client={convex}>
               {/* progress indicator */}
               <ProgressIndicator />
               <div className="w-full min-h-screen bg-[#FFFFF0] shadow-xl relative py-20 maxScreenMobile:pt-0 md:rounded-md">
                 <FormLabelIndicator />
                 {/* first stage elements 👀👀 */}
                 <UploadStage />
-                {/* Second stage show els 👀👀 */} 
+                {/* Second stage show els 👀👀 */}
                 <InformationStage />
                 {/* Third stage show els 👀👀 */}
                 <PreviewStage />
               </div>
               {/* form stage tracker */}
               <FormStageMover />
-            </>
+            </ConvexProvider>
           )}
         </div>
       </section>
