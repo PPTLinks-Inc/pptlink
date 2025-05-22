@@ -1,23 +1,21 @@
 /* eslint-disable react/prop-types */
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUploadStore } from "@/store/uploadStoreProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SERVER_URL } from "@/constants/routes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import PopUpModal from "@/components/Models/dashboardModel";
+// import PopUpModal from "@/components/Models/dashboardModel";
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { LoadingAssetBig, LoadingAssetSmall } from "@/assets/assets";
 import { useSearchParams } from "react-router-dom";
 import { authFetch, standardFetch } from "@/lib/axios";
 import useUser from "@/hooks/useUser";
-import {
-  useMutation as useConvexMutation,
-  useQuery as useConvexQuery
-} from "convex/react";
+import { useMutation as useConvexMutation } from "convex/react";
 import { api } from "@pptlinks/shared-convex-backend/convex/_generated/api";
+import { useConvexQuery } from "@/lib/convex";
 
 const useFileValidation = () => {
   const pdfUrl = useUploadStore((state) => state.pdfUrl);
@@ -93,7 +91,7 @@ export default function UploadStage() {
   const addCategory = useUploadStore((state) => state.addCategory);
   const categories = useUploadStore((state) => state.categories);
   const setPdfUrl = useUploadStore((state) => state.setPdfUrl);
-  const pdfUrl = useUploadStore((state) => state.pdfUrl);
+  // const pdfUrl = useUploadStore((state) => state.pdfUrl);
 
   const [addNewCategory, setAddNewCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
@@ -102,16 +100,16 @@ export default function UploadStage() {
 
   const [searchParams] = useSearchParams();
 
-  const [modalValues, setModalValues] = useState({
-    message: "",
-    actionText: "",
-    open: false,
-    oneButton: false,
-    isLoading: false,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSubmit: (_e: FormEvent<HTMLFormElement>) => {},
-    onClose: () => {}
-  });
+  // const [modalValues, setModalValues] = useState({
+  //   message: "",
+  //   actionText: "",
+  //   open: false,
+  //   oneButton: false,
+  //   isLoading: false,
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   onSubmit: (_e: FormEvent<HTMLFormElement>) => {},
+  //   onClose: () => {}
+  // });
 
   const toastRef = useRef<{
     id: string;
@@ -123,9 +121,12 @@ export default function UploadStage() {
   const updateUploadStatus = useConvexMutation(
     api.jobsMutation.updateSingleUploadTempDataStatus
   );
-  const uploadData = useConvexQuery(api.jobsQuery.getSingleUploadTempData, {
-    userId: user?.id ?? ""
-  });
+  const { data: uploadData } = useConvexQuery(
+    api.jobsQuery.getSingleUploadTempData,
+    {
+      userId: user?.id ?? ""
+    }
+  );
 
   const uploadMutation = useMutation({
     mutationFn: async function (file: File) {
@@ -173,7 +174,7 @@ export default function UploadStage() {
     },
     onSuccess: function () {
       toastRef.current = toast({
-        description: "File upload has been completed successfully.",
+        description: "File is been processed",
         duration: 60000,
         action: <LoadingAssetSmall />
       });
@@ -248,7 +249,9 @@ export default function UploadStage() {
   useEffect(
     function () {
       if (uploadData?.status === "success") {
-        setPdfUrl(uploadData?.thumbnail ?? "");
+        const thumbnail = `${import.meta.env.VITE_CLOUDFONT_ORIGIN}/${uploadData?.thumbnail}`;
+
+        setPdfUrl(thumbnail);
         toastRef.current?.update({
           description: "File upload has been completed successfully.",
           duration: 6000
@@ -330,7 +333,7 @@ export default function UploadStage() {
 
   return (
     <div className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}>
-      <PopUpModal {...modalValues} />
+      {/* <PopUpModal {...modalValues} /> */}
       {/* Upload File here */}
       <div
         className={`w-full h-[20rem] m-auto ${false && "hidden"} 
@@ -419,6 +422,11 @@ export default function UploadStage() {
               </span>
             </>
           )}
+          {(pending || processingFile) && (
+            <span className="w-fit h-fit text-primaryTwo">
+              <LoadingAssetBig />
+            </span>
+          )}
           <span
             className={`w-fit h-fit ${successFile ? "text-[green]" : isError ? "text-[red]" : "text-primaryTwo"}`}
           >
@@ -429,12 +437,6 @@ export default function UploadStage() {
                 : processingFile && "File is being processed..."}
           </span>
 
-          {pending && (
-            <span className="w-fit h-fit text-primaryTwo">
-              <LoadingAssetBig />
-            </span>
-          )}
-
           {uploading && (
             <Progress
               value={uploadPercentage}
@@ -442,18 +444,19 @@ export default function UploadStage() {
             />
           )}
 
-          {(uploading ||
-            pending ||
-            processingFile) && (
-              <button className="w-fit h-fit text-white py-2 px-8 rounded-full bg-[#ffa500] cursor-pointer pointer-events-auto" onClick={() => {
+          {(uploading || pending || processingFile) && (
+            <button
+              className="w-fit h-fit text-white py-2 px-8 rounded-full bg-[#ffa500] cursor-pointer pointer-events-auto"
+              onClick={() => {
                 updateUploadStatus({
                   userId: user?.id ?? "",
                   status: "cancelled"
-                })
-              }}>
-                Cancel
-              </button>
-            )}
+                });
+              }}
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </div>
       {/* Title */}
