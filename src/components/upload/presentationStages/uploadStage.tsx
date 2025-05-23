@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useUploadStore } from "@/store/uploadStoreProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SERVER_URL } from "@/constants/routes";
@@ -17,10 +17,14 @@ import { useMutation as useConvexMutation } from "convex/react";
 import { api } from "@pptlinks/shared-convex-backend/convex/_generated/api";
 import { useConvexQuery } from "@/lib/convex";
 
-const useFileValidation = () => {
+const useFileValidation = (edit: boolean) => {
   const pdfUrl = useUploadStore((state) => state.pdfUrl);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (file: any) => {
+    if (edit) {
+      return true;
+    }
+
     if (pdfUrl === "" && !file) {
       return false;
     }
@@ -29,7 +33,10 @@ const useFileValidation = () => {
 };
 
 export default function UploadStage() {
-  const validateFile = useFileValidation();
+  const [searchParams] = useSearchParams();
+
+  const validateFile = useFileValidation(searchParams.has("edit"));
+
   const schema = z.object({
     title: z.string().min(2, { message: "Title is too short" }),
     description: z
@@ -48,12 +55,18 @@ export default function UploadStage() {
       .any()
       .refine(validateFile)
       .refine((file: FileList) => {
+        if (searchParams.has("edit")) {
+          return true;
+        }
         if (file) {
           return file.length > 0;
         }
         return false;
       }, "File is required")
       .refine((file) => {
+        if (searchParams.has("edit")) {
+          return true;
+        }
         if (!file) {
           return false;
         }
@@ -61,6 +74,9 @@ export default function UploadStage() {
         return file[0].size < 50 * 1024 * 1024;
       }, "File size must not exceed 50MB")
       .refine((file) => {
+        if (searchParams.has("edit")) {
+          return true;
+        }
         if (!file) {
           return false;
         }
@@ -98,8 +114,6 @@ export default function UploadStage() {
 
   const [uploadPercentage, setUploadPercentage] = useState(0);
 
-  const [searchParams] = useSearchParams();
-
   // const [modalValues, setModalValues] = useState({
   //   message: "",
   //   actionText: "",
@@ -110,13 +124,6 @@ export default function UploadStage() {
   //   onSubmit: (_e: FormEvent<HTMLFormElement>) => {},
   //   onClose: () => {}
   // });
-
-  const toastRef = useRef<{
-    id: string;
-    dismiss: () => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    update: (props: any) => void;
-  }>();
 
   const updateUploadStatus = useConvexMutation(
     api.jobsMutation.updateSingleUploadTempDataStatus
@@ -143,8 +150,6 @@ export default function UploadStage() {
           ? { editPresentationId: searchParams.get("edit")! }
           : {})
       };
-
-      console.log("params", params);
 
       const { data: urlData } = await authFetch.get(
         `${SERVER_URL}/api/v1/ppt/generate-upload-url`,
@@ -173,9 +178,8 @@ export default function UploadStage() {
       });
     },
     onSuccess: function () {
-      toastRef.current = toast({
+      toast({
         description: "File is been processed",
-        duration: 60000,
         action: <LoadingAssetSmall />
       });
     }
@@ -252,9 +256,8 @@ export default function UploadStage() {
         const thumbnail = `${import.meta.env.VITE_CLOUDFONT_ORIGIN}/${uploadData?.thumbnail}`;
 
         setPdfUrl(thumbnail);
-        toastRef.current?.update({
-          description: "File upload has been completed successfully.",
-          duration: 6000
+        toast({
+          description: "File processing is done"
         });
       }
     },
@@ -276,7 +279,6 @@ export default function UploadStage() {
         // check if file is valid
         trigger("file").then((isValid) => {
           if (isValid) {
-            console.log(isValid, formValues.file);
             uploadMutation.mutate(formValues.file![0]);
           }
         });
@@ -444,7 +446,7 @@ export default function UploadStage() {
             />
           )}
 
-          {(uploading || pending || processingFile) && (
+          {(pending || processingFile) && (
             <button
               className="w-fit h-fit text-white py-2 px-8 rounded-full bg-[#ffa500] cursor-pointer pointer-events-auto"
               onClick={() => {
