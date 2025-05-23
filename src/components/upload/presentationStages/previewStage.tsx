@@ -8,6 +8,10 @@ import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
 import { authFetch } from "@/lib/axios";
 import { AxiosError } from "axios";
+import { useConvexQuery } from "@/lib/convex";
+import { api } from "@pptlinks/shared-convex-backend/convex/_generated/api";
+import useUser from "@/hooks/useUser";
+import { Button } from "@/components/ui/button";
 
 export default function PreviewStage() {
   const currentView = useUploadStore((state) => state.currentView);
@@ -23,8 +27,17 @@ export default function PreviewStage() {
   const startTime = useUploadStore((state) => state.startTime);
   const endTime = useUploadStore((state) => state.endTime);
   const selectedCategory = useUploadStore((state) => state.selectedCategory);
+  const { userQuery } = useUser();
+  const user = userQuery.data;
 
-  const processingFile = useUploadStore((state) => state.processingFile);
+  const { data: uploadData } = useConvexQuery(
+    api.jobsQuery.getSingleUploadTempData,
+    {
+      userId: user?.id ?? ""
+    }
+  );
+
+  const processingFile = uploadData?.status === "processing";
   const setIsSaving = useUploadStore((state) => state.setIsSaving);
 
   const [searchParams] = useSearchParams();
@@ -53,7 +66,7 @@ export default function PreviewStage() {
 
         return data.liveId;
       } else {
-        await authFetch.put(
+        const { data } = await authFetch.put(
           `${SERVER_URL}/api/v1/ppt/presentations/update`,
           {
             id: searchParams.get("edit"),
@@ -71,14 +84,19 @@ export default function PreviewStage() {
           }
         );
 
-        return null;
+        return data.liveId;
       }
     },
     onSuccess: function (liveId) {
-      if (liveId === null) {
+      if (searchParams.has("edit")) {
         toast({
           title: "Success",
-          description: "Your presentation has been updated successfully"
+          description: "Your presentation has been updated successfully",
+          action: (
+            <Button onClick={() => (window.location.href = `/${liveId}`)}>
+              View Presentation
+            </Button>
+          )
         });
         setIsSaving(false);
         return;
@@ -86,7 +104,10 @@ export default function PreviewStage() {
       window.location.href = `/${liveId}`;
     },
     onError: function (error) {
-      const errorMessage = error instanceof AxiosError ? error.response?.data.message : "An error occurred while saving your presentation";
+      const errorMessage =
+        error instanceof AxiosError
+          ? error.response?.data.message
+          : "An error occurred while saving your presentation";
       toast({
         title: "Error",
         description: errorMessage,
