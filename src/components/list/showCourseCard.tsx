@@ -10,6 +10,13 @@ export type CourseType = {
   category: string;
   creator: string;
   accessType: "NONE" | "Purchased" | "Draft" | "Creator" | "Tutoring";
+  purchases: {
+    count: string;
+    firstFiveUsers: {
+      id: string;
+      firstLetter: string;
+    }[];
+  };
 };
 
 export default function ShowCourseCard({ course }: { course: CourseType }) {
@@ -62,22 +69,22 @@ export default function ShowCourseCard({ course }: { course: CourseType }) {
         <p className="text-md font-light mb-3">{course.creator}</p>
         <div className="relative flex items-center justify-between gap-1 w-full">
           <span className="flex -space-x-3">
-            {Array.from({ length: 7 }, (_, i) => i + 1).map((index) => (
+            {course.purchases.firstFiveUsers.map((user, index) => (
               <Avatar
-                key={index.toString()}
+                key={user.id}
                 className="border-2 border-background block w-[1.5rem] h-[1.5rem] !rounded-[0.75rem]"
                 style={{ zIndex: index + 1 }}
               >
                 <AvatarImage
-                  src={"/team/imoh.jpg"}
-                  alt={"imoh"}
+                  src={"/images/avatars/" + user.id + ".webp"}
+                  alt={user.firstLetter}
                   className="object-cover"
                 />
-                <AvatarFallback>{"I"}</AvatarFallback>
+                <AvatarFallback className="bg-gray-600">{user.firstLetter}</AvatarFallback>
               </Avatar>
             ))}
           </span>
-          <span className="block w-fit responsiveText">25+ enrolled</span>
+          <span className="block w-fit responsiveText">{course.purchases.count}+ enrolled</span>
         </div>
       </div>
     </NavLink>
