@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarpanch&display=swap');
+:root {
+  --baseColorSpinner: #191919;
+}
+.spinner__container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--baseColorSpinner);
+}
+@layer {
+  .presentation__spinner{
+    @apply  absolute text-slate-200 top-28 font-semibold
+  }
+}
+.svg-frame {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    transform-style: preserve-3d;
+    display: flex;
+    justify-content: center;
+    align-items: center;   
+}
+
+.svg-frame svg {
+  position: absolute;
+  transition: 0.5s;
+  z-index: calc(1 - (0.2 * var(--j)));
+  transform-origin: center;
+  width: 344px;
+  height: 344px;
+  fill: none;
+}
+
+.svg-frame:hover svg,
+.svg-frame:active svg {
+  transform: rotate(-80deg) skew(30deg) translateX(calc(45px * var(--i)))
+    translateY(calc(-35px * var(--i)));
+}
+
+.svg-frame svg #center {
+  transition: 0.5s;
+  transform-origin: center;
+}
+
+.svg-frame:hover svg #center,
+.svg-frame:active svg #center {
+  transform: rotate(-30deg) translateX(45px) translateY(-3px);
+}
+
+#out2 {
+  animation: rotate1 7s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes rotate1 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#out3 {
+  animation: rotate1 3s ease-in-out infinite alternate;
+  transform-origin: center;
+  stroke: #ff0;
+}
+
+@keyframes rotate1 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#inner3,
+#inner1 {
+  animation: rotate1 4s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes rotate1 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#center1 {
+  fill: #ff0;
+  animation: rotate1 2s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes rotate1 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media(max-width:750px){
+    .svg-frame {
+        width: 200px;
+        aspect-ratio: 1;
+        pointer-events: none;
+    }
+    .svg-frame svg {
+        transform: scale(0.7,0.7);
+        pointer-events: initial;
+
+    }
+}
