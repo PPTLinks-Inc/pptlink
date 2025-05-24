@@ -280,7 +280,7 @@ export default function CoursePreviewPage() {
                 </Avatar>
               ))}
             </span>
-            <span className="block w-fit responsiveTex text-white mr-1">
+            <span className="block w-fit responsiveText text-white mr-1">
               {data.purchases.count}+ enrolled
             </span>
             <span className="block w-fit responsiveTex text-white">
