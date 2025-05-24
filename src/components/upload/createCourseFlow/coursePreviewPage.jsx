@@ -265,23 +265,23 @@ export default function CoursePreviewPage() {
           </p>
           <div className="relative flex maxSmallMobile:!flex-col items-center justify-between gap-4 w-fit maxSmallMobile:w-full maxSmallMobile:items-start maxSmallMobile:gap-2">
             <span className="flex -space-x-4">
-              {Array.from({ length: 5 }, (_, i) => i + 1).map((index) => (
+              {data.purchases.firstFiveUsers.map((user, index) => (
                 <Avatar
-                  key={index.toString()}
+                  key={user.id}
                   className="border-2 border-background block w-[2rem] h-[2rem] !rounded-[1rem]"
                   style={{ zIndex: index + 1 }}
                 >
                   <AvatarImage
-                    src={"/team/imoh.jpg"}
-                    alt={"imoh"}
+                    src={"/images/avatars/" + user.id + ".webp"}
+                    alt={user.firstLetter}
                     className="object-cover"
                   />
-                  <AvatarFallback>{"B"}</AvatarFallback>
+                  <AvatarFallback className="bg-gray-600">{user.firstLetter}</AvatarFallback>
                 </Avatar>
               ))}
             </span>
-            <span className="block w-fit responsiveTex text-white mr-1">
-              25+ enrolled
+            <span className="block w-fit responsiveText text-white mr-1">
+              {data.purchases.count}+ enrolled
             </span>
             <span className="block w-fit responsiveTex text-white">
               Created by{" "}
