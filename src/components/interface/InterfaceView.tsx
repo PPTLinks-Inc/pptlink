@@ -41,6 +41,7 @@ export default function InterfaceView() {
   const [mic, setMic] = useState(false);
   const [sideBar, setSideBar] = useState(true);
   const [screenShare, setScreenShare] = useState(false);
+  const [micRequests, setMicRequests] = useState(0); // Example: 5 total requests
   const [liveChatAudience, setLiveChatAudience] = useState({
     audience: true,
     chats: false,
@@ -210,7 +211,13 @@ export default function InterfaceView() {
         {/* {sideBar && ( */}
         <div className={`w-full h-full p-1 ${!sideBar && "hidden"}`}>
           {/* sideBar wrapper */}
-          <div className="w-full min-h-full grid grid-cols-[1fr] grid-rows-[20px_1fr] gap-1">
+          <div className="w-full min-h-full grid grid-cols-[1fr] grid-rows-[20px_1fr] gap-1 relative">
+            <button
+              onClick={() => setSideBar(false)}
+              className={`text-white z-10 cursor-pointer w-fit h-fit p-1 border-none rounded-sm absolute top-8 right-2 ${!liveChatAudience.controls ? "hidden" : "block"}`}
+            >
+              <IoClose size={20} />
+            </button>
             {/* SideBar toggle for Live audience and chat */}
             <div className="w-full h-full border-none rounded-sm grid grid-cols-2 grid-rows-1 gap-1">
               <span
@@ -304,46 +311,65 @@ export default function InterfaceView() {
               </div>
               {/* mic requests section */}
               <div className="w-full h-fit bg-black">
-                <p className="text-white text-xs pt-2 pb-3">Mic requests</p>
+                <div className="w-full flex justify-between items-center">
+                  <p className="text-white text-xs pt-2 pb-3">Mic requests</p>
+                  {micRequests > 2 && (
+                    <button className="text-white text-[0.6rem] bg-primaryTwo px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm mb-3">
+                      See all ({micRequests})
+                    </button>
+                  )}
+                </div>
                 <div className="w-full h-fit bg-primaryTwo border-none rounded-sm">
                   {/* users avaters here as lists: request to speak users, yet to be accepted */}
-                  <ScrollArea className="h-full w-full border-none">
-                    {Array.from({ length: 2 }, (_, index) => (
-                      <div
-                        key={`user-${index}`}
-                        className="w-full h-full flex justify-between items-center gap-2 p-2"
-                      >
-                        <div className="flex justify-center items-center gap-2">
-                          <Avatar className="w-10 h-10">
-                            <AvatarImage
-                              src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                              alt={`User ${index + 1}`}
-                            />
-                            <AvatarFallback>
-                              <span className="text-white text-xs">{`User ${index + 1}`}</span>
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-white text-xs block w-fit h-fit">
-                            {`User ${index + 1}`}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center gap-2">
-                          <button className="text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
-                            Accept
-                          </button>
-                          <button className="text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
-                            Decline
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </ScrollArea>
-                  {/* end of users requests */}
+                  {micRequests === 0 ? (
+                    <div className="w-full h-[55px] flex justify-center items-center">
+                      <span className="text-gray-400 text-xs">
+                        No mic requests
+                      </span>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-full w-full border-none">
+                      {Array.from(
+                        { length: Math.min(2, micRequests) },
+                        (_, index) => (
+                          <div
+                            key={`user-${index}`}
+                            className="w-full h-full flex justify-between items-center gap-2 p-2"
+                          >
+                            <div className="flex justify-center items-center gap-2">
+                              <Avatar className="w-10 h-10">
+                                <AvatarImage
+                                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
+                                  alt={`User ${index + 1}`}
+                                />
+                                <AvatarFallback>
+                                  <span className="text-white text-xs">{`User ${index + 1}`}</span>
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-white text-xs block w-fit h-fit">
+                                {`User ${index + 1}`}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2">
+                              <button className="text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
+                                Accept
+                              </button>
+                              <button className="text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
+                                Decline
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </ScrollArea>
+                  )}
                 </div>
               </div>
-              {/* users in attendance */}
+              {/* users in attendance */}{" "}
               <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
-                <ScrollArea className="h-[calc(100vh-280px)] w-full border-none">
+                <ScrollArea
+                  className={`${micRequests > 1 ? "h-[calc(100vh-280px)]" : "h-[calc(100vh-230px)]"} w-full border-none`}
+                >
                   {Array.from({ length: 12 }, (_, index) => (
                     <div
                       key={`user-${index}`}
@@ -458,12 +484,6 @@ export default function InterfaceView() {
             <div
               className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.controls ? "hidden" : "grid"}`}
             >
-              <button
-                onClick={() => setSideBar(!sideBar)}
-                className="text-white block w-fit h-fit p-1 border-none rounded-sm absolute top-2 right-2"
-              >
-                <IoClose size={20} />
-              </button>
               <ScrollArea className="h-[calc(100vh-150px)] w-full border-none py-8 px-2">
                 <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
                   <LiaPenNibSolid size={20} />
