@@ -281,7 +281,7 @@ export default function CoursePreviewPage() {
               ))}
             </span>
             <span className="block w-fit responsiveText text-white mr-1">
-              {data.purchases.count}+ enrolled
+              {data.purchases.count} enrolled
             </span>
             <span className="block w-fit responsiveTex text-white">
               Created by{" "}
