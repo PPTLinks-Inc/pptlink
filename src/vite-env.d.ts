@@ -11,7 +11,7 @@ interface ImportMetaEnv {
   readonly VITE_FLW_PUBLIC_KEY: string
   readonly VITE_CONVEX_URL: string
   readonly VITE_S3_ORIGIN: string
-  readonly VITE_CLOUDFONT_ORIGIN: string
+  readonly VITE_CLOUDFRONT_ORIGIN: string
 }
 
 interface ImportMeta {
