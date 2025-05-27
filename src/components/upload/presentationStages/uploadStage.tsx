@@ -253,7 +253,7 @@ export default function UploadStage() {
   useEffect(
     function () {
       if (uploadData?.status === "success") {
-        const thumbnail = `${import.meta.env.VITE_CLOUDFONT_ORIGIN}/${uploadData?.thumbnail}`;
+        const thumbnail = `${import.meta.env.VITE_CLOUDFRONT_ORIGIN}/${uploadData?.thumbnail}`;
 
         setPdfUrl(thumbnail);
         toast({
