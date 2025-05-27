@@ -105,13 +105,16 @@ export default function CourseCard({ content, locked, courseId }) {
             )}
           </p>
         </div>
-
-        {/* <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
-          <span className="block my-[0.2px] py-2 w-3/6 bg-[#FFA500] border-none rounded-lg"></span>
+            
+        <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
+          <span style={{
+            width: `${content.progress}%`,
+            transition: "width 0.3s ease-in-out"
+          }} className={`block my-[0.2px] py-2 bg-[#FFA500] border-none rounded-lg`}></span>
           <span className="text-black !text-[0.7rem] font-bold my-[0.2px] z-10 absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-            50%
+            {content.progress}%
           </span>
-        </div> */}
+        </div>
       </motion.div>
     </>
   );
