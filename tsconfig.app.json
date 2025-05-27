@@ -30,5 +30,9 @@
       ]
     }
   },
+<<<<<<< HEAD
   "include": ["src", "types.d.ts"]
+=======
+  "include": ["src", "types.d.ts", "../pptlink-backend/convex"]
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 }

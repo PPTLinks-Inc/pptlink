@@ -19,8 +19,11 @@ export interface UploadStore {
     setSelectedCategory: (category: { id: string, name: string }) => void;
     pdfUrl: string;
     setPdfUrl: (url: string) => void;
+<<<<<<< HEAD
     processingFile: boolean;
     setProcessingFile: (value: boolean) => void;
+=======
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 
     presentersName: string;
     setPresentersName: (name: string) => void;

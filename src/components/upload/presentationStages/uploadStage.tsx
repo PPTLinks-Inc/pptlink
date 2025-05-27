@@ -1,16 +1,25 @@
 /* eslint-disable react/prop-types */
+<<<<<<< HEAD
 import { FormEvent, useEffect, useRef, useState } from "react";
+=======
+import { useEffect, useState } from "react";
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 import { useUploadStore } from "@/store/uploadStoreProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SERVER_URL } from "@/constants/routes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+<<<<<<< HEAD
 import PopUpModal from "@/components/Models/dashboardModel";
+=======
+// import PopUpModal from "@/components/Models/dashboardModel";
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { LoadingAssetBig, LoadingAssetSmall } from "@/assets/assets";
 import { useSearchParams } from "react-router-dom";
+<<<<<<< HEAD
 import { authFetch } from "@/lib/axios";
 import useUser from "@/hooks/useUser";
 
@@ -18,6 +27,22 @@ const useFileValidation = () => {
   const pdfUrl = useUploadStore((state) => state.pdfUrl);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (file: any) => {
+=======
+import { authFetch, standardFetch } from "@/lib/axios";
+import useUser from "@/hooks/useUser";
+import { useMutation as useConvexMutation } from "convex/react";
+import { api } from "@pptlinks/shared-convex-backend/convex/_generated/api";
+import { useConvexQuery } from "@/lib/convex";
+
+const useFileValidation = (edit: boolean) => {
+  const pdfUrl = useUploadStore((state) => state.pdfUrl);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (file: any) => {
+    if (edit) {
+      return true;
+    }
+
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
     if (pdfUrl === "" && !file) {
       return false;
     }
@@ -26,7 +51,14 @@ const useFileValidation = () => {
 };
 
 export default function UploadStage() {
+<<<<<<< HEAD
   const validateFile = useFileValidation();
+=======
+  const [searchParams] = useSearchParams();
+
+  const validateFile = useFileValidation(searchParams.has("edit"));
+
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
   const schema = z.object({
     title: z.string().min(2, { message: "Title is too short" }),
     description: z
@@ -45,19 +77,40 @@ export default function UploadStage() {
       .any()
       .refine(validateFile)
       .refine((file: FileList) => {
+<<<<<<< HEAD
+=======
+        if (searchParams.has("edit")) {
+          return true;
+        }
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
         if (file) {
           return file.length > 0;
         }
         return false;
       }, "File is required")
       .refine((file) => {
+<<<<<<< HEAD
+=======
+        if (searchParams.has("edit")) {
+          return true;
+        }
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
         if (!file) {
           return false;
         }
         if (!file[0]) return false;
+<<<<<<< HEAD
         return file[0].size < 10 * 1024 * 1024;
       }, "File size must not exceed 10MB")
       .refine((file) => {
+=======
+        return file[0].size < 50 * 1024 * 1024;
+      }, "File size must not exceed 50MB")
+      .refine((file) => {
+        if (searchParams.has("edit")) {
+          return true;
+        }
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
         if (!file) {
           return false;
         }
@@ -88,11 +141,16 @@ export default function UploadStage() {
   const addCategory = useUploadStore((state) => state.addCategory);
   const categories = useUploadStore((state) => state.categories);
   const setPdfUrl = useUploadStore((state) => state.setPdfUrl);
+<<<<<<< HEAD
   const pdfUrl = useUploadStore((state) => state.pdfUrl);
+=======
+  // const pdfUrl = useUploadStore((state) => state.pdfUrl);
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 
   const [addNewCategory, setAddNewCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
 
+<<<<<<< HEAD
   const [serverConnected, setServerConnected] = useState(false);
   const [failedToConnect, setFailedToConnect] = useState(false);
   const [uploadPercentage, setUploadPercentage] = useState(0);
@@ -203,6 +261,78 @@ export default function UploadStage() {
         }, 8000);
       }
       setModalValues((prev) => ({ ...prev, open: false }));
+=======
+  const [uploadPercentage, setUploadPercentage] = useState(0);
+
+  // const [modalValues, setModalValues] = useState({
+  //   message: "",
+  //   actionText: "",
+  //   open: false,
+  //   oneButton: false,
+  //   isLoading: false,
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   onSubmit: (_e: FormEvent<HTMLFormElement>) => {},
+  //   onClose: () => {}
+  // });
+
+  const updateUploadStatus = useConvexMutation(
+    api.jobsMutation.updateSingleUploadTempDataStatus
+  );
+  const { data: uploadData } = useConvexQuery(
+    api.jobsQuery.getSingleUploadTempData,
+    {
+      userId: user?.id ?? ""
+    }
+  );
+
+  const uploadMutation = useMutation({
+    mutationFn: async function (file: File) {
+      setUploadPercentage(0);
+
+      if (!user) {
+        return;
+      }
+
+      const params = {
+        name: file.name,
+        contentType: file.type,
+        ...(searchParams.has("edit")
+          ? { editPresentationId: searchParams.get("edit")! }
+          : {})
+      };
+
+      const { data: urlData } = await authFetch.get(
+        `${SERVER_URL}/api/v1/ppt/generate-upload-url`,
+        {
+          params
+        }
+      );
+
+      await standardFetch.put(urlData.signedUrl, file, {
+        headers: {
+          "Content-Type": file.type
+        },
+        onUploadProgress: function (progressEvent) {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadPercentage(percentCompleted);
+          }
+        }
+      });
+
+      updateUploadStatus({
+        userId: user.id,
+        status: "pending"
+      });
+    },
+    onSuccess: function () {
+      toast({
+        description: "File is been processed",
+        action: <LoadingAssetSmall />
+      });
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
     }
   });
 
@@ -224,7 +354,10 @@ export default function UploadStage() {
     handleSubmit,
     watch,
     trigger,
+<<<<<<< HEAD
     setValue,
+=======
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
     reset,
     formState: { errors }
   } = useForm({
@@ -241,6 +374,20 @@ export default function UploadStage() {
     }
   });
 
+<<<<<<< HEAD
+=======
+  const isError =
+    uploadData?.status === "error" ||
+    uploadMutation.isError ||
+    errors.file?.message;
+
+  const processingFile = uploadData?.status === "processing";
+  const successFile = uploadData?.status === "success";
+  const uploading =
+    uploadData?.status === "uploading" || uploadMutation.isPending;
+  const pending = uploadData?.status === "pending";
+
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
   useEffect(
     function () {
       if (!searchParams.has("edit")) {
@@ -263,6 +410,7 @@ export default function UploadStage() {
 
   useEffect(
     function () {
+<<<<<<< HEAD
       if (!user) return;
 
       const token = localStorage.getItem("accessToken");
@@ -536,6 +684,18 @@ export default function UploadStage() {
       }
     },
     [formValues.file, pdfUrl]
+=======
+      if (uploadData?.status === "success") {
+        const thumbnail = `${import.meta.env.VITE_CLOUDFONT_ORIGIN}/${uploadData?.thumbnail}`;
+
+        setPdfUrl(thumbnail);
+        toast({
+          description: "File processing is done"
+        });
+      }
+    },
+    [uploadData?.status]
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
   );
 
   const setUploadStageSubmitHandler = useUploadStore(
@@ -549,6 +709,23 @@ export default function UploadStage() {
 
   useEffect(
     function () {
+<<<<<<< HEAD
+=======
+      if (formValues.file) {
+        // check if file is valid
+        trigger("file").then((isValid) => {
+          if (isValid) {
+            uploadMutation.mutate(formValues.file![0]);
+          }
+        });
+      }
+    },
+    [formValues.file]
+  );
+
+  useEffect(
+    function () {
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
       setUploadStageSubmitHandler(
         handleSubmit(function () {
           setTitle(formValues.title);
@@ -595,6 +772,7 @@ export default function UploadStage() {
 
   return (
     <div className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}>
+<<<<<<< HEAD
       <PopUpModal {...modalValues} />
       {/* Upload File here */}
       <div
@@ -603,6 +781,16 @@ export default function UploadStage() {
               before:absolute before:top-0 before:left-0 before:pointer-events-none`}
       >
         {!processingFile && serverConnected && !failedToConnect && (
+=======
+      {/* <PopUpModal {...modalValues} /> */}
+      {/* Upload File here */}
+      <div
+        className={`w-full h-[20rem] m-auto ${false && "hidden"} 
+              ${isError && "border-[3px] !border-[red] border-dashed"} before:block before:w-full relative before:h-full before:bg-[#FFFFF0] 
+              before:absolute before:top-0 before:left-0 before:pointer-events-none`}
+      >
+        {!processingFile && !pending && !uploading && (
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
           <input
             type="file"
             accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
@@ -611,6 +799,7 @@ export default function UploadStage() {
             {...register("file")}
           />
         )}
+<<<<<<< HEAD
         {uploadMutation.isPending && (
           <Progress
             value={uploadPercentage}
@@ -730,6 +919,117 @@ export default function UploadStage() {
         {/* {uploadValuesErrors.fileError && (
                     <p className="text-[red] w-[90%] mx-auto text-lg mt-2 pb-6">{uploadValuesErrors.fileError}</p>
                 )} */}
+=======
+        <div
+          className={`flex flex-col gap-2 justify-center items-center w-full h-full absolute top-0 left-0 pointer-events-none _maxScreenMobile:bg-primaryTwo`}
+        >
+          {!processingFile && !pending && !uploading && (
+            <>
+              <span className="block w-[5rem] aspect-square">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 130.163 107.713"
+                  className="block w-full h-full"
+                >
+                  <g
+                    id="Icon_feather-upload-cloud"
+                    data-name="Icon feather-upload-cloud"
+                    transform="translate(2.029 -0.985)"
+                  >
+                    <path
+                      id="Path_197"
+                      data-name="Path 197"
+                      d="M56.759,40.379,34.38,18,12,40.379"
+                      transform="translate(28.686 36.845)"
+                      fill="none"
+                      stroke={`${successFile ? "green" : isError ? "red" : "#ffa500"}`}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="7"
+                    />
+                    <path
+                      id="Path_198"
+                      data-name="Path 198"
+                      d="M18,18V68.354"
+                      transform="translate(45.066 36.845)"
+                      fill="none"
+                      stroke={`${successFile ? "green" : isError ? "red" : "#ffa500"}`}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="7"
+                    />
+                    <path
+                      id="Path_199"
+                      data-name="Path 199"
+                      d="M110.007,90.6A27.974,27.974,0,0,0,96.635,38.06h-7.05A44.759,44.759,0,1,0,12.712,78.9"
+                      transform="translate(0 0)"
+                      fill="none"
+                      stroke={`${successFile ? "green" : isError ? "red" : "#ffa500"}`}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="7"
+                    />
+                    <path
+                      id="Path_200"
+                      data-name="Path 200"
+                      d="M56.759,40.379,34.38,18,12,40.379"
+                      transform="translate(28.686 36.845)"
+                      fill="none"
+                      stroke={`${successFile ? "green" : isError ? "red" : "#ffa500"}`}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="7"
+                    />
+                  </g>
+                </svg>
+              </span>
+
+              <span
+                className={`w-fit h-fit text-white ${successFile ? "bg-[green]" : isError ? "bg-[red]" : "bg-[#ffa500]"} py-2 px-8 rounded-full`}
+              >
+                {formValues.file && formValues.file[0]
+                  ? "Change file..."
+                  : "Browse File"}
+              </span>
+            </>
+          )}
+          {(pending || processingFile) && (
+            <span className="w-fit h-fit text-primaryTwo">
+              <LoadingAssetBig />
+            </span>
+          )}
+          <span
+            className={`w-fit h-fit ${successFile ? "text-[green]" : isError ? "text-[red]" : "text-primaryTwo"}`}
+          >
+            {successFile
+              ? "File Upload successfully"
+              : isError
+                ? "An Error occurred while uploading"
+                : processingFile && "File is being processed..."}
+          </span>
+
+          {uploading && (
+            <Progress
+              value={uploadPercentage}
+              className="bg-[#ffa500] w-1/2 mx-auto"
+            />
+          )}
+
+          {(pending || processingFile) && (
+            <button
+              className="w-fit h-fit text-white py-2 px-8 rounded-full bg-[#ffa500] cursor-pointer pointer-events-auto"
+              onClick={() => {
+                updateUploadStatus({
+                  userId: user?.id ?? "",
+                  status: "cancelled"
+                });
+              }}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
       </div>
       {/* Title */}
       <div className="w-[90%] h-fit m-auto mt-8 text-lg text-primaryTwo">

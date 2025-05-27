@@ -33,8 +33,11 @@ export default function UploadStoreProvider({
       setSelectedCategory: (category) => set({ selectedCategory: category }),
       pdfUrl: "",
       setPdfUrl: (url) => set({ pdfUrl: url }),
+<<<<<<< HEAD
       processingFile: false,
       setProcessingFile: (value) => set({ processingFile: value }),
+=======
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 
       presentersName: "",
       setPresentersName: (name) => set({ presentersName: name }),
