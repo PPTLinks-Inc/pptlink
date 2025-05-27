@@ -118,16 +118,20 @@ export default function CourseVideoPlayer() {
       }
       abortControllerRef.current = new AbortController();
 
-      await authFetch.patch(
-        `/api/v1/course/media/video-analytics/${params.courseId}/${params.contentId}`,
-        {
-          watchedBlocks,
-          lastPosition: 0
-        },
-        {
-          signal: abortControllerRef.current.signal
-        }
-      );
+      try {
+        await authFetch.patch(
+          `/api/v1/course/media/video-analytics/${params.courseId}/${params.contentId}`,
+          {
+            watchedBlocks,
+            lastPosition: 0
+          },
+          {
+            signal: abortControllerRef.current.signal
+          }
+        );
+      } catch (error) {
+        console.log("Error updating video analytics on end:", error);
+      }
 
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
