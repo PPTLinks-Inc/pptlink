@@ -29,9 +29,6 @@ import { GoBell } from "react-icons/go";
 import { CgFileAdd } from "react-icons/cg";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { CgPoll } from "react-icons/cg";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { FaAngleRight } from "react-icons/fa6";
 
 // enum SIDEBAR_STATES {
 //   LIVE_AUDIENCE = "AUDIENCE",
@@ -40,23 +37,18 @@ import { FaAngleRight } from "react-icons/fa6";
 // }
 // ratios: side-bar 23.75(342px), main-view 73.125(1053px), spacings 3.125(45px)
 export default function InterfaceView() {
-  // const { orientation } = useOrientation();
   const navigate = useNavigate();
   const [mic, setMic] = useState(false);
   const [sideBar, setSideBar] = useState(true);
-  const [videoShare, setVideoShare] = useState(false);
   const [screenShare, setScreenShare] = useState(false);
-  const [micRequest, setMicRequest] = useState(15);
-  const [chooseCoHost, setChooseCoHost] = useState(15);
-  const [chooseSlide, setChooseSlide] = useState(12);
+  const [micRequests, setMicRequests] = useState(0); // Example: 5 total requests
   const [liveChatAudience, setLiveChatAudience] = useState({
     audience: true,
     chats: false,
-    controls: false,
-    requests: false,
-    coHost: false,
-    chooseSlide: false
+    controls: false
   });
+  const [videoShare, setVideoShare] = useState(false);
+  // const { orientation } = useOrientation();
 
   return (
     // new interface page
@@ -84,7 +76,7 @@ export default function InterfaceView() {
           className={`w-full h-full p-1  grid grid-rows-[1fr_50px] grid-cols-[1fr] gap-1`}
         >
           {/* main interface */}
-          <div className="relative w-full h-full bg-[white] border-none rounded-sm">
+          <div className="relative w-full h-full bg-[green] border-none rounded-sm">
             <button
               onClick={() => alert("Sync... in progress")}
               className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-20"
@@ -101,8 +93,31 @@ export default function InterfaceView() {
                 <RxExitFullScreen color="white" size={28} />
               )}
             </button>
-            {/* slider component goes here (ppt file slider) */}
-            <div className="slider-view w-full h-full bg-[gray]"></div>
+            <h1 className="text-4xl text-white">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. A eum
+              ipsam excepturi! Sunt, eius enim.
+            </h1>
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nostrum
+              ad vero, laborum enim quis, neque sint consequuntur perferendis
+              officia voluptatum, odio tenetur illum optio! Dolore molestiae
+              consequatur esse consectetur, rerum repellat? Eaque reprehenderit,
+              incidunt voluptates hic ab necessitatibus quod est tempore vitae
+              sit vel assumenda. Repudiandae quis incidunt, repellendus eos
+              ullam omnis eius maxime hic, soluta quasi deserunt consequuntur
+              consectetur veniam saepe, animi eum accusamus ipsa. Quam pariatur
+              ipsam architecto hic perferendis repellat unde mollitia ab rem
+              recusandae enim libero reiciendis officiis necessitatibus itaque,
+              officia sint. Reprehenderit nihil consequuntur a accusamus magni
+              expedita velit quae adipisci doloremque mollitia, deleniti iure
+              architecto ratione enim numquam impedit laboriosam! Modi, nisi
+              blanditiis. Quia repellat labore mollitia, hic sed et nulla
+              temporibus ex accusantium. Totam quasi recusandae sint. Asperiores
+              quia laborum perspiciatis accusantium exercitationem nihil, vitae
+              excepturi aspernatur corrupti praesentium veritatis officiis,
+              ducimus omnis nostrum reiciendis dolore! Asperiores fugit ab odit
+              iste earum perspiciatis?
+            </p>
           </div>
           {/* interface footer */}
           <footer className="w-full h-full">
@@ -160,10 +175,7 @@ export default function InterfaceView() {
                     setLiveChatAudience({
                       audience: false,
                       chats: true,
-                      controls: false,
-                      requests: false,
-                      coHost: false,
-                      chooseSlide: false
+                      controls: false
                     });
                     setSideBar(true);
                   }}
@@ -176,10 +188,7 @@ export default function InterfaceView() {
                     setLiveChatAudience({
                       audience: false,
                       chats: false,
-                      controls: true,
-                      requests: false,
-                      coHost: false,
-                      chooseSlide: false
+                      controls: true
                     });
                     setSideBar(true);
                   }}
@@ -199,33 +208,13 @@ export default function InterfaceView() {
           </footer>
         </div>
         {/* sideBar section */}
+        {/* {sideBar && ( */}
         <div className={`w-full h-full p-1 ${!sideBar && "hidden"}`}>
           {/* sideBar wrapper */}
           <div className="w-full min-h-full grid grid-cols-[1fr] grid-rows-[20px_1fr] gap-1 relative">
             <button
-              onClick={() => {
-                setLiveChatAudience(
-                  liveChatAudience.controls
-                    ? {
-                        audience: false,
-                        chats: false,
-                        controls: false,
-                        requests: false,
-                        coHost: false,
-                        chooseSlide: false
-                      }
-                    : {
-                        audience: false,
-                        chats: false,
-                        controls: true,
-                        requests: false,
-                        coHost: false,
-                        chooseSlide: false
-                      }
-                );
-                setSideBar(!liveChatAudience.controls ? true : false);
-              }}
-              className={`text-white ${!(liveChatAudience.controls || liveChatAudience.coHost || liveChatAudience.chooseSlide) ? "hidden" : "block"} w-fit h-fit p-1 border-none rounded-sm absolute top-8 right-2 z-10`}
+              onClick={() => setSideBar(false)}
+              className={`text-white z-10 cursor-pointer w-fit h-fit p-1 border-none rounded-sm absolute top-8 right-2 ${!liveChatAudience.controls ? "hidden" : "block"}`}
             >
               <IoClose size={20} />
             </button>
@@ -236,10 +225,7 @@ export default function InterfaceView() {
                   setLiveChatAudience({
                     audience: true,
                     chats: false,
-                    controls: false,
-                    requests: false,
-                    coHost: false,
-                    chooseSlide: false
+                    controls: false
                   });
                   setSideBar(true);
                 }}
@@ -261,10 +247,7 @@ export default function InterfaceView() {
                   setLiveChatAudience({
                     audience: false,
                     chats: true,
-                    controls: false,
-                    requests: false,
-                    coHost: false,
-                    chooseSlide: false
+                    controls: false
                   });
                   setSideBar(true);
                 }}
@@ -326,38 +309,28 @@ export default function InterfaceView() {
                   </div>
                 </div>
               </div>
-              {/* mic requests section 1 */}
+              {/* mic requests section */}
               <div className="w-full h-fit bg-black">
-                <div className="w-full h-fit flex justify-between items-center">
+                <div className="w-full flex justify-between items-center">
                   <p className="text-white text-xs pt-2 pb-3">Mic requests</p>
-                  {micRequest && (
-                    <button
-                      onClick={() =>
-                        setLiveChatAudience({
-                          audience: false,
-                          chats: false,
-                          controls: false,
-                          requests: true,
-                          coHost: false,
-                          chooseSlide: false
-                        })
-                      }
-                      className="block w-fit h-fit bg-primaryTwo py-0.5 px-2 text-white text-[0.6rem] border-none rounded-sm cursor-pointer"
-                    >
-                      {micRequest > 2 ? "See more" : ""} ({micRequest})
+                  {micRequests > 2 && (
+                    <button className="text-white text-[0.6rem] bg-primaryTwo px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm mb-3">
+                      See all ({micRequests})
                     </button>
                   )}
                 </div>
                 <div className="w-full h-fit bg-primaryTwo border-none rounded-sm">
                   {/* users avaters here as lists: request to speak users, yet to be accepted */}
-                  <ScrollArea className="h-full w-full border-none">
-                    {!micRequest ? (
-                      <p className="text-gray-400 text-xs w-full h-full flex justify-center items-center p-5">
+                  {micRequests === 0 ? (
+                    <div className="w-full h-[55px] flex justify-center items-center">
+                      <span className="text-gray-400 text-xs">
                         No mic requests
-                      </p>
-                    ) : (
-                      Array.from(
-                        { length: Math.min(2, micRequest) },
+                      </span>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-full w-full border-none">
+                      {Array.from(
+                        { length: Math.min(2, micRequests) },
                         (_, index) => (
                           <div
                             key={`user-${index}`}
@@ -387,16 +360,15 @@ export default function InterfaceView() {
                             </div>
                           </div>
                         )
-                      )
-                    )}
-                  </ScrollArea>
-                  {/* end of users requests */}
+                      )}
+                    </ScrollArea>
+                  )}
                 </div>
               </div>
-              {/* users in attendance */}
+              {/* users in attendance */}{" "}
               <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
                 <ScrollArea
-                  className={`${micRequest <= 1 ? "h-[calc(100vh-225px)]" : "h-[calc(100vh-280px)]"} w-full border-none`}
+                  className={`${micRequests > 1 ? "h-[calc(100vh-280px)]" : "h-[calc(100vh-230px)]"} w-full border-none`}
                 >
                   {Array.from({ length: 12 }, (_, index) => (
                     <div
@@ -442,8 +414,8 @@ export default function InterfaceView() {
               <div className="w-full h-full border-none rounded-sm overflow-hidden">
                 {/* users live chats start */}
                 <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
-                  <ScrollArea className="h-[calc(100vh-130px)] w-full border-none">
-                    {Array.from({ length: 10 }, (_, index) => (
+                  <ScrollArea className="h-[calc(100vh-150px)] w-full border-none">
+                    {Array.from({ length: 2 }, (_, index) => (
                       <div
                         key={`user-${index}`}
                         className="w-full h-full flex justify-between items-center gap-2 p-2"
@@ -512,216 +484,36 @@ export default function InterfaceView() {
             <div
               className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.controls ? "hidden" : "grid"}`}
             >
-              <ScrollArea className="h-[calc(100vh-150px)] w-full border-none pt-12 pb-2 px-2">
-                <Label
-                  htmlFor="pen-label"
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <LiaPenNibSolid size={20} />
-                    <span className="text-sm">Pen</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <Switch id="pen-label" />
-                  </span>
-                </Label>
-                <Label
-                  htmlFor="music-label"
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <IoMusicalNotesOutline size={20} />
-                    <span className="text-sm">Music</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <Switch id="music-label" />
-                  </span>
-                </Label>
-                <Label
-                  htmlFor="ping-label"
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <GoBell size={20} />
-                    <span className="text-sm">Ping audience</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <Switch id="ping-label" />
-                  </span>
-                </Label>
-                <button
-                  onClick={() =>
-                    setLiveChatAudience({
-                      audience: false,
-                      chats: false,
-                      controls: false,
-                      requests: false,
-                      coHost: false,
-                      chooseSlide: true
-                    })
-                  }
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <CgFileAdd size={20} />
-                    <span className="text-sm">Add slides</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
+              <ScrollArea className="h-[calc(100vh-150px)] w-full border-none py-8 px-2">
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <LiaPenNibSolid size={20} />
+                  <span className="text-sm">Pen</span>
                 </button>
-                <button
-                  onClick={() =>
-                    setLiveChatAudience({
-                      audience: false,
-                      chats: false,
-                      controls: false,
-                      requests: false,
-                      coHost: true,
-                      chooseSlide: false
-                    })
-                  }
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <AiOutlineUsergroupAdd size={20} />
-                    <span className="text-sm">Co-host</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <IoMusicalNotesOutline size={20} />
+                  <span className="text-sm">Music</span>
                 </button>
-                <button className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9">
-                  <span className="flex justify-start items-center gap-2">
-                    <CgPoll size={20} />
-                    <span className="text-sm">Poll</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <GoBell size={20} />
+                  <span className="text-sm">Ping audience</span>
                 </button>
-              </ScrollArea>
-            </div>
-            {/* ******Mic Requests section 2 ********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.requests ? "hidden" : "grid"}`}
-            >
-              {" "}
-              <ScrollArea className="h-[calc(100vh-75px)] w-full border-none px-2">
-                {!micRequest ? (
-                  <p className="text-gray-400 text-xs w-full h-full flex justify-center items-center p-5">
-                    No mic requests
-                  </p>
-                ) : (
-                  Array.from({ length: micRequest }, (_, index) => (
-                    <div
-                      key={`user-${index}`}
-                      className="w-full h-full flex justify-between items-center gap-2 p-2"
-                    >
-                      <div className="flex justify-center items-center gap-2">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage
-                            src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                            alt={`User ${index + 1}`}
-                          />
-                          <AvatarFallback>
-                            <span className="text-white text-xs">{`User ${index + 1}`}</span>
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-white text-xs block w-fit h-fit">
-                          {`User ${index + 1}`}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <button className="text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
-                          Accept
-                        </button>
-                        <button className="text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
-                          Decline
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </ScrollArea>
-            </div>
-            {/* ******Choose co-host********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.coHost ? "hidden" : "grid"}`}
-            >
-              <p className="text-white text-xs mb-2 absolute top-3 left-4">
-                Choose your co-host
-              </p>
-              <ScrollArea className="h-[calc(100vh-75px)] w-full border-none pt-12 pb-2 px-2">
-                {Array.from({ length: chooseCoHost }, (_, index) => (
-                  <Label
-                    key={`user-${index}`}
-                    className="w-full h-full flex justify-between items-center gap-2 p-2"
-                  >
-                    <span className="flex justify-center items-center gap-2">
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage
-                          src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                          alt={`User ${index + 1}`}
-                        />
-                        <AvatarFallback>
-                          <span className="text-white text-xs">{`User ${index + 1}`}</span>
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-white text-xs block w-fit h-fit">
-                        {`User ${index + 1}`}
-                      </span>
-                    </span>
-                    <span className="flex justify-center items-center gap-1">
-                      <Switch id="ping-label" />
-                    </span>
-                  </Label>
-                ))}
-              </ScrollArea>
-            </div>
-            {/* ******Choose slide********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.chooseSlide ? "hidden" : "grid"}`}
-            >
-              <p className="text-white text-xs mb-2 absolute top-3 left-4">
-                Choose slide
-              </p>
-              <ScrollArea className="h-[calc(100vh-75px)] w-full border-none pt-12 pb-2 px-2">
-                {Array.from({ length: chooseSlide }, (_, index) => (
-                  <div
-                    key={`user-${index}`}
-                    className="w-full h-full grid grid-cols-[6rem_1fr] grid-rows-[6rem] gap-2 p-2 border border-gray-300 rounded-sm mb-4"
-                  >
-                    <div className="w-full h-full">
-                      <img
-                        src={`https://picsum.photos/200/300?random=${index + 1}`}
-                        alt={`Slide ${index + 1}`}
-                        className="w-full h-full object-cover rounded-sm"
-                      />
-                    </div>
-                    <div className="w-full h-full flex flex-col justify-between items-start gap-1">
-                      <span className="text-white text-xs font-bold block w-[11.5625rem] truncate">
-                        {`Embedded Slide ${index + 1} Lorem ipsum dolor sit amet.`}
-                      </span>
-                      <span className="text-white text-xs block w-[11.5625rem] truncate">
-                        <span className="font-bold">Presenter:</span> Imoh
-                        Omeizegba Lorem ipsum dolor sit amet.
-                      </span>
-                      <span className="text-white text-xs block w-[11.5625rem] truncate">
-                        <span className="font-bold">Category:</span> Edge
-                        computing Lorem, ipsum dolor sit amet consectetur
-                        adipisicing elit. A, laborum?
-                      </span>
-                      <button className="text-white text-xs bg-black px-2 py-1 flex justify-center items-center w-full h-fit border-none rounded-sm">
-                        Add+
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <CgFileAdd size={20} />
+                  <span className="text-sm">Add slides</span>
+                </button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <AiOutlineUsergroupAdd size={20} />
+                  <span className="text-sm">Co-host</span>
+                </button>
+                <button className="w-full h-fit text-left flex justify-start items-center gap-1 text-white mb-8">
+                  <CgPoll size={20} />
+                  <span className="text-sm">Pull</span>
+                </button>
               </ScrollArea>
             </div>
           </div>
         </div>
+        {/* )} */}
       </div>
     </div>
   );

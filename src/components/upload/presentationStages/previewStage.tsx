@@ -8,10 +8,13 @@ import { toast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
 import { authFetch } from "@/lib/axios";
 import { AxiosError } from "axios";
+<<<<<<< HEAD
+=======
 import { useConvexQuery } from "@/lib/convex";
 import { api } from "@pptlinks/shared-convex-backend/convex/_generated/api";
 import useUser from "@/hooks/useUser";
 import { Button } from "@/components/ui/button";
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 
 export default function PreviewStage() {
   const currentView = useUploadStore((state) => state.currentView);
@@ -27,6 +30,10 @@ export default function PreviewStage() {
   const startTime = useUploadStore((state) => state.startTime);
   const endTime = useUploadStore((state) => state.endTime);
   const selectedCategory = useUploadStore((state) => state.selectedCategory);
+<<<<<<< HEAD
+
+  const processingFile = useUploadStore((state) => state.processingFile);
+=======
   const { userQuery } = useUser();
   const user = userQuery.data;
 
@@ -38,6 +45,7 @@ export default function PreviewStage() {
   );
 
   const processingFile = uploadData?.status === "processing";
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
   const setIsSaving = useUploadStore((state) => state.setIsSaving);
 
   const [searchParams] = useSearchParams();
@@ -66,7 +74,11 @@ export default function PreviewStage() {
 
         return data.liveId;
       } else {
+<<<<<<< HEAD
+        await authFetch.put(
+=======
         const { data } = await authFetch.put(
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
           `${SERVER_URL}/api/v1/ppt/presentations/update`,
           {
             id: searchParams.get("edit"),
@@ -84,6 +96,16 @@ export default function PreviewStage() {
           }
         );
 
+<<<<<<< HEAD
+        return null;
+      }
+    },
+    onSuccess: function (liveId) {
+      if (liveId === null) {
+        toast({
+          title: "Success",
+          description: "Your presentation has been updated successfully"
+=======
         return data.liveId;
       }
     },
@@ -97,6 +119,7 @@ export default function PreviewStage() {
               View Presentation
             </Button>
           )
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
         });
         setIsSaving(false);
         return;
@@ -104,10 +127,14 @@ export default function PreviewStage() {
       window.location.href = `/${liveId}`;
     },
     onError: function (error) {
+<<<<<<< HEAD
+      const errorMessage = error instanceof AxiosError ? error.response?.data.message : "An error occurred while saving your presentation";
+=======
       const errorMessage =
         error instanceof AxiosError
           ? error.response?.data.message
           : "An error occurred while saving your presentation";
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
       toast({
         title: "Error",
         description: errorMessage,

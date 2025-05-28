@@ -958,8 +958,109 @@ export default function InstructorCard({ img }) {
   className="card snap_scrolling_child w-full h-full rounded-lg cursor-pointer border border-[#FFFFF0] relative flex flex-col"
 >
 
+<!-- Checkout  -->
+<div className="w-full h-fit bg-primaryTwo py-6 relative text-[#FFFFF0] !pt-16">
+          <motion.h2
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.5, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            className="container text-4xl font-extrabold text-center maxScreenMobile:text-3xl maxScreenMobile:font-bold !mb-2">
+            {/* All the skills you need in one place */}
+            Checkout all available courses
+          </motion.h2>
+          <motion.p
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.5, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            className="w-2/5 mx-auto text-sm text-center  maxScreenMobile:w-[90%]">
+            Checkout all available skills you will need to kick start a carrier in the tech industry
+          </motion.p>
 
+          <div className="container grid grid-cols-4 grid-flow-col overflow-x-auto !mt-6">
+            <span data-allcourses="1" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 1 && "!border-[#FFFFF0] font-bold"}`}>Software</span>
+            <span data-allcourses="2" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 2 && "!border-[#FFFFF0] font-bold"}`}>Design</span>
+            <span data-allcourses="3" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 3 && "!border-[#FFFFF0] font-bold"}`}>Fashion</span>
+            <span data-allcourses="4" onClick={handleView} className={`flex justify-center items-end w-full text-center cursor-pointer responsiveText maxScreenMobile:text-[0.5rem] border-b-[1px] border-[gray] _min-w-[10rem] ${currentView === 4 && "!border-[#FFFFF0] font-bold"}`}>Health</span>
+          </div>
 
+          <div className="_hidden flex justify-end items-center  gap-5 maxScreenMobile:justify-end container mx-auto h-fit bg-[transparent] py-4">
+            <button onClick={() => scrollCardsTwo(true)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+              <FaCaretLeft className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+              />
+            </button>
+            <button onClick={() => scrollCardsTwo(false)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px] aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
+              <FaCaretRight className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
+              />
+            </button>
+          </div>
 
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 1, type: "tween" }
+            }}
+            viewport={{ once: true }}
+            ref={scrollRefTwo}
+            className="snap_scrolling container flex gap-8 h-fit overflow-x-auto overflow-y-hidden pr-2 pb-2 scroll-smooth">
+            {(currentView === 1 ||
+              currentView === 2 ||
+              currentView === 3 ||
+              currentView === 4) && Array.from({ length: 10 }, (_, i) => i + 1).map(idx => (
+                <NavLink
+                  key={idx.toString()}
+                  className="snap_scrolling_child min-w-[18rem] grow-0 shrink-0 basis-[15rem] !aspect-[2/2.5] bg-[url('/cod.png')] bg-cover bg-center flex flex-col justify-between items-start py-6 px-2 border-[0.1px] rounded-lg relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-primaryTwo/25 cursor-pointer shadow-white shadow-inner z-10"
+                  to="/libraryPage"
+                >
+                  <div className="absolute top-3 left-0 w-full h-full _bg-black/40 z-0 rounded-lg">
+                    <div className="relative w-full">
+                      {/* <img src={purchased} alt={purchased} className="block h-[1.5rem]" /> */}
+                      <svg width="176" height="32" viewBox="0 0 176 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 32H176L147.294 16.3137L176 0H0V32Z" fill={"gold"} />
+                      </svg>
+                      <span className="block w-[35%] absolute top-[50%] -translate-y-[50%] left-0 bg-transparent pl-2 text-sm">{"Pendding"}</span>
+                    </div>
+                  </div>
+                  <div className="z-10 pt-6">
+                    <p className="text-md font-light mb-1">Software Development</p>
+                    <h4 className="text-2xl font-bold">Mobile Development Basics</h4>
+                  </div>
+                  <div className="z-10">
+                    <p className="text-md font-light mb-3">David A. Spencer</p>
+                    <div className="relative flex items-center justify-between gap-1 w-full">
+                      <span className="flex -space-x-3">
+                        {Array.from({ length: 7 }, (_, i) => i + 1).map(index => (
+                          <Avatar
+                            key={index.toString()}
+                            className="border-2 border-background block w-[1.5rem] h-[1.5rem] !rounded-[0.75rem]"
+                            style={{ zIndex: index + 1 }}
+                          >
+                            <AvatarImage src={"/team/imoh.jpg"} alt={"imoh"} className="object-cover" />
+                            <AvatarFallback>{"I"}</AvatarFallback>
+                          </Avatar>
+                        ))}
+                      </span>
+                      <span className="block w-fit responsiveText">25+ enrolled</span>
+                    </div>
+                  </div>
+                </NavLink>
+              ))}
+          </motion.div>
+          <NavLink
+            to="#"
+            className="block text-center text-[#FFA500] underline mt-6"
+          >
+            See more
+          </NavLink>
+        </div>
 
 

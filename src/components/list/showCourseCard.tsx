@@ -10,6 +10,8 @@ export type CourseType = {
   category: string;
   creator: string;
   accessType: "NONE" | "Purchased" | "Draft" | "Creator" | "Tutoring";
+<<<<<<< HEAD
+=======
   purchases: {
     count: string;
     firstFiveUsers: {
@@ -17,6 +19,7 @@ export type CourseType = {
       firstLetter: string;
     }[];
   };
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 };
 
 export default function ShowCourseCard({ course }: { course: CourseType }) {
@@ -69,13 +72,30 @@ export default function ShowCourseCard({ course }: { course: CourseType }) {
         <p className="text-md font-light mb-3">{course.creator}</p>
         <div className="relative flex items-center justify-between gap-1 w-full">
           <span className="flex -space-x-3">
+<<<<<<< HEAD
+            {Array.from({ length: 7 }, (_, i) => i + 1).map((index) => (
+              <Avatar
+                key={index.toString()}
+=======
             {course.purchases.firstFiveUsers.map((user, index) => (
               <Avatar
                 key={user.id}
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
                 className="border-2 border-background block w-[1.5rem] h-[1.5rem] !rounded-[0.75rem]"
                 style={{ zIndex: index + 1 }}
               >
                 <AvatarImage
+<<<<<<< HEAD
+                  src={"/team/imoh.jpg"}
+                  alt={"imoh"}
+                  className="object-cover"
+                />
+                <AvatarFallback>{"I"}</AvatarFallback>
+              </Avatar>
+            ))}
+          </span>
+          <span className="block w-fit responsiveText">25+ enrolled</span>
+=======
                   src={"/images/avatars/" + user.id + ".webp"}
                   alt={user.firstLetter}
                   className="object-cover"
@@ -84,7 +104,12 @@ export default function ShowCourseCard({ course }: { course: CourseType }) {
               </Avatar>
             ))}
           </span>
+<<<<<<< HEAD
+          <span className="block w-fit responsiveText">{course.purchases.count}+ enrolled</span>
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
+=======
           <span className="block w-fit responsiveText">{course.purchases.count} enrolled</span>
+>>>>>>> a38b2baa503bc6c857160f5f017bc2802b20b985
         </div>
       </div>
     </NavLink>
