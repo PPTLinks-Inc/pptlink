@@ -46,9 +46,9 @@ export default function InterfaceView() {
   const [sideBar, setSideBar] = useState(true);
   const [videoShare, setVideoShare] = useState(false);
   const [screenShare, setScreenShare] = useState(false);
-  const [micRequest, setMicRequest] = useState(15);
-  const [chooseCoHost, setChooseCoHost] = useState(15);
-  const [chooseSlide, setChooseSlide] = useState(12);
+  const [micRequest] = useState(15);
+  const [chooseCoHost] = useState(15);
+  const [chooseSlide] = useState(12);
   const [liveChatAudience, setLiveChatAudience] = useState({
     audience: true,
     chats: false,
@@ -59,7 +59,7 @@ export default function InterfaceView() {
   });
 
   return (
-    // new interface page
+    // new interface page new design
     <div className="relative bg-black w-[100svw] h-[100svh] grid grid-rows-[40px_1fr] grid-cols-[1fr]">
       {/* header section */}
       <header className="w-full h-full p-1">
