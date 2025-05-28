@@ -19,11 +19,7 @@ import CourseSideBarContext from "@/contexts/courseSideBarContext";
 const Home = lazy(() => import("./components/home/home"));
 const NotFound = lazy(() => import("./components/404/404"));
 const Interface = lazy(() => import("./components/interface/Interface"));
-<<<<<<< HEAD
 const InterfaceView = lazy(() => import("./components/interface/InterfaceView"));
-=======
-const InterfaceView = lazy(() => import("./components/interface/interfaceView"));
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 const InterfaceNotFound = lazy(() => import("./components/interface/404"));
 const Root = lazy(() => import("./components/root/root"));
 const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
