@@ -299,8 +299,12 @@ export default function CoursePreviewPage() {
               ))}
             </span>
             <span className="block w-fit responsiveText text-white mr-1">
+<<<<<<< HEAD
               {data.purchases.count}+ enrolled
 >>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
+=======
+              {data.purchases.count} enrolled
+>>>>>>> a38b2baa503bc6c857160f5f017bc2802b20b985
             </span>
             <span className="block w-fit responsiveTex text-white">
               Created by{" "}
