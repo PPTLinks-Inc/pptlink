@@ -398,6 +398,7 @@ export default function CoursePreviewPage() {
                     content={content}
                     locked={!data.access}
                     courseId={data.id}
+                    showProgress={data.instructors.some(instructor => userQuery.data?.id === instructor.id)}
                   />
                 ))}
                 {/* end */}
