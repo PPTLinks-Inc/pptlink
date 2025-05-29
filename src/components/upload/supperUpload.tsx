@@ -14,12 +14,9 @@ import { LoadingAssetBig2 } from "@/assets/assets";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { authFetch } from "@/lib/axios";
-<<<<<<< HEAD
-=======
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 
 export default function SupperUpload() {
   const scrollableRef = useRef<HTMLDivElement>(null);
@@ -33,11 +30,7 @@ export default function SupperUpload() {
     }
   }, [currentView]);
 
-<<<<<<< HEAD
-  const uploadStore = useContext(UploadContext)
-=======
   const uploadStore = useContext(UploadContext);
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 
   const editPresentationQuery = useQuery({
     queryKey: ["editPresentation", searchParams.get("edit")],
@@ -114,33 +107,21 @@ export default function SupperUpload() {
               <p className="text-center">Fetching presentation data</p>
             </div>
           ) : (
-<<<<<<< HEAD
-            <>
-=======
             <ConvexProvider client={convex}>
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
               {/* progress indicator */}
               <ProgressIndicator />
               <div className="w-full min-h-screen bg-[#FFFFF0] shadow-xl relative py-20 maxScreenMobile:pt-0 md:rounded-md">
                 <FormLabelIndicator />
                 {/* first stage elements 👀👀 */}
                 <UploadStage />
-<<<<<<< HEAD
-                {/* Second stage show els 👀👀 */} 
-=======
                 {/* Second stage show els 👀👀 */}
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
                 <InformationStage />
                 {/* Third stage show els 👀👀 */}
                 <PreviewStage />
               </div>
               {/* form stage tracker */}
               <FormStageMover />
-<<<<<<< HEAD
-            </>
-=======
             </ConvexProvider>
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
           )}
         </div>
       </section>
