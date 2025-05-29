@@ -84,7 +84,7 @@ export default function ShowCourseCard({ course }: { course: CourseType }) {
               </Avatar>
             ))}
           </span>
-          <span className="block w-fit responsiveText">{course.purchases.count}+ enrolled</span>
+          <span className="block w-fit responsiveText">{course.purchases.count} enrolled</span>
         </div>
       </div>
     </NavLink>
