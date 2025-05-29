@@ -6,7 +6,7 @@ import { CiPlay1 } from "react-icons/ci";
 import { IoMdLock } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
-export default function CourseCard({ content, locked, courseId }) {
+export default function CourseCard({ content, locked, courseId, showProgress }) {
   const navigate = useNavigate();
 
   function viewContent() {
@@ -85,7 +85,7 @@ export default function CourseCard({ content, locked, courseId }) {
             <em>{"Imoh Yohanna"}</em>
           </p> */}
           <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
-            {content.type === "VIDEO" && (
+            {content.type === "VIDEO" ? (
               <>
                 <strong>Duration: </strong>
                 <em>
@@ -102,19 +102,27 @@ export default function CourseCard({ content, locked, courseId }) {
                   })()}
                 </em>
               </>
+            ) : (
+              <>
+                <strong>Pages: </strong>
+                <em>{content.numPage}</em>
+              </>
             )}
           </p>
         </div>
-            
-        <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
-          <span style={{
-            width: `${content.progress}%`,
-            transition: "width 0.3s ease-in-out"
-          }} className={`block my-[0.2px] py-2 bg-[#FFA500] border-none rounded-lg`}></span>
+
+        {showProgress && !locked && <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
+          <span
+            style={{
+              width: `${content.progress}%`,
+              transition: "width 0.3s ease-in-out"
+            }}
+            className={`block my-[0.2px] py-2 bg-[#FFA500] border-none rounded-lg`}
+          ></span>
           <span className="text-black !text-[0.7rem] font-bold my-[0.2px] z-10 absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
             {content.progress}%
           </span>
-        </div>
+        </div>}
       </motion.div>
     </>
   );
