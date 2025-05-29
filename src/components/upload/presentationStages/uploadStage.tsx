@@ -1,16 +1,33 @@
 /* eslint-disable react/prop-types */
+<<<<<<< HEAD
+import { FormEvent, useEffect, useRef, useState } from "react";
+=======
 import { useEffect, useState } from "react";
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 import { useUploadStore } from "@/store/uploadStoreProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SERVER_URL } from "@/constants/routes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+<<<<<<< HEAD
+import PopUpModal from "@/components/Models/dashboardModel";
+=======
 // import PopUpModal from "@/components/Models/dashboardModel";
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { LoadingAssetBig, LoadingAssetSmall } from "@/assets/assets";
 import { useSearchParams } from "react-router-dom";
+<<<<<<< HEAD
+import { authFetch } from "@/lib/axios";
+import useUser from "@/hooks/useUser";
+
+const useFileValidation = () => {
+  const pdfUrl = useUploadStore((state) => state.pdfUrl);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (file: any) => {
+=======
 import { authFetch, standardFetch } from "@/lib/axios";
 import useUser from "@/hooks/useUser";
 import { useMutation as useConvexMutation } from "convex/react";
@@ -25,6 +42,7 @@ const useFileValidation = (edit: boolean) => {
       return true;
     }
 
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
     if (pdfUrl === "" && !file) {
       return false;
     }
@@ -33,10 +51,14 @@ const useFileValidation = (edit: boolean) => {
 };
 
 export default function UploadStage() {
+<<<<<<< HEAD
+  const validateFile = useFileValidation();
+=======
   const [searchParams] = useSearchParams();
 
   const validateFile = useFileValidation(searchParams.has("edit"));
 
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
   const schema = z.object({
     title: z.string().min(2, { message: "Title is too short" }),
     description: z
@@ -55,28 +77,40 @@ export default function UploadStage() {
       .any()
       .refine(validateFile)
       .refine((file: FileList) => {
+<<<<<<< HEAD
+=======
         if (searchParams.has("edit")) {
           return true;
         }
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
         if (file) {
           return file.length > 0;
         }
         return false;
       }, "File is required")
       .refine((file) => {
+<<<<<<< HEAD
+=======
         if (searchParams.has("edit")) {
           return true;
         }
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
         if (!file) {
           return false;
         }
         if (!file[0]) return false;
+<<<<<<< HEAD
+        return file[0].size < 10 * 1024 * 1024;
+      }, "File size must not exceed 10MB")
+      .refine((file) => {
+=======
         return file[0].size < 50 * 1024 * 1024;
       }, "File size must not exceed 50MB")
       .refine((file) => {
         if (searchParams.has("edit")) {
           return true;
         }
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
         if (!file) {
           return false;
         }
@@ -107,11 +141,127 @@ export default function UploadStage() {
   const addCategory = useUploadStore((state) => state.addCategory);
   const categories = useUploadStore((state) => state.categories);
   const setPdfUrl = useUploadStore((state) => state.setPdfUrl);
+<<<<<<< HEAD
+  const pdfUrl = useUploadStore((state) => state.pdfUrl);
+=======
   // const pdfUrl = useUploadStore((state) => state.pdfUrl);
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
 
   const [addNewCategory, setAddNewCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
 
+<<<<<<< HEAD
+  const [serverConnected, setServerConnected] = useState(false);
+  const [failedToConnect, setFailedToConnect] = useState(false);
+  const [uploadPercentage, setUploadPercentage] = useState(0);
+
+  const processingFile = useUploadStore((state) => state.processingFile);
+  const setProcessingFile = useUploadStore((state) => state.setProcessingFile);
+
+  const [allowCheckFileStatus, setAllowCheckFileStatus] = useState(true);
+
+  const [searchParams] = useSearchParams();
+
+  const [modalValues, setModalValues] = useState({
+    message: "",
+    actionText: "",
+    open: false,
+    oneButton: false,
+    isLoading: false,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onSubmit: (_e: FormEvent<HTMLFormElement>) => {},
+    onClose: () => {}
+  });
+
+  const toastRef = useRef<{
+    id: string;
+    dismiss: () => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    update: (props: any) => void;
+  }>();
+
+  const uploadMutation = useMutation({
+    mutationFn: async function (file: File) {
+      setProcessingFile(false);
+      setUploadPercentage(0);
+      const formData = new FormData();
+      formData.append("ppt", file);
+
+      if (searchParams.has("edit")) {
+        formData.append("edit", searchParams.get("edit")!);
+      }
+
+      const { data } = await authFetch.post(
+        `${SERVER_URL}/api/v1/ppt/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          },
+          onUploadProgress: function (progressEvent) {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setUploadPercentage(percentCompleted);
+            }
+          }
+        }
+      );
+
+      return data;
+    },
+    onSuccess: function (data) {
+      toastRef.current = toast({
+        description: data.message,
+        duration: 60000,
+        action: <LoadingAssetSmall />
+      });
+      setProcessingFile(true);
+    }
+  });
+
+  const cancelPendingUploadMutation = useMutation({
+    mutationFn: async function () {
+      await authFetch.delete(
+        `${SERVER_URL}/api/v1/ppt/presentation/cancel-upload`
+      );
+    },
+    onSuccess: function () {
+      setProcessingFile(false);
+      setUploadPercentage(0);
+      uploadMutation.reset();
+      setValue("file", null);
+      setPdfUrl("");
+      if (toastRef.current) {
+        toastRef.current.update({
+          description: "File upload has been cancelled.",
+          duration: 3000,
+          action: null
+        });
+
+        setTimeout(() => {
+          toastRef.current?.dismiss();
+        }, 5000);
+      }
+      setModalValues((prev) => ({ ...prev, open: false }));
+    },
+    onError: function () {
+      if (toastRef.current) {
+        toastRef.current.update({
+          title: "Error",
+          description: "An error occurred while cancelling the upload.",
+          duration: 3000,
+          action: null,
+          variant: "destructive"
+        });
+
+        setTimeout(() => {
+          toastRef.current?.dismiss();
+        }, 8000);
+      }
+      setModalValues((prev) => ({ ...prev, open: false }));
+=======
   const [uploadPercentage, setUploadPercentage] = useState(0);
 
   // const [modalValues, setModalValues] = useState({
@@ -182,6 +332,7 @@ export default function UploadStage() {
         description: "File is been processed",
         action: <LoadingAssetSmall />
       });
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
     }
   });
 
@@ -203,6 +354,10 @@ export default function UploadStage() {
     handleSubmit,
     watch,
     trigger,
+<<<<<<< HEAD
+    setValue,
+=======
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
     reset,
     formState: { errors }
   } = useForm({
@@ -219,6 +374,8 @@ export default function UploadStage() {
     }
   });
 
+<<<<<<< HEAD
+=======
   const isError =
     uploadData?.status === "error" ||
     uploadMutation.isError ||
@@ -230,6 +387,7 @@ export default function UploadStage() {
     uploadData?.status === "uploading" || uploadMutation.isPending;
   const pending = uploadData?.status === "pending";
 
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
   useEffect(
     function () {
       if (!searchParams.has("edit")) {
@@ -252,6 +410,281 @@ export default function UploadStage() {
 
   useEffect(
     function () {
+<<<<<<< HEAD
+      if (!user) return;
+
+      const token = localStorage.getItem("accessToken");
+
+      const eventSource = new EventSource(
+        `${SERVER_URL}/api/v1/ppt/presentations/upload-notification/${token}/${user.id}`
+      );
+
+      eventSource.addEventListener("message", function (ev) {
+        const data = JSON.parse(ev.data);
+
+        if (data.event === "connect") {
+          setFailedToConnect(false);
+          setServerConnected(true);
+
+          if (searchParams.has("edit")) {
+            const file = new File([], "File Name", {
+              type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const fileList: any = {
+              0: file,
+              length: 1,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              item: (_index: number) => file
+            } as unknown as FileList;
+            setValue("file", fileList);
+            return;
+          }
+
+          if (data?.status === "SUCCESS") {
+            setModalValues({
+              message:
+                "Your file has been processed successfully. Click continue to proceed.",
+              open: true,
+              oneButton: false,
+              actionText: "Continue",
+              isLoading: false,
+              onSubmit: (e) => {
+                e.preventDefault();
+                setModalValues((prev) => ({ ...prev, open: false }));
+              },
+              onClose: () => {
+                setPdfUrl("");
+                setValue("file", null);
+                setModalValues((prev) => ({ ...prev, open: false }));
+              }
+            });
+            setPdfUrl(data.pdfUrl);
+            // create a file object from the url
+            const file = new File([], "File Name", {
+              type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const fileList: any = {
+              0: file,
+              length: 1,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              item: (_index: number) => file
+            } as unknown as FileList;
+            setValue("file", fileList);
+          } else if (data?.status === "ERROR") {
+            setModalValues({
+              message: "An error occurred while processing your file.",
+              open: true,
+              oneButton: true,
+              actionText: "Retry",
+              isLoading: false,
+              onSubmit: () => {},
+              onClose: () => {
+                setPdfUrl("");
+                setValue("file", null);
+                setModalValues((prev) => ({ ...prev, open: false }));
+              }
+            });
+            setPdfUrl("");
+          } else if (data?.status === "PENDING") {
+            setPdfUrl("waiting for pdf link");
+            setProcessingFile(true);
+            const file = new File([], "File Name", {
+              type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const fileList: any = {
+              0: file,
+              length: 1,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              item: (_index: number) => file
+            } as unknown as FileList;
+            setValue("file", fileList);
+            toastRef.current = toast({
+              description: "Processing Presentation file",
+              duration: 60000,
+              action: <LoadingAssetSmall />
+            });
+            setModalValues({
+              message: "Your file is being processed. Please wait or cancel.",
+              open: true,
+              oneButton: false,
+              actionText: "OK",
+              isLoading: false,
+              onSubmit: (e) => {
+                e.preventDefault();
+                setModalValues((prev) => ({ ...prev, open: false }));
+              },
+              onClose: () => {
+                setModalValues((prev) => ({
+                  ...prev,
+                  isLoading: true,
+                  message: "Cancelling upload..."
+                }));
+                cancelPendingUploadMutation.mutate();
+              }
+            });
+          }
+        } else if (data.event === "done") {
+          if (toastRef.current) {
+            toastRef.current.update({
+              description: "File has been processed successfully.",
+              duration: 3000,
+              action: null
+            });
+
+            setTimeout(() => {
+              toastRef.current?.dismiss();
+            }, 5000);
+          }
+          setProcessingFile(false);
+          setPdfUrl(data.pdfUrl);
+        } else if (data.event === "error") {
+          if (toastRef.current) {
+            toastRef.current.update({
+              title: "Error",
+              description: "An error occurred while processing your file.",
+              duration: 3000,
+              action: null,
+              variant: "destructive"
+            });
+
+            setTimeout(() => {
+              toastRef.current?.dismiss();
+            }, 8000);
+          }
+          setProcessingFile(false);
+          uploadMutation.reset();
+        }
+      });
+
+      eventSource.addEventListener("error", function () {
+        setFailedToConnect(true);
+        if (toastRef.current) {
+          toastRef.current.update({
+            title: "Error",
+            description: "Failed to connect to server.",
+            duration: 3000,
+            action: null,
+            variant: "destructive"
+          });
+
+          setTimeout(() => {
+            toastRef.current?.dismiss();
+          }, 8000);
+        }
+      });
+
+      return () => {
+        eventSource.close();
+      };
+    },
+    [user]
+  );
+
+  const checkFileStatusMutation = useMutation({
+    mutationFn: async function () {
+      const { data } = await authFetch.get(
+        `${SERVER_URL}/api/v1/ppt/presentation/upload-status`
+      );
+      return data;
+    },
+    onSuccess: function (data) {
+      setAllowCheckFileStatus(false);
+      if (data.status === "SUCCESS") {
+        setPdfUrl(data.pdfUrl);
+        setModalValues({
+          message:
+            "Your file has been processed successfully. Click continue to proceed.",
+          open: true,
+          oneButton: true,
+          actionText: "Continue",
+          isLoading: false,
+          onSubmit: (e) => {
+            e.preventDefault();
+            setProcessingFile(false);
+            setModalValues((prev) => ({ ...prev, open: false }));
+          },
+          onClose: () => {}
+        });
+      } else if (data.status === "ERROR") {
+        setModalValues({
+          message:
+            "An error occurred while processing your file. Please retry.",
+          open: true,
+          oneButton: true,
+          actionText: "Retry",
+          isLoading: false,
+          onSubmit: () => {},
+          onClose: () => {
+            setPdfUrl("");
+            setValue("file", null);
+            setModalValues((prev) => ({ ...prev, open: false }));
+          }
+        });
+        setPdfUrl("");
+        setValue("file", null);
+      } else if (data.status === "PENDING") {
+        setModalValues({
+          message: "Your file is being processed. Please wait or cancel.",
+          open: true,
+          oneButton: false,
+          actionText: "OK",
+          isLoading: false,
+          onSubmit: (e) => {
+            e.preventDefault();
+            setModalValues((prev) => ({ ...prev, open: false }));
+          },
+          onClose: () => {
+            setModalValues((prev) => ({
+              ...prev,
+              isLoading: true,
+              message: "Cancelling upload..."
+            }));
+            cancelPendingUploadMutation.mutate();
+          }
+        });
+      }
+    }
+  });
+
+  useEffect(
+    function () {
+      let timer: NodeJS.Timeout | null = null;
+      if (!allowCheckFileStatus && processingFile) {
+        timer = setTimeout(() => {
+          setAllowCheckFileStatus(true);
+        }, 30000);
+      }
+
+      return () => {
+        if (timer) {
+          clearTimeout(timer);
+        }
+      };
+    },
+    [allowCheckFileStatus, processingFile]
+  );
+
+  useEffect(
+    function () {
+      if (formValues.file && formValues.file[0]) {
+        trigger("file").then(function (valid) {
+          if (valid) {
+            const file = formValues.file![0] as File;
+
+            if (pdfUrl !== "" && !searchParams.has("edit")) {
+              return;
+            }
+
+            uploadMutation.mutate(file);
+          }
+        });
+      }
+    },
+    [formValues.file, pdfUrl]
+=======
       if (uploadData?.status === "success") {
         const thumbnail = `${import.meta.env.VITE_CLOUDFRONT_ORIGIN}/${uploadData?.thumbnail}`;
 
@@ -262,6 +695,7 @@ export default function UploadStage() {
       }
     },
     [uploadData?.status]
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
   );
 
   const setUploadStageSubmitHandler = useUploadStore(
@@ -275,6 +709,8 @@ export default function UploadStage() {
 
   useEffect(
     function () {
+<<<<<<< HEAD
+=======
       if (formValues.file) {
         // check if file is valid
         trigger("file").then((isValid) => {
@@ -289,6 +725,7 @@ export default function UploadStage() {
 
   useEffect(
     function () {
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
       setUploadStageSubmitHandler(
         handleSubmit(function () {
           setTitle(formValues.title);
@@ -335,6 +772,16 @@ export default function UploadStage() {
 
   return (
     <div className={`w-full h-fit ${currentView === 1 ? "block" : "hidden"}`}>
+<<<<<<< HEAD
+      <PopUpModal {...modalValues} />
+      {/* Upload File here */}
+      <div
+        className={`w-full h-[20rem] m-auto ${false && "hidden"} 
+              ${!!errors.file?.message && !uploadMutation.isError && "border-[3px] !border-[red] border-dashed"} before:block before:w-full relative before:h-full before:bg-[#FFFFF0] 
+              before:absolute before:top-0 before:left-0 before:pointer-events-none`}
+      >
+        {!processingFile && serverConnected && !failedToConnect && (
+=======
       {/* <PopUpModal {...modalValues} /> */}
       {/* Upload File here */}
       <div
@@ -343,6 +790,7 @@ export default function UploadStage() {
               before:absolute before:top-0 before:left-0 before:pointer-events-none`}
       >
         {!processingFile && !pending && !uploading && (
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
           <input
             type="file"
             accept=".ppt, .pptx, .pot, .pps, .pps, .potx, .ppsx, .ppam, .pptm, .potm, .ppsm"
@@ -351,6 +799,127 @@ export default function UploadStage() {
             {...register("file")}
           />
         )}
+<<<<<<< HEAD
+        {uploadMutation.isPending && (
+          <Progress
+            value={uploadPercentage}
+            className="bg-[#ffa500] w-1/2 mx-auto"
+          />
+        )}
+        <div
+          className={`flex flex-col gap-2 justify-center items-center w-full h-full absolute top-0 left-0 pointer-events-none _maxScreenMobile:bg-primaryTwo`}
+        >
+          {!processingFile ? (
+            <span className="block w-[5rem] aspect-square">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 130.163 107.713"
+                className="block w-full h-full"
+              >
+                <g
+                  id="Icon_feather-upload-cloud"
+                  data-name="Icon feather-upload-cloud"
+                  transform="translate(2.029 -0.985)"
+                >
+                  <path
+                    id="Path_197"
+                    data-name="Path 197"
+                    d="M56.759,40.379,34.38,18,12,40.379"
+                    transform="translate(28.686 36.845)"
+                    fill="none"
+                    stroke={`${uploadMutation.isSuccess || pdfUrl !== "" ? "green" : uploadMutation.isError || errors.file?.message ? "red" : "#ffa500"}`}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="7"
+                  />
+                  <path
+                    id="Path_198"
+                    data-name="Path 198"
+                    d="M18,18V68.354"
+                    transform="translate(45.066 36.845)"
+                    fill="none"
+                    stroke={`${uploadMutation.isSuccess || pdfUrl !== "" ? "green" : uploadMutation.isError || errors.file?.message ? "red" : "#ffa500"}`}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="7"
+                  />
+                  <path
+                    id="Path_199"
+                    data-name="Path 199"
+                    d="M110.007,90.6A27.974,27.974,0,0,0,96.635,38.06h-7.05A44.759,44.759,0,1,0,12.712,78.9"
+                    transform="translate(0 0)"
+                    fill="none"
+                    stroke={`${uploadMutation.isSuccess || pdfUrl !== "" ? "green" : uploadMutation.isError || errors.file?.message ? "red" : "#ffa500"}`}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="7"
+                  />
+                  <path
+                    id="Path_200"
+                    data-name="Path 200"
+                    d="M56.759,40.379,34.38,18,12,40.379"
+                    transform="translate(28.686 36.845)"
+                    fill="none"
+                    stroke={`${uploadMutation.isSuccess || pdfUrl !== "" ? "green" : uploadMutation.isError || errors.file?.message ? "red" : "#ffa500"}`}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="7"
+                  />
+                </g>
+              </svg>
+            </span>
+          ) : (
+            <LoadingAssetBig />
+          )}
+          <span
+            className={`w-fit h-fit ${uploadMutation.isSuccess || pdfUrl !== "" ? "text-[green]" : uploadMutation.isError || errors.file?.message ? "text-[red]" : "text-primaryTwo"}`}
+          >
+            {serverConnected ? (
+              errors.file?.message ? (
+                <>{errors.file.message.toString()}</>
+              ) : (
+                <>
+                  {uploadMutation.isSuccess || pdfUrl !== ""
+                    ? "File Upload successfully"
+                    : uploadMutation.isError
+                      ? "An Error occurred while uploading"
+                      : processingFile && "File is being processed..."}
+                </>
+              )
+            ) : failedToConnect ? (
+              "Failed to connect to server."
+            ) : (
+              "Connecting to server..."
+            )}
+          </span>
+          {serverConnected && !processingFile && (
+            <span
+              className={`w-fit h-fit text-white ${uploadMutation.isSuccess || pdfUrl !== "" ? "bg-[green]" : uploadMutation.isError || errors.file?.message ? "bg-[red]" : "bg-[#ffa500]"} py-2 px-8 rounded-full`}
+            >
+              {formValues.file && formValues.file[0]
+                ? "Change file..."
+                : "Browse File"}
+            </span>
+          )}
+          {allowCheckFileStatus && processingFile && (
+            <button
+              disabled={checkFileStatusMutation.isPending}
+              onClick={() => checkFileStatusMutation.mutate()}
+              className="w-fit h-fit text-white py-2 px-8 rounded-full bg-[green] mt-5 !pointer-events-auto"
+            >
+              {checkFileStatusMutation.isPending
+                ? "Checking file status..."
+                : "Check file status"}
+            </button>
+          )}
+          {processingFile && (
+            <p className="text-primaryTwo">File Processing. Please wait...</p>
+          )}
+        </div>
+        {/* {uploadValuesErrors.fileError && (
+                    <p className="text-[red] w-[90%] mx-auto text-lg mt-2 pb-6">{uploadValuesErrors.fileError}</p>
+                )} */}
+=======
         <div
           className={`flex flex-col gap-2 justify-center items-center w-full h-full absolute top-0 left-0 pointer-events-none _maxScreenMobile:bg-primaryTwo`}
         >
@@ -460,6 +1029,7 @@ export default function UploadStage() {
             </button>
           )}
         </div>
+>>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
       </div>
       {/* Title */}
       <div className="w-[90%] h-fit m-auto mt-8 text-lg text-primaryTwo">
