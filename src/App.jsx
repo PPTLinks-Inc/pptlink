@@ -67,6 +67,9 @@ const CourseAcceptInvitation = lazy(
 const CourseVideoPlayer = lazy(
   () => import("./components/upload/createCourseFlow/CourseVideoPlayer")
 );
+const CoursepdfViewer = lazy(
+  () => import("./components/upload/createCourseFlow/CoursepdfViewer")
+);
 const TermsAndServicesPage = lazy(
   () => import("./components/Terms_and_policy_page/termsAndServices")
 );
@@ -202,12 +205,17 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/course/ppt/:courseId/:contentId",
       element: (
-        <PresentationContextProvider>
-          <Interface />
-        </PresentationContextProvider>
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen bg-primaryTwo">
+              <LoadingAssetBig2 />
+            </div>
+          }
+        >
+          <CoursepdfViewer />
+        </Suspense>
       ),
-      errorElement: <InterfaceNotFound />,
-      loader: presentationLoader
+      errorElement: <InterfaceNotFound />
     },
     {
       path: "/signin",
