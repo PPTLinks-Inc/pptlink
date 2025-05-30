@@ -101,8 +101,6 @@ export default function Slider() {
 
   useEffect(() => {
     // Adjust width when the component mounts
-    // console.log(swiperRef.current.swiper);
-
     let timer: any = null;
 
     function handleSlideChange() {
