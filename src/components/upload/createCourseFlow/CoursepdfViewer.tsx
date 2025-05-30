@@ -13,6 +13,7 @@ import { authFetch } from "@/lib/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
+import useUser from "@/hooks/useUser";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
@@ -66,20 +67,25 @@ export default function Slider() {
   const params = useParams();
   const navigate = useNavigate();
 
+  const { userQuery } = useUser();
+  const user = userQuery.data;
+
   const [swiperRef, setSwiperRef] = useState<any>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const intervalRef = useRef<any>(null);
   const viewedPages = useRef<any>(new Set());
 
   const { data } = useSuspenseQuery({
-    queryKey: ["presentation"],
+    queryKey: ["presentation", user?.id, params.courseId, params.contentId],
     queryFn: async function () {
       const { data } = await authFetch.get(
         `/api/v1/course/media/ppt/${params.courseId}/${params.contentId}`
       );
 
       return data.presentation;
-    }
+    },
+    staleTime: 0,
+    gcTime: 0,
   });
 
   const [numPages, setNumPages] = useState(0);

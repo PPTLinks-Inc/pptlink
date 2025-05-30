@@ -215,8 +215,7 @@ const router = sentryCreateBrowserRouter(
           <CoursepdfViewer />
         </Suspense>
       ),
-      errorElement: <InterfaceNotFound />,
-      loader: presentationLoader
+      errorElement: <InterfaceNotFound />
     },
     {
       path: "/signin",
