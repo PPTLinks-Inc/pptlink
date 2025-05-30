@@ -241,7 +241,7 @@ export default function Card({ presentation, refresh }) {
             </p>
             <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
               <strong>Cartegory: </strong>
-              <em>edge computing</em>
+              <em>{presentation.category.name}</em>
             </p>
             <span
               className="block w-fit mt-2 ml-[-1.2rem]"
