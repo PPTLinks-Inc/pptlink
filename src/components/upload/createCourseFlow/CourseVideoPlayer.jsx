@@ -25,7 +25,6 @@ export default function CourseVideoPlayer() {
 
       return data;
     },
-    enabled: !!user,
     staleTime: 0,
     gcTime: 0
   });

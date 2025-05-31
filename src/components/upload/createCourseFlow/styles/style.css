@@ -1,0 +1,46 @@
+body {
+    background-color: primaryTwo;
+}
+
+/* center canvas */
+canvas {
+    display: block;
+    margin: 0 auto;
+    background-color: primaryTwo;
+}
+
+.react-pdf__Document {
+    margin: auto 0;
+}
+
+#interface-loader[value] {
+    --color: rgb(226 232 240);
+    /* the progress color */
+    --background: primaryTwo;
+    /* the background color */
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    width: 200px;
+    margin: 0 10px;
+    border-radius: 10em;
+    border: 1px solid rgb(226 232 240);
+    background: var(--background);
+}
+
+#interface-loader[value]::-webkit-progress-bar {
+    border-radius: 10em;
+    background: var(--background);
+}
+
+#interface-loader[value]::-webkit-progress-value {
+    border-radius: 10em;
+    background: var(--color);
+}
+
+#interface-loader[value]::-moz-progress-bar {
+    border-radius: 10em;
+    background: var(--color);
+}

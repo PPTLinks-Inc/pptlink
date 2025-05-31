@@ -45,7 +45,6 @@ export async function presentationLoader({
   request
 }: LoaderFunctionArgs<any>) {
   if (request.url.includes("/course/ppt/")) {
-    console.log("course ppt");
     const { data } = await authFetch.get<{
       sucess: boolean;
       presentation: presentationData;

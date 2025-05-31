@@ -265,31 +265,13 @@ export default function CoursePreviewPage() {
           </p>
           <div className="relative flex maxSmallMobile:!flex-col items-center justify-between gap-4 w-fit maxSmallMobile:w-full maxSmallMobile:items-start maxSmallMobile:gap-2">
             <span className="flex -space-x-4">
-<<<<<<< HEAD
-              {Array.from({ length: 5 }, (_, i) => i + 1).map((index) => (
-                <Avatar
-                  key={index.toString()}
-=======
               {data.purchases.firstFiveUsers.map((user, index) => (
                 <Avatar
                   key={user.id}
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
                   className="border-2 border-background block w-[2rem] h-[2rem] !rounded-[1rem]"
                   style={{ zIndex: index + 1 }}
                 >
                   <AvatarImage
-<<<<<<< HEAD
-                    src={"/team/imoh.jpg"}
-                    alt={"imoh"}
-                    className="object-cover"
-                  />
-                  <AvatarFallback>{"B"}</AvatarFallback>
-                </Avatar>
-              ))}
-            </span>
-            <span className="block w-fit responsiveTex text-white mr-1">
-              25+ enrolled
-=======
                     src={"/images/avatars/" + user.id + ".webp"}
                     alt={user.firstLetter}
                     className="object-cover"
@@ -299,12 +281,7 @@ export default function CoursePreviewPage() {
               ))}
             </span>
             <span className="block w-fit responsiveText text-white mr-1">
-<<<<<<< HEAD
-              {data.purchases.count}+ enrolled
->>>>>>> 1e0a35973e3c09ac86e8878a49518ef039cec88a
-=======
               {data.purchases.count} enrolled
->>>>>>> a38b2baa503bc6c857160f5f017bc2802b20b985
             </span>
             <span className="block w-fit responsiveTex text-white">
               Created by{" "}
@@ -421,6 +398,7 @@ export default function CoursePreviewPage() {
                     content={content}
                     locked={!data.access}
                     courseId={data.id}
+                    showProgress={!data.instructors.some(instructor => userQuery.data?.id === instructor.instructor.user.id)}
                   />
                 ))}
                 {/* end */}
