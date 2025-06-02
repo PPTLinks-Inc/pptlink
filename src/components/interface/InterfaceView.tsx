@@ -219,7 +219,7 @@ export default function InterfaceView() {
         </div>
         {/* sideBar section */}
         <div
-          className={`w-full h-full p-1 ${!sideBar && "hidden"} maxScreenMobile:!absolute maxScreenMobile:!top-0 maxScreenMobile:!left-0 maxScreenMobile:!bottom-auto maxScreenMobile:!w-full maxScreenMobile:!h-[calc(100vh-60px)] maxScreenMobile:bg-black maxScreenMobile:z-50`}
+          className={`w-full h-full p-1 ${!sideBar && "hidden"} maxScreenMobile:!absolute maxScreenMobile:!top-0 maxScreenMobile:!left-0 maxScreenMobile:!bottom-auto maxScreenMobile:!w-full maxScreenMobile:!h-[calc(100vh-50px)] maxScreenMobile:bg-black maxScreenMobile:z-50`}
         >
           {/* sideBar wrapper */}
           <div className="w-full min-h-full grid grid-cols-[1fr] grid-rows-[20px_1fr] gap-1 relative">
