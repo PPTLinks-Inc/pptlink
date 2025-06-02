@@ -22,7 +22,7 @@ export default function PopUpModal({
   darkLoader?: boolean;
   message: string;
   actionText: string;
-  oneButton: boolean;
+  oneButton?: boolean;
   bgColor?: string;
   textColor?: string;
   borderColor?: string;
