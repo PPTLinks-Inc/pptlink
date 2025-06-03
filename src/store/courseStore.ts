@@ -128,7 +128,7 @@ export interface CourseStore {
     setSections: (sections: Section[]) => void;
     selectedSectionIndex: number;
     setSelectedSectionIndex: (index: number) => void;
-    setContentItems: (contentItems: ContentItem[]) => void;
+    setContentItems: (contentItems: ContentItem[] | ((contentItems: ContentItem[]) => ContentItem[])) => void;
     removeContentItem: (id: string) => Promise<void>;
     handleSectionTitleChange: (title: string) => void;
     addSection: () => Promise<{ order: number, id: string }>;
