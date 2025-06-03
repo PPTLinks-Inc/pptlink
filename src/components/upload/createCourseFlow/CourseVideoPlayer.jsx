@@ -45,7 +45,7 @@ export default function CourseVideoPlayer() {
     height: "360",
     sources: [
       {
-        src: data.videoMedia.master_playlist
+        src: data.videoLink
       }
     ]
   };
