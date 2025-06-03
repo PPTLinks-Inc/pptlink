@@ -90,7 +90,7 @@ export default function CourseCard({ content, locked, courseId, showProgress }) 
                 <strong>Duration: </strong>
                 <em>
                   {(() => {
-                    const seconds = content.videoMedia.duration;
+                    const seconds = content.duration;
                     const hours = Math.floor(seconds / 3600);
                     const minutes = Math.floor((seconds % 3600) / 60);
                     const remainingSeconds = seconds % 60;
@@ -105,7 +105,7 @@ export default function CourseCard({ content, locked, courseId, showProgress }) 
             ) : (
               <>
                 <strong>Pages: </strong>
-                <em>{content.numPage}</em>
+                <em>{content.duration}</em>
               </>
             )}
           </p>
