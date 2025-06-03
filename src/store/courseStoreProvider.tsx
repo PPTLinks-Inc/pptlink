@@ -117,6 +117,12 @@ export default function CourseStoreProvider({
       setSelectedSectionIndex: (index: number) =>
         set({ selectedSectionIndex: index }),
       setContentItems: (contentItems) => {
+        // if contentItems is a function, call it with the current sections
+        if (typeof contentItems === "function") {
+          contentItems = contentItems(get().sections[get().selectedSectionIndex].contents);
+        }
+
+        // Update the contents of the currently selected section
         set((state) => {
           const newSections = [...state.sections];
           newSections[state.selectedSectionIndex].contents = contentItems;
