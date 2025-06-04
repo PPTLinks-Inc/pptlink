@@ -24,7 +24,8 @@ interface AudioStore {
     stopScreenShare: () => Promise<void>;
     setMicState: (micState: MIC_STATE) => Promise<void>;
     audioTracks: {
-        screeenTrack: ILocalVideoTrack | null;
+        screenTrack: ILocalVideoTrack | null;
+        screenAudioTrack: ILocalAudioTrack | null;
         localAudioTrack: ILocalAudioTrack | null;
         remoteAudioTracks: { [key: string]: IRemoteAudioTrack | undefined };
     } | null;
@@ -56,10 +57,20 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             throw new Error();
         }
 
-        const screenTrack = await AgoraRTC.createScreenVideoTrack({
+        const tracks = await AgoraRTC.createScreenVideoTrack({
             encoderConfig: "720p",
             optimizationMode: "detail"
-        }) as ILocalVideoTrack;
+        }, "auto") as ILocalVideoTrack;
+
+        let screenTrack: ILocalVideoTrack;
+        let screenAudioTrack: ILocalAudioTrack | null = null;
+
+        if (Array.isArray(tracks)) {
+            screenTrack = tracks[0];
+            screenAudioTrack = tracks[1];
+        } else {
+            screenTrack = tracks;
+        }
 
         screenTrack.on("track-ended", async () => {
             await get().stopScreenShare();
@@ -69,16 +80,21 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             audioTracks: {
                 localAudioTrack: state.audioTracks?.localAudioTrack || null,
                 remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {},
-                screeenTrack: screenTrack
+                screenTrack,
+                screenAudioTrack
             },
             screenShareEnabled: true, iAmScreenSharing: true
         }));
 
         await rtcClient.publish(screenTrack);
+        if (screenAudioTrack) {
+            await rtcClient.publish(screenAudioTrack);
+        }
     },
     stopScreenShare: async function () {
         const rtcClient = get().rtcClient;
-        const screenTrack = get().audioTracks?.screeenTrack;
+        const screenTrack = get().audioTracks?.screenTrack;
+        const screenAudioTrack = get().audioTracks?.screenAudioTrack;
 
         if (!rtcClient || !screenTrack) {
             throw new Error();
@@ -87,11 +103,17 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
         await rtcClient.unpublish(screenTrack);
         screenTrack.close();
 
+        if (screenAudioTrack) {
+            await rtcClient.unpublish(screenAudioTrack);
+            screenAudioTrack.close();
+        }
+
         set((state) => ({
             audioTracks: {
                 localAudioTrack: state.audioTracks?.localAudioTrack || null,
                 remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {},
-                screeenTrack: null
+                screenTrack: null,
+                screenAudioTrack: null
             },
             screenShareEnabled: false, iAmScreenSharing: false, screenShareMinimized: false
         }));
@@ -425,12 +447,13 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
                 if (!user.audioTrack) return;
                 set((state) => ({
                     audioTracks: {
-                        localAudioTrack: state.audioTracks?.localAudioTrack || null,
+                        localAudioTrack: state.audioTracks?.localAudioTrack ?? null,
                         remoteAudioTracks: {
                             ...state.audioTracks?.remoteAudioTracks,
-                            [user.uid]: user.audioTrack || undefined
+                            [user.uid]: user.audioTrack ?? undefined
                         },
-                        screeenTrack: state.audioTracks?.screeenTrack || null
+                        screenTrack: state.audioTracks?.screenTrack ?? null,
+                        screenAudioTrack: state.audioTracks?.screenAudioTrack ?? null
                     }
                 }));
                 user.audioTrack?.play();
@@ -444,12 +467,13 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             if (mediaType === "audio") {
                 set((state) => ({
                     audioTracks: {
-                        localAudioTrack: state.audioTracks?.localAudioTrack || null,
+                        localAudioTrack: state.audioTracks?.localAudioTrack ?? null,
                         remoteAudioTracks: {
                             ...state.audioTracks?.remoteAudioTracks,
                             [user.uid]: undefined
                         },
-                        screeenTrack: state.audioTracks?.screeenTrack || null
+                        screenTrack: state.audioTracks?.screenTrack ?? null,
+                        screenAudioTrack: state.audioTracks?.screenAudioTrack ?? null
                     }
                 }));
             } else if (mediaType === "video") {
@@ -461,12 +485,13 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             useRtmStore.getState().removeUser(user.uid);
             set((state) => ({
                 audioTracks: {
-                    localAudioTrack: state.audioTracks?.localAudioTrack || null,
+                    localAudioTrack: state.audioTracks?.localAudioTrack ?? null,
                     remoteAudioTracks: {
                         ...state.audioTracks?.remoteAudioTracks,
                         [user.uid]: undefined
                     },
-                    screeenTrack: state.audioTracks?.screeenTrack || null
+                    screenTrack: state.audioTracks?.screenTrack ?? null,
+                    screenAudioTrack: state.audioTracks?.screenAudioTrack ?? null
                 }
             }));
         });
@@ -507,7 +532,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             throw new Error("Failed to create audio track");
         }
 
-        set((state) => ({ audioTracks: { localAudioTrack, remoteAudioTracks: state.audioTracks?.remoteAudioTracks || {}, screeenTrack: state.audioTracks?.screeenTrack || null } }));
+        set((state) => ({ audioTracks: { localAudioTrack, remoteAudioTracks: state.audioTracks?.remoteAudioTracks ?? {}, screenTrack: state.audioTracks?.screenTrack ?? null, screenAudioTrack: state.audioTracks?.screenAudioTrack ?? null } }));
 
         get().setMicState(presentation.User === "HOST" ? MIC_STATE.MIC_MUTED : MIC_STATE.MIC_OFF);
 
