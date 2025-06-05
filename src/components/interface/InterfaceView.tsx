@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-// import { useFullscreen, useOrientation } from "react-use";
+import { useFullscreen, useOrientation } from "react-use";
 import ShareAPI from "./Share";
 import { FaRegUser } from "react-icons/fa6";
 import { FiHome } from "react-icons/fi";
@@ -41,7 +41,7 @@ import PopUpModal from "../Models/dashboardModel";
 // }
 // ratios: side-bar 23.75(342px), main-view 73.125(1053px), spacings 3.125(45px)
 export default function InterfaceView() {
-  // const { orientation } = useOrientation();
+  const orientation = useOrientation();
   const navigate = useNavigate();
   const [mic, setMic] = useState(false);
   const [sideBar, setSideBar] = useState(true);
@@ -50,7 +50,7 @@ export default function InterfaceView() {
   const [micRequest] = useState(15);
   const [chooseCoHost] = useState(15);
   const [chooseSlide] = useState(12);
-  const isWideScreen = useMediaQuery({ query: "(max-width: 768px)" });
+  const is768PxScreen = useMediaQuery({ query: "(max-width: 768px)" });
   const [liveChatAudience, setLiveChatAudience] = useState({
     audience: true,
     chats: false,
@@ -68,7 +68,9 @@ export default function InterfaceView() {
       <header className="w-full h-full p-1">
         <div className="w-full h-full mx-auto border-none rounded-sm flex justify-between items-center">
           <ShareAPI fitSize={true} />
-          <div className="w-fit h-full flex justify-center items-center gap-4 maxScreenMobile:hidden">
+          <div
+            className={`w-fit h-full flex justify-center items-center gap-4 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
+          >
             <h2 className="text-xl font-light text-white">Meeting with YLN</h2>
             <sub className="text-[0.7rem] text-white">By {"Imoh Omezegba"}</sub>
           </div>
@@ -80,7 +82,7 @@ export default function InterfaceView() {
       </header>
       {/* main interface/footer and sideBar wrapper */}
       <div
-        className={`bg-black grid "grid-cols-1" ${sideBar && !isWideScreen && "grid-cols-[1fr_345px]"} grid-rows-[1fr]`}
+        className={`bg-black grid "grid-cols-1" ${((sideBar && !is768PxScreen) || (orientation.type.includes("landscape") && is768PxScreen)) && "grid-cols-[1fr_345px]"} grid-rows-[1fr]`}
       >
         {/* main interface/footer wrapper */}
         <div
@@ -98,13 +100,13 @@ export default function InterfaceView() {
             />
             <button
               onClick={() => alert("Sync... in progress")}
-              className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-20 maxScreenMobile:!z-50"
+              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-20 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
             >
               <IoSync color="white" size={28} />
             </button>
             <button
               onClick={() => setSideBar(!sideBar)}
-              className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-6 maxScreenMobile:!z-50"
+              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-6 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
             >
               {sideBar ? (
                 <RxEnterFullScreen color="white" size={28} />
@@ -155,7 +157,7 @@ export default function InterfaceView() {
                 {!sideBar && (
                   <button
                     onClick={() => setSideBar(true)}
-                    className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl relative"
+                    className={`w-10 h-10 border-none rounded-full ${!sideBar && !is768PxScreen ? "flex" : is768PxScreen ? "flex" : "hidden"} justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl relative`}
                   >
                     <span className="text-white text-xs flex justify-center items-center absolute -top-3 -right-3 border-none rounded-full p-1">
                       99+
@@ -191,15 +193,21 @@ export default function InterfaceView() {
                 <button
                   onClick={() => {
                     setLiveChatAudience({
-                      audience: false,
+                      audience:
+                        orientation.type.includes("landscape") && is768PxScreen
+                          ? true
+                          : false,
                       chats: false,
-                      controls: true,
+                      controls:
+                        orientation.type.includes("landscape") && is768PxScreen
+                          ? false
+                          : true,
                       requests: false,
                       coHost: false,
                       chooseSlide: false,
                       poll: false
                     });
-                    setSideBar(true);
+                    setSideBar(!sideBar);
                   }}
                   className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
                 >
@@ -219,10 +227,13 @@ export default function InterfaceView() {
         </div>
         {/* sideBar section */}
         <div
-          className={`w-full h-full p-1 ${!sideBar && "hidden"} maxScreenMobile:!absolute maxScreenMobile:!top-0 maxScreenMobile:!left-0 maxScreenMobile:!bottom-auto maxScreenMobile:!w-full maxScreenMobile:!h-[calc(100vh-50px)] maxScreenMobile:bg-black maxScreenMobile:z-50`}
+          className={`w-full h-full p-1 overflow-auto ${!sideBar && "hidden"} ${orientation.type.includes("portrait") && "maxScreenMobile:!absolute maxScreenMobile:!top-0 maxScreenMobile:!left-0 maxScreenMobile:!bottom-auto maxScreenMobile:!w-full maxScreenMobile:!h-[calc(100vh-50px)] maxScreenMobile:bg-black maxScreenMobile:z-50"} !border-none`}
         >
           {/* sideBar wrapper */}
-          <div className="w-full min-h-full grid grid-cols-[1fr] grid-rows-[20px_1fr] gap-1 relative">
+          <div
+            className={`w-full !h-full grid grid-cols-[1fr] grid-rows-[20px_1fr] gap-1 relative`}
+          >
+            {/* floating button for closing controls area */}
             <button
               onClick={() => {
                 setLiveChatAudience({
@@ -251,7 +262,7 @@ export default function InterfaceView() {
             </button>
             {/* SideBar toggle for Live audience and chat */}
             <div className="w-full h-full border-none rounded-sm grid grid-cols-2 grid-rows-1 gap-1">
-              <span
+              <button
                 onClick={() => {
                   setLiveChatAudience({
                     audience: true,
@@ -276,8 +287,8 @@ export default function InterfaceView() {
                     99+
                   </span>
                 </span>
-              </span>
-              <span
+              </button>
+              <button
                 onClick={() => {
                   setLiveChatAudience({
                     audience: false,
@@ -302,7 +313,7 @@ export default function InterfaceView() {
                     99+
                   </span>
                 </span>
-              </span>
+              </button>
             </div>
             {/* ********Live Audiences section********* */}
             <div
@@ -331,13 +342,13 @@ export default function InterfaceView() {
                   <div className="w-fit h-full flex justify-between items-center gap-2">
                     <button
                       onClick={() => setMic(!mic)}
-                      className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow ${!mic ? "bg-[#ff00005f]" : "bg-[#00800071]"} hover:scale-[1.1] text-white text-xl`}
+                      className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow  hover:scale-[1.1] ${!mic ? "text-[#F22B1F]" : "text-[#219882]"} text-xl relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10 before:pointer-events-none before:border-none before:rounded-full ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"}`}
                     >
                       {mic ? <IoIosMic size={24} /> : <IoIosMicOff size={24} />}
                     </button>
                     <button
                       onClick={() => setVideoShare(!videoShare)}
-                      className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow ${!videoShare ? "bg-[#ff00005f]" : "bg-[#00800071]"} hover:scale-[1.1] text-white text-xl`}
+                      className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10 before:pointer-events-none before:border-none before:rounded-full ${!videoShare ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} hover:scale-[1.1] ${!videoShare ? "text-[#F22B1F]" : "text-[#219882]"} text-xl`}
                     >
                       {videoShare ? (
                         <CiVideoOn size={24} />
@@ -401,10 +412,10 @@ export default function InterfaceView() {
                               </span>
                             </div>
                             <div className="flex justify-between items-center gap-2">
-                              <button className="text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
+                              <button className={`text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}>
                                 Accept
                               </button>
-                              <button className="text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
+                              <button className={`text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}>
                                 Decline
                               </button>
                             </div>
@@ -443,7 +454,7 @@ export default function InterfaceView() {
                       <div className="w-fit h-full flex justify-between items-center gap-2">
                         <button
                           onClick={() => setMic(!mic)}
-                          className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow ${!mic ? "bg-[#ff00005f]" : "bg-[#00800071]"} hover:scale-[1.1] text-white text-xl`}
+                          className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10 before:pointer-events-none before:border-none before:rounded-full ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} hover:scale-[1.1] ${!mic ? "text-[#F22B1F]" : "text-[#219882]"} text-xl`}
                         >
                           {mic ? (
                             <IoIosMic size={24} />
@@ -841,6 +852,6 @@ export default function InterfaceView() {
           </div>
         </div>
       </div>
-    </div> 
+    </div>
   );
 }
