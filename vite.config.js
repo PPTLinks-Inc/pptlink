@@ -37,9 +37,8 @@ const plugins = [
   sentryVitePlugin({
     authToken: process.env.SENTRY_AUTH_TOKEN,
     org: "pptlinks",
-    project: "pptlinks-frontend",
+    project: "pptlinks-frontend"
   })
-  // basicSsl()
 ];
 export default defineConfig({
   plugins: plugins,
