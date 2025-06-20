@@ -28,6 +28,10 @@ jobs:
           with:
             node-version: '20.12.2'
 
+        - name: Configure git credentials
+          run: |
+            git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
         - name: Install dependencies
           run: npm install
         
