@@ -1,7 +1,9 @@
 name: Build and Deploy
 on:
   push:
-    branches: [deploy]
+    branches:
+      - deploy
+      - test
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -39,11 +41,23 @@ jobs:
         - name: Build the project
           run: npm run build
         
-        - name: Deploy to S3
+        - name: Deploy to S3 (Production)
+          if: github.ref == 'refs/heads/deploy'
           run: |
-            aws s3 sync --delete ${{ secrets.DIST }} s3://${{ secrets.AWS_S3_BUCKET }} 
+            aws s3 sync --delete ./dist s3://${{ secrets.AWS_S3_BUCKET }} 
         
-        - name: Invalidate CloudFront cache
+        - name: Invalidate CloudFront cache (Production)
+          if: github.ref == 'refs/heads/deploy'
           run: |
             aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DIST_ID }} --paths "/*"
+        
+        - name: Deploy to S3 (Staging)
+          if: github.ref == 'refs/heads/test'
+          run: |
+            aws s3 sync --delete ./dist s3://${{ secrets.AWS_S3_BUCKET_STAGING }}
+
+        - name: Invalidate CloudFront cache (Staging)
+          if: github.ref == 'refs/heads/test'
+          run: |
+            aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DIST_ID_STAGING }} --paths "/*"
 
