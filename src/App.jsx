@@ -14,6 +14,7 @@ import { setAuthFetchToken } from "./lib/axios";
 import * as Sentry from "@sentry/react";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
+import QuizContextProvider from "./contexts/quizContext";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
@@ -69,6 +70,12 @@ const CourseVideoPlayer = lazy(
 );
 const CoursepdfViewer = lazy(
   () => import("./components/upload/createCourseFlow/CoursepdfViewer")
+);
+// const QuizStarter = lazy(
+//   () => import("./components/upload/quiz/QuizCreator")
+// );
+const Quiz = lazy(
+  () => import("./components/upload/quiz/Quiztaker")
 );
 const TermsAndServicesPage = lazy(
   () => import("./components/Terms_and_policy_page/termsAndServices")
@@ -240,6 +247,22 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/create",
       element: <CreatePath />
+    },
+    // {
+    //   path: "/create-quiz",
+    //   element: (
+    //     <QuizContextProvider>
+    //       <QuizStarter />
+    //     </QuizContextProvider>
+    //   )
+    // },
+    {
+      path: "/start-quiz",
+      element: (
+        <QuizContextProvider>
+          <Quiz />
+        </QuizContextProvider>
+      )
     },
     {
       path: "/course/invitation",

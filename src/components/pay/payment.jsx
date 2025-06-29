@@ -44,7 +44,8 @@ export default function Payment() {
     tx_ref: `pptlink-${Date.now()}-${user?.id}`,
     amount: courseData?.price,
     currency: "NGN",
-    payment_options: "card,bank",
+    // payment_options: "card,bank",
+    payment_options: "banktransfer",
     customer: {
       email: user?.email,
       name: user?.username
