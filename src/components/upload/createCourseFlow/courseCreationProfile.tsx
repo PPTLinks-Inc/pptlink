@@ -41,6 +41,7 @@ export default function CourseCreationProfile() {
   const { userQuery } = useUser();
   const courseCreatorId = useCourseStore((state) => state.creatorId); 
   const instructors = useCourseStore((state) => state.instructors);
+  const freeCourse = useCourseStore(state => state.free); 
   const addInstructor = useCourseStore((state) => state.addInstructor);
   const removeInstructor = useCourseStore((state) => state.removeInstructor);
   const updateInstructor = useCourseStore((state) => state.updateInstructor);
@@ -208,7 +209,7 @@ export default function CourseCreationProfile() {
           <h1 className="text-2xl font-bold">Course Creation Profile</h1>
           <p className="text-lg mt-2 ">Set up your course profile</p>
 
-          {isCreator && (
+          {isCreator && !freeCourse && (
             <div className="space-y-4 mt-10">
               <h3 className="text-lg font-bold">
                 Pease enter your bank details

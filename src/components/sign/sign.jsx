@@ -20,7 +20,7 @@ import logo_orange from "/imgs/onemorecolor.png";
 import PopUpModal from "../Models/dashboardModel";
 import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
-import { standardFetch } from "../../lib/axios";
+import { authFetch, standardFetch } from "../../lib/axios";
 import useUser from "../../hooks/useUser";
 import { setAuthFetchToken } from "../../lib/axios";
 import GoogleLoginButton from "../ui/googleLoginButton";
@@ -54,7 +54,7 @@ export default function SignPage() {
 
   const signin = useMutation({
     mutationFn: () => {
-      return standardFetch.post("/api/v1/auth/login", {
+      return authFetch.post("/api/v1/auth/login", {
         email: values.email,
         password: values.password
       });

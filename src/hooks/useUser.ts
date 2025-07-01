@@ -73,8 +73,13 @@ export default function useUser() {
         queryClient.setQueryData(["user"], user);
     }
 
-    function logOut() {
-        localStorage.removeItem("accessToken");
+    async function logOut() {
+        // localStorage.removeItem("accessToken");
+        const [err] = await safeAwait(authFetch.get("/api/v1/auth/logout"));
+        if (err) {
+            console.error("Failed to log out:", err);
+            return;
+        }
         setAuthFetchToken(undefined);
         queryClient.clear();
         window.location.href = '/signin';
