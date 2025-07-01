@@ -1,4 +1,4 @@
-import { authFetch, setAuthFetchToken } from "@/lib/axios";
+import { authFetch } from "@/lib/axios";
 import safeAwait from "@/util/safeAwait";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -23,12 +23,10 @@ export default function useUser() {
             const username = searchParams.get('username');
             const email = searchParams.get('email');
             const presentations = searchParams.get('presentations');
-            const token = searchParams.get('token');
             const courses = searchParams.get('courses');
             
 
-            if (token && id && username && email && presentations && courses) {
-                localStorage.setItem('accessToken', token);
+            if (id && username && email && presentations && courses) {
 
                 if (window.opener) {
                     window.opener.postMessage(
@@ -37,7 +35,7 @@ export default function useUser() {
                             username,
                             email,
                             presentations: parseInt(presentations)
-                        }, token: token },
+                        } },
                         window.location.origin // Ensure only trusted origins receive the message
                     );
                     window.close();
@@ -52,7 +50,6 @@ export default function useUser() {
                     courses: parseInt(courses)
                 });
 
-                setAuthFetchToken(token);
                 const redirect = localStorage.getItem("redirect") ?? "/";
                 localStorage.removeItem("redirect");
                 location.replace(redirect);
@@ -80,7 +77,6 @@ export default function useUser() {
             console.error("Failed to log out:", err);
             return;
         }
-        setAuthFetchToken(undefined);
         queryClient.clear();
         window.location.href = '/signin';
     }

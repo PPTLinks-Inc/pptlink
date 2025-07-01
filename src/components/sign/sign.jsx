@@ -22,7 +22,6 @@ import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import { authFetch, standardFetch } from "../../lib/axios";
 import useUser from "../../hooks/useUser";
-import { setAuthFetchToken } from "../../lib/axios";
 import GoogleLoginButton from "../ui/googleLoginButton";
 
 export default function SignPage() {
@@ -62,13 +61,12 @@ export default function SignPage() {
     onSuccess: ({ data }) => {
       if (window.opener) {
         window.opener.postMessage(
-          { type: "SIGN_IN", payload: data.user, token: data.token },
+          { type: "SIGN_IN", payload: data.user },
           window.location.origin // Ensure only trusted origins receive the message
         );
         window.close();
       } else {
         setUser(data.user);
-        setAuthFetchToken(data.token);
         const redirectUrl = searchParams.get("redirect") ?? "/";
         navigate(redirectUrl);
       }
@@ -91,13 +89,12 @@ export default function SignPage() {
     onSuccess: ({ data }) => {
       if (window.opener) {
         window.opener.postMessage(
-          { type: "SIGN_IN", payload: data.user, token: data.token },
+          { type: "SIGN_IN", payload: data.user },
           window.location.origin // Ensure only trusted origins receive the message
         );
         window.close();
       } else {
         setUser(data.user);
-        setAuthFetchToken(data.token);
         const redirectUrl = searchParams.get("redirect") ?? "/";
         navigate(redirectUrl);
       }
