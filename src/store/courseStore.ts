@@ -22,6 +22,7 @@ export interface CourseData {
     categoryId: string;
     published: boolean;
     price: number;
+    free: boolean;
     creatorId: string;
     enrollmentDateFrom: string;
     enrollmentDateTo: string;
@@ -87,6 +88,7 @@ export interface CourseStore {
     categoryId: string;
     published: boolean;
     price: number;
+    free: boolean;
     creatorId: string;
     enrollmentDateFrom: Date;
     enrollmentDateTo: Date;
