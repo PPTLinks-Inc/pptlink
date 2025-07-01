@@ -52,6 +52,7 @@ export default function CourseCreationSettings() {
   const name = useCourseStore((state) => state.name);
   const description = useCourseStore((state) => state.description);
   const price = useCourseStore((state) => state.price);
+  const freeCourse = useCourseStore(state => state.free);
   const courseLevel = useCourseStore((state) => state.courseLevel);
   const maxStudents = useCourseStore((state) => state.maxStudents);
   const thumbnail = useCourseStore((state) => state.thumbnail);
@@ -187,7 +188,7 @@ export default function CourseCreationSettings() {
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2 mt-2">
+          {!freeCourse && <div className="space-y-2 mt-2">
             <h3 className="text-lg font-bold">
               Please input the currency in which your course should be charged
             </h3>
@@ -230,7 +231,7 @@ export default function CourseCreationSettings() {
               />
               <span className="absolute left-2 top-2">₦</span>
             </div>
-          </div>
+          </div>}
         </div>
 
         <div className="space-y-4 mt-10">
