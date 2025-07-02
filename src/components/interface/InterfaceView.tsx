@@ -63,7 +63,7 @@ export default function InterfaceView() {
 
   return (
     // new interface page new design
-    <div className="relative bg-black w-[100svw] h-[100svh] grid grid-rows-[40px_1fr] grid-cols-[1fr]">
+    <div className="relative bg-black maxScreenMobile:bg-primaryTwo w-[100svw] h-[100svh] grid grid-rows-[40px_1fr] grid-cols-[1fr]">
       {/* header section */}
       <header className="w-full h-full p-1">
         <div className="w-full h-full mx-auto border-none rounded-sm flex justify-between items-center">
@@ -82,7 +82,7 @@ export default function InterfaceView() {
       </header>
       {/* main interface/footer and sideBar wrapper */}
       <div
-        className={`bg-black grid "grid-cols-1" ${((sideBar && !is768PxScreen) || (orientation.type.includes("landscape") && is768PxScreen)) && "grid-cols-[1fr_345px]"} grid-rows-[1fr]`}
+        className={`bg-black maxScreenMobile:bg-primaryTwo grid "grid-cols-1" ${((sideBar && !is768PxScreen) || (orientation.type.includes("landscape") && is768PxScreen)) && "grid-cols-[1fr_345px]"} grid-rows-[1fr]`}
       >
         {/* main interface/footer wrapper */}
         <div
@@ -100,13 +100,13 @@ export default function InterfaceView() {
             />
             <button
               onClick={() => alert("Sync... in progress")}
-              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-20 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
+              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow _bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-20 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
             >
               <IoSync color="white" size={28} />
             </button>
             <button
               onClick={() => setSideBar(!sideBar)}
-              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-6 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
+              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow _bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-6 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
             >
               {sideBar ? (
                 <RxEnterFullScreen color="white" size={28} />
@@ -118,111 +118,74 @@ export default function InterfaceView() {
             <div className="slider-view w-full h-full bg-[gray]"></div>
           </div>
           {/* interface footer */}
-          <footer className="w-full h-full _maxScreenMobile:fixed _maxScreenMobile:bottom-0 _maxScreenMobile:left-0 _maxScreenMobile:w-full _maxScreenMobile:h-[20svh] maxScreenMobile:bg-black maxScreenMobile:!z-[60]">
-            {/* interface footer wrapper */}
-            <div className="bg-[blue]_ w-[98%] h-full mx-auto border-none rounded-sm flex justify-between items-center">
-              {/* first button section */}
-              <div className="w-fit h-full flex justify-between items-center gap-2">
-                {/* home */}
-                <button
-                  onClick={() => navigate("/")}
-                  className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
-                >
-                  <FiHome size={24} />
-                </button>
-                {/* download file */}
-                <button className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden">
-                  <IoCloudDownloadOutline size={24} />
-                </button>
-              </div>
-              {/* second button section */}
-              <div className="w-fit h-full flex justify-between items-center gap-2">
-                {/* share screen */}
-                <button
-                  onClick={() =>
-                    confirm(
-                      `Are you sure you want to ${!screenShare ? "share" : "stop sharing"} your screen?`
-                    )
-                      ? setScreenShare(!screenShare)
-                      : ""
-                  }
-                  className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden"
-                >
-                  {!screenShare ? (
-                    <MdOutlineScreenShare size={24} />
-                  ) : (
-                    <MdOutlineStopScreenShare size={24} />
-                  )}
-                </button>
-                {!sideBar && (
-                  <button
-                    onClick={() => setSideBar(true)}
-                    className={`w-10 h-10 border-none rounded-full ${!sideBar && !is768PxScreen ? "flex" : is768PxScreen ? "flex" : "hidden"} justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl relative`}
-                  >
-                    <span className="text-white text-xs flex justify-center items-center absolute -top-3 -right-3 border-none rounded-full p-1">
-                      99+
-                    </span>
-                    <FaRegUser size={24} />
-                  </button>
-                )}
-                <button
-                  onClick={() => setMic(!mic)}
-                  className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow ${mic ? "bg-orange-500" : "bg-gray-300"} hover:scale-[1.1] text-white text-xl`}
-                >
-                  {mic ? <PiHandWaving size={24} /> : <IoIosMic size={24} />}
-                </button>
-                {/* message */}
-                <button
-                  onClick={() => {
-                    setLiveChatAudience({
-                      audience: false,
-                      chats: true,
-                      controls: false,
-                      requests: false,
-                      coHost: false,
-                      chooseSlide: false,
-                      poll: false
-                    });
-                    setSideBar(true);
-                  }}
-                  className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
-                >
-                  <LuMessagesSquare size={24} />
-                </button>
-                {/* three dots model */}
-                <button
-                  onClick={() => {
-                    setLiveChatAudience({
-                      audience:
-                        orientation.type.includes("landscape") && is768PxScreen
-                          ? true
-                          : false,
-                      chats: false,
-                      controls:
-                        orientation.type.includes("landscape") && is768PxScreen
-                          ? false
-                          : true,
-                      requests: false,
-                      coHost: false,
-                      chooseSlide: false,
-                      poll: false
-                    });
-                    setSideBar(!sideBar);
-                  }}
-                  className="w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
-                >
-                  <BsThreeDots size={24} />
-                </button>
-              </div>
-              {/* third button section */}
-              {/* end call red button */}
-              <button
-                onClick={() => confirm("Are you sure you want to End session?")}
-                className="bg-[#ff0000] w-16 h-[70%] flex justify-center items-center gap-2 px-2 border-none rounded-sm text-[0.8rem] font-semibold"
-              >
-                <MdCallEnd size={32} />
-              </button>
-            </div>
+          <footer className="interface_page_footer w-full h-full">
+            {/* Home button */}
+            <button
+              onClick={() => navigate("/")}
+              className="homeBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
+            >
+              <FiHome size={24} />
+            </button>
+
+            {/* Download button */}
+            <button
+              className="downloadBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden"
+            >
+              <IoCloudDownloadOutline size={24} />
+            </button>
+
+            {/* Share screen button */}
+            <button
+              onClick={() =>
+                confirm(
+                  `Are you sure you want to ${!screenShare ? "share" : "stop sharing"} your screen?`
+                )
+                  ? setScreenShare(!screenShare)
+                  : ""
+              }
+              className="shareBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden"
+            >
+              {!screenShare ? (
+                <MdOutlineScreenShare size={24} />
+              ) : (
+                <MdOutlineStopScreenShare size={24} />
+              )}
+            </button>
+
+            {/* Mic request button */}
+            <button
+              onClick={() => setMic(!mic)}
+              className="micBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
+            >
+              {mic ? <PiHandWaving size={24} /> : <IoIosMic size={24} />}
+            </button>
+
+            {/* Settings/controls button */}
+            <button
+              onClick={() => {
+                setLiveChatAudience({
+                  audience: false,
+                  chats: true,
+                  controls: false,
+                  requests: false,
+                  coHost: false,
+                  chooseSlide: false,
+                  poll: false
+                });
+                setSideBar(true);
+              }}
+              className="settingsBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
+            >
+              <BsThreeDots size={24} />
+            </button>
+
+            {/* End call button */}
+            <button
+              onClick={() => confirm("Are you sure you want to End session?")}
+              className="endCallBtn bg-[#ff0000] w-16 h-[70%] flex justify-center items-center gap-2 px-2 border-none rounded-sm text-[0.8rem] font-semibold"
+            >
+              <MdCallEnd size={32} />
+            </button>
           </footer>
         </div>
         {/* sideBar section */}
@@ -412,10 +375,14 @@ export default function InterfaceView() {
                               </span>
                             </div>
                             <div className="flex justify-between items-center gap-2">
-                              <button className={`text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}>
+                              <button
+                                className={`text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
+                              >
                                 Accept
                               </button>
-                              <button className={`text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}>
+                              <button
+                                className={`text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
+                              >
                                 Decline
                               </button>
                             </div>

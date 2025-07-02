@@ -812,3 +812,79 @@ label.toggle__label {
     scroll-snap-align: start;
   }
 }
+
+// interface page for footer using gride area for 6cols 1row
+.interface_page_footer {
+  width: 100% !important;
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0rem;
+  grid-template-areas: "home download . . . . . micRequest . . . . . endCall endCall"; //default layout
+  grid-template-rows: 1fr;
+  // Desktop view states
+  &.cant_speaking2_AsideBar_desktop {
+    grid-template-areas: "home download . . . . shareScreen micRequest controls . . . . endCall endCall"; //can't speaking2, sideBar active
+  }
+  &.can_speaking2_AsideBar_desktop {
+    grid-template-areas: "home download . . . . shareScreen micRequest chats controls . . . endCall endCall"; //can speaking, sideBar active
+  }
+  &.can_speaking2_inAsideBar_desktop {
+    grid-template-areas: "home download . . . audience shareScreen micRequest chats controls . . . endCall endCall"; //can speaking, sideBar inactive
+  }
+  // Mobile view
+  &.cant_speaking_mobile {
+    grid-template-areas: "home controls . shareScreen micRequest . . endCall endCall"; //mobile layout
+  }
+  
+  & > button {
+    display: none !important; // Hide all buttons by default
+  }
+
+  .homeBtn {
+    grid-area: home;
+    display: block !important; // Show if area exists in template
+  }
+
+  .downloadBtn {
+    grid-area: download;
+    display: block !important;
+  }
+
+  .shareBtn {
+    grid-area: shareScreen;
+    display: block !important;
+  }
+
+  .audienceBtn {
+    grid-area: audience;
+    display: block !important;
+  }
+
+  .micBtn {
+    grid-area: micRequest;
+    display: block !important;
+  }
+
+  .messageBtn {
+    grid-area: chats;
+    display: block !important;
+  }
+
+  .settingsBtn {
+    grid-area: controls;
+    display: block !important;
+  }
+
+  .endCallBtn {
+    grid-area: endCall;
+    display: block !important;
+  }
+
+  // Mobile styles
+  @include is_mediaQuery_MaxWidth_Yes {
+    // &.cant_speaking_mobile {
+    //   grid-template-areas: "home controls . shareScreen micRequest . . endCall endCall";
+    // }
+  }
+}
