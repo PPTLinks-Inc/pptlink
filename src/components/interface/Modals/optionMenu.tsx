@@ -22,7 +22,6 @@ import { useRtmStore } from "../store/rtmStore";
 import { usepresentationStore } from "../store/presentationStore";
 import { useOptionsStore } from "../store/optionsStore";
 import { useModalStore } from "../store/modalStore";
-import { setAuthFetchToken } from "@/lib/axios";
 import { useSlideStore } from "../store/slideStore";
 import safeAwait from "@/util/safeAwait";
 import { Button } from "@/components/ui/button";
@@ -265,7 +264,6 @@ function AddSlideMenu() {
 
       // Update user data
       if (event.data.type === "SIGN_IN") {
-        setAuthFetchToken(event.data.token);
         setUser(event.data.payload);
         signInWindow?.close(); // Optionally close the sign-in window
         window.removeEventListener("message", handleMessage);

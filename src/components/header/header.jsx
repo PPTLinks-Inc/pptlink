@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import logo_white from "/imgs/WHITE.png";
 import logo_black from "/imgs/BLACK.png";
 import { motion } from "framer-motion";
@@ -16,7 +16,6 @@ import useUser from "../../hooks/useUser";
 export default function Header({ isBackMenu, handleDropdown }) {
   const [search, setSearch] = useState("");
   const location = useLocation();
-  const navigate = useNavigate();
   const getlocation = () => location.pathname === "/document";
   const getDashboardLocation = () => location.pathname === "/dashboard";
   const getUploadLocation = () => location.pathname === "/upload";
@@ -25,16 +24,6 @@ export default function Header({ isBackMenu, handleDropdown }) {
   // context
   const { userQuery } = useUser();
   const user = userQuery.data;
-
-  const handleCreateClick = (e) => {
-    e.preventDefault();
-    if (!user) {
-      // Redirect to login with return URL
-      navigate('/signin?redirect=/create');
-    } else {
-      navigate('/create');
-    }
-  };
 
   const containertVarients = {
     hidden: {
