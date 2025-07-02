@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { Link } from "react-router-dom";
 import { useWindowSize } from '@react-hook/window-size';
 import { quizContext } from '../../../contexts/quizContext';
@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 import logo_white from "/imgs/WHITE.png";
 
 const QuizTaker = () => {
+  const { isCompleted, currentQuestionIndex, startQuiz, timer, setStartQuiz, setIsCompleted, quiz, setCurrentQuestionIndex, isTimerEnabled, selectedOption, handleOptionChange } = useContext(quizContext);
 
-  const { currentQuestionIndex, startQuiz, setStartQuiz, quiz, setCurrentQuestionIndex } = useContext(quizContext);
 
   return (
     <div className="bg-primaryTwo w-full !h-[100svh] !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
@@ -31,12 +31,12 @@ const QuizTaker = () => {
             <span className='flex justify-end items-center gap-8'>
               {/* {quetionsCount.attempt ? ( */}
               <p
-                className={`${false
+                className={`${timer <= 20
                   ? 'text-[#dc2626] animate-pulse font-bold'
                   : 'text-gray-300'
-                  }`}
+                  } ${isTimerEnabled ? "" : "hidden"}`}
               >
-                Time: 2:45
+                Time: {timer}
               </p>
               {/* ) : ""} */}
               <Link to="/" className="text-[#FFA500]">
@@ -52,7 +52,7 @@ const QuizTaker = () => {
       </span>
 
       <section
-        className={`${true ? "w-3/6" : "w-4/6"} mx-auto h-fit flex flex-col justify-between items-center gap-6 maxScreenMobile:!w-[90%] relative`}
+        className={`${!isCompleted ? "w-3/6" : "w-4/6"} mx-auto h-fit flex flex-col justify-between items-center gap-6 maxScreenMobile:!w-[90%] relative`}
       >
         {!startQuiz ? (<>
           <motion.h1
@@ -103,19 +103,15 @@ const QuizTaker = () => {
                 <label
                   key={index.toString()}
                   htmlFor={`quetion-label-${index.toString()}`}
-                  className={`flex items-center justify-between py-4 w-full cursor-pointer transition !border-b-[0.1rem] border-gray-700 ${""}`}
+                  className={`flex items-center justify-between py-4 w-full cursor-pointer transition !border-b-[0.1rem] border-gray-700`}
                 >
                   <span className='text-sm line-clamp-3 text-orange-400'>
                     {String.fromCharCode(index + 65)}
                   </span>
                   <span
-                    className={`ml-3 mr-auto max-w-[90%] truncate_ ${false
-                      ? 'text-green-400'
-                      : false
-                        ? 'text-[#dc2626]'
-                        : false
-                          ? 'text-orange-400'
-                          : 'text-white'
+                    className={`ml-3 mr-auto max-w-[90%] truncate_ ${selectedOption === index
+                      ? 'text-orange-400'
+                      : 'text-white'
                       }`}
                   >
                     {option}
@@ -124,6 +120,8 @@ const QuizTaker = () => {
                     type='radio'
                     name='quiz-option'
                     id={`quetion-label-${index.toString()}`}
+                    checked={selectedOption === index}
+                    onChange={() => handleOptionChange(index)}
                     className={`w-5 h-5 bg-orange-400`}
                   />
                 </label>
@@ -136,7 +134,7 @@ const QuizTaker = () => {
       <footer className="w-full h-fit pb-8 pt-3 maxScreenMobile:mt-auto maxScreenMobile:mb-0 maxScreenMobile:justify-self-end">
         <div className="container flex justify-between items-center">
           {startQuiz && currentQuestionIndex !== 0 && <button
-            className={`py-2 px-8 bg-primaryTwo border-[1px] border-white rounded-md`}
+            className={`${isTimerEnabled ? "hidden" : ""} py-2 px-8 bg-primaryTwo border-[1px] border-white rounded-md`}
             onClick={() => {
               setCurrentQuestionIndex(prev => prev - 1)
             }}
@@ -153,7 +151,11 @@ const QuizTaker = () => {
           </button>) : (<button
             className="block py-2 px-8 bg-primaryTwo border-[1px] border-white rounded-md ml-auto"
             onClick={() => {
-              setCurrentQuestionIndex(prev => prev + 1)
+              if ((currentQuestionIndex + 1) === quiz.questions.length) {
+                setIsCompleted(true);
+              } else {
+                setCurrentQuestionIndex(prev => prev + 1);
+              }
             }}
           >
             Next
@@ -164,7 +166,7 @@ const QuizTaker = () => {
   );
 };
 
-const Results = ({ quizData }) => {
+const Results = () => {
   // const currentQuiz = quizData[0];
   // const total = currentQuiz.questions.length;
   // const score = Number(currentQuiz.rightAnswers || 0);
@@ -222,6 +224,7 @@ const Results = ({ quizData }) => {
 
 const Quiz = () => {
   const { isCompleted } = useContext(quizContext);
+
 
   return isCompleted ? (
     <Results />
