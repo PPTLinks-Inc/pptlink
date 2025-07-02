@@ -1,5 +1,8 @@
 /* eslint-disable react/prop-types */
+import useUser from "@/hooks/useUser";
+import { useConvexQuery } from "@/lib/convex";
 import { useUploadStore } from "@/store/uploadStoreProvider";
+import { api } from "@pptlinks/shared-convex-backend/convex/_generated/api";
 import { useSearchParams } from "react-router-dom";
 
 function ProgressIndicator() {
@@ -62,21 +65,29 @@ function FormLabelIndicator() {
 }
 
 function FormStageMover() {
+  const { userQuery } = useUser();
+  const user = userQuery.data;
   const [searchParams] = useSearchParams();
   const currentView = useUploadStore((state) => state.currentView);
   const moveView = useUploadStore((state) => state.moveView);
 
-  const processingFile = useUploadStore((state) => state.processingFile);
+  const { data } = useConvexQuery(api.jobsQuery.getSingleUploadTempData, {
+    userId: user?.id ?? ""
+  });
+  const processingFile = data?.status ===  "processing";
   const isSaving = useUploadStore((state) => state.isSaving);
 
-  const disableBtn = (currentView === 3 && processingFile || isSaving) ? true : false;
+  const disableBtn =
+    (currentView === 3 && processingFile) || isSaving ? true : false;
 
   return (
     <div className="flex justify-between items-center mt-6 maxScreenMobile:flex-col maxScreenMobile:gap-4 maxScreenMobile:w-[90%] maxScreenMobile:mx-auto">
       <button
         type="button"
         className={`${
-          currentView === 1 || isSaving ? "!cursor-not-allowed" : "pointer-events-auto"
+          currentView === 1 || isSaving
+            ? "!cursor-not-allowed"
+            : "pointer-events-auto"
         } border border-primaryTwo text-primaryTwo text-[1.5rem] px-2 py-[calc(0.5rem-2px)] rounded-md w-[25%] maxScreenMobile:text-[1.2rem] maxScreenMobile:w-full`}
         onClick={() => moveView("back")}
         disabled={currentView === 1 || isSaving ? true : false}
@@ -90,7 +101,13 @@ function FormStageMover() {
         onClick={() => moveView("next")}
         disabled={disableBtn}
       >
-        {currentView === 3 ? isSaving ? "Saving..." : searchParams.has("edit") ? "Update" : "Submit" : "Next"}
+        {currentView === 3
+          ? isSaving
+            ? "Saving..."
+            : searchParams.has("edit")
+              ? "Update"
+              : "Submit"
+          : "Next"}
       </button>
     </div>
   );

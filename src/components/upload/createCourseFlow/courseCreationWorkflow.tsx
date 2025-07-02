@@ -254,10 +254,10 @@ export default function CourseCreationWorkflow() {
       file,
       name: file.name,
       status: "starting",
-      id: `new-${contentItems.length}`
+      id: `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     };
 
-    setContentItems([...contentItems, newContentItem]);
+    setContentItems((prevContent) => [...prevContent, newContentItem]);
     addToUploadQueue(newContentItem.id);
   }
 

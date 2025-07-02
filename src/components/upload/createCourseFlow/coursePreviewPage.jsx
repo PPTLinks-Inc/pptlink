@@ -59,15 +59,7 @@ export default function CoursePreviewPage() {
     }
   });
 
-  /* if (isLoading) {
-    return (
-        <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
-          <LoadingAssetBig2 />
-
-          <p>Loading Course data...</p>
-        </div>
-    );
-  } else */ if (error) {
+  if (error) {
     return (
       <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
         {axios.isAxiosError(error) ? (
@@ -259,7 +251,7 @@ export default function CoursePreviewPage() {
           <h1 className="text-3xl maxScreenMobile:text-2xl font-[400] uppercase mb-1">
             {data.name}
           </h1>
-          <p className="uppercase text-[#FFA500]">Paid Program</p>
+          <p className="uppercase text-[#FFA500]">{data.free ? "Free" : "Paid"} Program</p>
           <p className="text-[0.9rem] pb-3 w-2/5 maxScreenMobile:w-4/5 maxSmallMobile:w-full maxSmallMobile:text-justify">
             {data.description}
           </p>
@@ -319,7 +311,7 @@ export default function CoursePreviewPage() {
                   <span className="text-[#FFA500] font-bold text-xl">PAID</span>
                 ) : (
                   <span className="text-[#FFA500] font-bold text-xl">
-                    {price}
+                    {data.free ? "FREE" : price}
                   </span>
                 )}
               </div>

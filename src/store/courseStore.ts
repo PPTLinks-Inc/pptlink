@@ -22,6 +22,7 @@ export interface CourseData {
     categoryId: string;
     published: boolean;
     price: number;
+    free: boolean;
     creatorId: string;
     enrollmentDateFrom: string;
     enrollmentDateTo: string;
@@ -87,6 +88,7 @@ export interface CourseStore {
     categoryId: string;
     published: boolean;
     price: number;
+    free: boolean;
     creatorId: string;
     enrollmentDateFrom: Date;
     enrollmentDateTo: Date;
@@ -128,7 +130,7 @@ export interface CourseStore {
     setSections: (sections: Section[]) => void;
     selectedSectionIndex: number;
     setSelectedSectionIndex: (index: number) => void;
-    setContentItems: (contentItems: ContentItem[]) => void;
+    setContentItems: (contentItems: ContentItem[] | ((contentItems: ContentItem[]) => ContentItem[])) => void;
     removeContentItem: (id: string) => Promise<void>;
     handleSectionTitleChange: (title: string) => void;
     addSection: () => Promise<{ order: number, id: string }>;

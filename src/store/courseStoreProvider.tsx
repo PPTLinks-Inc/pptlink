@@ -72,6 +72,7 @@ export default function CourseStoreProvider({
       published: data.published,
       canPublish: false,
       price: data.price,
+      free: data.free,
       creatorId: data.creatorId,
       enrollmentDateFrom: new Date(data.enrollmentDateFrom),
       enrollmentDateTo: new Date(data.enrollmentDateTo),
@@ -117,6 +118,12 @@ export default function CourseStoreProvider({
       setSelectedSectionIndex: (index: number) =>
         set({ selectedSectionIndex: index }),
       setContentItems: (contentItems) => {
+        // if contentItems is a function, call it with the current sections
+        if (typeof contentItems === "function") {
+          contentItems = contentItems(get().sections[get().selectedSectionIndex].contents);
+        }
+
+        // Update the contents of the currently selected section
         set((state) => {
           const newSections = [...state.sections];
           newSections[state.selectedSectionIndex].contents = contentItems;
@@ -564,6 +571,20 @@ export default function CourseStoreProvider({
 
       verifyAccount: async () => {
         const state = get();
+
+        if (state.free) {
+          set((state) => ({
+            accountVerification: {
+              ...state.accountVerification,
+              isVerifying: false,
+              isValidAccount: true,
+              accountName: "",
+              verificationError: ""
+            }
+          }));
+          return;
+        }
+
         const { accountNumber, bankCode } = state.accountVerification;
 
         if (!accountNumber || !bankCode) return;
@@ -669,7 +690,7 @@ export default function CourseStoreProvider({
             instructor.instructor.bio
         );
 
-        const hasValidPaymentDetails = !!(
+        const hasValidPaymentDetails = state.free ? true : !!(
           state.accountDetails?.accountNumber &&
           state.accountDetails?.bankCode &&
           state.accountDetails?.accountName

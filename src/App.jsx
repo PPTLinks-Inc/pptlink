@@ -10,7 +10,6 @@ import UploadStoreProvider from "./store/uploadStoreProvider";
 import "./assets/styles/general_css.css";
 import { Toaster } from "@/components/ui/toaster";
 import useUser from "./hooks/useUser";
-import { setAuthFetchToken } from "./lib/axios";
 import * as Sentry from "@sentry/react";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
@@ -358,8 +357,6 @@ const router = sentryCreateBrowserRouter(
 );
 
 function App() {
-  setAuthFetchToken(localStorage.getItem("accessToken"));
-
   useUser();
 
   // const location = useLocation();
