@@ -1064,3 +1064,60 @@ export default function InstructorCard({ img }) {
         </div>
 
 
+
+
+
+<!-- ///////////////////////////////////////////quiz app///////////////////////////////////////////////// -->
+
+/* eslint-disable react/prop-types */
+import { createContext, useState, useMemo } from 'react';
+
+// Default quiz data
+const defaultQuiz = [
+    {
+        id: 1,
+        Name: 'My first Quiz',
+        timed: true,
+        createdBy: 1,
+        rightAns: 3, 
+        questions: [
+            {
+                question: 'When was Nigerian independence',
+                options: [
+                    { optionsA: '2025', correct: false },
+                    { optionsB: '1960', correct: true },
+                    { optionsA: '1996', correct: false },
+                    { optionsA: '1967', correct: false },
+                ],
+            },
+
+            {
+                question: 'When was Nigerian civil war',
+                options: [
+                    { optionsA: '2025', correct: false },
+                    { optionsB: '1960', correct: false },
+                    { optionsA: '1996', correct: false },
+                    { optionsA: '1967', correct: true },
+                ],
+            },
+        ],
+    }
+];
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const quizContext = createContext(defaultQuiz);
+
+const QuizContextProvider = (props) => {
+    // Initialize with defaultQuiz instead of []
+    const [quiz, setQuiz] = useState(defaultQuiz);
+
+    const providerQuiz = useMemo(() => ({ quiz, setQuiz }), [quiz, setQuiz]);
+
+    return (
+        <quizContext.Provider value={providerQuiz}>
+            {props.children}
+        </quizContext.Provider>
+    );
+};
+
+export default QuizContextProvider;

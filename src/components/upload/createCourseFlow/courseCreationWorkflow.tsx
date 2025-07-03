@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
@@ -60,6 +61,7 @@ export async function CourseContentLoader({ params }: LoaderFunctionArgs<any>) {
 }
 
 export default function CourseCreationWorkflow() {
+  const navigate = useNavigate();
   const [newlyCreatedSection, setNewlyCreatedSection] = useState<{
     id: string;
     initialTitle: string;
@@ -422,7 +424,8 @@ export default function CourseCreationWorkflow() {
               </button>
               <button
                 disabled={true}
-                className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300 cursor-not-allowed"
+                className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300 _cursor-not-allowed"
+                onClick={() => navigate("/start-quiz")}
               >
                 <MdOutlineQuiz />
                 <span className="ml-2">Add Quiz</span>

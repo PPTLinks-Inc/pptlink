@@ -644,4 +644,61 @@ label.toggle__label:active:after {
 }
 .snap_scrolling .snap_scrolling_child {
   scroll-snap-align: start;
+}
+
+.interface_page_footer {
+  width: 100% !important;
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0rem;
+  grid-template-areas: "home download . . . . . micRequest . . . . . endCall endCall";
+  grid-template-rows: 1fr;
+}
+.interface_page_footer.cant_speaking2_AsideBar_desktop {
+  grid-template-areas: "home download . . . . shareScreen micRequest controls . . . . endCall endCall";
+}
+.interface_page_footer.can_speaking2_AsideBar_desktop {
+  grid-template-areas: "home download . . . . shareScreen micRequest chats controls . . . endCall endCall";
+}
+.interface_page_footer.can_speaking2_inAsideBar_desktop {
+  grid-template-areas: "home download . . . audience shareScreen micRequest chats controls . . . endCall endCall";
+}
+.interface_page_footer.cant_speaking_mobile {
+  grid-template-areas: "home controls . shareScreen micRequest . . endCall endCall";
+}
+.interface_page_footer > button {
+  display: none !important;
+}
+.interface_page_footer .homeBtn {
+  grid-area: home;
+  display: block !important;
+}
+.interface_page_footer .downloadBtn {
+  grid-area: download;
+  display: block !important;
+}
+.interface_page_footer .shareBtn {
+  grid-area: shareScreen;
+  display: block !important;
+}
+.interface_page_footer .audienceBtn {
+  grid-area: audience;
+  display: block !important;
+}
+.interface_page_footer .micBtn {
+  grid-area: micRequest;
+  display: block !important;
+}
+.interface_page_footer .messageBtn {
+  grid-area: chats;
+  display: block !important;
+}
+.interface_page_footer .settingsBtn {
+  grid-area: controls;
+  display: block !important;
+}
+.interface_page_footer .endCallBtn {
+  grid-area: endCall;
+  display: block !important;
 }/*# sourceMappingURL=general_css.css.map */
