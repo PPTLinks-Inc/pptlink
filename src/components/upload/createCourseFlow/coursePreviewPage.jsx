@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import AccordionWrapper from "../../accordion/accordion";
 import LogoBlack from "../../../images/Logo-Black.png";
@@ -16,14 +16,17 @@ import Modal from "../../Models/model";
 import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "../../ui/button";
+import safeAwait from "../../../util/safeAwait";
 
 export default function CoursePreviewPage() {
+  const navigate = useNavigate();
   const [sendMessage, setSendMessage] = useState({
     message: "",
     openMessageModal: false
   });
   const { userQuery } = useUser();
   const params = useParams();
+  const [enrolling, setEnrolling] = useState(false);
 
   const { data, error, refetch } = useSuspenseQuery({
     queryKey: ["course", "preview", params.id],
@@ -109,6 +112,40 @@ export default function CoursePreviewPage() {
       openMessageModal: false
     });
     sendMessageMutation.reset();
+  };
+
+  const handleFreeCourseEnroll = async (e) => {
+    if (data.free) {
+      e.preventDefault();
+
+      if (!isUserLoggedIn) {
+        navigate(`/signin?redirect=/course/preview/${data.id}`);
+        localStorage.setItem("redirect", `/course/preview/${data.id}`);
+        return;
+      }
+
+      if (data.id === "68629daca0502cc2d68f5b91") {
+        window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLSfpDWQIuEUg979nZy9JDPDi4VidfUIfHZ8yv4qPbvQc7vcaKA/viewform?usp=pp_url&entry.607086652=${userQuery.data?.username}&entry.1642383873=${userQuery.data?.email}`;
+        return;
+      }
+
+      setEnrolling(true);
+      const [err] = await safeAwait(
+        authFetch.post("/api/v1/payment/enroll-free-course", {
+          courseId: data.id
+        })
+      );
+
+      if (err) {
+        setEnrolling(false);
+        alert("Error enrolling in free course");
+        return;
+      }
+
+      alert("Course enrollment successful!");
+      refetch();
+      setEnrolling(false);
+    }
   };
 
   return (
@@ -251,7 +288,9 @@ export default function CoursePreviewPage() {
           <h1 className="text-3xl maxScreenMobile:text-2xl font-[400] uppercase mb-1">
             {data.name}
           </h1>
-          <p className="uppercase text-[#FFA500]">{data.free ? "Free" : "Paid"} Program</p>
+          <p className="uppercase text-[#FFA500]">
+            {data.free ? "Free" : "Paid"} Program
+          </p>
           <p className="text-[0.9rem] pb-3 w-2/5 maxScreenMobile:w-4/5 maxSmallMobile:w-full maxSmallMobile:text-justify">
             {data.description}
           </p>
@@ -268,7 +307,9 @@ export default function CoursePreviewPage() {
                     alt={user.firstLetter}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-gray-600">{user.firstLetter}</AvatarFallback>
+                  <AvatarFallback className="bg-gray-600">
+                    {user.firstLetter}
+                  </AvatarFallback>
                 </Avatar>
               ))}
             </span>
@@ -296,6 +337,7 @@ export default function CoursePreviewPage() {
                   data.published &&
                   !data.access && (
                     <Link
+                      onClick={handleFreeCourseEnroll}
                       to={
                         isUserLoggedIn
                           ? `/pay/${data.id}`
@@ -303,7 +345,11 @@ export default function CoursePreviewPage() {
                       }
                       className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
                     >
-                      {isUserLoggedIn ? "Enroll Now" : "Sign in to Enroll"}
+                      {isUserLoggedIn
+                        ? enrolling
+                          ? "Enrolling..."
+                          : "Enroll Now"
+                        : "Sign in to Enroll"}
                     </Link>
                   )
                 )}
@@ -390,7 +436,12 @@ export default function CoursePreviewPage() {
                     content={content}
                     locked={!data.access}
                     courseId={data.id}
-                    showProgress={!data.instructors.some(instructor => userQuery.data?.id === instructor.instructor.user.id)}
+                    showProgress={
+                      !data.instructors.some(
+                        (instructor) =>
+                          userQuery.data?.id === instructor.instructor.user.id
+                      )
+                    }
                   />
                 ))}
                 {/* end */}
