@@ -47,6 +47,8 @@ export default function SignPage() {
     useLocation().pathname === "/forgot-password" ? true : false
   );
 
+  const [serverMessage, setServerMessage] = useState(searchParams.get("message"));
+
   const showPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
@@ -67,7 +69,8 @@ export default function SignPage() {
         window.close();
       } else {
         setUser(data.user);
-        const redirectUrl = searchParams.get("redirect") ?? "/";
+        const redirectUrl = searchParams.get("redirect") ?? localStorage.getItem("redirect") ?? "/";
+        localStorage.removeItem("redirect");
         navigate(redirectUrl);
       }
     },
@@ -79,29 +82,24 @@ export default function SignPage() {
   });
 
   const signup = useMutation({
-    mutationFn: () => {
-      return standardFetch.post("/api/v1/auth/register", {
+    mutationFn: async () => {
+      if (window.opener) {
+        // If the window is opened as a popup, we don't need to return anything
+        throw new Error("Popup signups are not supported.");
+      }
+
+      const { data } = await standardFetch.post("/api/v1/auth/register", {
         email: values.email,
         password: values.password,
         username: values.fullName
       });
+
+      return data;
     },
-    onSuccess: ({ data }) => {
-      if (window.opener) {
-        window.opener.postMessage(
-          { type: "SIGN_IN", payload: data.user },
-          window.location.origin // Ensure only trusted origins receive the message
-        );
-        window.close();
-      } else {
-        setUser(data.user);
-        const redirectUrl = searchParams.get("redirect") ?? "/";
-        navigate(redirectUrl);
-      }
+    onSuccess: () => {
+      setServerMessage("Registration successful! Please check your email to verify your account.");
     }
   });
-
-  const [serverMessage] = useState(searchParams.get("message"));
 
   function handleSubmition(e) {
     e.preventDefault();
@@ -369,7 +367,7 @@ export default function SignPage() {
                   className={`w-[50%] ${!isSignupPage && "!hidden"} maxScreenMobile:!w-full relative maxScreenMobile:mt-8`}
                 >
                   <label htmlFor="fullname" className="block w-full mb-2 pl-1">
-                    *Username
+                    *Full Name
                   </label>
                   <input
                     type="text"
