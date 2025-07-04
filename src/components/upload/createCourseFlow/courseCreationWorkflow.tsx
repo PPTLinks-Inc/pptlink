@@ -31,7 +31,7 @@ import { authFetch } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { LoadingAssetSmall2 } from "@/assets/assets";
+import { LoadingAssetSmall, LoadingAssetSmall2 } from "@/assets/assets";
 import {
   Dialog,
   DialogClose,
@@ -171,7 +171,7 @@ export default function CourseCreationWorkflow() {
         <p className="text-slate-200">No section selected</p>
         <Button variant="secondary" onClick={() => handleAddSection.mutate()}>
           {handleAddSection.isPending ? (
-            <LoadingAssetSmall2 />
+            <LoadingAssetSmall />
           ) : (
             <>
               <FaPlus className="w-5 h-5 mr-2" />
