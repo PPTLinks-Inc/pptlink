@@ -120,6 +120,7 @@ export default function CoursePreviewPage() {
 
       if (!isUserLoggedIn) {
         navigate(`/signin?redirect=/course/preview/${data.id}`);
+        localStorage.setItem("redirect", `/course/preview/${data.id}`);
         return;
       }
 
