@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import AccordionWrapper from "../../accordion/accordion";
 import LogoBlack from "../../../images/Logo-Black.png";
@@ -19,6 +19,7 @@ import { Button } from "../../ui/button";
 import safeAwait from "../../../util/safeAwait";
 
 export default function CoursePreviewPage() {
+  const navigate = useNavigate();
   const [sendMessage, setSendMessage] = useState({
     message: "",
     openMessageModal: false
@@ -116,6 +117,10 @@ export default function CoursePreviewPage() {
   const handleFreeCourseEnroll = async (e) => {
     if (data.free) {
       e.preventDefault();
+
+      if (!isUserLoggedIn) {
+        navigate(`/signin?redirect=/course/preview/${data.id}`);
+      }
 
       if (data.id === "68629daca0502cc2d68f5b91") {
         window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLSfpDWQIuEUg979nZy9JDPDi4VidfUIfHZ8yv4qPbvQc7vcaKA/viewform?usp=pp_url&entry.607086652=${userQuery.data?.username}&entry.1642383873=${userQuery.data?.email}`;
