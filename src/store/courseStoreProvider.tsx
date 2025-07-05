@@ -1,7 +1,7 @@
 import { createContext, useContext, useRef } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
 import { ContentItem, CourseData, CourseStore } from "./courseStore";
-import { authFetch, standardFetch } from "@/lib/axios";
+import { authFetch } from "@/lib/axios";
 import { useParams } from "react-router-dom";
 import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
@@ -401,10 +401,11 @@ export default function CourseStoreProvider({
             return { sections: newSections };
           });
 
-          await standardFetch.put(data.signedUrl, content.file, {
+          await axios.put(data.signedUrl, content.file, {
             headers: {
               "Content-Type": content.file.type
-            }
+            },
+            timeout: 0
           });
 
           set((state) => {
