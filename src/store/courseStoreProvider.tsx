@@ -1,7 +1,7 @@
 import { createContext, useContext, useRef } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
 import { ContentItem, CourseData, CourseStore } from "./courseStore";
-import { authFetch, standardFetch } from "@/lib/axios";
+import { authFetch } from "@/lib/axios";
 import { useParams } from "react-router-dom";
 import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
@@ -46,6 +46,37 @@ const checkProcessingStatus = async (
   }
   return false;
 };
+
+async function limitParallelUploads<T>(
+  tasks: (() => Promise<T>)[],
+  limit = 5
+): Promise<T[]> {
+  const results: T[] = [];
+  let index = 0;
+  let active = 0;
+
+  return new Promise((resolve, reject) => {
+    const next = () => {
+      if (index >= tasks.length && active === 0) return resolve(results);
+      if (index >= tasks.length || active >= limit) return;
+
+      const i = index++;
+      active++;
+
+      tasks[i]()
+        .then((res) => {
+          results[i] = res;
+          active--;
+          next();
+        })
+        .catch(reject);
+
+      next();
+    };
+
+    next();
+  });
+}
 
 export default function CourseStoreProvider({
   children
@@ -120,7 +151,9 @@ export default function CourseStoreProvider({
       setContentItems: (contentItems) => {
         // if contentItems is a function, call it with the current sections
         if (typeof contentItems === "function") {
-          contentItems = contentItems(get().sections[get().selectedSectionIndex].contents);
+          contentItems = contentItems(
+            get().sections[get().selectedSectionIndex].contents
+          );
         }
 
         // Update the contents of the currently selected section
@@ -376,63 +409,180 @@ export default function CourseStoreProvider({
         }
 
         try {
-          const { data } = await authFetch.get(
-            "/api/v1/course/generate-upload-url",
-            {
-              params: {
+          // if content file is greater than 50MB
+          if (content.file.size > 50 * 1024 * 1024) {
+            // multipart upload
+            const { data: startData } = await authFetch.post(
+              "/api/v1/course/start-multipart-upload",
+              {
                 contentId: content.id,
-                courseId,
+                courseId: get().courseId,
                 sectionId: selectedSection.id,
                 contentType: content.file.type,
                 key: `${Date.now()}_${result}.${content.type === "VIDEO" ? "mp4" : "pptx"}`,
                 contentOrder: contentIndex + 1,
                 name: content.file.name
               }
-            }
-          );
-
-          set((state) => {
-            const newSections = [...state.sections];
-            newSections[state.selectedSectionIndex].contents[contentIndex] = {
-              ...content,
-              status: "uploading",
-              id: data.contentId
-            };
-            return { sections: newSections };
-          });
-
-          await standardFetch.put(data.signedUrl, content.file, {
-            headers: {
-              "Content-Type": content.file.type
-            }
-          });
-
-          set((state) => {
-            const newSections = [...state.sections];
-            newSections[state.selectedSectionIndex].contents[contentIndex] = {
-              ...content,
-              status: "processing",
-              id: data.contentId
-            };
-            return { sections: newSections };
-          });
-
-          const intervalId = setInterval(async function () {
-            console.log("CHECKING...");
-            const isDone = await checkProcessingStatus(
-              courseId,
-              selectedSection.id,
-              data.contentId,
-              contentIndex,
-              get().selectedSectionIndex,
-              set
             );
-            if (isDone) {
-              clearInterval(intervalId);
-            }
-          }, 10000);
 
-          console.log(data);
+            set((state) => {
+              const newSections = [...state.sections];
+              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+                ...content,
+                status: "uploading",
+                id: startData.contentId
+              };
+              return { sections: newSections };
+            });
+
+            const partSize = 5 * 1024 * 1024; // 5MB
+            const parts = Math.ceil(content.file.size / partSize);
+
+            const { data: { urls } } = await authFetch.get<{ urls: Array<{ partNumber: number; url: string }> }>(
+              "/api/v1/course/generate-multipart-url",
+              {
+                params: {
+                  key: startData.key,
+                  uploadId: startData.uploadId,
+                  partsCount: parts,
+                  courseId: get().courseId,
+                  sectionId: selectedSection.id,
+                  contentId: startData.contentId
+                }
+              }
+            );
+
+            set((state) => {
+              const newSections = [...state.sections];
+              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+                ...content,
+                status: "uploading",
+                id: startData.contentId
+              };
+              return { sections: newSections };
+            });
+
+            const tasks: (() => Promise<{ PartNumber: number; ETag: string }>)[] = urls.map(
+              ({ partNumber, url }) => {
+                return async () => {
+                  const start = (partNumber - 1) * partSize;
+                  const end = Math.min(start + partSize, content.file!.size);
+                  const blob = content.file!.slice(start, end);
+
+                  const res = await fetch(url, {
+                    method: "PUT",
+                    body: blob
+                  });
+
+                  const etag = res.headers.get("ETag")?.replace(/"/g, "");
+                  if (!etag)
+                    throw new Error(`Missing ETag for part ${partNumber}`);
+
+                  return { PartNumber: partNumber, ETag: etag };
+                };
+              }
+            );
+
+            const uploadedParts = await limitParallelUploads(tasks, 5);
+
+            const { data: resultData } = await authFetch.post(
+              "/api/v1/course/complete-multipart-upload",
+              {
+                key: startData.key,
+                uploadId: startData.uploadId,
+                courseId: get().courseId,
+                sectionId: selectedSection.id,
+                contentId: startData.contentId,
+                parts: uploadedParts
+              }
+            );
+
+            console.log(resultData);
+
+            set((state) => {
+              const newSections = [...state.sections];
+              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+                ...content,
+                status: "processing",
+                id: startData.contentId
+              };
+              return { sections: newSections };
+            });
+
+            const intervalId = setInterval(async function () {
+              console.log("CHECKING...");
+              const isDone = await checkProcessingStatus(
+                courseId,
+                selectedSection.id,
+                startData.contentId,
+                contentIndex,
+                get().selectedSectionIndex,
+                set
+              );
+              if (isDone) {
+                clearInterval(intervalId);
+              }
+            }, 10000);
+          } else {
+            const { data } = await authFetch.get(
+              "/api/v1/course/generate-upload-url",
+              {
+                params: {
+                  contentId: content.id,
+                  courseId,
+                  sectionId: selectedSection.id,
+                  contentType: content.file.type,
+                  key: `${Date.now()}_${result}.${content.type === "VIDEO" ? "mp4" : "pptx"}`,
+                  contentOrder: contentIndex + 1,
+                  name: content.file.name
+                }
+              }
+            );
+
+            set((state) => {
+              const newSections = [...state.sections];
+              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+                ...content,
+                status: "uploading",
+                id: data.contentId
+              };
+              return { sections: newSections };
+            });
+
+            await axios.put(data.signedUrl, content.file, {
+              headers: {
+                "Content-Type": content.file.type
+              },
+              timeout: 0
+            });
+
+            set((state) => {
+              const newSections = [...state.sections];
+              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+                ...content,
+                status: "processing",
+                id: data.contentId
+              };
+              return { sections: newSections };
+            });
+
+            const intervalId = setInterval(async function () {
+              console.log("CHECKING...");
+              const isDone = await checkProcessingStatus(
+                courseId,
+                selectedSection.id,
+                data.contentId,
+                contentIndex,
+                get().selectedSectionIndex,
+                set
+              );
+              if (isDone) {
+                clearInterval(intervalId);
+              }
+            }, 10000);
+
+            console.log(data);
+          }
         } catch (error) {
           set((state) => {
             const newSections = [...state.sections];
@@ -690,11 +840,13 @@ export default function CourseStoreProvider({
             instructor.instructor.bio
         );
 
-        const hasValidPaymentDetails = state.free ? true : !!(
-          state.accountDetails?.accountNumber &&
-          state.accountDetails?.bankCode &&
-          state.accountDetails?.accountName
-        );
+        const hasValidPaymentDetails = state.free
+          ? true
+          : !!(
+              state.accountDetails?.accountNumber &&
+              state.accountDetails?.bankCode &&
+              state.accountDetails?.accountName
+            );
 
         return hasValidInstructors && hasValidPaymentDetails;
       },
@@ -762,7 +914,9 @@ export default function CourseStoreProvider({
     }));
 
     // Run initial validation when store is created
-    storeRef.current.setState({ canPublish: storeRef.current.getState().validateCourse() });
+    storeRef.current.setState({
+      canPublish: storeRef.current.getState().validateCourse()
+    });
   }
 
   return (
