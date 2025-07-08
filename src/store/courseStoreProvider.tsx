@@ -476,7 +476,9 @@ export default function CourseStoreProvider({
                 const newSections = [...state.sections];
                 newSections[state.selectedSectionIndex].contents[contentIndex] = {
                   ...content,
-                  uploadProgress: percent
+                  uploadProgress: percent,
+                  status: "uploading",
+                  id: startData.contentId
                 };
                 return { sections: newSections };
               });
@@ -591,7 +593,9 @@ export default function CourseStoreProvider({
                     contentIndex
                   ] = {
                     ...content,
-                    uploadProgress: percent
+                    uploadProgress: percent,
+                    status: "uploading",
+                    id: data.contentId
                   };
                   return { sections: newSections };
                 });
