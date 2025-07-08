@@ -438,19 +438,20 @@ export default function CourseStoreProvider({
             const partSize = 5 * 1024 * 1024; // 5MB
             const parts = Math.ceil(content.file.size / partSize);
 
-            const { data: { urls } } = await authFetch.get<{ urls: Array<{ partNumber: number; url: string }> }>(
-              "/api/v1/course/generate-multipart-url",
-              {
-                params: {
-                  key: startData.key,
-                  uploadId: startData.uploadId,
-                  partsCount: parts,
-                  courseId: get().courseId,
-                  sectionId: selectedSection.id,
-                  contentId: startData.contentId
-                }
+            const {
+              data: { urls }
+            } = await authFetch.get<{
+              urls: Array<{ partNumber: number; url: string }>;
+            }>("/api/v1/course/generate-multipart-url", {
+              params: {
+                key: startData.key,
+                uploadId: startData.uploadId,
+                partsCount: parts,
+                courseId: get().courseId,
+                sectionId: selectedSection.id,
+                contentId: startData.contentId
               }
-            );
+            });
 
             set((state) => {
               const newSections = [...state.sections];
@@ -462,26 +463,52 @@ export default function CourseStoreProvider({
               return { sections: newSections };
             });
 
-            const tasks: (() => Promise<{ PartNumber: number; ETag: string }>)[] = urls.map(
-              ({ partNumber, url }) => {
-                return async () => {
-                  const start = (partNumber - 1) * partSize;
-                  const end = Math.min(start + partSize, content.file!.size);
-                  const blob = content.file!.slice(start, end);
+            const uploadedBytes: Record<number, number> = {};
 
-                  const res = await fetch(url, {
-                    method: "PUT",
-                    body: blob
-                  });
-
-                  const etag = res.headers.get("ETag")?.replace(/"/g, "");
-                  if (!etag)
-                    throw new Error(`Missing ETag for part ${partNumber}`);
-
-                  return { PartNumber: partNumber, ETag: etag };
+            const updateProgress = () => {
+              const totalUploaded = Object.values(uploadedBytes).reduce(
+                (a, b) => a + b,
+                0
+              );
+              const percent = Math.round((totalUploaded / content.file!.size) * 100);
+              
+              set((state) => {
+                const newSections = [...state.sections];
+                newSections[state.selectedSectionIndex].contents[contentIndex] = {
+                  ...content,
+                  uploadProgress: percent
                 };
-              }
-            );
+                return { sections: newSections };
+              });
+            };
+
+            const tasks: (() => Promise<{
+              PartNumber: number;
+              ETag: string;
+            }>)[] = urls.map(({ partNumber, url }) => {
+              return async () => {
+                const start = (partNumber - 1) * partSize;
+                const end = Math.min(start + partSize, content.file!.size);
+                const blob = content.file!.slice(start, end);
+
+                const res = await axios.put(url, blob, {
+                  headers: {
+                    "Content-Type": content.file!.type
+                  },
+                  timeout: 0, // Disable timeout for large uploads
+                  onUploadProgress: (event) => {
+                    uploadedBytes[partNumber] = event.loaded;
+                    updateProgress();
+                  }
+                });
+
+                const etag = res.headers.etag?.replace(/"/g, "");
+                if (!etag)
+                  throw new Error(`Missing ETag for part ${partNumber}`);
+
+                return { PartNumber: partNumber, ETag: etag };
+              };
+            });
 
             const uploadedParts = await limitParallelUploads(tasks, 5);
 
@@ -553,7 +580,22 @@ export default function CourseStoreProvider({
               headers: {
                 "Content-Type": content.file.type
               },
-              timeout: 0
+              timeout: 0,
+              onUploadProgress: (event) => {
+                const percent = Math.round(
+                  (event.loaded / (event.total || 1)) * 100
+                );
+                set((state) => {
+                  const newSections = [...state.sections];
+                  newSections[state.selectedSectionIndex].contents[
+                    contentIndex
+                  ] = {
+                    ...content,
+                    uploadProgress: percent
+                  };
+                  return { sections: newSections };
+                });
+              }
             });
 
             set((state) => {
