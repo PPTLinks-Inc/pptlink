@@ -7,6 +7,7 @@ import safeAwait from "@/util/safeAwait";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import useCourseContent from "@/hooks/useCourseContent";
+import retryWithBackoff from "@/util/retryWithBackoff";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CourseContext = createContext<StoreApi<CourseStore> | undefined>(
@@ -493,7 +494,7 @@ export default function CourseStoreProvider({
                 const end = Math.min(start + partSize, content.file!.size);
                 const blob = content.file!.slice(start, end);
 
-                const res = await axios.put(url, blob, {
+                const res = await retryWithBackoff(axios.put(url, blob, {
                   headers: {
                     "Content-Type": content.file!.type
                   },
@@ -502,7 +503,7 @@ export default function CourseStoreProvider({
                     uploadedBytes[partNumber] = event.loaded;
                     updateProgress();
                   }
-                });
+                }), 3, 1000);
 
                 const etag = res.headers.etag?.replace(/"/g, "");
                 if (!etag)
