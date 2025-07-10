@@ -7,6 +7,7 @@ export interface ContentItem {
     file?: File;
     name: string;
     status: "waiting" | "starting" | "uploading" | "processing" | "error" | "done";
+    uploadProgress?: number;
 }
 export interface Section {
     id: string;

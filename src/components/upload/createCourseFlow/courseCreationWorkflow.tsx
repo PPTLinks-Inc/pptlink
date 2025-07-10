@@ -896,6 +896,9 @@ function ContentItems({ content }: { content: ContentItem }) {
         <p className={cn("p-2 rounded-md flex", statusColor)}>
           <span>・</span>
           {content.status}
+          {content.uploadProgress && content.status === "uploading" && (
+            <span className="ml-2">{content.uploadProgress}%</span>
+          )}
         </p>
         {(content.status === "done" || content.status === "error") && (
           <div className="flex gap-2">
