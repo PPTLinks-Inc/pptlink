@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { useFullscreen, useOrientation } from "react-use";
@@ -39,11 +39,28 @@ import PopUpModal from "../Models/dashboardModel";
 //   LIVE_CHAT = "CHATS",
 //   CONTROLS = "CONTROLS"
 // }
+const hostMicStates = ["hostNeutral", "hostActive", "hostInActive"];
+const usersMicStates = [
+  "userNeutral",
+  "userRequest",
+  "userActive",
+  "userInActive"
+];
 // ratios: side-bar 23.75(342px), main-view 73.125(1053px), spacings 3.125(45px)
 export default function InterfaceView() {
   const orientation = useOrientation();
   const navigate = useNavigate();
-  const [mic, setMic] = useState(false);
+  const [isHost, setIsHost] = useState(true);
+  const [micIndex, setMicIndex] = useState(0);
+  const [mic, setMic] = useState({
+    hostNeutral: true,
+    hostActive: false,
+    hostInActive: false,
+    userNeutral: false,
+    userRequest: false,
+    userActive: false,
+    userInActive: false
+  });
   const [sideBar, setSideBar] = useState(true);
   const [videoShare, setVideoShare] = useState(false);
   const [screenShare, setScreenShare] = useState(false);
@@ -51,6 +68,12 @@ export default function InterfaceView() {
   const [chooseCoHost] = useState(15);
   const [chooseSlide] = useState(12);
   const is768PxScreen = useMediaQuery({ query: "(max-width: 768px)" });
+  const [footerClass, setFooterClass] = useState({
+    interfaceFooter: true,
+    inAactiveSideBarDesktop: false,
+    mobileViewHost: false,
+    mobileViewUsers: false
+  });
   const [liveChatAudience, setLiveChatAudience] = useState({
     audience: true,
     chats: false,
@@ -60,6 +83,27 @@ export default function InterfaceView() {
     chooseSlide: false,
     poll: false
   });
+
+  const cycleMicState = useCallback(() => {
+    const filteredStates = isHost ? hostMicStates : usersMicStates;
+    const nextIndex = (micIndex + 1) % filteredStates.length;
+    const newMic = {};
+    filteredStates.forEach((key) => {
+      newMic[key] = false;
+    });
+    newMic[filteredStates[nextIndex]] = true;
+    setMic(newMic);
+    setMicIndex(nextIndex);
+  }, [isHost, micIndex]);
+
+  useEffect(() => {
+    setFooterClass({
+      interfaceFooter: !sideBar && !is768PxScreen ? false : true,
+      inAactiveSideBarDesktop: !sideBar && !is768PxScreen ? true : false,
+      mobileViewHost: is768PxScreen && isHost ? true : false,
+      mobileViewUsers: is768PxScreen && !isHost ? true : false
+    });
+  }, [sideBar, is768PxScreen, isHost]);
 
   return (
     // new interface page new design
@@ -82,7 +126,7 @@ export default function InterfaceView() {
       </header>
       {/* main interface/footer and sideBar wrapper */}
       <div
-        className={`bg-black maxScreenMobile:bg-primaryTwo grid "grid-cols-1" ${((sideBar && !is768PxScreen) || (orientation.type.includes("landscape") && is768PxScreen)) && "grid-cols-[1fr_345px]"} grid-rows-[1fr]`}
+        className={`bg-black maxScreenMobile:bg-primaryTwo grid grid-rows-[1fr] ${sideBar && !is768PxScreen ? "grid-cols-[1fr_345px]" : "grid-cols-1"}`}
       >
         {/* main interface/footer wrapper */}
         <div
@@ -90,6 +134,7 @@ export default function InterfaceView() {
         >
           {/* main interface */}
           <div className="relative w-full h-full bg-[white] border-none rounded-sm">
+            {/* popup model */}
             <PopUpModal
               open={false}
               onClose={() => {}}
@@ -98,12 +143,14 @@ export default function InterfaceView() {
               message={"Start screen share?"}
               actionText={"share"}
             />
+            {/* Sync button */}
             <button
               onClick={() => alert("Sync... in progress")}
               className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow _bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-20 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
             >
               <IoSync color="white" size={28} />
             </button>
+            {/* Fullscreen button */}
             <button
               onClick={() => setSideBar(!sideBar)}
               className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow _bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-6 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
@@ -118,18 +165,21 @@ export default function InterfaceView() {
             <div className="slider-view w-full h-full bg-[gray]"></div>
           </div>
           {/* interface footer */}
-          <footer className="interface_page_footer w-full h-full">
+          <footer
+            className={`interfaceFooter ${footerClass.inAactiveSideBarDesktop ? "inAactiveSideBarDesktop" : footerClass.mobileViewHost ? "mobileViewHost" : footerClass.mobileViewUsers ? "mobileViewUsers" : ""} w-full h-full`}
+          >
             {/* Home button */}
             <button
               onClick={() => navigate("/")}
-              className="homeBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
+              className={`homeBtn w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
             >
               <FiHome size={24} />
             </button>
 
             {/* Download button */}
             <button
-              className="downloadBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden"
+              // ${footerClass.cant_speaking_mobile && "!hidden"}
+              className={`downloadBtn justify-self-start w-10 h-10 border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden`}
             >
               <IoCloudDownloadOutline size={24} />
             </button>
@@ -143,7 +193,8 @@ export default function InterfaceView() {
                   ? setScreenShare(!screenShare)
                   : ""
               }
-              className="shareBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden"
+              // ${(footerClass.cant_speaking_mobile || footerClass.interface_page_footer) && "!hidden"}
+              className={`shareBtn w-10 h-10 justify-self-end border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
             >
               {!screenShare ? (
                 <MdOutlineScreenShare size={24} />
@@ -154,13 +205,54 @@ export default function InterfaceView() {
 
             {/* Mic request button */}
             <button
-              onClick={() => setMic(!mic)}
-              className="micBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
+              onClick={cycleMicState}
+              className={`micBtn w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow ${mic.hostNeutral || mic.userNeutral ? "bg-[#191919c0] text-white _bg-[#a2c6bf4d]" : mic.hostActive || mic.userActive ? "text-[#219882] bg-[#a2c6bf4d]" : "text-[#F22B1F] bg-[#df96964d]"} text-xl`}
             >
-              {mic ? <PiHandWaving size={24} /> : <IoIosMic size={24} />}
+              {/* ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} */}
+              {isHost ? (
+                <>
+                  {mic.hostNeutral || mic.hostActive ? (
+                    <IoIosMic size={24} />
+                  ) : (
+                    <IoIosMicOff size={24} />
+                  )}
+                </>
+              ) : (
+                <>
+                  {mic.userNeutral || mic.userActive ? (
+                    <IoIosMic size={24} />
+                  ) : mic.userRequest ? (
+                    <PiHandWaving size={24} />
+                  ) : (
+                    <IoIosMicOff size={24} />
+                  )}
+                </>
+              )}
             </button>
 
-            {/* Settings/controls button */}
+            {/* Audience present */}
+            <button
+              onClick={() => {
+                setLiveChatAudience({
+                  audience: true,
+                  chats: false,
+                  controls: false,
+                  requests: false,
+                  coHost: false,
+                  chooseSlide: false,
+                  poll: false
+                });
+                setSideBar(true);
+              }}
+              className={`audienceBtn ${!is768PxScreen && !footerClass.inAactiveSideBarDesktop && "!hidden"} w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl relative`}
+            >
+              <span className="!absolute -top-1.5 -right-1 flex justify-center items-center w-5 h-5 aspect-square border-none rounded-full text-[0.6rem] font-semibold text-white bg-[#19191991]">
+                10
+              </span>
+              <FaRegUser size={24} />
+            </button>
+
+            {/* Messages */}
             <button
               onClick={() => {
                 setLiveChatAudience({
@@ -174,7 +266,30 @@ export default function InterfaceView() {
                 });
                 setSideBar(true);
               }}
-              className="settingsBtn w-10 h-10 border-none rounded-full flex justify-center items-center shadow bg-[#19191971] hover:bg-[#191919] text-white text-xl"
+              className={`audienceBtn ${!is768PxScreen && "!hidden"} w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl relative`}
+            >
+              <span className="!absolute -top-1.5 -right-1 flex justify-center items-center w-5 h-5 aspect-square border-none rounded-full text-[0.6rem] font-semibold text-white bg-[#19191991]">
+                10
+              </span>
+              <LuMessagesSquare size={24} />
+            </button>
+
+            {/* Settings/controls button */}
+            <button
+              onClick={() => {
+                setLiveChatAudience({
+                  audience: false,
+                  chats: false,
+                  controls: true,
+                  requests: false,
+                  coHost: false,
+                  chooseSlide: false,
+                  poll: false
+                });
+                setSideBar(true);
+              }}
+              // ${(footerClass.interface_page_footer || footerClass.interface_page_footer) && "!hidden"}
+              className={`settingsBtn w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
             >
               <BsThreeDots size={24} />
             </button>
@@ -182,15 +297,16 @@ export default function InterfaceView() {
             {/* End call button */}
             <button
               onClick={() => confirm("Are you sure you want to End session?")}
-              className="endCallBtn bg-[#ff0000] w-16 h-[70%] flex justify-center items-center gap-2 px-2 border-none rounded-sm text-[0.8rem] font-semibold"
+              className="endCallBtn justify-self-end bg-[#ff0000] _w-full w-16 h-[70%] flex justify-center items-center gap-2 px-2 border-none rounded-sm text-[0.8rem] font-semibold"
             >
               <MdCallEnd size={32} />
             </button>
           </footer>
         </div>
         {/* sideBar section */}
+        {/* orientation.type.includes("portrait") */}
         <div
-          className={`w-full h-full p-1 overflow-auto ${!sideBar && "hidden"} ${orientation.type.includes("portrait") && "maxScreenMobile:!absolute maxScreenMobile:!top-0 maxScreenMobile:!left-0 maxScreenMobile:!bottom-auto maxScreenMobile:!w-full maxScreenMobile:!h-[calc(100vh-50px)] maxScreenMobile:bg-black maxScreenMobile:z-50"} !border-none`}
+          className={`w-full h-full p-1 overflow-auto ${!sideBar && "hidden"} ${is768PxScreen && "!absolute !top-[50%] -translate-y-[50%] !left-0 !bottom-auto !w-full !h-[calc(100vh-150px)] bg-black z-50"} !border-none`}
         >
           {/* sideBar wrapper */}
           <div
@@ -323,81 +439,83 @@ export default function InterfaceView() {
                 </div>
               </div>
               {/* mic requests section 1 */}
-              <div className="w-full h-fit bg-black">
-                <div className="w-full h-fit flex justify-between items-center">
-                  <p className="text-white text-xs pt-2 pb-3">Mic requests</p>
-                  {micRequest && (
-                    <button
-                      onClick={() =>
-                        setLiveChatAudience({
-                          audience: false,
-                          chats: false,
-                          controls: false,
-                          requests: true,
-                          coHost: false,
-                          chooseSlide: false,
-                          poll: false
-                        })
-                      }
-                      className="block w-fit h-fit bg-primaryTwo py-0.5 px-2 text-white text-[0.6rem] border-none rounded-sm cursor-pointer"
-                    >
-                      {micRequest > 2 ? "See more" : ""} ({micRequest})
-                    </button>
-                  )}
-                </div>
-                <div className="w-full h-fit bg-primaryTwo border-none rounded-sm">
-                  {/* users avaters here as lists: request to speak users, yet to be accepted */}
-                  <ScrollArea className="h-full w-full border-none">
-                    {!micRequest ? (
-                      <p className="text-gray-400 text-xs w-full h-full flex justify-center items-center p-5">
-                        No mic requests
-                      </p>
-                    ) : (
-                      Array.from(
-                        { length: Math.min(2, micRequest) },
-                        (_, index) => (
-                          <div
-                            key={`user-${index}`}
-                            className="w-full h-full flex justify-between items-center gap-2 p-2"
-                          >
-                            <div className="flex justify-center items-center gap-2">
-                              <Avatar className="w-10 h-10">
-                                <AvatarImage
-                                  src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                                  alt={`User ${index + 1}`}
-                                />
-                                <AvatarFallback>
-                                  <span className="text-white text-xs">{`User ${index + 1}`}</span>
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="text-white text-xs block w-fit h-fit">
-                                {`User ${index + 1}`}
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-center gap-2">
-                              <button
-                                className={`text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
-                              >
-                                Accept
-                              </button>
-                              <button
-                                className={`text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
-                              >
-                                Decline
-                              </button>
-                            </div>
-                          </div>
-                        )
-                      )
+              {isHost && (
+                <div className={`w-full h-fit bg-black`}>
+                  <div className="w-full h-fit flex justify-between items-center">
+                    <p className="text-white text-xs pt-2 pb-3">Mic requests</p>
+                    {micRequest && (
+                      <button
+                        onClick={() =>
+                          setLiveChatAudience({
+                            audience: false,
+                            chats: false,
+                            controls: false,
+                            requests: true,
+                            coHost: false,
+                            chooseSlide: false,
+                            poll: false
+                          })
+                        }
+                        className="block w-fit h-fit bg-primaryTwo py-0.5 px-2 text-white text-[0.6rem] border-none rounded-sm cursor-pointer"
+                      >
+                        {micRequest > 2 ? "See more" : ""} ({micRequest})
+                      </button>
                     )}
-                  </ScrollArea>
-                  {/* end of users requests */}
+                  </div>
+                  <div className="w-full h-fit bg-primaryTwo border-none rounded-sm">
+                    {/* users avaters here as lists: request to speak users, yet to be accepted */}
+                    <ScrollArea className="h-full w-full border-none">
+                      {!micRequest ? (
+                        <p className="text-gray-400 text-xs w-full h-full flex justify-center items-center p-5">
+                          No mic requests
+                        </p>
+                      ) : (
+                        Array.from(
+                          { length: Math.min(2, micRequest) },
+                          (_, index) => (
+                            <div
+                              key={`user-${index}`}
+                              className="w-full h-full flex justify-between items-center gap-2 p-2"
+                            >
+                              <div className="flex justify-center items-center gap-2">
+                                <Avatar className="w-10 h-10">
+                                  <AvatarImage
+                                    src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
+                                    alt={`User ${index + 1}`}
+                                  />
+                                  <AvatarFallback>
+                                    <span className="text-white text-xs">{`User ${index + 1}`}</span>
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-white text-xs block w-fit h-fit">
+                                  {`User ${index + 1}`}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center gap-2">
+                                <button
+                                  className={`text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
+                                >
+                                  Accept
+                                </button>
+                                <button
+                                  className={`text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
+                                >
+                                  Decline
+                                </button>
+                              </div>
+                            </div>
+                          )
+                        )
+                      )}
+                    </ScrollArea>
+                    {/* end of users requests */}
+                  </div>
                 </div>
-              </div>
-              {/* users in attendance */}
+              )}
+              {/* Present users in attendance */}
               <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
                 <ScrollArea
-                  className={`${micRequest <= 1 ? "h-[calc(100vh-225px)]" : "h-[calc(100vh-280px)]"} w-full border-none`}
+                  className={`${micRequest <= 1 && isHost ? "h-[calc(100vh-225px)]" : !isHost ? "h-[calc(100vh-130px)]" : "h-[calc(100vh-280px)]"} w-full border-none`}
                 >
                   {Array.from({ length: 12 }, (_, index) => (
                     <div
@@ -420,6 +538,31 @@ export default function InterfaceView() {
                       </div>
                       <div className="w-fit h-full flex justify-between items-center gap-2">
                         <button
+                          onClick={cycleMicState}
+                          className={`micBtn w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow ${mic.hostNeutral || mic.userNeutral ? "bg-[#191919c0] text-white _bg-[#a2c6bf4d]" : mic.hostActive || mic.userActive ? "text-[#219882] bg-[#a2c6bf4d]" : "text-[#F22B1F] bg-[#df96964d]"} text-xl`}
+                        >
+                          {/* ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} */}
+                          {isHost ? (
+                            <>
+                              {mic.hostNeutral || mic.hostActive ? (
+                                <IoIosMic size={24} />
+                              ) : (
+                                <IoIosMicOff size={24} />
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {mic.userNeutral || mic.userActive ? (
+                                <IoIosMic size={24} />
+                              ) : mic.userRequest ? (
+                                <PiHandWaving size={24} />
+                              ) : (
+                                <IoIosMicOff size={24} />
+                              )}
+                            </>
+                          )}
+                        </button>
+                        {/* <button
                           onClick={() => setMic(!mic)}
                           className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10 before:pointer-events-none before:border-none before:rounded-full ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} hover:scale-[1.1] ${!mic ? "text-[#F22B1F]" : "text-[#219882]"} text-xl`}
                         >
@@ -428,7 +571,7 @@ export default function InterfaceView() {
                           ) : (
                             <IoIosMicOff size={24} />
                           )}
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   ))}
@@ -443,7 +586,9 @@ export default function InterfaceView() {
               <div className="w-full h-full border-none rounded-sm overflow-hidden">
                 {/* users live chats start */}
                 <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
-                  <ScrollArea className="h-[calc(100vh-130px)] w-full border-none">
+                  <ScrollArea
+                    className={`h-[calc(100vh-130px)] w-full border-none`}
+                  >
                     {Array.from({ length: 10 }, (_, index) => (
                       <div
                         key={`user-${index}`}
