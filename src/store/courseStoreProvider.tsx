@@ -382,7 +382,8 @@ export default function CourseStoreProvider({
           });
       },
       uploadContent: async function (contentId) {
-        const selectedSection = get().sections[get().selectedSectionIndex];
+        const sectionIndex = get().selectedSectionIndex;
+        const selectedSection = get().sections[sectionIndex];
 
         const contentIndex = selectedSection.contents.findIndex(
           (c) => c.id === contentId
@@ -394,7 +395,7 @@ export default function CourseStoreProvider({
 
         set((state) => {
           const newSections = [...state.sections];
-          newSections[state.selectedSectionIndex].contents[contentIndex] =
+          newSections[sectionIndex].contents[contentIndex] =
             content;
           return { sections: newSections };
         });
@@ -428,7 +429,7 @@ export default function CourseStoreProvider({
 
             set((state) => {
               const newSections = [...state.sections];
-              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+              newSections[sectionIndex].contents[contentIndex] = {
                 ...content,
                 status: "uploading",
                 id: startData.contentId
@@ -456,7 +457,7 @@ export default function CourseStoreProvider({
 
             set((state) => {
               const newSections = [...state.sections];
-              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+              newSections[sectionIndex].contents[contentIndex] = {
                 ...content,
                 status: "uploading",
                 id: startData.contentId
@@ -475,7 +476,7 @@ export default function CourseStoreProvider({
               
               set((state) => {
                 const newSections = [...state.sections];
-                newSections[state.selectedSectionIndex].contents[contentIndex] = {
+                newSections[sectionIndex].contents[contentIndex] = {
                   ...content,
                   uploadProgress: percent,
                   status: "uploading",
@@ -531,7 +532,7 @@ export default function CourseStoreProvider({
 
             set((state) => {
               const newSections = [...state.sections];
-              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+              newSections[sectionIndex].contents[contentIndex] = {
                 ...content,
                 status: "processing",
                 id: startData.contentId
@@ -546,7 +547,7 @@ export default function CourseStoreProvider({
                 selectedSection.id,
                 startData.contentId,
                 contentIndex,
-                get().selectedSectionIndex,
+                sectionIndex,
                 set
               );
               if (isDone) {
@@ -571,7 +572,7 @@ export default function CourseStoreProvider({
 
             set((state) => {
               const newSections = [...state.sections];
-              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+              newSections[sectionIndex].contents[contentIndex] = {
                 ...content,
                 status: "uploading",
                 id: data.contentId
@@ -590,7 +591,7 @@ export default function CourseStoreProvider({
                 );
                 set((state) => {
                   const newSections = [...state.sections];
-                  newSections[state.selectedSectionIndex].contents[
+                  newSections[sectionIndex].contents[
                     contentIndex
                   ] = {
                     ...content,
@@ -605,7 +606,7 @@ export default function CourseStoreProvider({
 
             set((state) => {
               const newSections = [...state.sections];
-              newSections[state.selectedSectionIndex].contents[contentIndex] = {
+              newSections[sectionIndex].contents[contentIndex] = {
                 ...content,
                 status: "processing",
                 id: data.contentId
@@ -620,7 +621,7 @@ export default function CourseStoreProvider({
                 selectedSection.id,
                 data.contentId,
                 contentIndex,
-                get().selectedSectionIndex,
+                sectionIndex,
                 set
               );
               if (isDone) {
@@ -633,7 +634,7 @@ export default function CourseStoreProvider({
         } catch (error) {
           set((state) => {
             const newSections = [...state.sections];
-            newSections[state.selectedSectionIndex].contents[contentIndex] = {
+            newSections[sectionIndex].contents[contentIndex] = {
               ...content,
               status: "error"
             };
