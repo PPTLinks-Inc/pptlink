@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect } from 'react';
 // Global timer
-const globalTimer = 60;
+const globalTimer = 6;
 // Default quiz data
 const defaultQuiz = {
-    title: "Marteking Quiz",
+    title: "Marketing Quiz",
     questions: [
         {
             question: 'When was Nigerian independence',
@@ -33,7 +33,7 @@ const QuizContextProvider = (props) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [isCompleted, setIsCompleted] = useState(false);
     const [timer, setTimer] = useState(globalTimer);
-    const [isTimerEnabled, setIsTimerEnabled] = useState(!true);
+    const [isTimerEnabled, setIsTimerEnabled] = useState(true);
     const [selectedOption, setSelectedOption] = useState(null);
 
     useEffect(() => {

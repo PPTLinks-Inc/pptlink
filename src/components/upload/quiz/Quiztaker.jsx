@@ -14,7 +14,7 @@ const QuizTaker = () => {
     <div className="bg-primaryTwo w-full !h-[100svh] !text-white flex flex-col justify-between maxScreenMobile:justify-start items-center">
       <header className="w-full h-fit">
         <div className="container flex justify-between items-center gap-4">
-          <Link to="/" className="block w-fit">
+          <Link to="/" className="block w-fit py-4">
             <span className=" text-2xl md:text-3xl font-semibold maxScreenMobile:hidden">
               PPTLINKS
             </span>
@@ -24,7 +24,7 @@ const QuizTaker = () => {
               className="hidden w-8 aspect-square maxScreenMobile:block"
             />
           </Link>
-          {startQuiz && <div className=" pt-4 pb-4 pl-8 flex justify-between items-center w-[calc(80%-16px)] text-sm border-l-2 border-l-white maxScreenMobile:!w-fit maxScreenMobile:!border-none">
+          {startQuiz && <div className="py-4 pl-8 flex justify-between items-center w-[calc(80%-16px)] text-sm border-l-2 border-l-white maxScreenMobile:!w-fit maxScreenMobile:!border-none">
             <span className="block w-fit maxScreenMobile:hidden">
               question {currentQuestionIndex + 1} of {quiz.questions.length}
             </span>
@@ -101,7 +101,7 @@ const QuizTaker = () => {
             <div className='w-full h-fit flex flex-col justify-between align-middle gap-2 mt-4'>
               {quiz.questions[currentQuestionIndex].options.map((option, index) => (
                 <label
-                  key={index.toString()}
+                  key={index.toString()} 
                   htmlFor={`quetion-label-${index.toString()}`}
                   className={`flex items-center justify-between py-4 w-full cursor-pointer transition !border-b-[0.1rem] border-gray-700`}
                 >
