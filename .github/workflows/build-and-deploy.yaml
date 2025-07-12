@@ -29,25 +29,14 @@ jobs:
           uses: actions/setup-node@v2
           with:
             node-version: '20.12.2'
-            cache: 'yarn'
 
         - name: Setup SSH key
           uses: webfactory/ssh-agent@v0.5.4
           with:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-        - name: Cache yarn dependencies
-          uses: actions/cache@v3
-          with:
-            path: |
-              ~/.yarn/cache
-              node_modules
-            key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-            restore-keys: |
-              ${{ runner.os }}-yarn-
             
         - name: Install dependencies
-          run: yarn install --frozen-lockfile
+          run: yarn install
         
         - name: Build the project
           run: npm run build
