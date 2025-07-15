@@ -657,6 +657,17 @@ label.toggle__label:active:after {
 .interfaceFooter.inAactiveSideBarDesktop {
   grid-template-areas: "home download . . . . shareScreen micRequest audience controls . . . endCall endCall" !important;
 }
+.interfaceFooter.mobileViewHost {
+  grid-template-areas: "controls . . audience micRequest messages . endCall endCall" !important;
+  grid-template-columns: repeat(9, 1fr) !important;
+}
+.interfaceFooter.desktopViewUsers {
+  grid-template-areas: "download . . . . . . micRequest . . . . . endCall endCall" !important;
+}
+.interfaceFooter.mobileViewUsers {
+  grid-template-areas: "download . . audience micRequest messages . endCall endCall" !important;
+  grid-template-columns: repeat(9, 1fr) !important;
+}
 .interfaceFooter .homeBtn {
   grid-area: home;
 }
@@ -680,12 +691,4 @@ label.toggle__label:active:after {
 }
 .interfaceFooter .endCallBtn {
   grid-area: endCall;
-}
-@media screen and (max-width: 768px) {
-  .interfaceFooter.mobileViewHost {
-    grid-template-areas: "controls . . audience micRequest messages . endCall endCall" !important;
-  }
-  .interfaceFooter.mobileViewUsers {
-    grid-template-areas: "download . . audience micRequest messages . endCall endCall" !important;
-  }
 }/*# sourceMappingURL=general_css.css.map */

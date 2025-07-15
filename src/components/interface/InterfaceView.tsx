@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import { useFullscreen, useOrientation } from "react-use";
+import { useOrientation } from "react-use";
 import ShareAPI from "./Share";
 import { FaRegUser } from "react-icons/fa6";
 import { FiHome } from "react-icons/fi";
@@ -9,36 +9,18 @@ import { IoCloudDownloadOutline, IoSync } from "react-icons/io5";
 import { IoIosMic } from "react-icons/io";
 import { IoIosMicOff } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
-import { CiVideoOn } from "react-icons/ci";
-import { CiVideoOff } from "react-icons/ci";
 import { BsThreeDots } from "react-icons/bs";
 import { PiHandWaving } from "react-icons/pi";
 import { LuMessagesSquare } from "react-icons/lu";
 import { MdOutlineScreenShare } from "react-icons/md";
 // import { IoReturnUpBackOutline } from "react-icons/io5";
-import { IoImages } from "react-icons/io5"; //IoSendOutline
 import { MdOutlineStopScreenShare } from "react-icons/md";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { AiOutlineSend } from "react-icons/ai";
-import { IoClose } from "react-icons/io5";
-import { LiaPenNibSolid } from "react-icons/lia";
-import { IoMusicalNotesOutline } from "react-icons/io5";
-import { GoBell } from "react-icons/go";
-import { CgFileAdd } from "react-icons/cg";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { CgPoll } from "react-icons/cg";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { FaAngleRight } from "react-icons/fa6";
 import PopUpModal from "../Models/dashboardModel";
+import AsideElement from "./interfaceSharedComponents/AsideElement";
+import InterfaceFooterElement from "./interfaceSharedComponents/InterfaceFooter";
+import MainInterfaceElement from "./interfaceSharedComponents/MainInterface";
 
-// enum SIDEBAR_STATES {
-//   LIVE_AUDIENCE = "AUDIENCE",
-//   LIVE_CHAT = "CHATS",
-//   CONTROLS = "CONTROLS"
-// }
 const hostMicStates = ["hostNeutral", "hostActive", "hostInActive"];
 const usersMicStates = [
   "userNeutral",
@@ -72,6 +54,7 @@ export default function InterfaceView() {
     interfaceFooter: true,
     inAactiveSideBarDesktop: false,
     mobileViewHost: false,
+    desktopViewUsers: false,
     mobileViewUsers: false
   });
   const [liveChatAudience, setLiveChatAudience] = useState({
@@ -96,11 +79,14 @@ export default function InterfaceView() {
     setMicIndex(nextIndex);
   }, [isHost, micIndex]);
 
+  // Keeping trak of this component's fullscreen state and mobile
   useEffect(() => {
     setFooterClass({
-      interfaceFooter: !sideBar && !is768PxScreen ? false : true,
-      inAactiveSideBarDesktop: !sideBar && !is768PxScreen ? true : false,
+      interfaceFooter: sideBar && !is768PxScreen && isHost ? true : false,
+      inAactiveSideBarDesktop:
+        !sideBar && !is768PxScreen && isHost ? true : false,
       mobileViewHost: is768PxScreen && isHost ? true : false,
+      desktopViewUsers: !is768PxScreen && !isHost ? true : false,
       mobileViewUsers: is768PxScreen && !isHost ? true : false
     });
   }, [sideBar, is768PxScreen, isHost]);
@@ -133,836 +119,46 @@ export default function InterfaceView() {
           className={`w-full h-full p-1  grid grid-rows-[1fr_50px] grid-cols-[1fr] gap-1`}
         >
           {/* main interface */}
-          <div className="relative w-full h-full bg-[white] border-none rounded-sm">
-            {/* popup model */}
-            <PopUpModal
-              open={false}
-              onClose={() => {}}
-              onSubmit={() => {}}
-              isLoading={false}
-              message={"Start screen share?"}
-              actionText={"share"}
-            />
-            {/* Sync button */}
-            <button
-              onClick={() => alert("Sync... in progress")}
-              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow _bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-20 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
-            >
-              <IoSync color="white" size={28} />
-            </button>
-            {/* Fullscreen button */}
-            <button
-              onClick={() => setSideBar(!sideBar)}
-              className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow _bg-[#19191971] hover:bg-[#191919] text-white text-xl absolute bottom-4 right-6 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
-            >
-              {sideBar ? (
-                <RxEnterFullScreen color="white" size={28} />
-              ) : (
-                <RxExitFullScreen color="white" size={28} />
-              )}
-            </button>
-            {/* slider component goes here (ppt file slider)  THE INTERFACE */}
-            <div className="slider-view w-full h-full bg-[gray]"></div>
-          </div>
+          <MainInterfaceElement
+            sideBar={sideBar}
+            setSideBar={setSideBar}
+            is768PxScreen={is768PxScreen}
+            orientation={orientation}
+          />
           {/* interface footer */}
-          <footer
-            className={`interfaceFooter ${footerClass.inAactiveSideBarDesktop ? "inAactiveSideBarDesktop" : footerClass.mobileViewHost ? "mobileViewHost" : footerClass.mobileViewUsers ? "mobileViewUsers" : ""} w-full h-full`}
-          >
-            {/* Home button */}
-            <button
-              onClick={() => navigate("/")}
-              className={`homeBtn w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
-            >
-              <FiHome size={24} />
-            </button>
-
-            {/* Download button */}
-            <button
-              // ${footerClass.cant_speaking_mobile && "!hidden"}
-              className={`downloadBtn justify-self-start w-10 h-10 border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden`}
-            >
-              <IoCloudDownloadOutline size={24} />
-            </button>
-
-            {/* Share screen button */}
-            <button
-              onClick={() =>
-                confirm(
-                  `Are you sure you want to ${!screenShare ? "share" : "stop sharing"} your screen?`
-                )
-                  ? setScreenShare(!screenShare)
-                  : ""
-              }
-              // ${(footerClass.cant_speaking_mobile || footerClass.interface_page_footer) && "!hidden"}
-              className={`shareBtn w-10 h-10 justify-self-end border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
-            >
-              {!screenShare ? (
-                <MdOutlineScreenShare size={24} />
-              ) : (
-                <MdOutlineStopScreenShare size={24} />
-              )}
-            </button>
-
-            {/* Mic request button */}
-            <button
-              onClick={cycleMicState}
-              className={`micBtn w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow ${mic.hostNeutral || mic.userNeutral ? "bg-[#191919c0] text-white _bg-[#a2c6bf4d]" : mic.hostActive || mic.userActive ? "text-[#219882] bg-[#a2c6bf4d]" : "text-[#F22B1F] bg-[#df96964d]"} text-xl`}
-            >
-              {/* ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} */}
-              {isHost ? (
-                <>
-                  {mic.hostNeutral || mic.hostActive ? (
-                    <IoIosMic size={24} />
-                  ) : (
-                    <IoIosMicOff size={24} />
-                  )}
-                </>
-              ) : (
-                <>
-                  {mic.userNeutral || mic.userActive ? (
-                    <IoIosMic size={24} />
-                  ) : mic.userRequest ? (
-                    <PiHandWaving size={24} />
-                  ) : (
-                    <IoIosMicOff size={24} />
-                  )}
-                </>
-              )}
-            </button>
-
-            {/* Audience present */}
-            <button
-              onClick={() => {
-                setLiveChatAudience({
-                  audience: true,
-                  chats: false,
-                  controls: false,
-                  requests: false,
-                  coHost: false,
-                  chooseSlide: false,
-                  poll: false
-                });
-                setSideBar(true);
-              }}
-              className={`audienceBtn ${!is768PxScreen && !footerClass.inAactiveSideBarDesktop && "!hidden"} w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl relative`}
-            >
-              <span className="!absolute -top-1.5 -right-1 flex justify-center items-center w-5 h-5 aspect-square border-none rounded-full text-[0.6rem] font-semibold text-white bg-[#19191991]">
-                10
-              </span>
-              <FaRegUser size={24} />
-            </button>
-
-            {/* Messages */}
-            <button
-              onClick={() => {
-                setLiveChatAudience({
-                  audience: false,
-                  chats: true,
-                  controls: false,
-                  requests: false,
-                  coHost: false,
-                  chooseSlide: false,
-                  poll: false
-                });
-                setSideBar(true);
-              }}
-              className={`audienceBtn ${!is768PxScreen && "!hidden"} w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl relative`}
-            >
-              <span className="!absolute -top-1.5 -right-1 flex justify-center items-center w-5 h-5 aspect-square border-none rounded-full text-[0.6rem] font-semibold text-white bg-[#19191991]">
-                10
-              </span>
-              <LuMessagesSquare size={24} />
-            </button>
-
-            {/* Settings/controls button */}
-            <button
-              onClick={() => {
-                setLiveChatAudience({
-                  audience: false,
-                  chats: false,
-                  controls: true,
-                  requests: false,
-                  coHost: false,
-                  chooseSlide: false,
-                  poll: false
-                });
-                setSideBar(true);
-              }}
-              // ${(footerClass.interface_page_footer || footerClass.interface_page_footer) && "!hidden"}
-              className={`settingsBtn w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
-            >
-              <BsThreeDots size={24} />
-            </button>
-
-            {/* End call button */}
-            <button
-              onClick={() => confirm("Are you sure you want to End session?")}
-              className="endCallBtn justify-self-end bg-[#ff0000] _w-full w-16 h-[70%] flex justify-center items-center gap-2 px-2 border-none rounded-sm text-[0.8rem] font-semibold"
-            >
-              <MdCallEnd size={32} />
-            </button>
-          </footer>
+          <InterfaceFooterElement
+            footerClass={footerClass}
+            navigate={navigate}
+            sideBar={sideBar}
+            is768PxScreen={is768PxScreen}
+            setLiveChatAudience={setLiveChatAudience}
+            setSideBar={setSideBar}
+            isHost={isHost}
+            mic={mic}
+            screenShare={screenShare}
+            setScreenShare={setScreenShare}
+            cycleMicState={cycleMicState}
+          />
         </div>
         {/* sideBar section */}
-        {/* orientation.type.includes("portrait") */}
-        <div
-          className={`w-full h-full p-1 overflow-auto ${!sideBar && "hidden"} ${is768PxScreen && "!absolute !top-[50%] -translate-y-[50%] !left-0 !bottom-auto !w-full !h-[calc(100vh-150px)] bg-black z-50"} !border-none`}
-        >
-          {/* sideBar wrapper */}
-          <div
-            className={`w-full !h-full grid grid-cols-[1fr] grid-rows-[20px_1fr] gap-1 relative`}
-          >
-            {/* floating button for closing controls area */}
-            <button
-              onClick={() => {
-                setLiveChatAudience({
-                  audience: liveChatAudience.controls ? true : false,
-                  chats: false,
-                  controls: liveChatAudience.controls ? false : true,
-                  requests: false,
-                  coHost: false,
-                  chooseSlide: false,
-                  poll: false
-                });
-                setSideBar(!liveChatAudience.controls ? true : false);
-              }}
-              className={`text-white ${
-                !(
-                  liveChatAudience.controls ||
-                  liveChatAudience.coHost ||
-                  liveChatAudience.chooseSlide ||
-                  liveChatAudience.poll
-                )
-                  ? "hidden"
-                  : "block"
-              } w-fit h-fit p-1 border-none rounded-sm absolute top-8 right-2 z-10`}
-            >
-              <IoClose size={20} />
-            </button>
-            {/* SideBar toggle for Live audience and chat */}
-            <div className="w-full h-full border-none rounded-sm grid grid-cols-2 grid-rows-1 gap-1">
-              <button
-                onClick={() => {
-                  setLiveChatAudience({
-                    audience: true,
-                    chats: false,
-                    controls: false,
-                    requests: false,
-                    coHost: false,
-                    chooseSlide: false,
-                    poll: false
-                  });
-                  setSideBar(true);
-                }}
-                className="flex w-full h-full justify-center items-center relative cursor-pointer"
-              >
-                <span
-                  className={`${liveChatAudience.audience && "bg-primaryTwo"} border-none rounded-sm text-white text-xs flex justify-center items-center w-full h-full`}
-                >
-                  <span className="mr-1">Live Audience</span>
-                  <span
-                    className={`${liveChatAudience.audience ? "bg-black" : "bg-primaryTwo"} border-none rounded-sm text-[0.6rem] inline-block py-[0.5px] px-[2px]`}
-                  >
-                    99+
-                  </span>
-                </span>
-              </button>
-              <button
-                onClick={() => {
-                  setLiveChatAudience({
-                    audience: false,
-                    chats: true,
-                    controls: false,
-                    requests: false,
-                    coHost: false,
-                    chooseSlide: false,
-                    poll: false
-                  });
-                  setSideBar(true);
-                }}
-                className="flex w-full h-full justify-center items-center relative cursor-pointer"
-              >
-                <span
-                  className={`${liveChatAudience.chats && "bg-primaryTwo"} border-none rounded-sm text-white text-xs flex justify-center items-center w-full h-full`}
-                >
-                  <span className="mr-1">Live Chat</span>
-                  <span
-                    className={`${liveChatAudience.chats ? "bg-black" : "bg-primaryTwo"} border-none rounded-sm text-[0.6rem] inline-block py-[0.5px] px-[2px]`}
-                  >
-                    99+
-                  </span>
-                </span>
-              </button>
-            </div>
-            {/* ********Live Audiences section********* */}
-            <div
-              className={`w-full h-full ${!liveChatAudience.audience ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[50px_minmax(50px,auto)_1fr] gap-1`}
-            >
-              {/* host user section */}
-              <div className="w-full h-full bg-primaryTwo border-none rounded-sm">
-                <div className="w-full h-full flex justify-between items-center gap-2 p-2">
-                  <div className="flex justify-center items-center gap-2">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage
-                        src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${2}`}
-                        alt="Host"
-                      />
-                      <AvatarFallback>
-                        <span className="text-white text-xs">Imoh</span>
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-white text-xs block w-fit h-fit">
-                      Amem
-                    </span>
-                    <span className="text-white text-[0.6rem] bg-black px-2 py-[1px] flex justify-center items-center w-fit h-fit border-none rounded-sm">
-                      Host
-                    </span>
-                  </div>
-                  <div className="w-fit h-full flex justify-between items-center gap-2">
-                    <button
-                      onClick={() => setMic(!mic)}
-                      className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow  hover:scale-[1.1] ${!mic ? "text-[#F22B1F]" : "text-[#219882]"} text-xl relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10 before:pointer-events-none before:border-none before:rounded-full ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"}`}
-                    >
-                      {mic ? <IoIosMic size={24} /> : <IoIosMicOff size={24} />}
-                    </button>
-                    <button
-                      onClick={() => setVideoShare(!videoShare)}
-                      className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10 before:pointer-events-none before:border-none before:rounded-full ${!videoShare ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} hover:scale-[1.1] ${!videoShare ? "text-[#F22B1F]" : "text-[#219882]"} text-xl`}
-                    >
-                      {videoShare ? (
-                        <CiVideoOn size={24} />
-                      ) : (
-                        <CiVideoOff size={24} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              {/* mic requests section 1 */}
-              {isHost && (
-                <div className={`w-full h-fit bg-black`}>
-                  <div className="w-full h-fit flex justify-between items-center">
-                    <p className="text-white text-xs pt-2 pb-3">Mic requests</p>
-                    {micRequest && (
-                      <button
-                        onClick={() =>
-                          setLiveChatAudience({
-                            audience: false,
-                            chats: false,
-                            controls: false,
-                            requests: true,
-                            coHost: false,
-                            chooseSlide: false,
-                            poll: false
-                          })
-                        }
-                        className="block w-fit h-fit bg-primaryTwo py-0.5 px-2 text-white text-[0.6rem] border-none rounded-sm cursor-pointer"
-                      >
-                        {micRequest > 2 ? "See more" : ""} ({micRequest})
-                      </button>
-                    )}
-                  </div>
-                  <div className="w-full h-fit bg-primaryTwo border-none rounded-sm">
-                    {/* users avaters here as lists: request to speak users, yet to be accepted */}
-                    <ScrollArea className="h-full w-full border-none">
-                      {!micRequest ? (
-                        <p className="text-gray-400 text-xs w-full h-full flex justify-center items-center p-5">
-                          No mic requests
-                        </p>
-                      ) : (
-                        Array.from(
-                          { length: Math.min(2, micRequest) },
-                          (_, index) => (
-                            <div
-                              key={`user-${index}`}
-                              className="w-full h-full flex justify-between items-center gap-2 p-2"
-                            >
-                              <div className="flex justify-center items-center gap-2">
-                                <Avatar className="w-10 h-10">
-                                  <AvatarImage
-                                    src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                                    alt={`User ${index + 1}`}
-                                  />
-                                  <AvatarFallback>
-                                    <span className="text-white text-xs">{`User ${index + 1}`}</span>
-                                  </AvatarFallback>
-                                </Avatar>
-                                <span className="text-white text-xs block w-fit h-fit">
-                                  {`User ${index + 1}`}
-                                </span>
-                              </div>
-                              <div className="flex justify-between items-center gap-2">
-                                <button
-                                  className={`text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
-                                >
-                                  Accept
-                                </button>
-                                <button
-                                  className={`text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm`}
-                                >
-                                  Decline
-                                </button>
-                              </div>
-                            </div>
-                          )
-                        )
-                      )}
-                    </ScrollArea>
-                    {/* end of users requests */}
-                  </div>
-                </div>
-              )}
-              {/* Present users in attendance */}
-              <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
-                <ScrollArea
-                  className={`${micRequest <= 1 && isHost ? "h-[calc(100vh-225px)]" : !isHost ? "h-[calc(100vh-130px)]" : "h-[calc(100vh-280px)]"} w-full border-none`}
-                >
-                  {Array.from({ length: 12 }, (_, index) => (
-                    <div
-                      key={`user-${index}`}
-                      className="w-full h-full flex justify-between items-center gap-2 p-2"
-                    >
-                      <div className="flex justify-center items-center gap-2">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage
-                            src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                            alt="Host"
-                          />
-                          <AvatarFallback>
-                            <span className="text-white text-xs">Imoh</span>
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-white text-xs block w-fit h-fit">
-                          {`User ${index + 1}`}
-                        </span>
-                      </div>
-                      <div className="w-fit h-full flex justify-between items-center gap-2">
-                        <button
-                          onClick={cycleMicState}
-                          className={`micBtn w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow ${mic.hostNeutral || mic.userNeutral ? "bg-[#191919c0] text-white _bg-[#a2c6bf4d]" : mic.hostActive || mic.userActive ? "text-[#219882] bg-[#a2c6bf4d]" : "text-[#F22B1F] bg-[#df96964d]"} text-xl`}
-                        >
-                          {/* ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} */}
-                          {isHost ? (
-                            <>
-                              {mic.hostNeutral || mic.hostActive ? (
-                                <IoIosMic size={24} />
-                              ) : (
-                                <IoIosMicOff size={24} />
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              {mic.userNeutral || mic.userActive ? (
-                                <IoIosMic size={24} />
-                              ) : mic.userRequest ? (
-                                <PiHandWaving size={24} />
-                              ) : (
-                                <IoIosMicOff size={24} />
-                              )}
-                            </>
-                          )}
-                        </button>
-                        {/* <button
-                          onClick={() => setMic(!mic)}
-                          className={`w-10 h-10 border-none rounded-full flex justify-center items-center shadow relative before:block before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10 before:pointer-events-none before:border-none before:rounded-full ${!mic ? "before:bg-[#df96964d]" : "before:bg-[#a2c6bf4d]"} hover:scale-[1.1] ${!mic ? "text-[#F22B1F]" : "text-[#219882]"} text-xl`}
-                        >
-                          {mic ? (
-                            <IoIosMic size={24} />
-                          ) : (
-                            <IoIosMicOff size={24} />
-                          )}
-                        </button> */}
-                      </div>
-                    </div>
-                  ))}
-                </ScrollArea>
-              </div>
-            </div>
-            {/* *******Live Chats section************* */}
-            <div
-              className={`w-full h-full ${!liveChatAudience.chats ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[1fr_45px] gap-1 bg-primaryTwo border-none rounded-sm`}
-            >
-              {/* users chat display */}{" "}
-              <div className="w-full h-full border-none rounded-sm overflow-hidden">
-                {/* users live chats start */}
-                <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
-                  <ScrollArea
-                    className={`h-[calc(100vh-130px)] w-full border-none`}
-                  >
-                    {Array.from({ length: 10 }, (_, index) => (
-                      <div
-                        key={`user-${index}`}
-                        className="w-full h-full flex justify-between items-center gap-2 p-2"
-                      >
-                        <div className="flex justify-center items-start gap-2">
-                          <Avatar className="w-10 h-10">
-                            <AvatarImage
-                              src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                              alt="Host"
-                            />
-                            <AvatarFallback>
-                              <span className="text-white text-xs">Imoh</span>
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="w-full h-fit mt-[0.8rem]">
-                            <div className="flex justify-start items-center gap-2">
-                              <span className="text-white text-xs block w-fit h-fit">
-                                {`User ${index + 1}`}
-                              </span>
-                              <span className="text-[gray] text-xs font-extralight block w-fit h-fit italic">
-                                02:47 am
-                              </span>
-                            </div>
-                            <p className="w-5/6 h-fit text-white text-xs bg-black px-2 py-1.5 mt-2 border-none rounded-sm">
-                              Will of time, hope fore tomorrow... Lorem ipsum
-                              dolor sit amet consectetur adipisicing elit.
-                              Voluptatibus eligendi soluta, fuga repellendus
-                              nihil incidunt! lorem
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </ScrollArea>
-                </div>
-                {/* users live chats end */}
-              </div>
-              {/* chat img-picker & input */}
-              <div className="border-none w-full h-full grid grid-cols-[40px_1fr] grid-rows-[40px] gap-1 justify-evenly items-center px-1">
-                <label
-                  htmlFor="filePicker"
-                  className="flex justify-center items-center w-full aspect-square bg-[red]_ border-none rounded-sm relative cursor-pointer"
-                >
-                  <input
-                    type="file"
-                    name="filePicker"
-                    id="filePicker"
-                    className="absolute -top-1 -left-1 w-0 h-0 opacity-0"
-                    accept="*"
-                  />
-                  <IoImages size={28} className="w-full h-full" />
-                </label>
-                <span className="block w-[80%]_ w-full h-full relative py-[2.5px]">
-                  <input
-                    type="text"
-                    className="block w-full h-full border-none rounded-sm py-1.5 indent-2 bg-black text-white text-xs"
-                    placeholder="Send a message.."
-                  />
-                  <button className="absolute right-0 top-0 translate-y-0 text-white block w-fit h-full border-none rounded-sm p-1">
-                    <AiOutlineSend size={20} />
-                  </button>
-                </span>
-              </div>
-            </div>
-            {/* ******Controls for three Dots********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.controls ? "hidden" : "grid"}`}
-            >
-              <ScrollArea className="h-[calc(100vh-150px)] w-full border-none pt-12 pb-2 px-2">
-                {/* pen */}
-                <Label
-                  htmlFor="pen-label"
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <LiaPenNibSolid size={20} />
-                    <span className="text-sm">Pen</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <Switch id="pen-label" />
-                  </span>
-                </Label>
-                {/* music */}
-                <Label
-                  htmlFor="music-label"
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <IoMusicalNotesOutline size={20} />
-                    <span className="text-sm">Music</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <Switch id="music-label" />
-                  </span>
-                </Label>
-                {/* ping */}
-                <Label
-                  htmlFor="ping-label"
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <GoBell size={20} />
-                    <span className="text-sm">Ping audience</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <Switch id="ping-label" />
-                  </span>
-                </Label>
-                {/* Add slides */}
-                <button
-                  onClick={() =>
-                    setLiveChatAudience({
-                      audience: false,
-                      chats: false,
-                      controls: false,
-                      requests: false,
-                      coHost: false,
-                      chooseSlide: true,
-                      poll: false
-                    })
-                  }
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <CgFileAdd size={20} />
-                    <span className="text-sm">Add slides</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
-                </button>
-                {/* Co-host */}
-                <button
-                  onClick={() =>
-                    setLiveChatAudience({
-                      audience: false,
-                      chats: false,
-                      controls: false,
-                      requests: false,
-                      coHost: true,
-                      chooseSlide: false,
-                      poll: false
-                    })
-                  }
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <AiOutlineUsergroupAdd size={20} />
-                    <span className="text-sm">Co-host</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
-                </button>
-                {/* Poll */}
-                <button
-                  onClick={() =>
-                    setLiveChatAudience({
-                      audience: false,
-                      chats: false,
-                      controls: false,
-                      requests: false,
-                      coHost: false,
-                      chooseSlide: false,
-                      poll: true
-                    })
-                  }
-                  className="w-full h-fit text-left flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    <CgPoll size={20} />
-                    <span className="text-sm">Poll</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
-                </button>
-                {/* share screen */}
-                <button
-                  onClick={() =>
-                    confirm(
-                      `Are you sure you want to ${!screenShare ? "share" : "stop sharing"} your screen?`
-                    )
-                      ? setScreenShare(!screenShare)
-                      : ""
-                  }
-                  className="hidden w-full h-fit text-left maxScreenMobile:flex justify-between items-center gap-1 text-white mb-9"
-                >
-                  <span className="flex justify-start items-center gap-2">
-                    {!screenShare ? (
-                      <MdOutlineScreenShare size={24} />
-                    ) : (
-                      <MdOutlineStopScreenShare size={24} />
-                    )}
-                    <span className="text-sm">Sharescreen</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
-                </button>
-                {/* download file */}
-                <button className="hidden w-full h-fit text-left maxScreenMobile:flex justify-between items-center gap-1 text-white mb-9">
-                  <span className="flex justify-start items-center gap-2">
-                    <IoCloudDownloadOutline size={24} />
-                    <span className="text-sm">Download file</span>
-                  </span>
-                  <span className="flex justify-center items-center gap-1">
-                    <FaAngleRight id="ping-label" />
-                  </span>
-                </button>
-              </ScrollArea>
-            </div>
-            {/* ******Mic Requests section 2 ********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.requests ? "hidden" : "grid"}`}
-            >
-              {" "}
-              <ScrollArea className="h-[calc(100vh-75px)] w-full border-none px-2">
-                {!micRequest ? (
-                  <p className="text-gray-400 text-xs w-full h-full flex justify-center items-center p-5">
-                    No mic requests
-                  </p>
-                ) : (
-                  Array.from({ length: micRequest }, (_, index) => (
-                    <div
-                      key={`user-${index}`}
-                      className="w-full h-full flex justify-between items-center gap-2 p-2"
-                    >
-                      <div className="flex justify-center items-center gap-2">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage
-                            src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                            alt={`User ${index + 1}`}
-                          />
-                          <AvatarFallback>
-                            <span className="text-white text-xs">{`User ${index + 1}`}</span>
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-white text-xs block w-fit h-fit">
-                          {`User ${index + 1}`}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center gap-2">
-                        <button className="text-white text-xs bg-[#00800071] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
-                          Accept
-                        </button>
-                        <button className="text-white text-xs bg-[#ff00005f] px-2 py-1 flex justify-center items-center w-fit h-fit border-none rounded-sm">
-                          Decline
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </ScrollArea>
-            </div>
-            {/* ******Choose co-host********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.coHost ? "hidden" : "grid"}`}
-            >
-              <p className="text-white text-xs mb-2 absolute top-3 left-4">
-                Choose your co-host
-              </p>
-              <ScrollArea className="h-[calc(100vh-75px)] w-full border-none pt-12 pb-2 px-2">
-                {Array.from({ length: chooseCoHost }, (_, index) => (
-                  <Label
-                    key={`user-${index}`}
-                    className="w-full h-full flex justify-between items-center gap-2 p-2"
-                  >
-                    <span className="flex justify-center items-center gap-2">
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage
-                          src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${index + 3}`}
-                          alt={`User ${index + 1}`}
-                        />
-                        <AvatarFallback>
-                          <span className="text-white text-xs">{`User ${index + 1}`}</span>
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-white text-xs block w-fit h-fit">
-                        {`User ${index + 1}`}
-                      </span>
-                    </span>
-                    <span className="flex justify-center items-center gap-1">
-                      <Switch id="ping-label" />
-                    </span>
-                  </Label>
-                ))}
-              </ScrollArea>
-            </div>
-            {/* ******Choose slide********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.chooseSlide ? "hidden" : "grid"}`}
-            >
-              <p className="text-white text-xs mb-2 absolute top-3 left-4">
-                Choose slide
-              </p>
-              <ScrollArea className="h-[calc(100vh-75px)] w-full border-none pt-12 pb-2 px-2">
-                {Array.from({ length: chooseSlide }, (_, index) => (
-                  <div
-                    key={`user-${index}`}
-                    className="w-full h-full grid grid-cols-[6rem_1fr] grid-rows-[6rem] gap-2 p-2 border border-gray-300 rounded-sm mb-4"
-                  >
-                    <div className="w-full h-full">
-                      <img
-                        src={`https://picsum.photos/200/300?random=${index + 1}`}
-                        alt={`Slide ${index + 1}`}
-                        className="w-full h-full object-cover rounded-sm"
-                      />
-                    </div>
-                    <div className="w-full h-full flex flex-col justify-between items-start gap-1">
-                      <span className="text-white text-xs font-bold block w-[11.5625rem] truncate">
-                        {`Embedded Slide ${index + 1} Lorem ipsum dolor sit amet.`}
-                      </span>
-                      <span className="text-white text-xs block w-[11.5625rem] truncate">
-                        <span className="font-bold">Presenter:</span> Imoh
-                        Omeizegba Lorem ipsum dolor sit amet.
-                      </span>
-                      <span className="text-white text-xs block w-[11.5625rem] truncate">
-                        <span className="font-bold">Category:</span> Edge
-                        computing Lorem, ipsum dolor sit amet consectetur
-                        adipisicing elit. A, laborum?
-                      </span>
-                      <button className="text-white text-xs bg-black px-2 py-1 flex justify-center items-center w-full h-fit border-none rounded-sm">
-                        Add+
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </ScrollArea>
-            </div>
-            {/* ******Poll********** */}
-            <div
-              className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.poll ? "hidden" : "grid"}`}
-            >
-              <p className="text-white text-xs mb-2 absolute top-3 left-4">
-                Choose Poll
-              </p>
-              <ScrollArea className="h-[calc(100vh-75px)] w-full border-none pt-12 pb-2 px-2">
-                {/* {Array.from({ length: chooseSlide }, (_, index) => (
-                  <div
-                    key={`user-${index}`}
-                    className="w-full h-full grid grid-cols-[6rem_1fr] grid-rows-[6rem] gap-2 p-2 border border-gray-300 rounded-sm mb-4"
-                  >
-                    <div className="w-full h-full">
-                      <img
-                        src={`https://picsum.photos/200/300?random=${index + 1}`}
-                        alt={`Slide ${index + 1}`}
-                        className="w-full h-full object-cover rounded-sm"
-                      />
-                    </div>
-                    <div className="w-full h-full flex flex-col justify-between items-start gap-1">
-                      <span className="text-white text-xs font-bold block w-[11.5625rem] truncate">
-                        {`Embedded Slide ${index + 1} Lorem ipsum dolor sit amet.`}
-                      </span>
-                      <span className="text-white text-xs block w-[11.5625rem] truncate">
-                        <span className="font-bold">Presenter:</span> Imoh
-                        Omeizegba Lorem ipsum dolor sit amet.
-                      </span>
-                      <span className="text-white text-xs block w-[11.5625rem] truncate">
-                        <span className="font-bold">Category:</span> Edge
-                        computing Lorem, ipsum dolor sit amet consectetur
-                        adipisicing elit. A, laborum?
-                      </span>
-                      <button className="text-white text-xs bg-black px-2 py-1 flex justify-center items-center w-full h-fit border-none rounded-sm">
-                        Add+
-                      </button>
-                    </div>
-                  </div>
-                ))} */}
-              </ScrollArea>
-            </div>
-          </div>
-        </div>
+        <AsideElement
+          sideBar={sideBar}
+          is768PxScreen={is768PxScreen}
+          setLiveChatAudience={setLiveChatAudience}
+          liveChatAudience={liveChatAudience}
+          setSideBar={setSideBar}
+          micRequest={micRequest}
+          isHost={isHost}
+          mic={mic}
+          setMic={setMic}
+          videoShare={videoShare}
+          setVideoShare={setVideoShare}
+          screenShare={screenShare}
+          setScreenShare={setScreenShare}
+          cycleMicState={cycleMicState}
+          chooseCoHost={chooseCoHost}
+          chooseSlide={chooseSlide}
+        />
       </div>
     </div>
   );
