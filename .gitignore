@@ -26,7 +26,6 @@ dumb-code
 test.md
 
 package-lock.json
-yarn.lock
 *.env
 ~
 
