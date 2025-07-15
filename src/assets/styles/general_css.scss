@@ -826,6 +826,20 @@ label.toggle__label {
     grid-template-areas: "home download . . . . shareScreen micRequest audience controls . . . endCall endCall" !important; //default layout with sideBar active
   }
 
+  &.mobileViewHost {
+    grid-template-areas: "controls . . audience micRequest messages . endCall endCall" !important;
+    grid-template-columns: repeat(9, 1fr) !important;
+  }
+
+  &.desktopViewUsers {
+    grid-template-areas: "download . . . . . . micRequest . . . . . endCall endCall" !important;
+  }
+
+  &.mobileViewUsers {
+    grid-template-areas: "download . . audience micRequest messages . endCall endCall" !important;
+    grid-template-columns: repeat(9, 1fr) !important;
+  }
+
   .homeBtn {
     grid-area: home;
   }
@@ -859,12 +873,5 @@ label.toggle__label {
 
   // Mobile view
   @include is_mediaQuery_MaxWidth_Yes {
-    &.mobileViewHost {
-      grid-template-areas: "controls . . audience micRequest messages . endCall endCall" !important;
-    }
-
-    &.mobileViewUsers {
-      grid-template-areas: "download . . audience micRequest messages . endCall endCall" !important;
-    }
   }
 }
