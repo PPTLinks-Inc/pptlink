@@ -120,6 +120,7 @@ export default function InterfaceView() {
         >
           {/* main interface */}
           <MainInterfaceElement
+            footerClass={footerClass}
             sideBar={sideBar}
             setSideBar={setSideBar}
             is768PxScreen={is768PxScreen}
@@ -142,6 +143,7 @@ export default function InterfaceView() {
         </div>
         {/* sideBar section */}
         <AsideElement
+          footerClass={footerClass}
           sideBar={sideBar}
           is768PxScreen={is768PxScreen}
           setLiveChatAudience={setLiveChatAudience}
@@ -158,6 +160,7 @@ export default function InterfaceView() {
           cycleMicState={cycleMicState}
           chooseCoHost={chooseCoHost}
           chooseSlide={chooseSlide}
+          navigate={navigate}
         />
       </div>
     </div>
