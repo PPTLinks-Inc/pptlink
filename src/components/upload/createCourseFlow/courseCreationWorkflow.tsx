@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
@@ -45,6 +44,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import QuizCreationModal from "./quizCreationModal";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function CourseContentLoader({ params }: LoaderFunctionArgs<any>) {
@@ -61,7 +62,6 @@ export async function CourseContentLoader({ params }: LoaderFunctionArgs<any>) {
 }
 
 export default function CourseCreationWorkflow() {
-  const navigate = useNavigate();
   const [newlyCreatedSection, setNewlyCreatedSection] = useState<{
     id: string;
     initialTitle: string;
@@ -76,6 +76,8 @@ export default function CourseCreationWorkflow() {
     actionText: "Delete",
     sectionId: ""
   });
+
+  const [openQuizCreationModal, setOpenQuizCreationModal] = useState(false);
 
   const toast = useToast();
 
@@ -438,14 +440,18 @@ export default function CourseCreationWorkflow() {
                 <HiOutlineDocumentText />
                 <span className="ml-2">Add Presentation</span>
               </button>
-              <button
-                disabled={true}
-                className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300 _cursor-not-allowed"
-                onClick={() => navigate("/start-quiz")}
-              >
-                <MdOutlineQuiz />
-                <span className="ml-2">Add Quiz</span>
-              </button>
+
+              <AlertDialog open={openQuizCreationModal} onOpenChange={setOpenQuizCreationModal}>
+                <QuizCreationModal
+                  setOpenQuizCreationModal={setOpenQuizCreationModal}
+                />
+                <AlertDialogTrigger asChild>
+                  <button className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300">
+                    <MdOutlineQuiz />
+                    <span className="ml-2">Add Quiz</span>
+                  </button>
+                </AlertDialogTrigger>
+              </AlertDialog>
             </div>
 
             <div className="border-2 border-dashed bg-gray-50 rounded transition-colors">
@@ -497,6 +503,7 @@ export default function CourseCreationWorkflow() {
                     const ppts = section.contents.filter(
                       (c) => c.type === "PPT"
                     ).length;
+                    const quiz = section.contents.filter(c => c.type === "QUIZ").length;
                     const waiting = section.contents.filter(
                       (c) => c.status === "waiting" || c.status === "starting"
                     );
@@ -523,6 +530,10 @@ export default function CourseCreationWorkflow() {
                           <span>
                             {ppts}{" "}
                             {ppts === 1 ? "presentation" : "presentations"}
+                          </span>
+                          <span>
+                            {quiz}{" "}
+                            {quiz === 1 ? "quiz" : "quizzes"}
                           </span>
                         </div>
                         <div className="mt-1 space-y-1">
@@ -702,6 +713,14 @@ function ContentItems({ content }: { content: ContentItem }) {
           return "text-rose-700 bg-rose-100";
         case "done":
           return "text-green-700 bg-green-100";
+        case "not_active":
+          return "text-gray-700 bg-gray-100";
+        case "waiting":
+          return "text-gray-700 bg-gray-100";
+        case "active":
+          return "text-gray-700 bg-gray-100";
+        case "completed":
+          return "text-gray-700 bg-gray-100";
         default:
           return "text-gray-700 bg-gray-100";
       }
@@ -882,6 +901,8 @@ function ContentItems({ content }: { content: ContentItem }) {
           <div className="flex items-center w-full">
             {content.type === "VIDEO" ? (
               <IoVideocamOutline className="mr-2" />
+            ) : content.type === "QUIZ" ? (
+              <MdOutlineQuiz className="mr-2" />
             ) : (
               <HiOutlineDocumentText className="mr-2" />
             )}
@@ -900,7 +921,7 @@ function ContentItems({ content }: { content: ContentItem }) {
             <span className="ml-2">{content.uploadProgress}%</span>
           )}
         </p>
-        {(content.status === "done" || content.status === "error") && (
+        {(content.status === "done" || content.status === "error" || content.type === "QUIZ") && (
           <div className="flex gap-2">
             <DialogTrigger asChild>
               <button
