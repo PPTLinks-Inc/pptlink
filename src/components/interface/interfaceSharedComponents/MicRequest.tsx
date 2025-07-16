@@ -21,7 +21,7 @@ export default function MicRequestElement({
   return (
     <>
       <div
-        className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.requests ? "hidden" : "grid"}`}
+        className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience?.requests ? "hidden" : "grid"}`}
       >
         {" "}
         <ScrollArea className="h-[calc(100vh-75px)] w-full border-none px-2">

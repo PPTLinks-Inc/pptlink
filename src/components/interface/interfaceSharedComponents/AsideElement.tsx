@@ -38,7 +38,9 @@ export default function AsideElement({
   setScreenShare,
   cycleMicState,
   chooseCoHost,
-  chooseSlide
+  chooseSlide,
+  footerClass,
+  navigate
 }) {
   return (
     <>
@@ -221,9 +223,11 @@ export default function AsideElement({
             setScreenShare={setScreenShare}
             cycleMicState={cycleMicState}
             screenShare={screenShare}
+            chooseSlide={chooseSlide}
           />
           {/* ******Poll********** */}
           <PollElement
+            liveChatAudience={liveChatAudience}
             footerClass={footerClass}
             navigate={navigate}
             sideBar={sideBar}

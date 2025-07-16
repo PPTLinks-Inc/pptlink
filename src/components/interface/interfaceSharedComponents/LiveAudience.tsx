@@ -21,7 +21,7 @@ export default function LiveAudienceElement({
   return (
     <>
       <div
-        className={`w-full h-full ${!liveChatAudience.audience ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[50px_minmax(50px,auto)_1fr] gap-1`}
+        className={`w-full h-full ${!liveChatAudience?.audience ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[50px_minmax(50px,auto)_1fr] gap-1`}
       >
         {/* host user section */}
         <div className="w-full h-full bg-primaryTwo border-none rounded-sm">

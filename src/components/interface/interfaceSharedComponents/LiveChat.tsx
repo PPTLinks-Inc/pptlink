@@ -18,7 +18,7 @@ export default function LiveChatElement({
   return (
     <>
       <div
-        className={`w-full h-full ${!liveChatAudience.chats ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[1fr_45px] gap-1 bg-primaryTwo border-none rounded-sm`}
+        className={`w-full h-full ${!liveChatAudience?.chats ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[1fr_45px] gap-1 bg-primaryTwo border-none rounded-sm`}
       >
         {/* users chat display */}{" "}
         <div className="w-full h-full border-none rounded-sm overflow-hidden">
