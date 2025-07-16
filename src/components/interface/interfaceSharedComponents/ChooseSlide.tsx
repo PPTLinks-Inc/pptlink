@@ -25,7 +25,7 @@ export default function ChooseSlideElement({
   return (
     <>
       <div
-        className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.chooseSlide ? "hidden" : "grid"}`}
+        className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience?.chooseSlide ? "hidden" : "grid"}`}
       >
         <p className="text-white text-xs mb-2 absolute top-3 left-4">
           Choose slide

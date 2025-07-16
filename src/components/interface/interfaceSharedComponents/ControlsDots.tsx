@@ -29,7 +29,7 @@ export default function ControlsDotsElement({
   return (
     <>
       <div
-        className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience.controls ? "hidden" : "grid"}`}
+        className={`relative w-full h-full bg-primaryTwo border-none rounded-sm ${!liveChatAudience?.controls ? "hidden" : "grid"}`}
       >
         <ScrollArea className="h-[calc(100vh-150px)] w-full border-none pt-12 pb-2 px-2">
           {/* pen */}
