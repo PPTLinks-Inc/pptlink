@@ -99,10 +99,10 @@ export default function InterfaceView() {
         <div className="w-full h-full mx-auto border-none rounded-sm flex justify-between items-center">
           <ShareAPI fitSize={true} />
           <div
-            className={`w-fit h-full flex justify-center items-center gap-4 ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
+            className={`w-fit h-full flex justify-center items-center gap-4 maxScreenMobile:gap-2 maxScreenMobile:flex-col ${!orientation.type.includes("landscape") && is768PxScreen && "hidden"}`}
           >
-            <h2 className="text-xl font-light text-white">Meeting with YLN</h2>
-            <sub className="text-[0.7rem] text-white">By {"Imoh Omezegba"}</sub>
+            <h2 className="text-xl font-light maxScreenMobile:font-bold text-white maxScreenMobile:text-xs">Meeting with YLN</h2>
+            <sub className="text-[0.7rem] text-white maxScreenMobile:font-semibold maxScreenMobile:text-[0.5rem]">By {"Imoh Omezegba"}</sub>
           </div>
           <button className="bg-[#29db29] w-fit h-full flex justify-center items-center gap-2 px-2 border-none rounded-sm text-[0.8rem] font-semibold">
             <span>2:45</span>

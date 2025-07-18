@@ -46,8 +46,14 @@ export default function AsideElement({
     <>
       {/* orientation.type.includes("portrait") */}
       <div
-        className={`w-full h-full p-1 overflow-auto ${!sideBar && "hidden"} ${is768PxScreen && "!absolute !top-[50%] -translate-y-[50%] !left-0 !bottom-auto !w-full !h-[calc(100vh-150px)] bg-black z-50"} !border-none`}
+        className={`w-full h-full p-1 overflow-auto ${!sideBar && "hidden"} ${
+          is768PxScreen &&
+          "!absolute !top-[40px] !left-0 !w-full !h-[calc(100vh-90px)] bg-black z-50"
+        } !border-none`}
       >
+        {/* <div
+        className={`w-full h-full p-1 overflow-auto ${!sideBar && "hidden"} ${is768PxScreen && "!absolute !top-[50%] -translate-y-[50%] !left-0 !bottom-auto !w-full !h-[calc(100vh-150px)] bg-black z-50"} !border-none`}
+      > */}
         {/* sideBar wrapper */}
         <div
           className={`w-full !h-full grid grid-cols-[1fr] ${is768PxScreen ? "grid-rows-[1fr]" : "grid-rows-[20px_1fr]"} gap-1 relative`}
@@ -139,6 +145,7 @@ export default function AsideElement({
           {/* ********Live Audiences section********* */}
           <LiveAudienceElement
             footerClass={footerClass}
+            liveChatAudience={liveChatAudience}
             navigate={navigate}
             sideBar={sideBar}
             is768PxScreen={is768PxScreen}
@@ -153,6 +160,7 @@ export default function AsideElement({
           {/* *******Live Chats section************* */}
           <LiveChatElement
             footerClass={footerClass}
+            liveChatAudience={liveChatAudience}
             navigate={navigate}
             sideBar={sideBar}
             is768PxScreen={is768PxScreen}
@@ -167,6 +175,7 @@ export default function AsideElement({
           {/* ******Controls for three Dots********** */}
           <ControlsDotsElement
             footerClass={footerClass}
+            liveChatAudience={liveChatAudience}
             navigate={navigate}
             sideBar={sideBar}
             is768PxScreen={is768PxScreen}
@@ -174,7 +183,6 @@ export default function AsideElement({
             setSideBar={setSideBar}
             isHost={isHost}
             mic={mic}
-            screenShare={screenShare}
             setScreenShare={setScreenShare}
             cycleMicState={cycleMicState}
             screenShare={screenShare}
@@ -182,6 +190,7 @@ export default function AsideElement({
           {/* ******Mic Requests section 2 ********** */}
           <MicRequestElement
             footerClass={footerClass}
+            liveChatAudience={liveChatAudience}
             navigate={navigate}
             sideBar={sideBar}
             is768PxScreen={is768PxScreen}
@@ -189,7 +198,6 @@ export default function AsideElement({
             setSideBar={setSideBar}
             isHost={isHost}
             mic={mic}
-            screenShare={screenShare}
             setScreenShare={setScreenShare}
             cycleMicState={cycleMicState}
             screenShare={screenShare}
@@ -197,6 +205,7 @@ export default function AsideElement({
           {/* ******Choose co-host********** */}
           <ChooseCoHostElement
             footerClass={footerClass}
+            liveChatAudience={liveChatAudience}
             navigate={navigate}
             sideBar={sideBar}
             is768PxScreen={is768PxScreen}
@@ -204,7 +213,6 @@ export default function AsideElement({
             setSideBar={setSideBar}
             isHost={isHost}
             mic={mic}
-            screenShare={screenShare}
             setScreenShare={setScreenShare}
             cycleMicState={cycleMicState}
             screenShare={screenShare}
@@ -212,6 +220,7 @@ export default function AsideElement({
           {/* ******Choose slide********** */}
           <ChooseSlideElement
             footerClass={footerClass}
+            liveChatAudience={liveChatAudience}
             navigate={navigate}
             sideBar={sideBar}
             is768PxScreen={is768PxScreen}
@@ -219,7 +228,6 @@ export default function AsideElement({
             setSideBar={setSideBar}
             isHost={isHost}
             mic={mic}
-            screenShare={screenShare}
             setScreenShare={setScreenShare}
             cycleMicState={cycleMicState}
             screenShare={screenShare}
@@ -236,7 +244,6 @@ export default function AsideElement({
             setSideBar={setSideBar}
             isHost={isHost}
             mic={mic}
-            screenShare={screenShare}
             setScreenShare={setScreenShare}
             cycleMicState={cycleMicState}
             screenShare={screenShare}
