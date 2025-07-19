@@ -52,7 +52,7 @@ export default function CourseCreationSettings() {
   const name = useCourseStore((state) => state.name);
   const description = useCourseStore((state) => state.description);
   const price = useCourseStore((state) => state.price);
-  const freeCourse = useCourseStore(state => state.free);
+  const freeCourse = useCourseStore((state) => state.free);
   const courseLevel = useCourseStore((state) => state.courseLevel);
   const maxStudents = useCourseStore((state) => state.maxStudents);
   const thumbnail = useCourseStore((state) => state.thumbnail);
@@ -188,50 +188,52 @@ export default function CourseCreationSettings() {
               </SelectContent>
             </Select>
           </div>
-          {!freeCourse && <div className="space-y-2 mt-2">
-            <h3 className="text-lg font-bold">
-              Please input the currency in which your course should be charged
-            </h3>
-            <div className="flex space-x-4">
-              <Label className="flex items-center">
+          {!freeCourse && (
+            <div className="space-y-2 mt-2">
+              <h3 className="text-lg font-bold">
+                Please input the currency in which your course should be charged
+              </h3>
+              <div className="flex space-x-4">
+                <Label className="flex items-center">
+                  <Input
+                    type="radio"
+                    name="currency"
+                    value="naira"
+                    checked={true}
+                    className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
+                    disabled={published}
+                  />
+                  Naira (₦)
+                </Label>
+                <Label className="flex items-center">
+                  <Input
+                    type="radio"
+                    name="currency"
+                    value="usd"
+                    disabled
+                    checked={false}
+                    className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
+                  />
+                  USD ($)
+                </Label>
+              </div>
+              <div className="relative w-3/6 maxScreenMobile:w/full">
                 <Input
-                  type="radio"
-                  name="currency"
-                  value="naira"
-                  checked={true}
-                  className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="₦4000.00"
+                  min="4000"
+                  className="pl-8 border-[0.5px] border-primaryTwo"
+                  value={price}
+                  onChange={(e) => {
+                    updateValues(Number(e.target.value), "price");
+                  }}
                   disabled={published}
                 />
-                Naira (₦)
-              </Label>
-              <Label className="flex items-center">
-                <Input
-                  type="radio"
-                  name="currency"
-                  value="usd"
-                  disabled
-                  checked={false}
-                  className="mr-2 w-[1.5rem] h-[1.5rem] border-[1.5px] border-primaryTwo"
-                />
-                USD ($)
-              </Label>
+                <span className="absolute left-2 top-2">₦</span>
+              </div>
             </div>
-            <div className="relative w-3/6 maxScreenMobile:w/full">
-              <Input
-                type="text"
-                inputMode="numeric"
-                placeholder="₦4000.00"
-                min="4000"
-                className="pl-8 border-[0.5px] border-primaryTwo"
-                value={price}
-                onChange={(e) => {
-                  updateValues(Number(e.target.value), "price");
-                }}
-                disabled={published}
-              />
-              <span className="absolute left-2 top-2">₦</span>
-            </div>
-          </div>}
+          )}
         </div>
 
         <div className="space-y-4 mt-10">
@@ -261,11 +263,11 @@ export default function CourseCreationSettings() {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      captionLayout="dropdown"
                       selected={enrollmentDateFrom}
                       onSelect={(date) =>
                         date && updateValues(date, "enrollmentDateFrom")
                       }
-                      initialFocus
                       disabled={(date) => {
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
@@ -302,7 +304,7 @@ export default function CourseCreationSettings() {
                       onSelect={(date) =>
                         date && updateValues(date, "enrollmentDateTo")
                       }
-                      initialFocus
+                      captionLayout="dropdown"
                       disabled={(date) => {
                         if (!enrollmentDateFrom) return true;
                         return date < enrollmentDateFrom;
@@ -337,7 +339,7 @@ export default function CourseCreationSettings() {
                     mode="single"
                     selected={startDate}
                     onSelect={(date) => date && updateValues(date, "startDate")}
-                    initialFocus
+                    captionLayout="dropdown"
                     disabled={(date) => {
                       if (!enrollmentDateTo) return true;
                       return date < enrollmentDateTo;

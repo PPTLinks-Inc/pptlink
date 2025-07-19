@@ -3,12 +3,13 @@ import { DateRange } from "react-day-picker";
 
 export interface ContentItem {
     id: string;
-    type: "VIDEO" | "PPT";
+    type: "VIDEO" | "PPT" | "QUIZ";
     file?: File;
     name: string;
-    status: "waiting" | "starting" | "uploading" | "processing" | "error" | "done";
+    status: "waiting" | "starting" | "uploading" | "processing" | "error" | "done" | /* For quiz */ "active" | "completed" | "not_active";
     uploadProgress?: number;
 }
+
 export interface Section {
     id: string;
     title: string;
@@ -165,4 +166,27 @@ export interface CourseStore {
     canPublish: boolean;
 
     togglePublish: () => Promise<void>;
+}
+
+export interface QuizStore {
+    id: string;
+    title: string;
+    description?: string;
+    questions: QuizQuestion[];
+    timeLimit: number; // in minutes
+    quizStart: Date;
+    quizEnd: Date;
+    passingScore: number;
+    isPublished: boolean;
+}
+
+export interface QuizQuestion {
+    id: string;
+    question: string;
+    type: "MULTIPLE_CHOICE" | "TRUE_FALSE" | "SHORT_ANSWER";
+    options?: string[];
+    correctAnswer: string | string[];
+    points: number;
+    explanation?: string;
+    order: number;
 }
