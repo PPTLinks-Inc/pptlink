@@ -33,7 +33,6 @@ import { useMutation } from "@tanstack/react-query";
 import { LoadingAssetSmall, LoadingAssetSmall2 } from "@/assets/assets";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -46,6 +45,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import QuizCreationModal from "./quizCreationModal";
+import ManageQuiz from "./manageQuiz";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function CourseContentLoader({ params }: LoaderFunctionArgs<any>) {
@@ -441,7 +441,10 @@ export default function CourseCreationWorkflow() {
                 <span className="ml-2">Add Presentation</span>
               </button>
 
-              <AlertDialog open={openQuizCreationModal} onOpenChange={setOpenQuizCreationModal}>
+              <AlertDialog
+                open={openQuizCreationModal}
+                onOpenChange={setOpenQuizCreationModal}
+              >
                 <QuizCreationModal
                   setOpenQuizCreationModal={setOpenQuizCreationModal}
                 />
@@ -503,7 +506,9 @@ export default function CourseCreationWorkflow() {
                     const ppts = section.contents.filter(
                       (c) => c.type === "PPT"
                     ).length;
-                    const quiz = section.contents.filter(c => c.type === "QUIZ").length;
+                    const quiz = section.contents.filter(
+                      (c) => c.type === "QUIZ"
+                    ).length;
                     const waiting = section.contents.filter(
                       (c) => c.status === "waiting" || c.status === "starting"
                     );
@@ -532,8 +537,7 @@ export default function CourseCreationWorkflow() {
                             {ppts === 1 ? "presentation" : "presentations"}
                           </span>
                           <span>
-                            {quiz}{" "}
-                            {quiz === 1 ? "quiz" : "quizzes"}
+                            {quiz} {quiz === 1 ? "quiz" : "quizzes"}
                           </span>
                         </div>
                         <div className="mt-1 space-y-1">
@@ -736,6 +740,7 @@ function ContentItems({ content }: { content: ContentItem }) {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   const handleClose = useCallback(function () {
     setModalOpen(false);
@@ -807,6 +812,7 @@ function ContentItems({ content }: { content: ContentItem }) {
       contentItems.map((c) => (c.id === content.id ? updatedContent : c))
     );
     addToUploadQueue(updatedContent.id);
+    setOpenEditModal(false);
   }
 
   function handleFileSelect(file: File | null) {
@@ -816,47 +822,59 @@ function ContentItems({ content }: { content: ContentItem }) {
   }
 
   return (
-    <Dialog>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={openEditModal} onOpenChange={setOpenEditModal}>
+      <DialogContent
+        className={cn(
+          content.type === "QUIZ" ? "sm:max-w-2xl" : "sm:max-w-[425px]"
+        )}
+      >
         <DialogHeader>
-          <DialogTitle>Edit course Media</DialogTitle>
+          <DialogTitle title={content.name}>
+            {content.type === "QUIZ"
+              ? `Manage Quiz - ${content.name}`
+              : "Edit course Media"}
+          </DialogTitle>
           <DialogDescription>
-            {
-              "Make changes to your course Media here. Click save when you're done."
-            }
+            {(content.type === "VIDEO" || content.type === "PPT") &&
+              "Make changes to your course Media here. Click save when you're done."}
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-5 py-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.currentTarget.value)}
-              className="col-span-3"
-            />
+        {content.type === "VIDEO" || content.type === "PPT" ? (
+          <div className="grid gap-5 py-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.currentTarget.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="file">File</Label>
+              <Input
+                type="file"
+                accept={content.type === "VIDEO" ? "video/*" : ".ppt,.pptx"}
+                onChange={(e) => {
+                  handleFileSelect(e.target.files?.[0] ?? null);
+                  // e.target.value = ''; // Reset input after handling file
+                }}
+                id="file"
+                className="col-span-3"
+              />
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="file">File</Label>
-            <Input
-              type="file"
-              accept={content.type === "VIDEO" ? "video/*" : ".ppt,.pptx"}
-              onChange={(e) => {
-                handleFileSelect(e.target.files?.[0] ?? null);
-                // e.target.value = ''; // Reset input after handling file
-              }}
-              id="file"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <DialogClose asChild>
+        ) : (
+          <ManageQuiz content={content} />
+        )}
+
+        {(content.type === "VIDEO" || content.type === "PPT") && (
+          <DialogFooter>
             <Button type="button" onClick={addContentItem}>
               Save
             </Button>
-          </DialogClose>
-        </DialogFooter>
+          </DialogFooter>
+        )}
       </DialogContent>
 
       <PopUpModal
@@ -921,7 +939,9 @@ function ContentItems({ content }: { content: ContentItem }) {
             <span className="ml-2">{content.uploadProgress}%</span>
           )}
         </p>
-        {(content.status === "done" || content.status === "error" || content.type === "QUIZ") && (
+        {(content.status === "done" ||
+          content.status === "error" ||
+          content.type === "QUIZ") && (
           <div className="flex gap-2">
             <DialogTrigger asChild>
               <button
