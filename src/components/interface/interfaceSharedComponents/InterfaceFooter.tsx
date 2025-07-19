@@ -38,12 +38,12 @@ export default function InterfaceFooterElement({
                 : footerClass.mobileViewUsers
                   ? "mobileViewUsers"
                   : ""
-        } w-full h-full`}
+        } w-full h-full maxScreenMobile:!z-50`}
       >
         {/* Home button */}
         <button
           onClick={() => navigate("/")}
-          className={`homeBtn ${footerClass.mobileViewHost && is768PxScreen && "hidden"} w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
+          className={`homeBtn ${is768PxScreen && "hidden"} w-10 h-10 justify-self-center border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
         >
           <FiHome size={24} />
         </button>
@@ -51,7 +51,7 @@ export default function InterfaceFooterElement({
         {/* Download button */}
         <button
           // ${footerClass.cant_speaking_mobile && "!hidden"}
-          className={`downloadBtn ${footerClass.mobileViewHost && is768PxScreen && "hidden"} justify-self-start w-10 h-10 border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl maxScreenMobile:hidden`}
+          className={`downloadBtn ${footerClass.mobileViewHost && "hidden"} justify-self-start w-10 h-10 border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
         >
           <IoCloudDownloadOutline size={24} />
         </button>
@@ -161,7 +161,7 @@ export default function InterfaceFooterElement({
             setSideBar(true);
           }}
           // ${(footerClass.interface_page_footer || footerClass.interface_page_footer) && "!hidden"}
-          className={`settingsBtn w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
+          className={`settingsBtn ${!isHost && is768PxScreen && "hidden"} w-10 h-10 justify-self-start border-none rounded-full flex justify-center items-center shadow hover:bg-[#19191971] _hover:bg-[#191919] text-white text-xl`}
         >
           <BsThreeDots size={24} />
         </button>

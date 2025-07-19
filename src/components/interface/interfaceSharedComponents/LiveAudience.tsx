@@ -16,12 +16,13 @@ export default function LiveAudienceElement({
   setMic,
   videoShare,
   setVideoShare,
-  cycleMicState
+  cycleMicState,
+  is768PxScreen
 }) {
   return (
     <>
       <div
-        className={`w-full h-full ${!liveChatAudience?.audience ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[50px_minmax(50px,auto)_1fr] gap-1`}
+        className={`w-full h-full ${!liveChatAudience.audience ? "hidden" : "grid"} grid-cols-[1fr] grid-rows-[50px_minmax(50px,auto)_1fr] gap-1`}
       >
         {/* host user section */}
         <div className="w-full h-full bg-primaryTwo border-none rounded-sm">
@@ -136,9 +137,9 @@ export default function LiveAudienceElement({
           </div>
         )}
         {/* Present users in attendance */}
-        <div className="w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden">
+        <div className={`w-full h-full bg-primaryTwo border-none rounded-sm overflow-hidden maxScreenMobile:!rounded-[0px]`}>
           <ScrollArea
-            className={`${micRequest <= 1 && isHost ? "h-[calc(100vh-225px)]" : !isHost ? "h-[calc(100vh-130px)]" : "h-[calc(100vh-280px)]"} w-full border-none`}
+            className={`${micRequest <= 1 && isHost && !is768PxScreen ? "h-[calc(100vh-225px)]" : !isHost && !is768PxScreen ? "h-[calc(100vh-130px)]" : is768PxScreen ? "h-fit overflow-y-auto" : "h-[calc(100vh-230px)]"} w-full border-none`}
           >
             {Array.from({ length: 12 }, (_, index) => (
               <div
