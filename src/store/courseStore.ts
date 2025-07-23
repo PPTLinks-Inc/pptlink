@@ -83,6 +83,8 @@ export interface MissingRequirements {
 
 export interface CourseStore {
     courseId: string;
+    openQuizQuestionModal: string | null;
+    setOpenQuizQuestionModal: (id: string | null) => void;
 
     name: string;
     description: string;
@@ -133,6 +135,7 @@ export interface CourseStore {
     selectedSectionIndex: number;
     setSelectedSectionIndex: (index: number) => void;
     setContentItems: (contentItems: ContentItem[] | ((contentItems: ContentItem[]) => ContentItem[])) => void;
+    updateContentItem: (id: string, sectionIndex: number, updates: Partial<ContentItem>) => void;
     removeContentItem: (id: string) => Promise<void>;
     handleSectionTitleChange: (title: string) => void;
     addSection: () => Promise<{ order: number, id: string }>;
@@ -166,27 +169,4 @@ export interface CourseStore {
     canPublish: boolean;
 
     togglePublish: () => Promise<void>;
-}
-
-export interface QuizStore {
-    id: string;
-    title: string;
-    description?: string;
-    questions: QuizQuestion[];
-    timeLimit: number; // in minutes
-    quizStart: Date;
-    quizEnd: Date;
-    passingScore: number;
-    isPublished: boolean;
-}
-
-export interface QuizQuestion {
-    id: string;
-    question: string;
-    type: "MULTIPLE_CHOICE" | "TRUE_FALSE" | "SHORT_ANSWER";
-    options?: string[];
-    correctAnswer: string | string[];
-    points: number;
-    explanation?: string;
-    order: number;
 }
