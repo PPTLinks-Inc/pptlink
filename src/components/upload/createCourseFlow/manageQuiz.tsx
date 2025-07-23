@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/axios";
 import { ContentItem } from "@/store/courseStore";
 import { useCourseStore } from "@/store/courseStoreProvider";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import {
   Accordion,
@@ -16,99 +16,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { DialogFooter } from "@/components/ui/dialog";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import useQuizData, { formSchema, Question } from "@/hooks/useQuizData";
 
 type Props = {
   content: ContentItem;
+  setOpenQuizUpdateModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const questionSchema = z
-  .object({
-    id: z.string(),
-    question: z
-      .string()
-      .min(1, "Question is required")
-      .transform((val) => val.trim())
-      .refine((val) => val.length > 0, {
-        message: "Question cannot be just spaces"
-      }),
-    options: z
-      .array(z.string())
-      .length(4, "Must have exactly 4 options")
-      .refine(
-        (options) => {
-          const nonEmptyOptions = options.filter(
-            (option) => option.trim().length > 0
-          );
-          return nonEmptyOptions.length >= 2;
-        },
-        {
-          message: "At least 2 options must be filled out"
-        }
-      ),
-    correct: z
-      .number({
-        required_error: "Please select a correct answer",
-        invalid_type_error: "Please select a correct answer"
-      })
-      .refine((val) => [0, 1, 2, 3].includes(val), {
-        message: "Correct answer must be between 0 and 3"
-      })
-      .optional()
-  })
-  .refine(
-    (data) => {
-      if (data.correct === undefined) return false;
-      const correctIndex = data.correct;
-      const correctOption = data.options[correctIndex];
-      return correctOption?.trim().length > 0;
-    },
-    {
-      message: "The selected correct answer must have text",
-      path: ["correct"]
-    }
-  );
-
-const formSchema = z.object({
-  questions: z.array(questionSchema).min(1, "At least one question is required")
-});
-
-type Question = z.infer<typeof questionSchema>;
-
-type QuizData = {
-  id: string;
-  name: string;
-  status: string;
-  quiz: {
-    description: string;
-    duration: number;
-    quizStartTime: string;
-    quizEndTime: string;
-    passingMark: number;
-  };
-  questions: Question[];
-};
-
-export default function ManageQuiz({ content }: Props) {
+export default function ManageQuiz({ content, setOpenQuizUpdateModal }: Props) {
   const toast = useToast();
   const courseId = useCourseStore((state) => state.courseId);
 
   const scrollArea = useRef<HTMLDivElement>(null);
 
-  const query = useQuery({
-    queryKey: ["manageQuiz", content.id],
-    queryFn: async () => {
-      const { data } = await authFetch<QuizData>(
-        `/api/v1/course/quiz/${courseId}/${content.id}`
-      );
-      console.log("Fetched quiz data:", data);
-      return data;
-    },
-    enabled: !!content.id, // Only run the query if content.id is available
-    refetchOnWindowFocus: false // Optional: prevent refetching on window focus
-  });
+  const { data, isError, isSuccess, isLoading, refetch } = useQuizData(content.id);
 
   const {
     register,
@@ -121,7 +44,7 @@ export default function ManageQuiz({ content }: Props) {
     questions: Question[];
   }>({
     defaultValues: {
-      questions: query.data?.questions ?? []
+      questions: data?.questions ?? []
     },
     resolver: zodResolver(formSchema)
   });
@@ -132,12 +55,12 @@ export default function ManageQuiz({ content }: Props) {
   });
 
   useEffect(() => {
-    if (query.data?.questions) {
+    if (data?.questions) {
       reset({
-        questions: query.data.questions
+        questions: data.questions
       });
     }
-  }, [query.data?.questions, reset]);
+  }, [data?.questions, reset]);
 
   useEffect(
     function () {
@@ -163,12 +86,12 @@ export default function ManageQuiz({ content }: Props) {
     },
     onSuccess: () => {
       toast.toast({
-        title: "Quiz created successfully!"
+        title: "Questions saved successfully!"
       });
     },
     onError: () => {
       toast.toast({
-        title: "Failed to create quiz",
+        title: "Failed to create questions",
         description: "Please try again later.",
         variant: "destructive"
       });
@@ -187,19 +110,19 @@ export default function ManageQuiz({ content }: Props) {
 
   return (
     <div>
-      {query.isLoading && (
+      {isLoading && (
         <div className="flex flex-col items-center justify-center h-full">
           <LoadingAssetBig />
           <p>Loading quiz data...</p>
         </div>
       )}
-      {query.isError && (
+      {isError && (
         <div>
           <p className="text-rose-500">Error loading quiz data</p>
-          <Button onClick={() => query.refetch()}>Try again</Button>
+          <Button onClick={() => refetch()}>Try again</Button>
         </div>
       )}
-      {query.isSuccess && (
+      {isSuccess && (
         <div>
           <Button onClick={addQuestion}>Add Question</Button>
           <div className="h-[400px] overflow-y-auto" id="scroll-area">
@@ -338,7 +261,27 @@ export default function ManageQuiz({ content }: Props) {
         </div>
       )}
       <DialogFooter>
-        <Button disabled={saveMutation.isPending} type="button" onClick={handleSubmit((data) => saveMutation.mutate(data))}>
+        <DialogClose asChild>
+          <Button
+            className={"border-primaryTwo"}
+            variant="outline"
+            onClick={() => {
+              const body = document.querySelector("body");
+              if (body) {
+                // remove event none from the body
+                body.style.pointerEvents = "auto";
+              }
+              setOpenQuizUpdateModal(true);
+            }}
+          >
+            Manage Quiz
+          </Button>
+        </DialogClose>
+        <Button
+          disabled={saveMutation.isPending}
+          type="button"
+          onClick={handleSubmit((data) => saveMutation.mutate(data))}
+        >
           {saveMutation.isPending ? "Saving..." : "Save Quiz"}
         </Button>
       </DialogFooter>

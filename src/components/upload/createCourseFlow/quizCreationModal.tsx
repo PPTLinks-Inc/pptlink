@@ -14,7 +14,6 @@ import {
   PopoverContent,
   PopoverTrigger
 } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { authFetch } from "@/lib/axios";
@@ -27,34 +26,51 @@ import { SlCalender } from "react-icons/sl";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import useQuizData from "@/hooks/useQuizData";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const schema = z.object({
-  quizName: z.string().min(1, "Quiz name is required"),
-  quizDescription: z.string().min(3, "Quiz description should be atleast 3 characters").optional(),
-  quizDuration: z.number().min(1, "Quiz duration must be at least 1 minute"),
-  quizStartDate: z
-    .date({message: "Quiz start date is required"}),
-  quizEndDate: z
-    .date({message: "Quiz end date is required"}),
-  passingMark: z.number().min(0, "Passing mark must be a positive number")
-}).refine((data) => {
-  const startDate = data.quizStartDate;
-  startDate.setHours(0, 0, 0, 0);
-  const endDate = data.quizEndDate;
-  endDate.setHours(23, 59, 59, 999);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+const schema = z
+  .object({
+    quizName: z.string().min(1, "Quiz name is required"),
+    quizDescription: z
+      .string()
+      .min(3, "Quiz description should be atleast 3 characters")
+      .optional(),
+    quizDuration: z.number().min(1, "Quiz duration must be at least 1 minute"),
+    quizStartDate: z.date({ message: "Quiz start date is required" }),
+    quizEndDate: z.date({ message: "Quiz end date is required" }),
+    passingMark: z.number().min(0, "Passing mark must be a positive number")
+  })
+  .refine(
+    (data) => {
+      const startDate = data.quizStartDate;
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = data.quizEndDate;
+      endDate.setHours(23, 59, 59, 999);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-  return startDate >= today && endDate > startDate;
-}, {message: "Quiz end date must be after the start date and both must be today or in the future", path: ["quizEndDate", "quizStartDate"]});
+      return startDate >= today && endDate > startDate;
+    },
+    {
+      message:
+        "Quiz end date must be after the start date and both must be today or in the future",
+      path: ["quizEndDate", "quizStartDate"]
+    }
+  );
 type FormData = z.infer<typeof schema>;
 
 export default function QuizCreationModal({
-  setOpenQuizCreationModal
+  setOpenQuizCreationModal,
+  quizId
 }: {
   setOpenQuizCreationModal: React.Dispatch<React.SetStateAction<boolean>>;
+  quizId?: string;
 }) {
   const toast = useToast();
+  const queryClient = useQueryClient();
+
+  const { data } = useQuizData(quizId);
 
   const {
     register,
@@ -65,12 +81,12 @@ export default function QuizCreationModal({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      quizName: "",
-      quizDescription: "",
-      quizDuration: 30, // Default duration in minutes
-      quizStartDate: undefined,
-      quizEndDate: undefined,
-      passingMark: 50 // Default passing mark
+      quizName: data ? data.name : "",
+      quizDescription: data ? data.quiz.description : "",
+      quizDuration: data ? data.quiz.duration : 30,
+      quizStartDate: data ? new Date(data.quiz.quizStartTime) : undefined,
+      quizEndDate: data ? new Date(data.quiz.quizEndTime) : undefined,
+      passingMark: data ? data.quiz.passingMark : 50
     }
   });
 
@@ -82,16 +98,63 @@ export default function QuizCreationModal({
 
   const sectionId = sections[selectedSectionIndex].id;
   const courseId = useCourseStore((state) => state.courseId);
+  const setOpenQuizQuestionModal = useCourseStore(
+    (state) => state.setOpenQuizQuestionModal
+  );
+
+  const updateContentItem = useCourseStore((state) => state.updateContentItem);
 
   const [quizStartDate, setQuizStartDate] = useState<Date | undefined>(
-    undefined
+    data ? new Date(data.quiz.quizStartTime) : undefined
   );
-  const [quizEndDate, setQuizEndDate] = useState<Date | undefined>(undefined);
+  const [quizEndDate, setQuizEndDate] = useState<Date | undefined>(
+    data ? new Date(data.quiz.quizEndTime) : undefined
+  );
+
+  const handleQuizActivation = useMutation({
+    mutationFn: async () => {
+      if (data?.status === "active") {
+        await authFetch.post("/api/v1/course/quiz/stop", {
+          courseId,
+          quizId: quizId
+        });
+      } else if (
+        data?.status === "not_active" ||
+        data?.status === "completed"
+      ) {
+        await authFetch.post("/api/v1/course/quiz/start", {
+          courseId,
+          quizId: quizId
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["manageQuiz", quizId] });
+      updateContentItem(quizId!, selectedSectionIndex, {
+        status:
+          data?.status === "not_active" || data?.status === "completed"
+            ? "active"
+            : "not_active"
+      });
+      toast.toast({
+        title: "Quiz status updated successfully!"
+      });
+    },
+    onError: () => {
+      toast.toast({
+        title: "Failed to update quiz status",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    }
+  });
 
   async function handleCreateQuiz(values: FormData) {
-
     const startyyyy = values.quizStartDate.getFullYear();
-    const startmm = String(values.quizStartDate.getMonth() + 1).padStart(2, "0");
+    const startmm = String(values.quizStartDate.getMonth() + 1).padStart(
+      2,
+      "0"
+    );
     const startdd = String(values.quizStartDate.getDate()).padStart(2, "0");
 
     const endyyyy = values.quizEndDate.getFullYear();
@@ -101,11 +164,44 @@ export default function QuizCreationModal({
     const startDate = `${startyyyy}-${startmm}-${startdd}T00:00:00.000Z`;
     const endDate = `${endyyyy}-${endmm}-${enddd}T23:59:59.999Z`;
 
+    if (quizId) {
+      try {
+        await authFetch.patch("/api/v1/course/quiz", {
+          courseId,
+          sectionId,
+          quizId,
+          title: values.quizName,
+          description: values.quizDescription,
+          passingMark: values.passingMark,
+          duration: values.quizDuration,
+          quizStartDate: startDate,
+          quizEndDate: endDate,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        });
+
+        updateContentItem(quizId, selectedSectionIndex, {
+          name: values.quizName,
+        });
+
+        toast.toast({
+          title: "Quiz updated successfully!"
+        });
+      } catch (error) {
+        toast.toast({
+          title: "Failed to update quiz",
+          description: "Please try again later.",
+          variant: "destructive"
+        });
+      }
+
+      return;
+    }
+
     try {
       const { data } = await authFetch.post<{
         quizId: string;
         message: string;
-      }>("/api/v1/course/quiz/create", {
+      }>("/api/v1/course/quiz", {
         courseId,
         sectionId,
         title: values.quizName,
@@ -123,6 +219,7 @@ export default function QuizCreationModal({
         status: "not_active",
         id: data.quizId
       };
+      setOpenQuizQuestionModal(data.quizId);
       reset();
       setQuizStartDate(undefined);
       setQuizEndDate(undefined);
@@ -130,7 +227,7 @@ export default function QuizCreationModal({
       toast.toast({
         title: "Quiz created successfully!"
       });
-      
+
       setOpenQuizCreationModal(false);
     } catch (error) {
       toast.toast({
@@ -144,9 +241,11 @@ export default function QuizCreationModal({
 
   return (
     <AlertDialogContent className="sm:max-w-2xl">
-      <ScrollArea className="h-[500px] w-full">
+      <div className="h-[500px] w-full overflow-y-auto">
         <AlertDialogHeader>
-          <AlertDialogTitle>Create Quiz</AlertDialogTitle>
+          <AlertDialogTitle>
+            {quizId ? "Update Quiz" : "Create Quiz"}
+          </AlertDialogTitle>
         </AlertDialogHeader>
 
         <div className="flex flex-col gap-4 pr-5">
@@ -157,7 +256,9 @@ export default function QuizCreationModal({
               className="border-primaryTwo"
               {...register("quizName")}
             />
-            {errors.quizName && <p className="text-rose-500">{errors.quizName.message}</p>}
+            {errors.quizName && (
+              <p className="text-rose-500">{errors.quizName.message}</p>
+            )}
           </div>
 
           <div>
@@ -169,7 +270,9 @@ export default function QuizCreationModal({
               className="border-primaryTwo"
               {...register("quizDescription")}
             />
-            {errors.quizDescription && <p className="text-rose-500">{errors.quizDescription.message}</p>}
+            {errors.quizDescription && (
+              <p className="text-rose-500">{errors.quizDescription.message}</p>
+            )}
           </div>
 
           <div>
@@ -182,7 +285,9 @@ export default function QuizCreationModal({
               className="border-primaryTwo"
               {...register("quizDuration", { valueAsNumber: true })}
             />
-            {errors.quizDuration && <p className="text-rose-500">{errors.quizDuration.message}</p>}
+            {errors.quizDuration && (
+              <p className="text-rose-500">{errors.quizDuration.message}</p>
+            )}
           </div>
 
           <div>
@@ -196,6 +301,7 @@ export default function QuizCreationModal({
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
+                      disabled={data?.status === "active"}
                       variant={"outline"}
                       className={cn(
                         "w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
@@ -219,6 +325,10 @@ export default function QuizCreationModal({
                         setQuizStartDate(date);
                       }}
                       disabled={(date) => {
+                        if (data?.status === "active") {
+                          return true; // Disable date selection if quiz is active
+                        }
+
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
                         return date < today;
@@ -228,7 +338,9 @@ export default function QuizCreationModal({
                 </Popover>
               )}
             />
-            {errors.quizStartDate && <p className="text-rose-500">{errors.quizStartDate.message}</p>}
+            {errors.quizStartDate && (
+              <p className="text-rose-500">{errors.quizStartDate.message}</p>
+            )}
           </div>
 
           <div>
@@ -242,6 +354,7 @@ export default function QuizCreationModal({
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
+                      disabled={data?.status === "active"}
                       variant={"outline"}
                       className={cn(
                         "w-full pl-3 text-left font-normal bg-transparent border-[0.5px] border-black"
@@ -265,6 +378,9 @@ export default function QuizCreationModal({
                         setQuizEndDate(date);
                       }}
                       disabled={(date) => {
+                        if (data?.status === "active") {
+                          return true; // Disable date selection if quiz is active
+                        }
                         return (
                           date < (quizStartDate ? quizStartDate : new Date())
                         );
@@ -274,7 +390,9 @@ export default function QuizCreationModal({
                 </Popover>
               )}
             />
-            {errors.quizEndDate && <p className="text-rose-500">{errors.quizEndDate.message}</p>}
+            {errors.quizEndDate && (
+              <p className="text-rose-500">{errors.quizEndDate.message}</p>
+            )}
           </div>
 
           <div className="mb-20">
@@ -288,11 +406,13 @@ export default function QuizCreationModal({
               placeholder="Enter passing mark (e.g., 50)"
               {...register("passingMark", { valueAsNumber: true })}
             />
-            {errors.passingMark && <p className="text-rose-500">{errors.passingMark.message}</p>}
+            {errors.passingMark && (
+              <p className="text-rose-500">{errors.passingMark.message}</p>
+            )}
           </div>
         </div>
 
-        <AlertDialogFooter className="mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 pr-10">
+        <AlertDialogFooter className="mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 pr-10 rounded-b-full">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
 
           <Button
@@ -300,10 +420,33 @@ export default function QuizCreationModal({
             className="bg-primaryTwo text-white"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Creating Quiz..." : "Create Quiz"}
+            {!quizId && (isSubmitting ? "Creating Quiz..." : "Create Quiz")}
+            {quizId && (isSubmitting ? "Updating Quiz..." : "Update Quiz")}
           </Button>
+
+          {quizId && (
+            <Button
+              variant="outline"
+              disabled={
+                handleQuizActivation.isPending ||
+                !(data && data.questions.length > 0)
+              }
+              className={cn(
+                data?.status === "not_active" || data?.status === "completed"
+                  ? "border-primaryTwo"
+                  : "border-rose-500 text-rose-500 hover:bg-rose-800 hover:border-rose-800"
+              )}
+              onClick={() => handleQuizActivation.mutate()}
+            >
+              {handleQuizActivation.isPending
+                ? "Loading..."
+                : data?.status === "not_active" || data?.status === "completed"
+                  ? "Start Quiz"
+                  : "End Quiz"}
+            </Button>
+          )}
         </AlertDialogFooter>
-      </ScrollArea>
+      </div>
     </AlertDialogContent>
   );
 }

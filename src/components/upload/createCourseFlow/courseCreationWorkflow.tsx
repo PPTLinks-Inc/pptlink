@@ -698,6 +698,14 @@ function ContentItems({ content }: { content: ContentItem }) {
   };
 
   const removeContentItem = useCourseStore((state) => state.removeContentItem);
+  const openQuizQuestionModal = useCourseStore(
+    (state) => state.openQuizQuestionModal
+  );
+  const setOpenQuizQuestionModal = useCourseStore(
+    (state) => state.setOpenQuizQuestionModal
+  );
+
+  const [openQuizUpdateModal, setOpenQuizUpdateModal] = useState(false);
 
   const toast = useToast();
 
@@ -722,7 +730,7 @@ function ContentItems({ content }: { content: ContentItem }) {
         case "waiting":
           return "text-gray-700 bg-gray-100";
         case "active":
-          return "text-gray-700 bg-gray-100";
+          return "text-pink-700 bg-pink-100";
         case "completed":
           return "text-gray-700 bg-gray-100";
         default:
@@ -822,148 +830,167 @@ function ContentItems({ content }: { content: ContentItem }) {
   }
 
   return (
-    <Dialog open={openEditModal} onOpenChange={setOpenEditModal}>
-      <DialogContent
-        className={cn(
-          content.type === "QUIZ" ? "sm:max-w-2xl" : "sm:max-w-[425px]"
-        )}
+    <>
+      {openQuizUpdateModal && <AlertDialog
+        open={openQuizUpdateModal}
+        onOpenChange={setOpenQuizUpdateModal}
       >
-        <DialogHeader>
-          <DialogTitle title={content.name}>
-            {content.type === "QUIZ"
-              ? `Manage Quiz - ${content.name}`
-              : "Edit course Media"}
-          </DialogTitle>
-          <DialogDescription>
-            {(content.type === "VIDEO" || content.type === "PPT") &&
-              "Make changes to your course Media here. Click save when you're done."}
-          </DialogDescription>
-        </DialogHeader>
-        {content.type === "VIDEO" || content.type === "PPT" ? (
-          <div className="grid gap-5 py-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.currentTarget.value)}
-                className="col-span-3"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="file">File</Label>
-              <Input
-                type="file"
-                accept={content.type === "VIDEO" ? "video/*" : ".ppt,.pptx"}
-                onChange={(e) => {
-                  handleFileSelect(e.target.files?.[0] ?? null);
-                  // e.target.value = ''; // Reset input after handling file
-                }}
-                id="file"
-                className="col-span-3"
-              />
-            </div>
-          </div>
-        ) : (
-          <ManageQuiz content={content} />
-        )}
-
-        {(content.type === "VIDEO" || content.type === "PPT") && (
-          <DialogFooter>
-            <Button type="button" onClick={addContentItem}>
-              Save
-            </Button>
-          </DialogFooter>
-        )}
-      </DialogContent>
-
-      <PopUpModal
-        open={modalOpen}
-        onClose={handleClose}
-        onSubmit={handleSubmit}
-        isLoading={deleting}
-        darkLoader={false}
-        message="Do you want to delete this content?"
-        actionText="Delete"
-        oneButton={false}
-        bgColor="bg-primaryTwo"
-        textColor="text-[#FFFFF0]"
-        borderColor="border-[#FFFFF0]"
-      />
-
-      <div
-        ref={setNodeRef}
-        style={style}
-        className={cn(
-          "bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2",
-          (content.status === "uploading" || content.status === "processing") &&
-            "cursor-not-allowed opacity-80"
-        )}
+        <QuizCreationModal
+          setOpenQuizCreationModal={setOpenQuizUpdateModal}
+          quizId={content.id}
+        />
+      </AlertDialog>}
+      <Dialog
+        open={openEditModal || openQuizQuestionModal === content.id}
+        onOpenChange={(open) => {
+          setOpenEditModal(open);
+          setOpenQuizQuestionModal(open ? content.id : null);
+        }}
       >
-        <div className="flex items-center gap-2 w-full">
-          <span
-            {...(content.status === "uploading" ||
-            content.status === "processing" ||
-            content.status === "waiting"
-              ? {}
-              : { ...attributes, ...listeners })}
-            className={cn(
-              "block",
-              content.status === "uploading" || content.status === "processing"
-                ? "cursor-not-allowed"
-                : "cursor-move"
-            )}
-          >
-            <MdDragIndicator />
-          </span>
-          <div className="flex items-center w-full">
-            {content.type === "VIDEO" ? (
-              <IoVideocamOutline className="mr-2" />
-            ) : content.type === "QUIZ" ? (
-              <MdOutlineQuiz className="mr-2" />
-            ) : (
-              <HiOutlineDocumentText className="mr-2" />
-            )}
-            <span
-              title={content.name}
-              className="cursor-text block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap"
-            >
-              {content.name}
-            </span>
-          </div>
-        </div>
-        <p className={cn("p-2 rounded-md flex", statusColor)}>
-          <span>・</span>
-          {content.status}
-          {content.uploadProgress && content.status === "uploading" && (
-            <span className="ml-2">{content.uploadProgress}%</span>
+        <DialogContent
+          className={cn(
+            content.type === "QUIZ" ? "sm:max-w-2xl" : "sm:max-w-[425px]"
           )}
-        </p>
-        {(content.status === "done" ||
-          content.status === "error" ||
-          content.type === "QUIZ") && (
-          <div className="flex gap-2">
-            <DialogTrigger asChild>
+        >
+          <DialogHeader>
+            <DialogTitle title={content.name}>
+              {content.type === "QUIZ"
+                ? `Manage Quiz - ${content.name}`
+                : "Edit course Media"}
+            </DialogTitle>
+            <DialogDescription>
+              {(content.type === "VIDEO" || content.type === "PPT") &&
+                "Make changes to your course Media here. Click save when you're done."}
+            </DialogDescription>
+          </DialogHeader>
+          {content.type === "VIDEO" || content.type === "PPT" ? (
+            <div className="grid gap-5 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.currentTarget.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="file">File</Label>
+                <Input
+                  type="file"
+                  accept={content.type === "VIDEO" ? "video/*" : ".ppt,.pptx"}
+                  onChange={(e) => {
+                    handleFileSelect(e.target.files?.[0] ?? null);
+                    // e.target.value = ''; // Reset input after handling file
+                  }}
+                  id="file"
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+          ) : (
+            <ManageQuiz content={content} setOpenQuizUpdateModal={setOpenQuizUpdateModal} />
+          )}
+
+          {(content.type === "VIDEO" || content.type === "PPT") && (
+            <DialogFooter>
+              <Button type="button" onClick={addContentItem}>
+                Save
+              </Button>
+            </DialogFooter>
+          )}
+        </DialogContent>
+
+        <PopUpModal
+          open={modalOpen}
+          onClose={handleClose}
+          onSubmit={handleSubmit}
+          isLoading={deleting}
+          darkLoader={false}
+          message="Do you want to delete this content?"
+          actionText="Delete"
+          oneButton={false}
+          bgColor="bg-primaryTwo"
+          textColor="text-[#FFFFF0]"
+          borderColor="border-[#FFFFF0]"
+        />
+
+        <div
+          ref={setNodeRef}
+          style={style}
+          className={cn(
+            "bg-gray-100 w-full px-2 py-4 rounded mb-2 flex items-center justify-between gap-2",
+            (content.status === "uploading" ||
+              content.status === "processing") &&
+              "cursor-not-allowed opacity-80"
+          )}
+        >
+          <div className="flex items-center gap-2 w-full">
+            <span
+              {...(content.status === "uploading" ||
+              content.status === "processing" ||
+              content.status === "waiting"
+                ? {}
+                : { ...attributes, ...listeners })}
+              className={cn(
+                "block",
+                content.status === "uploading" ||
+                  content.status === "processing"
+                  ? "cursor-not-allowed"
+                  : "cursor-move"
+              )}
+            >
+              <MdDragIndicator />
+            </span>
+            <div className="flex items-center w-full">
+              {content.type === "VIDEO" ? (
+                <IoVideocamOutline className="mr-2" />
+              ) : content.type === "QUIZ" ? (
+                <MdOutlineQuiz className="mr-2" />
+              ) : (
+                <HiOutlineDocumentText className="mr-2" />
+              )}
+              <span
+                title={content.name}
+                className="cursor-text block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap"
+              >
+                {content.name}
+              </span>
+            </div>
+          </div>
+          <p className={cn("p-2 rounded-md flex", statusColor)}>
+            <span>・</span>
+            {content.status}
+            {content.uploadProgress && content.status === "uploading" && (
+              <span className="ml-2">{content.uploadProgress}%</span>
+            )}
+          </p>
+          {(content.status === "done" ||
+            content.status === "error" ||
+            content.type === "QUIZ") && (
+            <div className="flex gap-2">
+              <DialogTrigger asChild>
+                <button
+                  className="text-red-500 hover:text-red-700 cursor-pointer"
+                  type="button"
+                  title="Edit"
+                >
+                  <FaRegEdit className="w-4 h-4" />
+                </button>
+              </DialogTrigger>
               <button
+                onClick={handleOpen}
+                title="Delete"
                 className="text-red-500 hover:text-red-700 cursor-pointer"
                 type="button"
-                title="Edit"
+                disabled={deleting}
               >
-                <FaRegEdit className="w-4 h-4" />
+                <FaRegTrashCan className="w-4 h-4" />
               </button>
-            </DialogTrigger>
-            <button
-              onClick={handleOpen}
-              title="Delete"
-              className="text-red-500 hover:text-red-700 cursor-pointer"
-              type="button"
-              disabled={deleting}
-            >
-              <FaRegTrashCan className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
-    </Dialog>
+            </div>
+          )}
+        </div>
+      </Dialog>
+    </>
   );
 }
