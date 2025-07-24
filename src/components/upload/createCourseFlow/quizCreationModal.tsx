@@ -103,6 +103,7 @@ export default function QuizCreationModal({
   );
 
   const updateContentItem = useCourseStore((state) => state.updateContentItem);
+  const coursePublished = useCourseStore((state) => state.published);
 
   const [quizStartDate, setQuizStartDate] = useState<Date | undefined>(
     data ? new Date(data.quiz.quizStartTime) : undefined
@@ -429,7 +430,7 @@ export default function QuizCreationModal({
               variant="outline"
               disabled={
                 handleQuizActivation.isPending ||
-                !(data && data.questions.length > 0)
+                !(data && data.questions.length > 0) || !coursePublished
               }
               className={cn(
                 data?.status === "not_active" || data?.status === "completed"
