@@ -224,6 +224,14 @@ const router = sentryCreateBrowserRouter(
       errorElement: <InterfaceNotFound />
     },
     {
+      path: "/course/quiz/:courseId/:contentId",
+      element: (
+        <QuizContextProvider>
+          <Quiz />
+        </QuizContextProvider>
+      )
+    },
+    {
       path: "/signin",
       element: <SignPage />
     },
@@ -246,22 +254,6 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/create",
       element: <CreatePath />
-    },
-    // {
-    //   path: "/create-quiz",
-    //   element: (
-    //     <QuizContextProvider>
-    //       <QuizStarter />
-    //     </QuizContextProvider>
-    //   )
-    // },
-    {
-      path: "/start-quiz",
-      element: (
-        <QuizContextProvider>
-          <Quiz />
-        </QuizContextProvider>
-      )
     },
     {
       path: "/course/invitation",

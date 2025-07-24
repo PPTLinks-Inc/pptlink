@@ -921,7 +921,7 @@ export default function CourseStoreProvider({
           state.sections.every(
             (section) =>
               section.contents.length > 0 &&
-              section.contents.every((content) => content.status === "done")
+              section.contents.filter(content => content.type !== "QUIZ").every((content) => content.status === "done")
           )
         );
       },

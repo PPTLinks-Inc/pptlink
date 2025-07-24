@@ -31,8 +31,10 @@ export default function CoursePreviewPage() {
   const { data, error, refetch } = useSuspenseQuery({
     queryKey: ["course", "preview", params.id],
     queryFn: async function () {
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
       const { data } = await authFetch.get(
-        `/api/v1/course/user-courses/${params.id}?brief=false`
+        `/api/v1/course/user-courses/${params.id}?brief=false&timeZone=${timeZone}`
       );
 
       return data;
