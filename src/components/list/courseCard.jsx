@@ -87,7 +87,12 @@ export default function CourseCard({
       const startDate = new Date(quizStartTime);
       const endDate = new Date(quizEndTime);
 
-      if (content.quiz.status === "active" && !content.quiz.attempt && todayDate >= startDate && todayDate <= endDate) {
+      if (
+        content.quiz.status === "active" &&
+        !content.quiz.attempt &&
+        todayDate >= startDate &&
+        todayDate <= endDate
+      ) {
         navigate(`/course/quiz/${courseId}/${content.id}`);
       }
     }
@@ -106,7 +111,12 @@ export default function CourseCard({
         className="card snap_scrolling_child w-full maxSmallMobile:!min-w-[285px] maxSmallMobile:!max-w-[285px] rounded-lg !pt-0 cursor-pointer maxSmallMobile:aspect-[1/1.2] border border-[#FFFFF0] relative"
         onClick={viewContent}
       >
-        <span className={cn("block !w-full h-fit mb-4 z-10 border-none rounded-t-[0.33rem] bg-[#FFFFF0]", timeText[2] && "bg-[#ffa500]")}>
+        <span
+          className={cn(
+            "block !w-full h-fit mb-4 z-10 border-none rounded-t-[0.33rem] bg-[#FFFFF0]",
+            timeText[2] && "bg-[#ffa500]"
+          )}
+        >
           <span
             className={`w-[90%] mx-auto text-black font-bold py-1 flex justify-start items-center ${content?.live === undefined && "justify-between"}`}
           >
@@ -179,20 +189,25 @@ export default function CourseCard({
                   <strong>Duration: </strong>
                   <em>{content.quiz.duration} Minutes</em>
                 </span>
-                <span className="block">
-                  <strong>Score: </strong>
-                  <em>
-                    {content.quiz?.attempt
-                      ? content.quiz.attempt.score
-                      : "Not Attempted yet"}
-                  </em>
-                </span>
-                <span>
-                  <strong className="font-extrabold text-[.9rem]">
-                    {timeText[0]}
-                  </strong>
-                  <em> {timeText[1]}</em>
-                </span>
+                {!locked && (
+                  <>
+                    {" "}
+                    <span className="block">
+                      <strong>Score: </strong>
+                      <em>
+                        {content.quiz?.attempt
+                          ? content.quiz.attempt.score
+                          : "Not Attempted yet"}
+                      </em>
+                    </span>
+                    <span>
+                      <strong className="font-extrabold text-[.9rem]">
+                        {timeText[0]}
+                      </strong>
+                      <em> {timeText[1]}</em>
+                    </span>
+                  </>
+                )}
               </div>
             ) : (
               <>
