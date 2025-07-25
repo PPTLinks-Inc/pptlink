@@ -43,7 +43,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import QuizCreationModal from "./quizCreationModal";
 import ManageQuiz from "./manageQuiz";
 
@@ -441,20 +440,20 @@ export default function CourseCreationWorkflow() {
                 <span className="ml-2">Add Presentation</span>
               </button>
 
-              <AlertDialog
+              <Dialog
                 open={openQuizCreationModal}
                 onOpenChange={setOpenQuizCreationModal}
               >
                 <QuizCreationModal
                   setOpenQuizCreationModal={setOpenQuizCreationModal}
                 />
-                <AlertDialogTrigger asChild>
+                <DialogTrigger asChild>
                   <button className="w-fit flex items-center bg-gray-200 p-2 rounded hover:bg-gray-300">
                     <MdOutlineQuiz />
                     <span className="ml-2">Add Quiz</span>
                   </button>
-                </AlertDialogTrigger>
-              </AlertDialog>
+                </DialogTrigger>
+              </Dialog>
             </div>
 
             <div className="border-2 border-dashed bg-gray-50 rounded transition-colors">
@@ -831,7 +830,7 @@ function ContentItems({ content }: { content: ContentItem }) {
 
   return (
     <>
-      {openQuizUpdateModal && <AlertDialog
+      {openQuizUpdateModal && <Dialog
         open={openQuizUpdateModal}
         onOpenChange={setOpenQuizUpdateModal}
       >
@@ -839,7 +838,7 @@ function ContentItems({ content }: { content: ContentItem }) {
           setOpenQuizCreationModal={setOpenQuizUpdateModal}
           quizId={content.id}
         />
-      </AlertDialog>}
+      </Dialog>}
       <Dialog
         open={openEditModal || openQuizQuestionModal === content.id}
         onOpenChange={(open) => {

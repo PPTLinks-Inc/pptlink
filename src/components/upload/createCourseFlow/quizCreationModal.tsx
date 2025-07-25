@@ -1,10 +1,3 @@
-import {
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -28,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import useQuizData from "@/hooks/useQuizData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const schema = z
   .object({
@@ -241,13 +235,13 @@ export default function QuizCreationModal({
   }
 
   return (
-    <AlertDialogContent className="sm:max-w-2xl">
+    <DialogContent className="sm:max-w-2xl">
       <div className="h-[500px] w-full overflow-y-auto">
-        <AlertDialogHeader>
-          <AlertDialogTitle>
+        <DialogHeader>
+          <DialogTitle>
             {quizId ? "Update Quiz" : "Create Quiz"}
-          </AlertDialogTitle>
-        </AlertDialogHeader>
+          </DialogTitle>
+        </DialogHeader>
 
         <div className="flex flex-col gap-4 pr-5">
           <div>
@@ -413,8 +407,8 @@ export default function QuizCreationModal({
           </div>
         </div>
 
-        <AlertDialogFooter className="mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 pr-10 rounded-b-full">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <DialogFooter className="mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 pr-10 rounded-b-full">
+          <DialogClose>Cancel</DialogClose>
 
           <Button
             onClick={handleSubmit(handleCreateQuiz)}
@@ -446,8 +440,8 @@ export default function QuizCreationModal({
                   : "End Quiz"}
             </Button>
           )}
-        </AlertDialogFooter>
+        </DialogFooter>
       </div>
-    </AlertDialogContent>
+    </DialogContent>
   );
 }
