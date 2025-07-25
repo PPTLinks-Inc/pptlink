@@ -299,7 +299,7 @@ export default function QuizCreationModal({
               name="quizStartDate"
               control={control}
               render={({ field }) => (
-                <Popover>
+                <Popover modal={true}>
                   <PopoverTrigger asChild>
                     <Button
                       disabled={data?.status === "active"}
@@ -316,7 +316,7 @@ export default function QuizCreationModal({
                       <SlCalender className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 z-[9999]" forceMount align="start">
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       captionLayout="dropdown"
@@ -352,7 +352,7 @@ export default function QuizCreationModal({
               name="quizEndDate"
               control={control}
               render={({ field }) => (
-                <Popover>
+                <Popover modal={true}>
                   <PopoverTrigger asChild>
                     <Button
                       disabled={data?.status === "active"}
