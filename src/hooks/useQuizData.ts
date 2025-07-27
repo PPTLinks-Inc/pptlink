@@ -72,12 +72,15 @@ type QuizData = {
 
 export default function useQuizData(quizId?: string) {
     const courseId = useCourseStore(state => state.courseId);
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const query = useQuery({
         queryKey: ["manageQuiz", quizId],
         queryFn: async () => {
-            const { data } = await authFetch<QuizData>(
-                `/api/v1/course/quiz/${courseId}/${quizId}`
+            const { data } = await authFetch.get<QuizData>(
+                `/api/v1/course/quiz/${courseId}/${quizId}`, {
+                  params: { timezone }
+                }
             );
             console.log("Fetched quiz data:", data);
             return data;

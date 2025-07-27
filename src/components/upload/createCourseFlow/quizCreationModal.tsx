@@ -21,7 +21,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import useQuizData from "@/hooks/useQuizData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { isAxiosError } from "axios";
 
 const schema = z
   .object({
@@ -135,12 +142,21 @@ export default function QuizCreationModal({
         title: "Quiz status updated successfully!"
       });
     },
-    onError: () => {
-      toast.toast({
-        title: "Failed to update quiz status",
-        description: "Please try again later.",
-        variant: "destructive"
-      });
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        console.error("Error updating quiz status:", error.response?.data);
+        toast.toast({
+          title: "Failed to update quiz status",
+          description: error.response?.data.message || "Please try again later.",
+          variant: "destructive"
+        });
+      } else {
+        toast.toast({
+          title: "Failed to update quiz status",
+          description: "Please try again later.",
+          variant: "destructive"
+        });
+      }
     }
   });
 
@@ -175,7 +191,7 @@ export default function QuizCreationModal({
         });
 
         updateContentItem(quizId, selectedSectionIndex, {
-          name: values.quizName,
+          name: values.quizName
         });
 
         toast.toast({
@@ -238,9 +254,7 @@ export default function QuizCreationModal({
     <DialogContent className="sm:max-w-2xl">
       <div className="h-[500px] w-full overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {quizId ? "Update Quiz" : "Create Quiz"}
-          </DialogTitle>
+          <DialogTitle>{quizId ? "Update Quiz" : "Create Quiz"}</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 pr-5">
@@ -424,7 +438,8 @@ export default function QuizCreationModal({
               variant="outline"
               disabled={
                 handleQuizActivation.isPending ||
-                !(data && data.questions.length > 0) || !coursePublished
+                !(data && data.questions.length > 0) ||
+                !coursePublished
               }
               className={cn(
                 data?.status === "not_active" || data?.status === "completed"

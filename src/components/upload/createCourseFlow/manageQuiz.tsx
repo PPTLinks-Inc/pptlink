@@ -260,7 +260,7 @@ export default function ManageQuiz({ content, setOpenQuizUpdateModal }: Props) {
           </div>
         </div>
       )}
-      <DialogFooter>
+      {!isLoading && <DialogFooter>
         <DialogClose asChild>
           <Button
             className={"border-primaryTwo"}
@@ -284,7 +284,7 @@ export default function ManageQuiz({ content, setOpenQuizUpdateModal }: Props) {
         >
           {saveMutation.isPending ? "Saving..." : "Save Quiz"}
         </Button>
-      </DialogFooter>
+      </DialogFooter>}
     </div>
   );
 }

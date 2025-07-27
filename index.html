@@ -8,10 +8,76 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>PPTLinks</title>
+
+    <style>
+      #preloader {
+        position: fixed;
+        inset: 0;
+        background: #191919;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .loading span {
+        display: inline-block;
+        color: white;
+        font-size: 2rem;
+        font-family: Arial, sans-serif;
+        animation: bounce 1.2s infinite;
+      }
+
+      .loading span:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .loading span:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      .loading span:nth-child(4) {
+        animation-delay: 0.3s;
+      }
+      .loading span:nth-child(5) {
+        animation-delay: 0.4s;
+      }
+      .loading span:nth-child(6) {
+        animation-delay: 0.5s;
+      }
+      .loading span:nth-child(7) {
+        animation-delay: 0.6s;
+      }
+      .loading span:nth-child(8) {
+        animation-delay: 0.7s;
+      }
+      .loading span:nth-child(9) {
+        animation-delay: 0.8s;
+      }
+      .loading span:nth-child(10) {
+        animation-delay: 0.9s;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div id="preloader">
+        <div class="loading">
+          <span>L</span><span>o</span><span>a</span><span>d</span><span>i</span
+          ><span>n</span><span>g</span><span>.</span><span>.</span
+          ><span>.</span>
+        </div>
+      </div>
+    </div>
     <div id="portal-modal"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
