@@ -35,17 +35,12 @@ export default function CourseCard({
           if (todayDate < startDate) {
             return [
               "Start:",
-              humanizeDuration(startDate - todayDate, { largest: 2 })
-            ];
-          } else if (todayDate > endDate) {
-            return [
-              "End:",
-              humanizeDuration(todayDate - endDate, { largest: 2 })
+              humanizeDuration(startDate - todayDate, { largest: 2, round: true })
             ];
           } else {
             return [
               "Deadline:",
-              humanizeDuration(endDate - todayDate, { largest: 2 }),
+              humanizeDuration(endDate - todayDate, { largest: 2, round: true}),
               "#ffa500"
             ];
           }
@@ -57,7 +52,7 @@ export default function CourseCard({
           const attemptDate = new Date(content.quiz.attempt.completedAt);
           return [
             "Completed:",
-            `${humanizeDuration(todayDate - attemptDate, { largest: 2 })} ago`
+            `${humanizeDuration(todayDate - attemptDate, { largest: 2, round: true })} ago`
           ];
         } else {
           return ["Completed:", "Quiz completed, but no attempt found"];
@@ -191,15 +186,16 @@ export default function CourseCard({
                 </span>
                 {!locked && (
                   <>
-                    {" "}
-                    <span className="block">
-                      <strong>Score: </strong>
-                      <em>
-                        {content.quiz?.attempt
-                          ? content.quiz.attempt.score
-                          : "Not Attempted yet"}
-                      </em>
-                    </span>
+                    {showProgress && (
+                      <span className="block">
+                        <strong>Score: </strong>
+                        <em>
+                          {content.quiz?.attempt
+                            ? content.quiz.attempt.score
+                            : "Not Attempted yet"}
+                        </em>
+                      </span>
+                    )}
                     <span>
                       <strong className="font-extrabold text-[.9rem]">
                         {timeText[0]}
@@ -218,7 +214,7 @@ export default function CourseCard({
           </div>
         </div>
 
-        {showProgress && !locked && (
+        {showProgress && !locked && content.type !== "QUIZ" && (
           <div className="w-[90%] maxScreenMobile:w-[95%] mb-2 mx-auto bg-[#FFFFF0] border-none rounded p-1 relative flex justify-start items-center">
             <span
               style={{
