@@ -32,15 +32,26 @@ export default function CourseCard({
           const startDate = new Date(quizStartTime);
           const endDate = new Date(quizEndTime);
 
-          if (todayDate < startDate) {
+          if (content?.quiz?.attempt?.completedAt) {
+            return [
+              "Completed:",
+              `${humanizeDuration(todayDate - new Date(content.quiz.attempt.completedAt), { largest: 2, round: true })} ago`
+            ];
+          } else if (todayDate < startDate) {
             return [
               "Start:",
-              humanizeDuration(startDate - todayDate, { largest: 2, round: true })
+              humanizeDuration(startDate - todayDate, {
+                largest: 2,
+                round: true
+              })
             ];
           } else {
             return [
               "Deadline:",
-              humanizeDuration(endDate - todayDate, { largest: 2, round: true}),
+              humanizeDuration(endDate - todayDate, {
+                largest: 2,
+                round: true
+              }),
               "#ffa500"
             ];
           }
@@ -48,7 +59,12 @@ export default function CourseCard({
           return ["Active"];
         }
       } else if (content?.quiz?.status === "completed") {
-        if (content?.quiz?.attempt) {
+        if (content?.quiz?.attempt?.completedAt) {
+          return [
+            "Completed:",
+            `${humanizeDuration(todayDate - new Date(content.quiz.attempt.completedAt), { largest: 2, round: true })} ago`
+          ];
+        } else if (content?.quiz?.attempt) {
           const attemptDate = new Date(content.quiz.attempt.completedAt);
           return [
             "Completed:",
@@ -84,7 +100,7 @@ export default function CourseCard({
 
       if (
         content.quiz.status === "active" &&
-        !content.quiz.attempt &&
+        !content.quiz.attempt?.completedAt &&
         todayDate >= startDate &&
         todayDate <= endDate
       ) {
@@ -191,7 +207,7 @@ export default function CourseCard({
                         <strong>Score: </strong>
                         <em>
                           {content.quiz?.attempt
-                            ? content.quiz.attempt.score
+                            ? `${content.quiz.attempt.score}%`
                             : "Not Attempted yet"}
                         </em>
                       </span>

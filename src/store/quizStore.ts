@@ -1,5 +1,4 @@
 export interface QuizData {
-    title: string;
     quizData?: {
         questions: {
             id: string;
@@ -14,6 +13,7 @@ export interface QuizData {
             duration: number;
             quizStartTime: Date;
             quizEndTime: Date;
+            passingMark: number;
         };
     },
     attempt: {

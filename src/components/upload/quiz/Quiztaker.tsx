@@ -9,6 +9,7 @@ import Timer from "./Timer";
 import { authFetch } from "@/lib/axios";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const QuizTaker = () => {
   const { courseId, quizId } = useParams() as {
@@ -24,7 +25,7 @@ const QuizTaker = () => {
     (state) => state.currentQuestionIndex
   );
   const questions = useQuizStore((state) => state.quizData?.questions || []);
-  const quizTitle = useQuizStore((state) => state.title);
+  const quizName = useQuizStore((state) => state.quizData?.name || "Quiz");
   const quizDescription = useQuizStore(
     (state) => state.quizData?.quiz.description || ""
   );
@@ -33,9 +34,6 @@ const QuizTaker = () => {
   const setCurrentQuestionIndex = useQuizStore(
     (state) => state.setCurrentQuestionIndex
   );
-
-  const setRemainingTime = useQuizStore((state) => state.setRemainingTime);
-  const duration = useQuizStore((state) => state.quizData?.quiz.duration || 0);
 
   const submitQuiz = useQuizStore((state) => state.submitQuiz);
 
@@ -47,23 +45,12 @@ const QuizTaker = () => {
 
   const startQuizMutation = useMutation({
     mutationFn: async () => {
-      const { data } = await authFetch.post<{
+      await authFetch.post<{
         message: string;
         startedAt: string;
       }>(`/api/v1/course/quiz/attempt/${courseId}/${quizId}`);
-
-      return data;
     },
-    onSuccess: (data) => {
-      const startedTime = new Date(data.startedAt);
-      const endTime = new Date(
-        startedTime.getTime() + duration * 60 * 1000 // duration in minutes to milliseconds
-      );
-      setRemainingTime(Math.floor((endTime.getTime() - Date.now()) / 1000)); // set remaining time in seconds
-      toast.toast({
-        title: "Quiz Started",
-        description: `Quiz started at ${startedTime.toLocaleTimeString()} and will end at ${endTime.toLocaleTimeString()}.`
-      });
+    onSuccess: () => {
       setStartQuiz(true);
     },
     onError: () => {
@@ -89,7 +76,12 @@ const QuizTaker = () => {
               className="hidden w-8 aspect-square maxScreenMobile:block"
             />
           </Link>
-          <div className={cn("py-4 pl-8 flex justify-between items-center w-[calc(80%-16px)] text-sm border-l-2 border-l-white maxScreenMobile:!w-fit maxScreenMobile:!border-none", !startQuiz && "border-l-0")}>
+          <div
+            className={cn(
+              "py-4 pl-8 flex justify-between items-center w-[calc(80%-16px)] text-sm border-l-2 border-l-white maxScreenMobile:!w-fit maxScreenMobile:!border-none",
+              !startQuiz && "border-l-0"
+            )}
+          >
             {startQuiz ? (
               <span className="block w-fit maxScreenMobile:hidden">
                 question {currentQuestionIndex + 1} of {questions.length}
@@ -132,7 +124,7 @@ const QuizTaker = () => {
               viewport={{ once: true }}
               className="w-full text-2xl md:text-3xl font-bold text-center"
             >
-              {quizTitle}
+              {quizName}
             </motion.h1>
             <motion.div
               initial={{ y: 10, opacity: 0 }}
@@ -149,10 +141,12 @@ const QuizTaker = () => {
               viewport={{ once: true }}
               className="w-full h-fit"
             >
-              <p
-                className="bg-primaryTwo text-white !text-sm block w-full py-4 text-center italic"
-              >
+              <p className="bg-primaryTwo text-white !text-sm block w-full py-4 text-center italic">
                 {quizDescription}
+              </p>
+
+              <p className="text-center mt-6">
+                <span className="text-rose-500">*</span> Note: Your answers will not be saved if you leave this page.
               </p>
             </motion.div>
           </>
@@ -224,10 +218,11 @@ const QuizTaker = () => {
           )}
           {!startQuiz ? (
             <button
-              className="block py-2 px-8 bg-primaryTwo border-[1px] border-white rounded-md ml-auto"
+              className="block py-2 px-8 bg-primaryTwo border-[1px] border-white rounded-md ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
                 isInstructor ? setStartQuiz(true) : startQuizMutation.mutate();
               }}
+              disabled={startQuizMutation.isPending}
             >
               {isInstructor
                 ? "See Questions"
@@ -252,7 +247,7 @@ const QuizTaker = () => {
               }
             >
               {currentQuestionIndex + 1 === questions.length
-                ? "Submit"
+                ? submitQuizMutation.isPending ? "Submitting..." : "Submit"
                 : "Next"}
             </button>
           )}
@@ -280,6 +275,17 @@ const Results = () => {
   // const { text: remarkText, color: remarkColor } = getRemark();
   const [width, height] = useWindowSize();
 
+  const attempt = useQuizStore((state) => state.attempt!);
+  const passingMark = useQuizStore((state) => state.quizData?.quiz.passingMark ?? 0);
+  const quizName = useQuizStore((state) => state.quizData?.name || "Quiz");
+
+  const totalQuestions = useQuizStore(state => state.quizData?.questions.length || 0);
+  const passedQuestion = attempt.score / (100 / totalQuestions);
+
+  const [remarkMessage] = useState(
+    attempt.score >= passingMark ? "You did well, congratulations🎉" : "You did not pass, better luck next time!"
+  );
+
   return (
     <div className="min-h-screen overflow-y-auto bg-primaryTwo text-white flex flex-col items-center justify-center gap-4 maxScreenMobile:py-16 py-10 relative">
       <Link to="/" className="block w-fit absolute top-3 left-4">
@@ -293,26 +299,28 @@ const Results = () => {
         />
       </Link>
       {/* {percentage >= 70 && <Confetti width={width} height={height} />} */}
-      <Confetti width={width} height={height} />
-      <h1 className="text-3xl font-bold">AltSchool Africa Quiz</h1>
+      {attempt.score >= passingMark && (
+        <Confetti width={width} height={height} />
+      )}
+      <h1 className="text-3xl font-bold">{quizName}</h1>
       {/* <h1 className='text-3xl font-bold mb-8'>{currentQuiz.Name}</h1> */}
 
       <div className="flex justify-center items-center p-6 bg-primaryTwo rounded-full shadow-2xl w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80 mb-6">
         <span className="text-5xl sm:text-6xl md:text-7xl font-bold text-orange-500">
           {/* {percentage}%/ */}
-          {90}%
+          {attempt.score}%
         </span>
       </div>
 
       {/* <p className={`text-xl sm:text-2xl font-semibold mb-4 ${remarkColor}`}> */}
       <p className={`text-xl sm:text-2xl font-semibold text-blue-40`}>
         {/* {remarkText} */}
-        You did well, congratulations🎉
+        {remarkMessage}
       </p>
 
       <p className="text-gray-300 mb-10">
         {/* You answered {score} out of {total} questions correctly. */}
-        You answered {100} out of {100} questions correctly.
+        You answered {passedQuestion} out of {totalQuestions} questions correctly.
       </p>
     </div>
   );
