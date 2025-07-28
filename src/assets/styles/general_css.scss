@@ -814,77 +814,64 @@ label.toggle__label {
 }
 
 // interface page for footer using gride area for 6cols 1row
-.interface_page_footer {
+.interfaceFooter {
   width: 100% !important;
   display: grid;
-  justify-content: space-between;
   align-items: center;
-  gap: 0rem;
-  grid-template-areas: "home download . . . . . micRequest . . . . . endCall endCall"; //default layout
   grid-template-rows: 1fr;
-  // Desktop view states
-  &.cant_speaking2_AsideBar_desktop {
-    grid-template-areas: "home download . . . . shareScreen micRequest controls . . . . endCall endCall"; //can't speaking2, sideBar active
+  grid-template-areas: "home download . . . . shareScreen micRequest controls . . . . endCall endCall"; //default layout
+  grid-template-columns: repeat(15, 1fr); // 15 columns for desktop view
+  // active sideBar Desktop view
+  &.inAactiveSideBarDesktop {
+    grid-template-areas: "home download . . . . shareScreen micRequest audience controls . . . endCall endCall" !important; //default layout with sideBar active
   }
-  &.can_speaking2_AsideBar_desktop {
-    grid-template-areas: "home download . . . . shareScreen micRequest chats controls . . . endCall endCall"; //can speaking, sideBar active
+
+  &.mobileViewHost {
+    grid-template-areas: "controls . . audience micRequest messages . endCall endCall" !important;
+    grid-template-columns: repeat(9, 1fr) !important;
   }
-  &.can_speaking2_inAsideBar_desktop {
-    grid-template-areas: "home download . . . audience shareScreen micRequest chats controls . . . endCall endCall"; //can speaking, sideBar inactive
+
+  &.desktopViewUsers {
+    grid-template-areas: "download . . . . . . micRequest . . . . . endCall endCall" !important;
   }
-  // Mobile view
-  &.cant_speaking_mobile {
-    grid-template-areas: "home controls . shareScreen micRequest . . endCall endCall"; //mobile layout
-  }
-  
-  & > button {
-    display: none !important; // Hide all buttons by default
+
+  &.mobileViewUsers {
+    grid-template-areas: "download . . audience micRequest messages . endCall endCall" !important;
+    grid-template-columns: repeat(9, 1fr) !important;
   }
 
   .homeBtn {
     grid-area: home;
-    display: block !important; // Show if area exists in template
   }
 
   .downloadBtn {
     grid-area: download;
-    display: block !important;
   }
 
   .shareBtn {
     grid-area: shareScreen;
-    display: block !important;
-  }
-
-  .audienceBtn {
-    grid-area: audience;
-    display: block !important;
   }
 
   .micBtn {
     grid-area: micRequest;
-    display: block !important;
   }
 
+  .audienceBtn {
+    grid-area: audience;
+  }
   .messageBtn {
-    grid-area: chats;
-    display: block !important;
+    grid-area: messages;
   }
 
   .settingsBtn {
     grid-area: controls;
-    display: block !important;
   }
 
   .endCallBtn {
     grid-area: endCall;
-    display: block !important;
   }
 
-  // Mobile styles
+  // Mobile view
   @include is_mediaQuery_MaxWidth_Yes {
-    // &.cant_speaking_mobile {
-    //   grid-template-areas: "home controls . shareScreen micRequest . . endCall endCall";
-    // }
   }
 }
