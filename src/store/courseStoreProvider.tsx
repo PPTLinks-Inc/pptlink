@@ -97,6 +97,11 @@ export default function CourseStoreProvider({
     storeRef.current = createStore<CourseStore>((set, get) => ({
       courseId: courseId,
 
+      openQuizQuestionModal: null,
+      setOpenQuizQuestionModal: (id: string | null) => {
+        set({ openQuizQuestionModal: id });
+      },
+
       name: data.name,
       description: data.description,
       thumbnail: data.thumbnail,
@@ -161,6 +166,17 @@ export default function CourseStoreProvider({
         set((state) => {
           const newSections = [...state.sections];
           newSections[state.selectedSectionIndex].contents = contentItems;
+          return { sections: newSections };
+        });
+      },
+      updateContentItem: (id, sectionIndex, updates) => {
+        set((state) => {
+          const newSections = [...state.sections];
+          const content = newSections[sectionIndex].contents;
+          if (!content) return { sections: newSections };
+          newSections[sectionIndex].contents = content.map((item) =>
+            item.id === id ? { ...item, ...updates } : item
+          );
           return { sections: newSections };
         });
       },
@@ -905,7 +921,7 @@ export default function CourseStoreProvider({
           state.sections.every(
             (section) =>
               section.contents.length > 0 &&
-              section.contents.every((content) => content.status === "done")
+              section.contents.filter(content => content.type !== "QUIZ").every((content) => content.status === "done")
           )
         );
       },
