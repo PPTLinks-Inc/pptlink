@@ -13,13 +13,15 @@ import useUser from "./hooks/useUser";
 import * as Sentry from "@sentry/react";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
-import QuizContextProvider from "./contexts/quizContext";
+import QuizStoreProvider from "./store/quizStoreProvider";
 
 // all lazy import
 const Home = lazy(() => import("./components/home/home"));
 const NotFound = lazy(() => import("./components/404/404"));
 const Interface = lazy(() => import("./components/interface/Interface"));
-const InterfaceView = lazy(() => import("./components/interface/InterfaceView"));
+const InterfaceView = lazy(
+  () => import("./components/interface/InterfaceView")
+);
 const InterfaceNotFound = lazy(() => import("./components/interface/404"));
 const Root = lazy(() => import("./components/root/root"));
 const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
@@ -70,12 +72,7 @@ const CourseVideoPlayer = lazy(
 const CoursepdfViewer = lazy(
   () => import("./components/upload/createCourseFlow/CoursepdfViewer")
 );
-// const QuizStarter = lazy(
-//   () => import("./components/upload/quiz/QuizCreator")
-// );
-const Quiz = lazy(
-  () => import("./components/upload/quiz/Quiztaker")
-);
+const Quiz = lazy(() => import("./components/upload/quiz/Quiztaker"));
 const TermsAndServicesPage = lazy(
   () => import("./components/Terms_and_policy_page/termsAndServices")
 );
@@ -224,6 +221,22 @@ const router = sentryCreateBrowserRouter(
       errorElement: <InterfaceNotFound />
     },
     {
+      path: "/course/quiz/:courseId/:quizId",
+      element: (
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen bg-primaryTwo">
+              <LoadingAssetBig2 />
+            </div>
+          }
+        >
+          <QuizStoreProvider>
+            <Quiz />
+          </QuizStoreProvider>
+        </Suspense>
+      )
+    },
+    {
       path: "/signin",
       element: <SignPage />
     },
@@ -246,22 +259,6 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/create",
       element: <CreatePath />
-    },
-    // {
-    //   path: "/create-quiz",
-    //   element: (
-    //     <QuizContextProvider>
-    //       <QuizStarter />
-    //     </QuizContextProvider>
-    //   )
-    // },
-    {
-      path: "/start-quiz",
-      element: (
-        <QuizContextProvider>
-          <Quiz />
-        </QuizContextProvider>
-      )
     },
     {
       path: "/course/invitation",

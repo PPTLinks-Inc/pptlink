@@ -3,12 +3,13 @@ import { DateRange } from "react-day-picker";
 
 export interface ContentItem {
     id: string;
-    type: "VIDEO" | "PPT";
+    type: "VIDEO" | "PPT" | "QUIZ";
     file?: File;
     name: string;
-    status: "waiting" | "starting" | "uploading" | "processing" | "error" | "done";
+    status: "waiting" | "starting" | "uploading" | "processing" | "error" | "done" | /* For quiz */ "active" | "completed" | "not_active";
     uploadProgress?: number;
 }
+
 export interface Section {
     id: string;
     title: string;
@@ -82,6 +83,8 @@ export interface MissingRequirements {
 
 export interface CourseStore {
     courseId: string;
+    openQuizQuestionModal: string | null;
+    setOpenQuizQuestionModal: (id: string | null) => void;
 
     name: string;
     description: string;
@@ -132,6 +135,7 @@ export interface CourseStore {
     selectedSectionIndex: number;
     setSelectedSectionIndex: (index: number) => void;
     setContentItems: (contentItems: ContentItem[] | ((contentItems: ContentItem[]) => ContentItem[])) => void;
+    updateContentItem: (id: string, sectionIndex: number, updates: Partial<ContentItem>) => void;
     removeContentItem: (id: string) => Promise<void>;
     handleSectionTitleChange: (title: string) => void;
     addSection: () => Promise<{ order: number, id: string }>;

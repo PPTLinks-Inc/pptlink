@@ -240,7 +240,7 @@ export default function Card({ presentation, refresh }) {
               <em>{presentation.User.username}</em>
             </p>
             <p className="w-full text-[.8rem] !maxScreenMobile:text-[.8rem] pt-2 font-light overflow-x-hidden whitespace-nowrap text-ellipsis">
-              <strong>Cartegory: </strong>
+              <strong>Category: </strong>
               <em>{presentation.category.name}</em>
             </p>
             <span
