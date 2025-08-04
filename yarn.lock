@@ -2227,9 +2227,9 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
-"@pptlinks/shared-convex-backend@https://x-access-token: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@github.com/PPTLinks-Inc/shared-convex-backend.git":
+"@pptlinks/shared-convex-backend@git+https://github.com/PPTLinks-Inc/shared-convex-backend.git":
   version "0.0.1"
-  resolved "https://x-access-token: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@github.com/PPTLinks-Inc/shared-convex-backend.git#eab19355652774b5270616c4179a4f877627739e"
+  resolved "git+https://github.com/PPTLinks-Inc/shared-convex-backend.git#d4728fd720f8b889febc69e603875db2bfc251ca"
   dependencies:
     "@aws-sdk/client-s3" "^3.812.0"
     axios "^1.9.0"
