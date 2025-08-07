@@ -12,12 +12,14 @@ import { FiUploadCloud } from "react-icons/fi";
 import useUser from "../../hooks/useUser";
 import Search from "../search/search.jsx";
 // import { MdOutlineDarkMode } from "react-icons/md";
-import { CiDark } from "react-icons/ci";
+import { MdOutlineDarkMode } from "react-icons/md";
+import { MdDarkMode } from "react-icons/md";
 // import { Input } from "@/components/ui/input"
+import { useContext } from "react";
+import { UtilityProvider } from "../../contexts/utilityContext";
 
 export default function Header({ isBackMenu, handleDropdown }) {
-  const [search, setSearch] = useState({ search: "", isMobileSearch: false });
-  const [darkmode, setDarkmode] = useState(false);
+  const { darkTheme, handleDarkTheme } = useContext(UtilityProvider);
   const location = useLocation();
   const getlocation = () => location.pathname === "/document";
   const getDashboardLocation = () => location.pathname === "/dashboard";
@@ -39,7 +41,6 @@ export default function Header({ isBackMenu, handleDropdown }) {
       transition: { ease: "easeInOut" }
     }
   }), [pathName, pathNameDoc]);
-  console.log(search)
 
   return (
     <motion.header
@@ -79,9 +80,12 @@ export default function Header({ isBackMenu, handleDropdown }) {
           viewport={{ once: true }}
           className="w-3/5 flex flex-row justify-end !items-center gap-4 maxScreen:gap-4 maxScreenMobile:justify-end">
 
-          <button onClick={() => setDarkmode(!darkmode)} className={`static md:absolute md:-right-10 md:top-[50%] md:-translate-y-[50%] font-semibold ${darkmode ? "text-primaryTwo" : "text-[#FFFFF0]"}`}><CiDark size={28} /></button>
+          <button onClick={() => handleDarkTheme()} className={`static md:absolute md:-right-10 md:top-[50%] md:-translate-y-[50%] font-semibold ${isBackMenu ? "text-primaryTwo" : "text-[#FFFFF0]"}`}>
+            {darkTheme ? <MdDarkMode size={28} /> : <MdOutlineDarkMode size={28} />}
+            </button>
 
-          <Search isBackMenu={isBackMenu} search={search} setSearch={setSearch} />
+          <Search isBackMenu={isBackMenu} />
+          
           <Link
             to={!user ? "/signin" : getUploadLocation() ? "/dashboard" : getDashboardLocation() ? "/create" : "/dashboard"}
             className={`${!user && "!hidden"} !font-normal flex justify-center items-center w-fit md:px-6 md:py-[0.35rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-primaryTwo md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-primaryTwo md:text-primaryTwo"}`}

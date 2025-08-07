@@ -1,6 +1,9 @@
 import { CiSearch } from "react-icons/ci";
+import { useContext } from "react";
+import { UtilityProvider } from "../../contexts/utilityContext";
 
-export default function Search({ isBackMenu, setSearch, search }) {
+export default function Search({ isBackMenu }) {
+    const { search, setSearch } = useContext(UtilityProvider);
     return (
         <>
             <button onClick={() => setSearch({ ...search, isMobileSearch: !search.isMobileSearch })} className={`hidden bg-[#FFFFF0] p-1 text-primaryTwo ${isBackMenu && "border-primaryTwo"} text-[1.3rem] 
@@ -14,7 +17,7 @@ export default function Search({ isBackMenu, setSearch, search }) {
                     value={search.search}
                     onChange={(e) => setSearch({ search: e.target.value, isMobileSearch: search.isMobileSearch })}
                     placeholder="Search for anything..."
-                    className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "border-[#FFFFF0] text-white bg-primaryTwo" : "border-primaryTwo text-primaryTwo bg-[#FFFFF0]"} ${search !== "" && "!border-[#FFA500]"}`}
+                    className={`block !w-full text-sm maxScreen:!w-full border-[0.5px] rounded-md py-[0.35rem] indent-12  ${!isBackMenu ? "text-white bg-primaryTwo" : "!border-primaryTwo text-primaryTwo bg-[#FFFFF0]"} ${search !== "" ? "!border-[#FFA500]" : "!border-[#FFFFF0]"}`}
                 />
             </label>
         </>

@@ -13,6 +13,7 @@ import useUser from "./hooks/useUser";
 import * as Sentry from "@sentry/react";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
+import UtilityProviderFunc from "./contexts/utilityContext";
 import QuizStoreProvider from "./store/quizStoreProvider";
 
 // all lazy import
@@ -87,7 +88,11 @@ const router = sentryCreateBrowserRouter(
   [
     {
       path: "/",
-      element: <Root />,
+      element: (
+        <UtilityProviderFunc>
+          <Root />
+        </UtilityProviderFunc>
+      ),
       errorElement: <NotFound />,
       children: [
         {
@@ -146,7 +151,11 @@ const router = sentryCreateBrowserRouter(
     },
     {
       path: "/",
-      element: <RootNoFooter />,
+      element: (
+        <UtilityProviderFunc>
+          <RootNoFooter />
+        </UtilityProviderFunc>
+      ),
       errorElement: <NotFound />,
       children: [
         {
