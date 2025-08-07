@@ -159,7 +159,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
 
             const presentationPresent = allPresentationData.find((presentation) => presentation.liveId === liveId);
             if (presentationPresent) {
-                await safeAwait(usepresentationStore.getState().loadPresentation(presentationPresent.url, presentationPresent.liveId));
+                await safeAwait(usepresentationStore.getState().loadPresentation(`${import.meta.env.VITE_CLOUDFRONT_ORIGIN}/${presentationPresent.url}`, presentationPresent.liveId));
                 return;
             }
 
@@ -176,7 +176,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
 
                 const presentationPresent = usepresentationStore.getState().allPresentationData.find((presentation) => presentation.liveId === liveId);
                 if (presentationPresent) {
-                    await safeAwait(usepresentationStore.getState().loadPresentation(presentationPresent.url, presentationPresent.liveId));
+                    await safeAwait(usepresentationStore.getState().loadPresentation(`${import.meta.env.VITE_CLOUDFRONT_ORIGIN}/${presentationPresent.url}`, presentationPresent.liveId));
                     return;
                 }
             }
