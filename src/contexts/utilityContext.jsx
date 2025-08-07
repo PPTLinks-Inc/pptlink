@@ -6,7 +6,7 @@ export default function UtilityProviderFunc({
     children
 }) {
     const [search, setSearch] = useState("");
-    const [darkTheme, setDarkTheme] = useState(false);
+    const [darkTheme, setDarkTheme] = useState(true);
     const [dropdown, setDropdown] = useState(false);
 
     const handleDropdown = () => {
@@ -20,7 +20,7 @@ export default function UtilityProviderFunc({
     console.log("Test: ", { search, darkTheme, dropdown });
 
     return (
-        <UtilityProvider.Provider value={{ search, setSearch, darkTheme, handleDarkTheme, dropdown, handleDropdown }}>
+        <UtilityProvider.Provider value={{ search, setSearch, darkTheme, handleDarkTheme, dropdown, setDropdown, handleDropdown }}>
             {children}
         </UtilityProvider.Provider>
     );
