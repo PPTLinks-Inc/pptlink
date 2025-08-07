@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useMemo } from "react";
+import { useState, useContext, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import logo_white from "/imgs/WHITE.png";
@@ -15,11 +15,10 @@ import Search from "../search/search.jsx";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { MdDarkMode } from "react-icons/md";
 // import { Input } from "@/components/ui/input"
-import { useContext } from "react";
 import { UtilityProvider } from "../../contexts/utilityContext";
 
-export default function Header({ isBackMenu, handleDropdown }) {
-  const { darkTheme, handleDarkTheme } = useContext(UtilityProvider);
+export default function Header({ isBackMenu }) {
+  const { darkTheme, handleDarkTheme, dropdown, handleDropdown } = useContext(UtilityProvider);
   const location = useLocation();
   const getlocation = () => location.pathname === "/document";
   const getDashboardLocation = () => location.pathname === "/dashboard";
