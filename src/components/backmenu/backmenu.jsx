@@ -1,11 +1,14 @@
+import { useContext } from "react";
 import Socials from "../social/socials";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../header/header";
 import { ABOUT, LEGAL, UPLOAD } from "../../constants/routes";
 import useUser from "../../hooks/useUser";
+import { UtilityProvider } from "../../contexts/utilityContext";
 
 // eslint-disable-next-line react/prop-types
-export default function Backmenu({ backmenu, handleDropdown }) {
+export default function Backmenu() {
+  const { dropdown } = useContext(UtilityProvider);
   const { userQuery, logOut } = useUser();
   const user = userQuery.data;
   const navigate = useNavigate();
@@ -21,8 +24,8 @@ export default function Backmenu({ backmenu, handleDropdown }) {
   };
 
   return (
-    <div className={`w-full h-screen absolute maxScreenMobile:overflow-auto ${backmenu && "scaleIn"}`}>
-      <Header isBackMenu={true} handleDropdown={handleDropdown} />
+    <div className={`w-full h-screen absolute maxScreenMobile:overflow-auto ${dropdown && "scaleIn"}`}>
+      <Header isBackMenu={true} />
 
       <div className="w-full h-[90vh]">
         <div className="flex-col w-[100%] h-[50%] flex-1 !border-0 justify-center flex lg:flex-wrap lg:flex-row maxScreen:my-14">

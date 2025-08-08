@@ -219,8 +219,7 @@ export default function Card({ presentation, refresh }) {
       />
       <motion.div
         variants={containerVarient}
-        className="card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border border-[rgba(255,166,0,0.53)] "
-      >
+        className="card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border _border-[rgba(255,166,0,0.53)] border-slate-200">
         <Link to={`/${presentation.liveId}`} viewTransition>
           <div className="card_img rounded-lg border-[1px] border-solid border-slate-200">
             <img
