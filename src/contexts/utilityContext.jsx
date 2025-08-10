@@ -5,7 +5,7 @@ export const UtilityProvider = createContext();
 export default function UtilityProviderFunc({
     children
 }) {
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState({ search: "", isMobileSearch: false });
     const [darkTheme, setDarkTheme] = useState(true);
     const [dropdown, setDropdown] = useState(false);
 

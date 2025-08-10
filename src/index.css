@@ -4,121 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  transition: all 400ms ease-in-out !important;
-}
-
-/* *::-webkit-scrollbar { */
-/* width: 0;
-  height: 0; */
-/* margin-right: 1rem; */
-/* @apply w-0 h-0 md:w-[0.3rem] md:h-[0.2rem] */
-/* @apply w-0 h-0; */
-/* display: none; */
-/* } */
-
-/* *::-webkit-scrollbar-thumb {
-  @apply bg-black/50 border-2 w-1 border-white rounded-2xl;
-}
-
-*::-webkit-scrollbar-track {
-  @apply w-2 bg-transparent rounded-2xl;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  @apply bg-black/60 rounded-2xl;
-}
-
-*::-webkit-scrollbar-thumb:active {
-  @apply bg-black rounded-2xl;
-} */
-
-body {
-  background-color: #191919;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-button {
-  @apply hover:animate-none active:scale-95 transition-all duration-200;
-}
-
-textarea:focus,
-input:focus {
-  outline: none;
-}
-
-img {
-  -webkit-user-drag: none;
-}
-
-input:checked.chapter~div .chapter-child {
-  @apply bg-white;
-}
-
-/*beginning of documentation page  */
-
-.sub-heading>li {
-  position: relative;
-}
-
-.sub-heading>li:after {
-  width: 5px;
-  position: absolute;
-  content: "";
-  background-color: transparent;
-  /* border: 1px solid white; */
-  height: 5px;
-  border-radius: 50%;
-  z-index: 50;
-  left: -11px;
-  top: 50%;
-  transform: translateY(-50%);
-  @apply border border-black md:border-white;
-}
-
-.sub-heading::after {
-  content: "";
-  position: absolute;
-  height: 85%;
-  width: 0.5px;
-  left: 15px;
-  top: 15px;
-  background-color: white;
-  @apply bg-black md:bg-white
-  /* z-index: 20; */
-  ;
-}
-
-.isActive {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: all 2s ease-in-out;
-}
-
-.isActive>div {
-  overflow: hidden;
-}
-
-.isActive.active {
-  grid-template-rows: 1fr;
-}
-
-.sticky-heading {
-  position: sticky;
-  top: 0rem;
-}
-
-.documentation::after {
-  content: "";
-  width: 100.7%;
-  height: 100.5%;
-  @apply border-2 border-body absolute -top-[.5%] bottom-0 -left-[.7%] rounded-tl-md;
-}
-
-/* end of documentation page */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -140,20 +25,7 @@ input:checked.chapter~div .chapter-child {
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -176,49 +48,73 @@ input:checked.chapter~div .chapter-child {
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
+    transition:
+      color 400ms ease,
+      background-color 400ms ease;
   }
 
   body {
     @apply bg-background text-foreground;
   }
-  :root {
-    --sidebar-background: 210 25% 15%; /* Darker shade of primary */
-    --sidebar-foreground: 210 10% 90%; /* Light complementary color */
-    --sidebar-primary: 210 25% 20%;
-    --sidebar-primary-foreground: 0 0% 100%; /* White */
-    --sidebar-accent: 210 25% 25%; /* Slightly lighter shade of primary */
-    --sidebar-accent-foreground: 210 10% 90%; /* Light complementary color */
-    --sidebar-border: 210 25% 25%; /* Matching accent color */
-    --sidebar-ring: 210 50% 50%; /* Bright complementary color */
-  }
+}
 
-  /* .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  } */
+/* Custom styles */
+html {
+  scroll-behavior: smooth;
+}
+
+button {
+  @apply hover:animate-none active:scale-95 transition-all duration-200;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+/* Documentation page styles */
+.sub-heading > li {
+  @apply relative;
+}
+
+.sub-heading > li:after {
+  @apply w-1.5 h-1.5 absolute bg-transparent rounded-full z-50 -left-3 top-1/2 -translate-y-1/2;
+  content: "";
+  border: 1px solid currentColor;
+}
+
+.sub-heading::after {
+  @apply content-[""] absolute h-[85%] w-px left-4 top-4;
+  background-color: currentColor;
+}
+
+.isActive {
+  @apply grid transition-all duration-1000 ease-in-out;
+  grid-template-rows: 0fr;
+}
+
+.isActive > div {
+  @apply overflow-hidden;
+}
+
+.isActive.active {
+  grid-template-rows: 1fr;
+}
+
+.sticky-heading {
+  @apply sticky top-0;
+}
+
+.documentation::after {
+  @apply content-[""] border-2 border-body absolute -top-[0.5%] -bottom-0 -left-[0.7%] rounded-tl-md;
+  width: 100.7%;
+  height: 100.5%;
 }
