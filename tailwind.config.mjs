@@ -49,6 +49,7 @@ export default {
         
         primaryTwo: "#191919",
         primaryThree: "#FFFFF0",
+        primaryFour: "#e2e8f0",
         
         // Component colors
         card: {
