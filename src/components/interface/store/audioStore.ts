@@ -637,7 +637,7 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
 
         for (const presentation of presentationData) {
             if (presentation.presenting) {
-                usepresentationStore.getState().loadPresentation(presentation.url, presentation.liveId);
+                usepresentationStore.getState().loadPresentation(`${import.meta.env.VITE_CLOUDFRONT_ORIGIN}/${presentation.url}`, presentation.liveId);
                 break;
             }
         }

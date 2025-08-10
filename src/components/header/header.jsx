@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useContext, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import logo_white from "/imgs/WHITE.png";
@@ -18,7 +18,7 @@ import { MdDarkMode } from "react-icons/md";
 import { UtilityProvider } from "../../contexts/utilityContext";
 
 export default function Header({ isBackMenu }) {
-  const { darkTheme, handleDarkTheme, dropdown, handleDropdown } = useContext(UtilityProvider);
+  const { darkTheme, handleDarkTheme, handleDropdown } = useContext(UtilityProvider);
   const location = useLocation();
   const getlocation = () => location.pathname === "/document";
   const getDashboardLocation = () => location.pathname === "/dashboard";
@@ -81,10 +81,10 @@ export default function Header({ isBackMenu }) {
 
           <button onClick={() => handleDarkTheme()} className={`static md:absolute md:-right-10 md:top-[50%] md:-translate-y-[50%] font-semibold ${isBackMenu ? "text-primaryTwo" : "text-[#FFFFF0]"}`}>
             {darkTheme ? <MdDarkMode size={28} /> : <MdOutlineDarkMode size={28} />}
-            </button>
+          </button>
 
           <Search isBackMenu={isBackMenu} />
-          
+
           <Link
             to={!user ? "/signin" : getUploadLocation() ? "/dashboard" : getDashboardLocation() ? "/create" : "/dashboard"}
             className={`${!user && "!hidden"} !font-normal flex justify-center items-center w-fit md:px-6 md:py-[0.35rem] md:bg-[#FFFFF0] md:border-[0.5px] md:text-primaryTwo md:responsiveText md:rounded-md maxScreenMobile:mb-3 md:text-nowrap ${!isBackMenu ? "md:border-[#FFFFF0]" : "md:border-primaryTwo md:text-primaryTwo"}`}

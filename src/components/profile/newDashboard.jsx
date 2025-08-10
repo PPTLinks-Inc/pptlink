@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useRef, useEffect, memo, useContext } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Card from "../list/card";
 import ShowCourseCard from "../list/showCourseCard";
@@ -14,6 +14,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { authFetch } from "../../lib/axios";
 import { CiSearch } from "react-icons/ci";
+import { UtilityProvider } from "../../contexts/utilityContext";
 
 // eslint-disable-next-line react/prop-types
 const TabContent = memo(function TabContent({ isActive, children }) {
@@ -33,6 +34,7 @@ export default function NewDashboard() {
     parseInt(searchParams.get("tab") || "1")
   );
   const [search, setSearch] = useState("");
+  const { search: globalSearch } = useContext(UtilityProvider);
   const { userQuery } = useUser();
   const user = userQuery.data;
 
@@ -231,7 +233,7 @@ export default function NewDashboard() {
           >
             {/* search */}
             <div
-              className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border border-white ${search !== "" && "!border-[#FFA500]"} relative mb-5`}
+              className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border border-white ${search !== "" && "!border-[#FFA500]"} relative mb-5 ${globalSearch.isMobileSearch ? "maxScreenMobile:hidden" : ""}`}
             >
               <input
                 type="text"

@@ -341,7 +341,7 @@ function AddSlideMenu() {
         )
       );
       useSlideStore.setState({ lockSlide: false });
-      loadPresentation(presentationAdded.url, presentationAdded.liveId);
+      loadPresentation(`${import.meta.env.VITE_CLOUDFRONT_ORIGIN}/${presentationAdded.url}`, presentationAdded.liveId);
       return;
     }
 
