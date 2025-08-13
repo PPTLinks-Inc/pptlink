@@ -15,12 +15,13 @@ import { useQuery } from "@tanstack/react-query";
 import { authFetch } from "../../lib/axios";
 import { CiSearch } from "react-icons/ci";
 import { UtilityProvider } from "../../contexts/utilityContext";
+import { useTheme } from "../../hooks/useTheme";
 
 // eslint-disable-next-line react/prop-types
 const TabContent = memo(function TabContent({ isActive, children }) {
   return (
-    <div 
-      className={`${isActive ? 'block opacity-100' : 'hidden opacity-0'} transition-opacity duration-200 ease-in-out`}
+    <div
+      className={`${isActive ? "block opacity-100" : "hidden opacity-0"} transition-opacity duration-200 ease-in-out`}
     >
       {children}
     </div>
@@ -35,6 +36,7 @@ export default function NewDashboard() {
   );
   const [search, setSearch] = useState("");
   const { search: globalSearch } = useContext(UtilityProvider);
+  const { bg, text, border, isDark } = useTheme();
   const { userQuery } = useUser();
   const user = userQuery.data;
 
@@ -127,13 +129,13 @@ export default function NewDashboard() {
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
-      <section className={`relative bg-primaryTwo`}>
+      <section className={`relative ${bg} _bg-primaryTwo`}>
         <div className={`w-full h-fit pt-6`}>
           <div
             className={`container relative h-fit py-6 flex flex-col justify-between items-center backdrop_el rounded-t-md`}
           >
             <button
-              className={`absolute top-8 right-8 text-3xl font-bold text-[#FFFFF0]`}
+              className={`absolute top-8 right-8 text-3xl font-bold ${text} _text-[#FFFFF0]`}
             >
               <CiSettings />
             </button>
@@ -141,11 +143,11 @@ export default function NewDashboard() {
               My Profile
             </span>
             <div
-              className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] border-[#FFFFF0] rounded-full relative mb-4`}
+              className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] ${border} _border-[#FFFFF0] rounded-full relative mb-4`}
             >
               <FaUser size="80" className="block" />
               <button
-                className={`absolute text-xl bottom-[0.7rem] right-[0.7rem] bg-primaryTwo !text-[#FFFFF0]`}
+                className={`absolute text-xl bottom-[0.7rem] right-[0.7rem] ${bg} ${text} _bg-primaryTwo !_text-[#FFFFF0]`}
               >
                 <FaRegEdit />
               </button>
@@ -177,16 +179,16 @@ export default function NewDashboard() {
         </div>
       </section>
 
-      <section className={`py-5 h-fit bg-primaryTwo text-white`}>
+      <section className={`py-5 h-fit ${bg} ${text} _bg-primaryTwo _text-white`}>
         <div
-          className={`bg-primaryTwo h-fit flex justify-evenly items-center border-b-2 border-b-white`}
+          className={`bg-primaryTwo h-fit flex justify-evenly items-center border-b-2 ${border} _border-b-white`}
         >
           <button
             onClick={handleView}
             data-view="1"
             className={
               currentView === 1
-                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -197,7 +199,7 @@ export default function NewDashboard() {
             data-view="2"
             className={
               currentView === 2
-                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -208,7 +210,7 @@ export default function NewDashboard() {
             data-view="3"
             className={
               currentView === 3
-                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -233,7 +235,7 @@ export default function NewDashboard() {
           >
             {/* search */}
             <div
-              className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border border-white ${search !== "" && "!border-[#FFA500]"} relative mb-5 ${globalSearch.isMobileSearch ? "maxScreenMobile:hidden" : ""}`}
+              className={`w-[300px] maxScreenMobile:!w-[90%] mx-auto h-fit rounded-[.5rem] border ${border} _border-white ${search !== "" && "!border-[#FFA500]"} relative mb-5 ${globalSearch.isMobileSearch ? "maxScreenMobile:hidden" : ""}`}
             >
               <input
                 type="text"
@@ -244,7 +246,7 @@ export default function NewDashboard() {
                 className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white`}
               />
               <span
-                className={`block w-fit text-[#FFFFF0] ${currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}
+                className={`block w-fit ${text} text-[#FFFFF0] ${currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}
               >
                 <CiSearch />
               </span>
@@ -283,7 +285,7 @@ export default function NewDashboard() {
                     <p className="text-whte">Failed to fetch</p>
                     <button
                       onClick={() => presentationQuery.fetchNextPage()}
-                      className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                      className={`block w-fit h-fit p-2 border-2 ${border} ${text} _border-white rounded-[.5rem] ${bg} bg-primaryTwo _text-white`}
                     >
                       Load more
                     </button>
@@ -310,7 +312,7 @@ export default function NewDashboard() {
                     <p className="text-whte">Failed to Course</p>
                     <button
                       onClick={() => myCourses.refetch()}
-                      className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                      className={`block w-fit h-fit p-2 border-2 ${border} ${text} _border-white rounded-[.5rem] ${bg} _bg-primaryTwo _text-white`}
                     >
                       Retry
                     </button>
@@ -338,7 +340,7 @@ export default function NewDashboard() {
                     <p className="text-whte">Failed to Course</p>
                     <button
                       onClick={() => paidCourses.refetch()}
-                      className="block w-fit h-fit p-2 border-2 border-white rounded-[.5rem] bg-primaryTwo text-white"
+                      className={`block w-fit h-fit p-2 border-2 ${border} ${text} _border-white rounded-[.5rem] ${bg} _bg-primaryTwo _text-white`}
                     >
                       Retry
                     </button>

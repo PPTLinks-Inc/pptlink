@@ -620,7 +620,7 @@ label.toggle__label:active:after {
   .parallel_lines::before, .parallel_lines::after {
     content: "";
     display: block;
-    background-color: white;
+    background-color: #fffff0;
     position: absolute;
     top: 2rem;
     bottom: 2.5rem;
@@ -628,6 +628,22 @@ label.toggle__label:active:after {
     padding: 0 0.5px;
   }
   .parallel_lines::before {
+    left: -3.5rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .parallel_lines_dark::before, .parallel_lines_dark::after {
+    content: "";
+    display: block;
+    background-color: #191919;
+    position: absolute;
+    top: 2rem;
+    bottom: 2.5rem;
+    left: -3rem;
+    padding: 0 0.5px;
+  }
+  .parallel_lines_dark::before {
     left: -3.5rem;
   }
 }
