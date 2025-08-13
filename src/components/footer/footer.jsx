@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-
 import Socials from "../social/socials";
-import { ABOUT, DOCUMENT, HOME, LEGAL, SIGNUP, PRIVACY_POLICY, TERMS_AND_SERVICES } from "../../constants/routes";
+import {
+  ABOUT,
+  DOCUMENT,
+  HOME,
+  LEGAL,
+  SIGNUP,
+  PRIVACY_POLICY,
+  TERMS_AND_SERVICES
+} from "../../constants/routes";
 import logo_orange from "/imgs/onemorecolor.png";
 import useUser from "../../hooks/useUser";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Footer() {
   const { pathname } = useLocation();
   const { userQuery } = useUser();
   const user = userQuery.data;
-
+  const { bg, text, border, isDark } = useTheme();
   const [getlocation] = useState(
     useLocation().pathname === "/newupload" ? true : false
   );

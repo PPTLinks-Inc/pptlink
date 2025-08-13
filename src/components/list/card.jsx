@@ -19,9 +19,10 @@ import { ToastAction } from "@/components/ui/toast";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../lib/axios";
 import useUser from "../../hooks/useUser";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Card({ presentation, refresh }) {
-
+  const { bg, text, border, isDark } = useTheme();
   const { userQuery } = useUser();
   const user = userQuery.data;
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function Card({ presentation, refresh }) {
     isTriggered: false,
     message: "",
     actionText: "",
-    cardId: "",
+    cardId: ""
   });
 
   const handleClick = (event) => {
@@ -46,7 +47,9 @@ export default function Card({ presentation, refresh }) {
 
   const deletePresentation = useMutation({
     mutationFn: async function (id) {
-      const { data } = await authFetch.delete(`/api/v1/ppt/presentations/${id}`);
+      const { data } = await authFetch.delete(
+        `/api/v1/ppt/presentations/${id}`
+      );
       return data;
     },
     onSuccess: function () {
@@ -77,14 +80,24 @@ export default function Card({ presentation, refresh }) {
         toast({
           description: "Presentation added to your Bookmarks",
           action: (
-            <ToastAction onClick={() => bookmarkPresentation.mutate(id)} altText="undo">Undo</ToastAction>
+            <ToastAction
+              onClick={() => bookmarkPresentation.mutate(id)}
+              altText="undo"
+            >
+              Undo
+            </ToastAction>
           )
         });
       } else {
         toast({
           description: "Presentation removed from your Bookmarks",
           action: (
-            <ToastAction onClick={() => bookmarkPresentation.mutate()} altText="undo">Undo</ToastAction>
+            <ToastAction
+              onClick={() => bookmarkPresentation.mutate()}
+              altText="undo"
+            >
+              Undo
+            </ToastAction>
           )
         });
       }
@@ -126,7 +139,7 @@ export default function Card({ presentation, refresh }) {
         text: "Join the presentation",
         url: link
       })
-      .catch(() => { });
+      .catch(() => {});
   }
 
   function copyLink(link) {
@@ -138,7 +151,7 @@ export default function Card({ presentation, refresh }) {
             description: "Link Copied successfully"
           });
         })
-        .catch(() => { });
+        .catch(() => {});
   }
   // Modal handler
   const handleCardModel = (Id, data) => {
@@ -219,18 +232,19 @@ export default function Card({ presentation, refresh }) {
       />
       <motion.div
         variants={containerVarient}
-        className="card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border _border-[rgba(255,166,0,0.53)] border-slate-200">
+        className={`card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border _border-[rgba(255,166,0,0.53)] ${border} _border-slate-200`}
+      >
         <Link to={`/${presentation.liveId}`} viewTransition>
-          <div className="card_img rounded-lg border-[1px] border-solid border-slate-200">
+          <div className={`card_img rounded-lg border-[1px] border-solid ${border} _border-slate-200`}>
             <img
               src={presentation.thumbnail}
               alt={`${presentation.name} presentation thumbnail`}
-              className="block w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-md object-cover text-center"
+              className={"block w-full aspect-video maxScreenMobile:aspect-[1/0.8] rounded-md object-cover text-center"}
               loading="lazy"
             />
           </div>
 
-          <div className={`card_body pb-5 maxScreenMobile:pb-0 text-white`}>
+          <div className={`card_body pb-5 maxScreenMobile:pb-0 ${text}`}>
             <h3 className="title font-medium w-full text-xl !maxScreenMobile:text-xl text-left pt-3 overflow-x-hidden whitespace-nowrap text-ellipsis">
               {presentation.name}
             </h3>
@@ -253,7 +267,7 @@ export default function Card({ presentation, refresh }) {
                 aria-expanded={open ? "true" : undefined}
                 onClick={handleClick}
               >
-                <FaEllipsisV className="text-xl _text-[#FFA500] text-slate-200 cursor-pointer rotate-90" />
+                <FaEllipsisV className={`text-xl _text-[#FFA500] ${text} _text-slate-200 cursor-pointer rotate-90`} />
               </Button>
               <Menu
                 id="basic-menu"
@@ -303,7 +317,11 @@ export default function Card({ presentation, refresh }) {
                           }
                         }}
                       >
-                        <span className="block w-32 text-[.9rem]">{deletePresentation.isPending ? "Deleting..." : "Delete"}</span>
+                        <span className="block w-32 text-[.9rem]">
+                          {deletePresentation.isPending
+                            ? "Deleting..."
+                            : "Delete"}
+                        </span>
                         <FiDelete />
                       </MenuItem>
                     </>
