@@ -29,7 +29,7 @@ export default function Backmenu() {
     <div
       className={`w-full h-screen absolute maxScreenMobile:overflow-auto ${dropdown && "scaleIn"}`}
     >
-      {(is768PxScreen && search.isMobileSearch) ? "" : <Header isBackMenu={true} />}
+      {(is768PxScreen && search.isMobileSearch) ? "" : <Header />}
 
       <div className="w-full h-[90vh]">
         <div className="flex-col w-[100%] h-[50%] flex-1 !border-0 justify-center flex lg:flex-wrap lg:flex-row maxScreen:my-14">

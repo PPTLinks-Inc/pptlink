@@ -638,11 +638,15 @@ label.toggle__label {
 
     & .card {
       background: rgba(#ffffff, 0.1);
-      // background: #ffa60033;
 
       &:hover {
         outline: rgba(white, 0.5) !important;
         background: rgba(black, 0.4);
+      }
+
+      &.primarySeven {
+        background: #ffa60033 !important;
+        // background: #e2e8f0 !important;
       }
     }
 
