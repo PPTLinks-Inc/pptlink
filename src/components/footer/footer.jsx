@@ -18,14 +18,14 @@ export default function Footer() {
   const { pathname } = useLocation();
   const { userQuery } = useUser();
   const user = userQuery.data;
-  const { bg, text, border, isDark } = useTheme();
+  const { bg, text, border, isDark, reverseBg, reverseText } = useTheme();
   const [getlocation] = useState(
     useLocation().pathname === "/newupload" ? true : false
   );
 
   return (
     <footer
-      className={`footer pt-10 responsiveText ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-primaryTwo" : "text-slate-200 bg-primaryTwo black_underline"} relative`}
+      className={`footer pt-10 responsiveText ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-primaryTwo" : "text-slate-200 bg-primaryTwo black_underline"} $m{reverseBg} $m{reverseText} relative`}
     >
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">

@@ -36,7 +36,7 @@ export default function NewDashboard() {
   );
   const [search, setSearch] = useState("");
   const { search: globalSearch } = useContext(UtilityProvider);
-  const { bg, text, border, isDark } = useTheme();
+  const { bg, text, border, backDropFilter, isDark } = useTheme();
   const { userQuery } = useUser();
   const user = userQuery.data;
 
@@ -132,18 +132,20 @@ export default function NewDashboard() {
       <section className={`relative ${bg} _bg-primaryTwo`}>
         <div className={`w-full h-fit pt-6`}>
           <div
-            className={`container relative h-fit py-6 flex flex-col justify-between items-center backdrop_el rounded-t-md`}
+            className={`container relative h-fit py-6 flex flex-col justify-between items-center backdrop_el ${backDropFilter} rounded-t-md`}
           >
             <button
               className={`absolute top-8 right-8 text-3xl font-bold ${text} _text-[#FFFFF0]`}
             >
               <CiSettings />
             </button>
-            <span className="backdrop_el block mx-auto my-4 rounded px-3 py-1 responsiveText">
+            <span
+              className={`backdrop_el ${backDropFilter} block mx-auto my-4 rounded px-3 py-1 responsiveText ${text}`}
+            >
               My Profile
             </span>
             <div
-              className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] ${border} _border-[#FFFFF0] rounded-full relative mb-4`}
+              className={`flex justify-center items-center w-[150px] aspect-square _bg-[red] !border-[0.01px] ${text} ${border} _border-[#FFFFF0] rounded-full relative mb-4`}
             >
               <FaUser size="80" className="block" />
               <button
@@ -152,7 +154,9 @@ export default function NewDashboard() {
                 <FaRegEdit />
               </button>
             </div>
-            <div className="w-[70%] mx-auto flex flex-col justify-between items-center gap-2 responsiveText text-center">
+            <div
+              className={`w-[70%] mx-auto flex flex-col justify-between items-center gap-2 responsiveText text-center ${text}`}
+            >
               <h1 className="text-2xl mt-2">{user ? user.username : "--"}</h1>
               {/* <p>Legacy Paradigm Executive</p> */}
               <div className="flex justify-between items-center gap-4">
@@ -179,16 +183,18 @@ export default function NewDashboard() {
         </div>
       </section>
 
-      <section className={`py-5 h-fit ${bg} ${text} _bg-primaryTwo _text-white`}>
+      <section
+        className={`py-5 h-fit ${bg} ${text} _bg-primaryTwo _text-white`}
+      >
         <div
-          className={`bg-primaryTwo h-fit flex justify-evenly items-center border-b-2 ${border} _border-b-white`}
+          className={`${bg} _bg-primaryTwo h-fit flex justify-evenly items-center border-b-2 ${border} _border-b-white`}
         >
           <button
             onClick={handleView}
             data-view="1"
             className={
               currentView === 1
-                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 ${isDark ? "before:bg-primaryTwo" : "before:bg-primaryThree"} ${bg} _bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -199,7 +205,7 @@ export default function NewDashboard() {
             data-view="2"
             className={
               currentView === 2
-                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 ${isDark ? "before:bg-primaryTwo" : "before:bg-primaryThree"} ${bg} _bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
@@ -210,23 +216,12 @@ export default function NewDashboard() {
             data-view="3"
             className={
               currentView === 3
-                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
+                ? `block w-[8rem] ${border} ${text} _text-white p-2 border-2 _border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 ${isDark ? "before:bg-primaryTwo" : "before:bg-primaryThree"} ${bg} _bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
                 : ``
             }
           >
             Paid courses
           </button>
-          {/* <button
-            onClick={handleView}
-            data-view="4"
-            className={
-              currentView === 4
-                ? `block w-[8rem] text-white p-2 border-2 border-white !border-b-[primaryTwo] _!z-10 before:block before:w-full before:h-fit before:py-2 before:bg-primaryTwo bg-primaryTwo relative before:absolute before:top-[100%] before:left-0 before:right-0 mb-[-2px]`
-                : ``
-            }
-          >
-            History
-          </button> */}
         </div>
         <div className="w-full h-fit">
           {/* ////////////////////////////////////Cards///////////////////////////////////////////// */}
@@ -243,7 +238,7 @@ export default function NewDashboard() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search for Libraries"
-                className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white`}
+                className={`block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] ${bg} ${text} _bg-primaryTwo _text-white`}
               />
               <span
                 className={`block w-fit ${text} text-[#FFFFF0] ${currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}
