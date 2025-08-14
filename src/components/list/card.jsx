@@ -22,7 +22,7 @@ import useUser from "../../hooks/useUser";
 import { useTheme } from "../../hooks/useTheme";
 
 export default function Card({ presentation, refresh }) {
-  const { bg, text, border, isDark } = useTheme();
+  const { bg, text, border, backDropFilter, lighterSwitch, isDark } = useTheme();
   const { userQuery } = useUser();
   const user = userQuery.data;
   const navigate = useNavigate();
@@ -232,7 +232,7 @@ export default function Card({ presentation, refresh }) {
       />
       <motion.div
         variants={containerVarient}
-        className={`card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border _border-[rgba(255,166,0,0.53)] ${border} _border-slate-200`}
+        className={`card rounded-lg p-4 maxScreenMobile:p-2 cursor-pointer aspect-[1/1.2] md:aspect-square border _border-[rgba(255,166,0,0.53)] ${border} ${lighterSwitch} _border-slate-200`}
       >
         <Link to={`/${presentation.liveId}`} viewTransition>
           <div className={`card_img rounded-lg border-[1px] border-solid ${border} _border-slate-200`}>

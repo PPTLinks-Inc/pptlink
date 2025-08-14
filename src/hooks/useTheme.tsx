@@ -11,6 +11,8 @@ export const useTheme = () => {
     text: darkTheme ? "text-primaryThree" : "text-primaryTwo",
     reverseText: darkTheme ? "text-primaryTwo" : "text-primaryThree",
     border: darkTheme ? "border-primaryThree" : "border-primaryTwo",
+    backDropFilter: darkTheme ? "bg-primaryFive" : "bg-primarySix",
+    lighterSwitch: darkTheme ? "bg-primarySeven" : "bg-primarySix",
     isDark: darkTheme
   };
 };

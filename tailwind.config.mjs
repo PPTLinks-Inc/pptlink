@@ -50,6 +50,9 @@ export default {
         primaryTwo: "#191919",
         primaryThree: "#FFFFF0",
         primaryFour: "#e2e8f0",
+        primaryFive: "#ffffff12",
+        primarySix: "#ffa60033",
+        primarySeven: "rgba(#ffffff, 0.1)",
 
         // Component colors
         card: {
