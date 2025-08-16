@@ -8,6 +8,7 @@ import { IoMdLock } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import humanizeDuration from "humanize-duration";
 import { cn } from "../../lib/utils";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function CourseCard({
   content,
@@ -15,6 +16,8 @@ export default function CourseCard({
   courseId,
   showProgress
 }) {
+  const { bg, text, border, isDark, reverseBg, reverseText, reverseBorder, lighterSwitch } =
+    useTheme();
   const navigate = useNavigate();
 
   const [quizStartTime] = useState(content?.quiz?.startTime || null);
@@ -119,7 +122,7 @@ export default function CourseCard({
           transition: { duration: 0.5, type: "tween" }
         }}
         viewport={{ once: true }}
-        className="card snap_scrolling_child w-full maxSmallMobile:!min-w-[285px] maxSmallMobile:!max-w-[285px] rounded-lg !pt-0 cursor-pointer maxSmallMobile:aspect-[1/1.2] border border-[#FFFFF0] relative"
+        className={`card snap_scrolling_child w-full maxSmallMobile:!min-w-[285px] maxSmallMobile:!max-w-[285px] rounded-lg !pt-0 cursor-pointer maxSmallMobile:aspect-[1/1.2] border border-[#FFFFF0] relative`}
         onClick={viewContent}
       >
         <span
