@@ -69,7 +69,7 @@ export default function CoursePreviewPage() {
 
   if (error) {
     return (
-      <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
+      <div className={`${bg} ${text} w-full h-[50vh] flex items-center justify-center flex-col`}>
         {axios.isAxiosError(error) ? (
           <p>
             {error.response?.data?.message ||
@@ -83,7 +83,7 @@ export default function CoursePreviewPage() {
         <Button
           onClick={() => refetch()}
           variant="outline"
-          className="mt-4 text-primaryTwo"
+          className={`mt-4 ${reverseText} ${reverseBg} ${border}`}
         >
           Retry
         </Button>

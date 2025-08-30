@@ -80,6 +80,9 @@ const TermsAndServicesPage = lazy(
 const PrivacyPolicyPage = lazy(
   () => import("./components/Terms_and_policy_page/privacyPolicy")
 );
+const CourseDashboardOverviewPage = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewDashboard")
+);
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
@@ -252,6 +255,10 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/signup",
       element: <SignPage />
+    },
+    {
+      path: "/mycourses/overview",
+      element: <CourseDashboardOverviewPage />
     },
     {
       path: "/forgot-password",
