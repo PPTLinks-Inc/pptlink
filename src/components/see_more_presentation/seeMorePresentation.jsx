@@ -1,14 +1,18 @@
 import { useRef, useEffect } from "react";
 import documentImg from "/team/pptlink_resources/documentation-svgrepo-com (1).svg";
 import searchImg from "/team/pptlink_resources/Icon material-search.png";
+import { CiSearch } from "react-icons/ci";
 import Card from "../list/card";
 import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
-import { Helmet } from 'react-helmet';
-import LogoBlack from '../../images/Logo-Black.png';
+import { Helmet } from "react-helmet";
+import LogoBlack from "../../images/Logo-Black.png";
 import usePublicPresentation from "../../hooks/usePublicPresentation";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function PublicPresentation() {
+  const { bg, text, border, isDark, reverseBg, reverseText, reverseBorder } =
+    useTheme();
   const scrollRef = useRef();
 
   const {
@@ -26,7 +30,7 @@ export default function PublicPresentation() {
   const intersection = useIntersection(intersectionRef, {
     root: null,
     rootMargin: "100px",
-    threshold: .5
+    threshold: 0.5
   });
 
   useEffect(
@@ -40,43 +44,46 @@ export default function PublicPresentation() {
   );
 
   return (
-    <div className="bg-primaryTwo w-full h-fit">
+    <div className={`w-full h-fit ${bg} ${text}`}>
       <Helmet>
         <title>{`See more - PPTLinks `}</title>
         <meta
-          name='description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
         <meta
-          name='tags'
+          name="tags"
           content={`PPT, Presentations, Powerpoint, PPTLinks, publicPresentation, public_presentation, `}
         />
 
         {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-        <meta property='og:type' content='website' />
-        <meta property='og:url' content={`https://www.PPTLink.com/public_presentation`} />
-        <meta property='og:title' content={`See more - PPTLinks `} />
+        <meta property="og:type" content="website" />
         <meta
-          property='og:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          property="og:url"
+          content={`https://www.PPTLink.com/public_presentation`}
         />
-        <meta property='og:image' content={LogoBlack} />
+        <meta property="og:title" content={`See more - PPTLinks `} />
+        <meta
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="og:image" content={LogoBlack} />
 
         {/* meta tags to display information on twitter  */}
-        <meta property='twitter:card' content='website' />
+        <meta property="twitter:card" content="website" />
         <meta
-          property='twitter:url'
+          property="twitter:url"
           content={`https://www.PPTLink.com/public_presentation`}
         />
 
-        <meta property='twitter:title' content={`See more - PPTLinks `} />
+        <meta property="twitter:title" content={`See more - PPTLinks `} />
         <meta
-          property='twitter:description'
-          content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
         />
-        <meta property='twitter:image' content={LogoBlack} />
+        <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
-      <section className="">
+      <section className={`${bg} ${text}`}>
         <div className="container h-fit py-10 flex flex-col justify-between items-center">
           <h1 className="text-5xl font-[400] uppercase mb-5 maxScreenMobile:text-3xl maxScreenMobile:text-center">
             PUBLIC PRESENTATIONS
@@ -88,18 +95,14 @@ export default function PublicPresentation() {
               className="block w-full h-full"
             />
           </div>
-          <div className="w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border border-white relative mb-5">
+          <div className={`w-[300px] maxScreenMobile:!w-[90%] h-fit rounded-[.5rem] border ${border} _border-white relative mb-5`}>
             <input
               type="text"
               name="searcher"
               placeholder="Search for Libraries"
-              className="block w-full min-h-[1rem] text-[.8rem] indent-4 p-2 rounded-[.5rem] bg-primaryTwo text-white"
+              className={`block w-full min-h-[1rem] text-[.8rem] indent-6 p-2 rounded-[.5rem] ${bg} ${text} _bg-primaryTwo _text-white`}
             />
-            <img
-              src={searchImg}
-              alt={searchImg}
-              className="block w-5 aspect-square absolute right-2 top-[50%] translate-y-[-50%]"
-            />
+            <CiSearch size={28} className={`block w-5 aspect-square absolute left-2 top-[50%] translate-y-[-50%] ${bg}`} />
           </div>
         </div>
       </section>

@@ -103,7 +103,7 @@ export default function Header() {
         >
           <button
             onClick={() => handleDarkTheme()}
-            className={`static md:absolute md:-right-10 md:top-[50%] md:-translate-y-[50%] font-semibold ${text} {dropdown ? "text-primaryTwo" : "text-[#FFFFF0]"}`}
+            className={`!hidden static md:absolute md:-right-10 md:top-[50%] md:-translate-y-[50%] font-semibold ${text} {dropdown ? "text-primaryTwo" : "text-[#FFFFF0]"}`}
           >
             {darkTheme ? (
               <MdDarkMode size={28} />

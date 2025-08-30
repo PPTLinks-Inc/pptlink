@@ -52,6 +52,7 @@ export default {
         primaryFour: "#e2e8f0",
         primaryFive: "#ffffff12",
         primarySix: "#ffa60033",
+        primarySixTwo: "#ffa600",
         primarySeven: "rgba(#ffffff, 0.1)",
 
         // Component colors
