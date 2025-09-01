@@ -83,6 +83,28 @@ const PrivacyPolicyPage = lazy(
 const CourseDashboardOverviewPage = lazy(
   () => import("./components/courseOverviewDashboard/courseOverviewDashboard")
 );
+const CourseOverviewPresentations = lazy(
+  () =>
+    import("./components/courseOverviewDashboard/courseOverviewPresentations")
+);
+const CourseOverviewMyCourses = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewMyCourses")
+);
+const CourseOverviewLiveSession = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewLiveSession")
+);
+const CourseOverviewStudents = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewStudents")
+);
+const CourseOverviewMessages = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewMessages")
+);
+const CourseOverviewEarnings = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewEarnings")
+);
+const CourseOverviewSettings = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewSettings")
+);
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
@@ -257,8 +279,36 @@ const router = sentryCreateBrowserRouter(
       element: <SignPage />
     },
     {
-      path: "/mycourses/overview",
+      path: "/dashboard/overview/home",
       element: <CourseDashboardOverviewPage />
+    },
+    {
+      path: "/dashboard/overview/presentations",
+      element: <CourseOverviewPresentations />
+    },
+    {
+      path: "/dashboard/overview/mycourses",
+      element: <CourseOverviewMyCourses />
+    },
+    {
+      path: "/dashboard/overview/live-sessions",
+      element: <CourseOverviewLiveSession />
+    },
+    {
+      path: "/dashboard/overview/students",
+      element: <CourseOverviewStudents />
+    },
+    {
+      path: "/dashboard/overview/messages",
+      element: <CourseOverviewMessages />
+    },
+    {
+      path: "/dashboard/overview/earnings",
+      element: <CourseOverviewEarnings />
+    },
+    {
+      path: "/dashboard/overview/settings",
+      element: <CourseOverviewSettings />
     },
     {
       path: "/forgot-password",
