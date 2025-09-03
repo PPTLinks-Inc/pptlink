@@ -17,17 +17,17 @@ import UtilityProviderFunc from "./contexts/utilityContext";
 import QuizStoreProvider from "./store/quizStoreProvider";
 
 // all lazy import
+const Root = lazy(() => import("./components/root/root"));
+const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Home = lazy(() => import("./components/home/home"));
 const NotFound = lazy(() => import("./components/404/404"));
+const SignPage = lazy(() => import("./components/sign/sign"));
 const Interface = lazy(() => import("./components/interface/Interface"));
 const InterfaceView = lazy(
   () => import("./components/interface/InterfaceView")
 );
 const InterfaceNotFound = lazy(() => import("./components/interface/404"));
-const Root = lazy(() => import("./components/root/root"));
-const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Library = lazy(() => import("./components/library/library"));
-const SignPage = lazy(() => import("./components/sign/sign"));
 // const Pay = lazy(() => import("./components/pay/pay"));
 const Payment = lazy(() => import("./components/pay/payment"));
 const About = lazy(() => import("./components/about-us/about"));
