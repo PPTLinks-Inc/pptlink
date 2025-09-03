@@ -38,7 +38,7 @@ export default function AsideForDarshboardOverview() {
           </NavLink>
         ))}
       </nav>
-      <Link to={"/sign-out"}>Log-out</Link>
+      <Link to={"/sign-out"} className="pl-2">Log-out</Link>
     </>
   );
 }
