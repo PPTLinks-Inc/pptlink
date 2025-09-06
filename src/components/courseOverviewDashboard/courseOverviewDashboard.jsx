@@ -8,7 +8,7 @@ export default function CourseDashboardOverviewPage() {
     <CourseOverviewRoot>
       <div className="wrapper w-full h-full grid grid-cols-1 grid-rows-[1fr_1fr] gap-2">
         <div className="analyticsOverview grid grid-cols-3 grid-rows-1 gap-2 w-full h-full">
-          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo py-4 px-6 flex flex-col justify-between">
+          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 flex flex-col justify-between">
             <h3 className="text-2xl font-semibold">Upcoming Classes</h3>
             <div className="w-full flex flex-col">
               <p className="text-xl opacity-90">
@@ -29,7 +29,7 @@ export default function CourseDashboardOverviewPage() {
               </div>
             </div>
           </div>
-          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo py-4 px-6 flex flex-col justify-between">
+          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 flex flex-col justify-between">
             <h3 className="text-2xl font-semibold">Total Enrolled Students</h3>
             <div className="w-full flex items-center justify-between">
               <p className="text-2xl font-semibold opacity-90 inline-flex items-center gap-2">
@@ -46,7 +46,7 @@ export default function CourseDashboardOverviewPage() {
               </Link>
             </div>
           </div>
-          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo py-4 px-6 flex flex-col justify-between">
+          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 flex flex-col justify-between">
             <h3 className="text-2xl font-semibold">Active Courses</h3>
             <div className="w-full flex items-center justify-between">
               <p className="text-2xl font-semibold opacity-90 inline-flex items-center gap-2">
@@ -65,7 +65,7 @@ export default function CourseDashboardOverviewPage() {
           </div>
         </div>
         <div className="analyticsOverviewBottom w-full h-full grid grid-cols-[400px_1fr] grid-rows-1 gap-2">
-          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo py-4 px-6 flex flex-col justify-between">
+          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 flex flex-col justify-between">
             <h3 className="text-2xl font-semibold">Earnings</h3>
             <div className="w-full flex flex-col">
               <p className="text-xl opacity-90">
@@ -86,7 +86,7 @@ export default function CourseDashboardOverviewPage() {
               </div>
             </div>
           </div>
-          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo py-4 px-6 grid grid-cols-1 grid-rows-[auto_1fr_auto] gap-2">
+          <div className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 grid grid-cols-1 grid-rows-[auto_1fr_auto] gap-2">
             <div className="flex items-center justify-between">
               <h3 className="text-2xl font-semibold w-fit">Messages</h3>
               <span className="opacity-75 inline-block">Latest Messages</span>
