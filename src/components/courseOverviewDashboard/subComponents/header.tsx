@@ -9,8 +9,8 @@ export default function CourseOverviewHeader() {
   const [openProfil, setOpenProfile] = useState(false);
 
   return (
-    <header className="bg-black text-white w-full h-fit">
-      <nav className="w-[98%] mx-auto h-fit flex justify-between items-center py-2">
+    <header className="bg-black text-white w-full h-fit sticky top-0 !z-50">
+      <nav className="w-[98%] mx-auto h-fit flex justify-between items-center py-3">
         <Link to={"/"} className="inline-flex items-center gap-1">
           <img
             src={logo_orange}

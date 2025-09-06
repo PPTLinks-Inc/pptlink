@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import CourseOverviewHeader from "./subComponents/header";
 import AsideForDarshboardOverview from "./subComponents/aside";
 import InnerMainHeader from "./subComponents/innerMainHeader";
@@ -14,22 +14,6 @@ export default function CourseOverviewRoot({
   const [toggleSidebar, setToggleSidebar] = useState(true);
   const handleSideBar = () => setToggleSidebar(!toggleSidebar);
 
-  const sideBarVariant = {
-    initial: {
-      x: 5,
-      opacity: 0
-    },
-    inView: {
-      x: 0,
-      opacity: 100,
-      transition: {
-        duration: 1,
-        staggerChildren: 0.2,
-        when: "beforeChildren"
-      }
-    }
-  };
-
   return (
     <section className="min-h-screen w-full bg-black text-white grid grid-cols-1 grid-rows-[auto_1fr]">
       <CourseOverviewHeader />
@@ -37,7 +21,21 @@ export default function CourseOverviewRoot({
         className={`h-full grid ${toggleSidebar ? "grid-cols-[300px_1fr]" : "grid-cols-1"} grid-rows-1`}
       >
         <motion.div
-          variants={sideBarVariant}
+          variants={{
+            initial: {
+              x: 5,
+              opacity: 0
+            },
+            inView: {
+              x: 0,
+              opacity: 100,
+              transition: {
+                duration: 1,
+                staggerChildren: 0.2,
+                when: "beforeChildren"
+              }
+            }
+          }}
           initial="initial"
           whileInView="inView"
           viewport={{ once: true }}
