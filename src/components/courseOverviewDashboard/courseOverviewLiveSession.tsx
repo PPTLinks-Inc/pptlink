@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import CourseOverviewRoot from "./courseOverviewRoot";
 
-const UpcomingSessions = Array.from({ length: 3 }, (_, i) => i + 1);
-const PreviousSessions = Array.from({ length: 7 }, (_, i) => i + 1);
+const UpcomingSessions = Array.from({ length: 2 }, (_, i) => i + 1);
+const PreviousSessions = Array.from({ length: 3 }, (_, i) => i + 1);
 
 export default function CourseOverviewLiveSession() {
-  const [currentView, setCurrentView] = useState(2);
+  const [currentView, setCurrentView] = useState(1);
 
   return (
     <CourseOverviewRoot>
