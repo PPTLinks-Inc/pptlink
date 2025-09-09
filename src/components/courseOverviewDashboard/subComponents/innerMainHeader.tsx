@@ -1,7 +1,11 @@
+import { useContext } from "react";
 import { Bell } from "lucide-react";
 import { CiSettings } from "react-icons/ci";
+import { CourseOverview } from "@/contexts/courseOverviewContext";
 
 export default function InnerMainHeader() {
+    const { handleScheduleSession } = useContext(CourseOverview);
+
   return (
     <div className="main-header bg-primaryTwo flex flex-col gap-3 p-2">
       <div className="flex justify-between items-center">
@@ -22,7 +26,7 @@ export default function InnerMainHeader() {
           <button className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md">
             Upload Slides
           </button>
-          <button className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md">
+          <button onClick={handleScheduleSession} className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md">
             Schedule Live Session
           </button>
           <button className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md">

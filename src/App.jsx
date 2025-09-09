@@ -14,6 +14,7 @@ import * as Sentry from "@sentry/react";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
 import UtilityProviderFunc from "./contexts/utilityContext";
+import CourseOverviewContextProvider from "./contexts/courseOverviewContext";
 import QuizStoreProvider from "./store/quizStoreProvider";
 
 // all lazy import
@@ -280,35 +281,67 @@ const router = sentryCreateBrowserRouter(
     },
     {
       path: "/dashboard/overview/home",
-      element: <CourseDashboardOverviewPage />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseDashboardOverviewPage />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/dashboard/overview/presentations",
-      element: <CourseOverviewPresentations />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseOverviewPresentations />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/dashboard/overview/mycourses",
-      element: <CourseOverviewMyCourses />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseOverviewMyCourses />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/dashboard/overview/live-sessions",
-      element: <CourseOverviewLiveSession />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseOverviewLiveSession />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/dashboard/overview/students",
-      element: <CourseOverviewStudents />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseOverviewStudents />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/dashboard/overview/messages",
-      element: <CourseOverviewMessages />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseOverviewMessages />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/dashboard/overview/earnings",
-      element: <CourseOverviewEarnings />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseOverviewEarnings />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/dashboard/overview/settings",
-      element: <CourseOverviewSettings />
+      element: (
+        <CourseOverviewContextProvider>
+          <CourseOverviewSettings />
+        </CourseOverviewContextProvider>
+      )
     },
     {
       path: "/forgot-password",
