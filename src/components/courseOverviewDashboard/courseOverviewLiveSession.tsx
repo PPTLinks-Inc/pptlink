@@ -1,21 +1,44 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CourseOverviewRoot from "./courseOverviewRoot";
 import { CourseOverview } from "@/contexts/courseOverviewContext";
+import { LoadingAssetSmall } from "../../assets/assets";
+import { useTheme } from "../../hooks/useTheme";
 
 const UpcomingSessions = Array.from({ length: 2 }, (_, i) => i + 1);
 const PreviousSessions = Array.from({ length: 3 }, (_, i) => i + 1);
 const ViewStudentsAttendance = Array.from({ length: 16 }, (_, i) => i + 1);
 
 export default function CourseOverviewLiveSession() {
+  const { bg, reverseBg, text, reverseText, border } = useTheme();
   const { scheduleSession, handleScheduleSession } = useContext(CourseOverview);
   const [currentView, setCurrentView] = useState(1);
+  const [values, setValues] = useState({
+    msgName: "",
+    msgEmail: "",
+    msgPhone: "",
+    msgReason: "",
+    msg: "",
+
+    msgPending: false,
+    msgError: [],
+    msgSuccess: ""
+  });
 
   const handleBackword = () => {
-    handleScheduleSession(false);
     setCurrentView(1);
+    handleScheduleSession(false);
   };
+
+  const handleMsgSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      setValues({ ...values, msgPending: true });
+    },
+    [values]
+  );
 
   return (
     <CourseOverviewRoot>
@@ -323,76 +346,310 @@ export default function CourseOverviewLiveSession() {
         <div className="wrapper w-full h-fit grid grid-cols-1 grid-rows-[auto_1fr] gap-2">
           <button
             onClick={() => setCurrentView(1)}
-            className="block w-fit text-white text-sm font-semibold"
+            className="block w-fit text-white text-sm font-semibold px-4"
           >
-            Previous Sessions
+            Schedule your live session
           </button>
-          <div
-            className={`w-full min-h-full px-4 !border-[0.1px] border-white py-4`}
-          >
-            <ul className="block w-full h-fit">
-              <li className="grid grid-cols-[1fr_2fr] gap-1 mb-4">
-                <span className="block w-full h-fit font-semibold text-sm text-white">
-                  Title:{" "}
-                </span>
-                <span className="block w-full h-fit text-sm text-[gray]">
-                  Python 001
-                </span>
-              </li>
+          <div className={`w-full min-h-full px-4 py-4`}>
+            <form onSubmit={handleMsgSubmit}>
+              <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
+                <div className="w-[50%] maxScreenMobile:w-full">
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={values.msgName}
+                    onChange={(e) => {
+                      setValues({ ...values, msgName: e.target.value });
+                    }}
+                    className={`block w-full text-sm bg-transparent border-[1px] border-solid ${values.msgName !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} _text-white indent-4`}
+                    placeholder="Session title"
+                    required
+                  />
+                </div>
+                <div className="w-[50%] h-fit maxScreenMobile:w-full">
+                  <select
+                    id="reason"
+                    value={values.msgReason}
+                    onChange={(e) => {
+                      setValues({ ...values, msgReason: e.target.value });
+                    }}
+                    className={`${bg} border-[1px] ${values.msgReason !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md ${text} block w-full text-sm py-[0.5rem] pl-3`}
+                  >
+                    <option value="" disabled>
+                      Select course
+                    </option>
+                    <option value="Perfomance issues">
+                      Slow platform and frequent lags
+                    </option>
 
-              <li className="grid grid-cols-[1fr_2fr] gap-1 mb-4">
-                <span className="block w-full h-fit font-semibold text-sm text-white">
-                  Date & Time:{" "}
-                </span>
-                <span className="block w-full h-fit text-sm text-[gray]">
-                  October 1, 10:47AM-11:47AM
-                </span>
-              </li>
+                    <option value="Technical bugs">Frequent crashes</option>
 
-              <li className="grid grid-cols-[1fr_2fr] gap-1 mb-4">
-                <span className="block w-full h-fit font-semibold text-sm text-white">
-                  Duration:{" "}
-                </span>
-                <span className="block w-full h-fit text-sm text-[gray]">
-                  100Min
-                </span>
-              </li>
+                    <option value="Interface design issues">
+                      Difficulty in navigation and design
+                    </option>
 
-              <li className="grid grid-cols-[1fr_2fr] gap-1 mb-4">
-                <span className="block w-full h-fit font-semibold text-sm text-white">
-                  Co-host:{" "}
-                </span>
-                <span className="block w-full h-fit text-sm text-[gray]">
-                  Raymond A. AMem
-                </span>
-              </li>
+                    <option value="Compatibility issues">
+                      Poor compatibility with operating systems or device
+                    </option>
 
-              <li className="grid grid-cols-[1fr_2fr] gap-1 mb-4">
-                <span className="block w-full h-fit font-semibold text-sm text-white">
-                  Attendance Rate:{" "}
-                </span>
-                <span className="block w-full h-fit text-sm text-[gray]">
-                  12 of 20 Students (68%)
-                </span>
-              </li>
-            </ul>
+                    <option value="UPload/Download problems">
+                      Problems uploading or downloading file
+                    </option>
 
-            <div className="flex justify-between items-center pt-16">
-              <Link
-                to={"#"}
-                onClick={() => {
-                  handleBackword();
-                }}
+                    <option value="Features request">
+                      Missing essential features
+                    </option>
+
+                    <option value="Customer Support">
+                      Slow or unhelpful customer support
+                    </option>
+
+                    <option value="Account Management">
+                      Difficulties with account settings or access
+                    </option>
+
+                    <option value="Security Concerns">
+                      Concerns about data security and privacy
+                    </option>
+
+                    <option value="Other">Other messages</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-between items-end gap-4 mb-8 maxScreenMobile:flex-col">
+                <div className="w-[50%] maxScreenMobile:w-full">
+                  <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    inputMode="numeric"
+                    value={values.msgPhone}
+                    onChange={(e) => {
+                      setValues({ ...values, msgPhone: e.target.value });
+                    }}
+                    className={`block w-full text-sm bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
+                    placeholder="Date"
+                    required
+                  />
+                </div>
+                <div className="w-[50%] maxScreenMobile:w-full">
+                  <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    inputMode="numeric"
+                    value={values.msgPhone}
+                    onChange={(e) => {
+                      setValues({ ...values, msgPhone: e.target.value });
+                    }}
+                    className={`block w-full text-sm bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
+                    placeholder="Time"
+                    required
+                  />
+                </div>
+
+                {/* <div className="w-[50%] h-fit maxScreenMobile:w-full">
+                  <select
+                    id="reason"
+                    value={values.msgReason}
+                    onChange={(e) => {
+                      setValues({ ...values, msgReason: e.target.value });
+                    }}
+                    className={`${bg} border-[1px] ${values.msgReason !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md ${text} block w-full text-sm py-[0.5rem] pl-3`}
+                  >
+                    <option value="" disabled>
+                      Reason for writing?
+                    </option>
+                    <option value="Perfomance issues">
+                      Slow platform and frequent lags
+                    </option>
+
+                    <option value="Technical bugs">Frequent crashes</option>
+
+                    <option value="Interface design issues">
+                      Difficulty in navigation and design
+                    </option>
+
+                    <option value="Compatibility issues">
+                      Poor compatibility with operating systems or device
+                    </option>
+
+                    <option value="UPload/Download problems">
+                      Problems uploading or downloading file
+                    </option>
+
+                    <option value="Features request">
+                      Missing essential features
+                    </option>
+
+                    <option value="Customer Support">
+                      Slow or unhelpful customer support
+                    </option>
+
+                    <option value="Account Management">
+                      Difficulties with account settings or access
+                    </option>
+
+                    <option value="Security Concerns">
+                      Concerns about data security and privacy
+                    </option>
+
+                    <option value="Other">Other messages</option>
+                  </select>
+                </div> */}
+              </div>
+
+              <div className="grid grid-cols-[1fr_1fr] grid-rows-[1fr] gap-4 mb-8 maxScreenMobile:grid-cols-1 maxScreenMobile:grid-rows-2">
+                <div className="w-full h-fit">
+                  <div className="w-full h-fit mb-6">
+                    <select
+                      id="reason"
+                      value={values.msgReason}
+                      onChange={(e) => {
+                        setValues({ ...values, msgReason: e.target.value });
+                      }}
+                      className={`${bg} border-[1px] ${values.msgReason !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md ${text} block w-full text-sm py-[0.5rem] pl-3`}
+                    >
+                      <option value="" disabled>
+                        Duration
+                      </option>
+                      <option value="Perfomance issues">
+                        Slow platform and frequent lags
+                      </option>
+
+                      <option value="Technical bugs">Frequent crashes</option>
+
+                      <option value="Interface design issues">
+                        Difficulty in navigation and design
+                      </option>
+
+                      <option value="Compatibility issues">
+                        Poor compatibility with operating systems or device
+                      </option>
+
+                      <option value="UPload/Download problems">
+                        Problems uploading or downloading file
+                      </option>
+
+                      <option value="Features request">
+                        Missing essential features
+                      </option>
+
+                      <option value="Customer Support">
+                        Slow or unhelpful customer support
+                      </option>
+
+                      <option value="Account Management">
+                        Difficulties with account settings or access
+                      </option>
+
+                      <option value="Security Concerns">
+                        Concerns about data security and privacy
+                      </option>
+
+                      <option value="Other">Other messages</option>
+                    </select>
+                  </div>
+
+                  <div className="w-full h-fit">
+                    <select
+                      id="reason"
+                      value={values.msgReason}
+                      onChange={(e) => {
+                        setValues({ ...values, msgReason: e.target.value });
+                      }}
+                      className={`${bg} border-[1px] ${values.msgReason !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md ${text} block w-full text-sm py-[0.5rem] pl-3`}
+                    >
+                      <option value="" disabled>
+                        Add Co-host
+                      </option>
+                      <option value="Perfomance issues">
+                        Slow platform and frequent lags
+                      </option>
+
+                      <option value="Technical bugs">Frequent crashes</option>
+
+                      <option value="Interface design issues">
+                        Difficulty in navigation and design
+                      </option>
+
+                      <option value="Compatibility issues">
+                        Poor compatibility with operating systems or device
+                      </option>
+
+                      <option value="UPload/Download problems">
+                        Problems uploading or downloading file
+                      </option>
+
+                      <option value="Features request">
+                        Missing essential features
+                      </option>
+
+                      <option value="Customer Support">
+                        Slow or unhelpful customer support
+                      </option>
+
+                      <option value="Account Management">
+                        Difficulties with account settings or access
+                      </option>
+
+                      <option value="Security Concerns">
+                        Concerns about data security and privacy
+                      </option>
+
+                      <option value="Other">Other messages</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="w-full h-full">
+                  <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    inputMode="numeric"
+                    value={values.msgPhone}
+                    onChange={(e) => {
+                      setValues({ ...values, msgPhone: e.target.value });
+                    }}
+                    className={`block w-full h-full text-sm bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
+                    placeholder="Add slide"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className=" mb-8">
+                <textarea
+                  name="message"
+                  id="message"
+                  cols={30}
+                  rows={5}
+                  value={values.msg}
+                  placeholder="Note/Occupation (Otional)"
+                  onChange={(e) => {
+                    setValues({ ...values, msg: e.target.value });
+                  }}
+                  className={`block w-full text-sm !h-32 bg-transparent border-[1px] border-solid ${values.msg !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-1 indent-4 resize-none ${text}`}
+                ></textarea>
+              </div>
+            </form>
+
+            <div className="flex justify-between items-center">
+              <button
+                type="button"
+                onClick={handleBackword}
                 className="flex justify-center items-center w-fit h-fit text-xs font-semibold py-1.5 px-6 text-primaryTwo bg-primaryThree rounded-sm"
               >
                 Back
-              </Link>
+              </button>
               <Link
                 to={"#"}
-                onClick={() => setCurrentView(3)}
+                onClick={() => alert("Session created successfully")}
                 className="flex justify-center items-center w-fit h-fit text-xs font-semibold py-1.5 px-6 text-primaryTwo bg-primaryThree rounded-sm"
               >
-                View Attendance
+                Schedule
               </Link>
             </div>
           </div>
