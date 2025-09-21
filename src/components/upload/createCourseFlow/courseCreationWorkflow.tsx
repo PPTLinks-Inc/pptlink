@@ -81,7 +81,8 @@ export default function CourseCreationWorkflow() {
 
   // Mobile states
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [selectedContentForEdit, setSelectedContentForEdit] = useState<ContentItem | null>(null);
+  const [selectedContentForEdit, setSelectedContentForEdit] =
+    useState<ContentItem | null>(null);
 
   const [openQuizCreationModal, setOpenQuizCreationModal] = useState(false);
 
@@ -367,7 +368,7 @@ export default function CourseCreationWorkflow() {
           onToggleSidebar={handleMobileSidebarToggle}
           onGoBack={handleMobileGoBack}
         />
-        
+
         <MobileCourseSidebar
           isOpen={isMobileSidebarOpen}
           onClose={() => setIsMobileSidebarOpen(false)}
@@ -381,7 +382,7 @@ export default function CourseCreationWorkflow() {
           isAddingSectionLoading={handleAddSection.isPending}
           newlyCreatedSection={newlyCreatedSection}
         />
-        
+
         <MobileCourseContent
           contentItems={contentItems || []}
           onContentReorder={setContentItems}
@@ -391,7 +392,7 @@ export default function CourseCreationWorkflow() {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         />
-        
+
         {/* Hidden file inputs for mobile */}
         <input
           type="file"
@@ -421,7 +422,7 @@ export default function CourseCreationWorkflow() {
             e.target.value = ""; // Reset input after handling files
           }}
         />
-        
+
         {/* Mobile Quiz Modal */}
         <Dialog
           open={openQuizCreationModal}
@@ -638,15 +639,15 @@ export default function CourseCreationWorkflow() {
                         className="p-2 rounded-md bg-gray-100"
                       >
                         <p className="font-medium">{section.title}</p>
-                        <div className="text-sm text-gray-600 flex gap-3">
-                          <span>
+                        <div className="flex flex-wrap gap-3 text-sm text-gray-600 justify-start items-start">
+                          <span className="flex-none min-w-[80px] md:flex-1 md:w-auto text-nowrap">
                             {videos} {videos === 1 ? "video" : "videos"}
                           </span>
-                          <span>
+                          <span className="flex-none min-w-[80px] md:flex-1 md:w-auto text-nowrap">
                             {ppts}{" "}
                             {ppts === 1 ? "presentation" : "presentations"}
                           </span>
-                          <span>
+                          <span className="flex-none min-w-[80px] md:flex-1 md:w-auto text-nowrap">
                             {quiz} {quiz === 1 ? "quiz" : "quizzes"}
                           </span>
                         </div>
@@ -941,15 +942,17 @@ function ContentItems({ content }: { content: ContentItem }) {
 
   return (
     <>
-      {openQuizUpdateModal && <Dialog
-        open={openQuizUpdateModal}
-        onOpenChange={setOpenQuizUpdateModal}
-      >
-        <QuizCreationModal
-          setOpenQuizCreationModal={setOpenQuizUpdateModal}
-          quizId={content.id}
-        />
-      </Dialog>}
+      {openQuizUpdateModal && (
+        <Dialog
+          open={openQuizUpdateModal}
+          onOpenChange={setOpenQuizUpdateModal}
+        >
+          <QuizCreationModal
+            setOpenQuizCreationModal={setOpenQuizUpdateModal}
+            quizId={content.id}
+          />
+        </Dialog>
+      )}
       <Dialog
         open={openEditModal || openQuizQuestionModal === content.id}
         onOpenChange={(open) => {
@@ -999,7 +1002,10 @@ function ContentItems({ content }: { content: ContentItem }) {
               </div>
             </div>
           ) : (
-            <ManageQuiz content={content} setOpenQuizUpdateModal={setOpenQuizUpdateModal} />
+            <ManageQuiz
+              content={content}
+              setOpenQuizUpdateModal={setOpenQuizUpdateModal}
+            />
           )}
 
           {(content.type === "VIDEO" || content.type === "PPT") && (

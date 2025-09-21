@@ -337,8 +337,11 @@ export default function CourseCreationProfile() {
                             )}
                           </div>
                           <div>
+                            <label className="hidden absolute" htmlFor={`image-upload-${instructorId}`}>
+                              Upload Image
+                            </label>
                             <input
-                              type="file"
+                              type="file" 
                               id={`image-upload-${instructorId}`}
                               className="hidden"
                               accept="image/*"

@@ -152,7 +152,7 @@ export default function MobileCourseHeader({
       </div>
 
       {/* Drag Zone Hint */}
-      <div className="bg-black/20 mx-4 mb-4 rounded-lg border-2 border-dashed border-white/30 py-3 text-center">
+      <div className="bg-black/20 mx-4 mb-4 rounded-lg border-2 border-dashed border-white/30 py-3 text-center maxScreenMobile:hidden">
         <p className="text-sm text-white/70">
           Drag files here or use buttons above
         </p>
