@@ -126,9 +126,9 @@ export default function CourseCreationSettings() {
       <div className="bg-slate-200 w-full h-full">
         <div className="text-primaryTwo container py-4">
           <h1 className="text-2xl font-bold">Course Creation Settings</h1>
-          <p className="text-lg mt-2 ">Set up your course settings</p>
-          <div className="space-y-4 mt-10">
-            <p className="text-lg font-bold">
+          <p className="text-lg maxScreenMobile:text-md mt-2 ">Set up your course settings</p>
+          <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+            <p className="text-lg maxScreenMobile:text-md font-bold">
               You do not have permission to view this page
             </p>
           </div>
@@ -141,33 +141,33 @@ export default function CourseCreationSettings() {
     <div className="bg-slate-200 w-full h-full">
       <div className="text-primaryTwo container py-4">
         <h1 className="text-2xl font-bold">Course Creation Settings</h1>
-        <p className="text-lg mt-2 ">Set up your course settings</p>
+        <p className="text-lg maxScreenMobile:text-md mt-2 ">Set up your course settings</p>
 
-        <div className="space-y-4 mt-10">
-          <div className="space-y-4 mt-10">
-            <Label className="text-lg font-bold">Course Title</Label>
+        <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+          <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+            <Label className="text-lg maxScreenMobile:text-md font-bold">Course Title</Label>
 
             <Input
               type="text"
-              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w/full"
+              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w-full"
               value={name}
               onChange={(e) => updateValues(e.target.value, "name")}
             />
           </div>
-          <div className="space-y-4 mt-10">
-            <Label className="text-lg font-bold">Course description</Label>
+          <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+            <Label className="text-lg maxScreenMobile:text-md font-bold">Course description</Label>
 
             <Textarea
               value={description}
               onChange={(e) => updateValues(e.target.value, "description")}
-              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w/full"
+              className="pl-2 border-[0.5px] border-black w-3/6 maxScreenMobile:w-full"
             ></Textarea>
           </div>
-          <div className="space-y-4 mt-10">
-            <Label className="text-lg font-bold">Course catergory</Label>
+          <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+            <Label className="text-lg maxScreenMobile:text-md font-bold">Course catergory</Label>
 
             <Select onValueChange={handleCategoryChange} value={categoryId}>
-              <SelectTrigger className="w-3/6 maxScreenMobile:w/full border-[0.5px] border-black">
+              <SelectTrigger className="w-3/6 maxScreenMobile:w-full border-[0.5px] border-black">
                 <SelectValue
                   placeholder={
                     categoriesQuery.isLoading ? "Loading" : "Select category"
@@ -190,7 +190,7 @@ export default function CourseCreationSettings() {
           </div>
           {!freeCourse && (
             <div className="space-y-2 mt-2">
-              <h3 className="text-lg font-bold">
+              <h3 className="text-lg maxScreenMobile:text-md font-bold">
                 Please input the currency in which your course should be charged
               </h3>
               <div className="flex space-x-4">
@@ -217,7 +217,7 @@ export default function CourseCreationSettings() {
                   USD ($)
                 </Label>
               </div>
-              <div className="relative w-3/6 maxScreenMobile:w/full">
+              <div className="relative w-3/6 maxScreenMobile:w-full">
                 <Input
                   type="text"
                   inputMode="numeric"
@@ -236,12 +236,12 @@ export default function CourseCreationSettings() {
           )}
         </div>
 
-        <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">Set your cohort dates</h3>
+        <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+          <h3 className="text-lg maxScreenMobile:text-md font-bold">Set your cohort dates</h3>
 
           <div className="w-3/6 maxScreenMobile:w-full">
-            <div className="flex gap-6 flex-wrap">
-              <div className="flex-1">
+            <div className="w-full flex gap-6 maxScreenMobile:flex-col">
+              <div className="w-3/6 maxScreenMobile:w-full">
                 <h5>Enrollment start date</h5>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -278,7 +278,7 @@ export default function CourseCreationSettings() {
                 </Popover>
               </div>
 
-              <div className="flex-1">
+              <div className="w-3/6 maxScreenMobile:w-full">
                 <h5>Enrollment end date</h5>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -357,7 +357,7 @@ export default function CourseCreationSettings() {
               value={duration}
               disabled={published}
             >
-              <SelectTrigger className="w-3/6 maxScreenMobile:w/full border-[0.5px] border-black">
+              <SelectTrigger className="w-3/6 maxScreenMobile:w-full border-[0.5px] border-black">
                 <SelectValue placeholder="Select duration" />
               </SelectTrigger>
               <SelectContent>
@@ -374,8 +374,8 @@ export default function CourseCreationSettings() {
           </div>
         </div>
 
-        <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">Course Level</h3>
+        <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+          <h3 className="text-lg maxScreenMobile:text-md font-bold">Course Level</h3>
           <div className="flex space-x-4">
             {["BEGINNER", "INTERMEDIATE", "EXPERT"].map((level) => (
               <Label key={level} className="flex items-center">
@@ -393,8 +393,8 @@ export default function CourseCreationSettings() {
           </div>
         </div>
 
-        <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">
+        <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+          <h3 className="text-lg maxScreenMobile:text-md font-bold">
             Please input the maximum amount of students that is allowed to take
             the course
           </h3>
@@ -405,7 +405,7 @@ export default function CourseCreationSettings() {
             min="1"
             max="20000"
             placeholder="Leave blank for unlimited"
-            className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w/full"
+            className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w-full"
             value={maxStudents}
             onChange={(e) => {
               updateValues(Number(e.target.value), "maxStudents");
@@ -415,11 +415,11 @@ export default function CourseCreationSettings() {
           <p className="text-sm text-gray-600">Maximum allowed: 20,000</p>
         </div>
 
-        <div className="space-y-4 mt-10">
-          <h3 className="text-lg font-bold">Course Thumbnail</h3>
-          <div className="flex flex-col gap-4">
+        <div className="space-y-4 mt-10 maxScreenMobile:w-full">
+          <h3 className="text-lg maxScreenMobile:text-md font-bold">Course Thumbnail</h3>
+          <div className="w-full flex flex-col gap-4">
             {thumbnail && (
-              <div className="relative w-[18rem] aspect-[2/2.5] rounded-lg overflow-hidden border-[0.1px] shadow-white shadow-inner">
+              <div className="relative w-[18rem] maxScreenMobile:w-full aspect-[2/2.5] rounded-lg overflow-hidden border-[0.1px] shadow-white shadow-inner">
                 <img
                   src={
                     typeof thumbnail === "string"
@@ -441,7 +441,7 @@ export default function CourseCreationSettings() {
                   updateValues(file, "thumbnail");
                 }
               }}
-              className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w/full cursor-pointer"
+              className="border-[0.5px] border-primaryTwo w-3/6 maxScreenMobile:w-full cursor-pointer"
             />
             <p className="text-sm text-gray-600">
               Recommended size: 800x1000 pixels (2:2.5 aspect ratio)
