@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CourseOverviewRoot from "./courseOverviewRoot";
 import { CourseOverview } from "@/contexts/courseOverviewContext";
-import { LoadingAssetSmall } from "../../assets/assets";
 import { useTheme } from "../../hooks/useTheme";
 
 const UpcomingSessions = Array.from({ length: 2 }, (_, i) => i + 1);
@@ -11,7 +10,7 @@ const PreviousSessions = Array.from({ length: 3 }, (_, i) => i + 1);
 const ViewStudentsAttendance = Array.from({ length: 16 }, (_, i) => i + 1);
 
 export default function CourseOverviewLiveSession() {
-  const { bg, reverseBg, text, reverseText, border } = useTheme();
+  const { bg, text, border } = useTheme();
   const { scheduleSession, handleScheduleSession } = useContext(CourseOverview);
   const [currentView, setCurrentView] = useState(1);
   const [values, setValues] = useState({
@@ -605,7 +604,8 @@ export default function CourseOverviewLiveSession() {
 
                 <div className="w-full h-full">
                   <input
-                    type="text"
+                    type="file"
+                    accept=".ppt"
                     id="phone"
                     name="phone"
                     inputMode="numeric"
@@ -613,7 +613,7 @@ export default function CourseOverviewLiveSession() {
                     onChange={(e) => {
                       setValues({ ...values, msgPhone: e.target.value });
                     }}
-                    className={`block w-full h-full text-sm bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
+                    className={`block w-full h-full text-sm bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4 relative before:block before:absolute before:z-10 before:top-0 before:left-0 before:bottom-0 before:right-0 before:bg-black`}
                     placeholder="Add slide"
                     required
                   />

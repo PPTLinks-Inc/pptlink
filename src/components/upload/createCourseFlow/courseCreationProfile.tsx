@@ -207,11 +207,11 @@ export default function CourseCreationProfile() {
       <div className="bg-slate-200 w-full h-full">
         <div className="text-primaryTwo container py-4">
           <h1 className="text-2xl font-bold">Course Creation Profile</h1>
-          <p className="text-lg mt-2 ">Set up your course profile</p>
+          <p className="text-lg maxScreenMobile:text-md mt-2 ">Set up your course profile</p>
 
           {isCreator && !freeCourse && (
             <div className="space-y-4 mt-10">
-              <h3 className="text-lg font-bold">
+              <h3 className="text-lg maxScreenMobile:text-md font-bold">
                 Pease enter your bank details
               </h3>
               <div className="relative w-3/6 maxScreenMobile:w-full">
@@ -276,7 +276,7 @@ export default function CourseCreationProfile() {
                 </p>
               )}
               {accountVerification.isValidAccount && (
-                <p className="text-green-700 font-bold text-lg">
+                <p className="text-green-700 font-bold text-lg maxScreenMobile:text-md">
                   Found ✔ {accountVerification.accountName}
                 </p>
               )}
@@ -284,7 +284,7 @@ export default function CourseCreationProfile() {
           )}
 
           <div className="space-y-4 mt-10">
-            <h3 className="text-lg font-bold">Instructor(s) Details</h3>
+            <h3 className="text-lg maxScreenMobile:text-md font-bold">Instructor(s) Details</h3>
             {instructors.map(
               ({ id: instructorId, instructor, status }, index) => (
                 <>
@@ -362,8 +362,8 @@ export default function CourseCreationProfile() {
                             </Button>
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2 ">
+                        <div className="grid grid-cols-2 maxScreenMobile:!grid-rows-2 gap-4">
+                          <div className="space-y-2 maxScreenMobile:col-span-2">
                             <Label htmlFor={`name-${instructorId}`}>
                               Full Name
                             </Label>
@@ -378,7 +378,7 @@ export default function CourseCreationProfile() {
                               />
                             </div>
                           </div>
-                          <div className="space-y-2">
+                          <div className="space-y-2 maxScreenMobile:col-span-2">
                             <Label htmlFor={`email-${instructorId}`}>
                               Email Address
                             </Label>
@@ -393,7 +393,7 @@ export default function CourseCreationProfile() {
                               />
                             </div>
                           </div>
-                          <div className="space-y-2">
+                          <div className="space-y-2 maxScreenMobile:col-span-2">
                             <Label htmlFor={`role-${instructorId}`}>
                               Role/Title
                             </Label>
@@ -414,7 +414,7 @@ export default function CourseCreationProfile() {
                               />
                             </div>
                           </div>
-                          <div className="space-y-2">
+                          <div className="space-y-2 maxScreenMobile:col-span-2">
                             <Label htmlFor={`experience-${instructorId}`}>
                               Experience
                             </Label>
