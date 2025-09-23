@@ -13,7 +13,7 @@ export const ROUTER_ID = "courseRoot";
 
 export const FLW_PUBLIC_KEY = import.meta.env?.VITE_FLW_PUBLIC_KEY ?? "FLWPUBK_TEST-f9c069130b91a7dc2a7930386caa51a9-X";
 
-export const AGORA_APP_ID = "33672aae3d8d48f4b83292008db3986e";
+export const AGORA_APP_ID = "eeb52a410ec14163b595160f32eeb236";
 
 export const HOME = "/";
 
