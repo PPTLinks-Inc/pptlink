@@ -5,6 +5,7 @@ import CourseOverviewHeader from "./subComponents/header";
 import AsideForDarshboardOverview from "./subComponents/aside";
 import InnerMainHeader from "./subComponents/innerMainHeader";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function CourseOverviewRoot({
   children
@@ -50,7 +51,7 @@ export default function CourseOverviewRoot({
         >
           <AsideForDarshboardOverview />
         </motion.div>
-        <main className="relative w-full h-full grid grid-cols-1 grid-rows-[auto_1fr] gap-2 p-2 pt-0">
+        <main className="relative w-full h-[calc(100svh-52px)] grid grid-cols-1 grid-rows-[auto_1fr] gap-2 p-2 pt-0">
           <button
             onClick={() => handleSideBar()}
             className={`z-10 absolute ${toggleSidebar ? "-left-4" : "left-0.5"} top-[50%] -translate-y-[50%] bg-black p-1 border-none rounded-lg`}
@@ -59,7 +60,9 @@ export default function CourseOverviewRoot({
           </button>
           <InnerMainHeader />
           {/* wrappers for different different */}
-          {children}
+          <ScrollArea className="block w-full h-full no-scrollbar [scrollbar-width:none]! [-ms-overflow-style:none]!">
+            {children}
+          </ScrollArea>
           {/* end different wrappers */}
         </main>
       </div>
