@@ -141,7 +141,7 @@ export default function CourseSideBarContextProvider({
           <SidebarHeader>
             <SidebarMenuButton asChild tooltip="Go to Course Dashboard">
               <Link to="/dashboard?tab=2">
-                <img src={logo_white} className="block w-8 aspect-square" />
+                <img src={logo_white} alt={logo_white} className="block w-8 aspect-square" />
                 <span className="font-bold">PPTLinks</span>
               </Link>
             </SidebarMenuButton>
