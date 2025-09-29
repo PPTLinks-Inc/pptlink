@@ -39,7 +39,14 @@ export default function CourseOverviewRoot({
           initial="initial"
           whileInView="inView"
           viewport={{ once: true }}
-          className={`aside sticky! top-0! bg-primaryTwo h-full grid grid-cols-1 grid-rows-[auto_1fr_auto] p-2 ${!toggleSidebar && "!hidden"}`}
+          className={`aside !sticky !top-[52px] h-[calc(100svh-52px)] bg-primaryTwo grid grid-cols-1 grid-rows-[auto_1fr_auto] p-2 ${
+            !toggleSidebar && "!hidden"
+          }`}
+          style={{
+            position: "sticky !important",
+            top: "52px !important",
+            alignSelf: "flex-start"
+          }}
         >
           <AsideForDarshboardOverview />
         </motion.div>
