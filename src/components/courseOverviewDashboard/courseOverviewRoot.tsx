@@ -21,25 +21,7 @@ export default function CourseOverviewRoot({
       <div
         className={`h-full grid ${toggleSidebar ? "grid-cols-[300px_1fr]" : "grid-cols-1"} grid-rows-1`}
       >
-        <motion.div
-          variants={{
-            initial: {
-              x: 5,
-              opacity: 0
-            },
-            inView: {
-              x: 0,
-              opacity: 100,
-              transition: {
-                duration: 1,
-                staggerChildren: 0.2,
-                when: "beforeChildren"
-              }
-            }
-          }}
-          initial="initial"
-          whileInView="inView"
-          viewport={{ once: true }}
+        <div
           className={`aside !sticky !top-[52px] h-[calc(100svh-52px)] bg-primaryTwo grid grid-cols-1 grid-rows-[auto_1fr_auto] p-2 ${
             !toggleSidebar && "!hidden"
           }`}
@@ -50,7 +32,7 @@ export default function CourseOverviewRoot({
           }}
         >
           <AsideForDarshboardOverview />
-        </motion.div>
+        </div>
         <main className="relative w-full h-[calc(100svh-52px)] grid grid-cols-1 grid-rows-[auto_1fr] gap-2 p-2 pt-0">
           <button
             onClick={() => handleSideBar()}
