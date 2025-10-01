@@ -42,9 +42,7 @@ export default function CourseOverviewRoot({
           </button>
           <InnerMainHeader />
           {/* wrappers for different different */}
-          <ScrollArea className="block w-full h-full no-scrollbar [scrollbar-width:none]! [-ms-overflow-style:none]!">
             {children}
-          </ScrollArea>
           {/* end different wrappers */}
         </main>
       </div>

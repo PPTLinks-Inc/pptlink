@@ -6,6 +6,7 @@ import { useIntersection } from "react-use";
 import { LoadingAssetBig2, LoadingAssetSmall2 } from "../../assets/assets";
 import useUserPresentation from "../../hooks/useUserPresentation";
 import { CiSearch } from "react-icons/ci";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { UtilityProvider } from "../../contexts/utilityContext";
 import { useTheme } from "../../hooks/useTheme";
 
@@ -37,7 +38,6 @@ export default function CourseOverviewPresentations() {
 
   const presentationQuery = useUserPresentation({ enabled: currentView === 1 });
 
-
   useEffect(
     function () {
       if (intersection && intersection?.isIntersecting) {
@@ -49,7 +49,13 @@ export default function CourseOverviewPresentations() {
 
   return (
     <CourseOverviewRoot>
-      <div className="wrapper w-full h-full grid grid-rows-[auto_1fr] grid-cols-1 gap-2 px-5">
+      <ScrollArea
+        className="wrapper w-full h-full grid grid-rows-[auto_1fr] grid-cols-1 gap-2 px-5 no-scrollbar [scrollbar-width:none]! [-ms-overflow-style:none]! [&_*::-webkit-scrollbar]:hidden! [-ms-overflow-style:none]! [scrollbar-width:none]!"
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none"
+        }}
+      >
         {/* search */}
         <div
           className={`w-[60%] mx-auto h-fit rounded-[.5rem] border ${border} _border-white ${search !== "" && "!border-[#FFA500]"} relative mb-5 ${globalSearch.isMobileSearch ? "maxScreenMobile:hidden" : ""}`}
@@ -70,7 +76,7 @@ export default function CourseOverviewPresentations() {
         </div>
 
         <div className="w-full h-full">
-          <div className="w-fullflex flex-wrap gap-4 justify-between items-center mb-2">
+          <div className="w-full flex flex-wrap gap-4 justify-start items-center mb-2">
             {presentationQuery?.data &&
               presentationQuery.data.pages.flat().map((presentation) => (
                 <div
@@ -95,7 +101,7 @@ export default function CourseOverviewPresentations() {
             </div>
           )}
         </div>
-      </div>
+      </ScrollArea>
     </CourseOverviewRoot>
   );
 }
