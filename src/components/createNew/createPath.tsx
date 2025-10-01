@@ -238,8 +238,8 @@ export default function CreatePath() {
                 <div>
                   <h6 className="text-md font-semibold mb-2">Courses</h6>
                   <p className="text-sm">
-                    Uncover the simplicity of crafting compelling courses using
-                    our efficient and user-friendly tool
+                    Find out how simple it is crafting compelling courses using
+                    our efficient and easy to use tool.
                   </p>
                 </div>
               </motion.div>
@@ -264,11 +264,11 @@ export default function CreatePath() {
                 </span>
                 <div>
                   <h6 className="text-md font-semibold mb-2">
-                    Single Presentation
+                    Single Session
                   </h6>
                   <p className="text-sm">
-                    Unwind and create outstanding free presentation using our
-                    hassle-free tools, making presenting a breeze
+                    Create outstanding free classes using our
+                    data saving tools, making teaching a breeze.
                   </p>
                 </div>
               </motion.div>
