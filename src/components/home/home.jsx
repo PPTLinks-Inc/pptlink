@@ -222,19 +222,19 @@ export default function Home() {
                 variants={parentVarient}
                 className="text-5xl mb-1 md:mb-3 font-extrabold maxScreenMobile:text-4xl"
               >
-                Your Courses, Their Future
+                Your Courses, Their Future.
               </motion.h1>
               <motion.h3
                 variants={parentVarient}
                 className="responsiveText mb-1 md:mb-3 font-bold maxScreen:!text-2xl"
               >
-                Teach Across Africa, No Data Limits.
+             Teach online faster and easier, with less data.
               </motion.h3>
               <motion.p
                 variants={parentVarient}
                 className="w-full responsiveText leading-[2rem] opacity-5 mb-1 md:mb-3 md:text-justify"
               >
-                Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
+   Create courses, run quizzes, record live classes, and sell your lessons with PPTLinks, the platform that blends LMS and live online teaching.
               </motion.p>
               <motion.div
                 variants={parentVarient}
