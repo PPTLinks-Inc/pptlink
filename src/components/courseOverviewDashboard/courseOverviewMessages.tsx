@@ -1,14 +1,9 @@
-import { useState, useContext } from "react";
-import { CiSearch } from "react-icons/ci";
-import { UtilityProvider } from "../../contexts/utilityContext";
 import { useTheme } from "../../hooks/useTheme";
 import CourseOverviewRoot from "./courseOverviewRoot";
 import { ScrollArea } from "@/components/ui/scroll-area";
 const ViewStudents = Array.from({ length: 16 }, (_, i) => i + 1);
 
 export default function CourseOverviewMessages() {
-  const [search, setSearch] = useState("");
-  const { search: globalSearch } = useContext(UtilityProvider);
   const { bg, text, border } = useTheme();
 
   return (
@@ -21,15 +16,36 @@ export default function CourseOverviewMessages() {
           height: "calc(100vh-144px)"
         }}
       >
-        {/* search */}
         <div
-          className={`w-full h-fit mb-4`}
+          className={`w-fit h-fit mb-6 flex justify-start items-center gap-4`}
         >
-          <span
-            className={`block w-fit ${text} text-[#FFFFF0] $ _currentView == 3 && "text-primaryTwo"} text-[1.3rem]  absolute right-2 top-[50%] translate-y-[-50%] pointer-events-none`}
+          <select
+            title="Select Message Type"
+            name="messages"
+            className={`flex justify-start items-center gap-2 w-fit h-fit ${bg} ${text} text-sm ${border} border-[0.1px] rounded-md py-2 px-6 cursor-pointer`}
           >
-            <CiSearch />
-          </span>
+            <option
+              className={`w-full h-full ${bg} text-${text} text-sm border-none outline-none placeholder:text-${text}`}
+            >
+              All Messages
+            </option>
+            <option
+              className={`w-full h-full ${bg} text-${text} text-sm border-none outline-none placeholder:text-${text}`}
+            >
+              Students
+            </option>
+            <option
+              className={`w-full h-full ${bg} text-${text} text-sm border-none outline-none placeholder:text-${text}`}
+            >
+              Tutors
+            </option>
+          </select>
+          <button
+            type="button"
+            className={`inline-block w-fit h-fit bg-[#FFFFF0] text-black text-sm border-none rounded-md py-2 px-3 mb-2`}
+          >
+            Course Messages
+          </button>
         </div>
 
         <div className="w-full h-full  _bg-gray-700 relative grid grid-rows-[auto_1fr] grid-cols-1 rounded-sm !border-[0.1px] border-white">
