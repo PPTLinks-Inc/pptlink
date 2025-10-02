@@ -4,10 +4,17 @@ import { CiSettings } from "react-icons/ci";
 import { CourseOverview } from "@/contexts/courseOverviewContext";
 
 export default function InnerMainHeader() {
-    const { handleScheduleSession } = useContext(CourseOverview);
+  const { handleScheduleSession } = useContext(CourseOverview);
 
   return (
-    <div className="main-header bg-primaryTwo flex flex-col gap-3 p-2">
+    <div
+      className="main-header bg-primaryTwo flex flex-col gap-3 p-2 sticky top-[52px] z-10"
+      style={{
+        position: "sticky !important",
+        top: "52px !important",
+        alignSelf: "flex-start"
+      }}
+    >
       <div className="flex justify-between items-center">
         <h2 className="font-bold text-2xl">Hi, Raymond Amem Aondoakura</h2>
         <button className={`text-3xl font-bold $_{text} _text-[#FFFFF0]`}>
@@ -26,7 +33,10 @@ export default function InnerMainHeader() {
           <button className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md">
             Upload Slides
           </button>
-          <button onClick={handleScheduleSession} className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md">
+          <button
+            onClick={handleScheduleSession}
+            className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md"
+          >
             Schedule Live Session
           </button>
           <button className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md">
