@@ -76,12 +76,12 @@ export default function CourseOverviewMyCourses() {
         </div>
 
         <div className="w-full h-full">
-          <div className="w-full flex flex-wrap gap-4 justify-start items-center mb-2">
+          <div className="w-full h-full flex flex-wrap gap-4 justify-start items-center mb-2">
             {presentationQuery?.data &&
               presentationQuery.data.pages.flat().map((presentation) => (
                 <div
                   key={presentation.id}
-                  className="flex-1 basis-[300px] min-w-[260px] maxScreenMobile:!mx-auto aspect-[1/1.2] flex flex-col"
+                  className="flex-1 basis-[320px] min-w-[260px] max-w-[300px] maxScreenMobile:!mx-auto aspect-[1/1.2] flex flex-col"
                 >
                   <Card
                     presentation={presentation}
@@ -90,13 +90,13 @@ export default function CourseOverviewMyCourses() {
                 </div>
               ))}
             {presentationQuery.isLoading && (
-              <div className="flex items-center justify-center w-full h-[40px]">
+              <div className="w-full h-full flex justify-center items-center">
                 <LoadingAssetBig2 />
               </div>
             )}
           </div>
           {presentationQuery.isFetchingNextPage && (
-            <div className="flex items-center justify-center w-full h-[40px]">
+            <div className="w-full h-full flex justify-center items-center">
               <LoadingAssetSmall2 />
             </div>
           )}

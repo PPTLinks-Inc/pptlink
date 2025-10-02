@@ -4,6 +4,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import CourseOverviewRoot from "./courseOverviewRoot";
 import { CourseOverview } from "@/contexts/courseOverviewContext";
 import { useTheme } from "../../hooks/useTheme";
+import close_svg from "/Vector_close.svg";
+import open_svg from "/Vector_open.svg";
+import clock_svg from "/clock.svg";
 
 const UpcomingSessions = Array.from({ length: 3 }, (_, i) => i + 1);
 const PreviousSessions = Array.from({ length: 7 }, (_, i) => i + 1);
@@ -16,6 +19,8 @@ export default function CourseOverviewLiveSession() {
   const [values, setValues] = useState({
     msgName: "",
     msgEmail: "",
+    msgDate: "",
+    msgTime: "",
     msgPhone: "",
     msgReason: "",
     msg: "",
@@ -46,7 +51,7 @@ export default function CourseOverviewLiveSession() {
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          minHeight: "calc(100vh-144px)"
+          minHeight: `${currentView === 1 && !scheduleSession ? "100%" : "calc(100vh-144px)"}`
         }}
       >
         {currentView === 1 && !scheduleSession && (
@@ -343,8 +348,18 @@ export default function CourseOverviewLiveSession() {
                       <span className="flex justify-center items-center w-full h-fit text-xs text-ellipsis">
                         {students} Minutes
                       </span>
-                      <span className="flex justify-center items-center w-full h-fit text-xs text-ellipsis">
-                        {students % 2 ? "Present" : "Absent"}
+                      <span className="flex justify-center items-center gap-1 w-full h-fit text-xs text-ellipsis">
+                        {students % 2 ? (
+                          <>
+                            <img src={`${open_svg}`} alt="Present" className="w-3 h-3" />
+                            <span>Present</span>
+                          </>
+                        ) : (
+                          <>
+                            <img src={`${close_svg}`} alt="Absent" className="w-3 h-3" />
+                            <span>Absent</span>
+                          </>
+                        )}
                       </span>
                     </li>
                   ))}
@@ -431,30 +446,30 @@ export default function CourseOverviewLiveSession() {
                 <div className="flex justify-between items-end gap-4 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <input
-                      type="text"
-                      id="phone"
-                      name="phone"
+                      type="date"
+                      id="date"
+                      name="date"
                       inputMode="numeric"
-                      value={values.msgPhone}
+                      value={values.msgDate}
                       onChange={(e) => {
-                        setValues({ ...values, msgPhone: e.target.value });
+                        setValues({ ...values, msgDate: e.target.value });
                       }}
-                      className={`block w-full text-sm bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
+                      className={`block w-full text-sm bg-transparent border-[1px] border-solid ${values.msgDate !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
                       placeholder="Date"
                       required
                     />
                   </div>
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <input
-                      type="text"
-                      id="phone"
-                      name="phone"
+                      type="time"
+                      id="time"
+                      name="time"
                       inputMode="numeric"
-                      value={values.msgPhone}
+                      value={values.msgTime}
                       onChange={(e) => {
-                        setValues({ ...values, msgPhone: e.target.value });
+                        setValues({ ...values, msgTime: e.target.value });
                       }}
-                      className={`block w-full text-sm bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
+                      className={`block w-full text-sm bg-transparent border-[1px] border-solid ${values.msgTime !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
                       placeholder="Time"
                       required
                     />

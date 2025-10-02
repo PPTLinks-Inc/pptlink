@@ -4,9 +4,9 @@ import CourseOverviewRoot from "./courseOverviewRoot";
 import { CiSearch } from "react-icons/ci";
 import { UtilityProvider } from "../../contexts/utilityContext";
 import { useTheme } from "../../hooks/useTheme";
-import { MdOutlineCoPresent } from "react-icons/md";
-import { MdOutlineSmsFailed } from "react-icons/md";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import close_svg from "/Vector_close.svg";
+import open_svg from "/Vector_open.svg";
 
 const ViewStudents = Array.from({ length: 16 }, (_, i) => i + 1);
 
@@ -204,13 +204,34 @@ export default function CourseOverviewStudents() {
                       <span className="flex justify-center items-center w-full h-fit text-xs text-ellipsis py-2">
                         {students % 2 ? `${students}0 Minutes` : `-`}
                       </span>
-                      <span className="flex justify-center items-center w-full h-fit text-xs text-ellipsis py-2">
+                      <span className="flex justify-center items-center gap-1 w-full h-fit text-xs text-ellipsis">
+                        {students % 2 ? (
+                          <>
+                            <img
+                              src={`${open_svg}`}
+                              alt="Present"
+                              className="w-3 h-3"
+                            />
+                            <span>Present</span>
+                          </>
+                        ) : (
+                          <>
+                            <img
+                              src={`${close_svg}`}
+                              alt="Absent"
+                              className="w-3 h-3"
+                            />
+                            <span>Absent</span>
+                          </>
+                        )}
+                      </span>
+                      {/* <span className="flex justify-center items-center w-full h-fit text-xs text-ellipsis py-2">
                         {students % 2 ? (
                           <MdOutlineCoPresent size={20} />
                         ) : (
                           <MdOutlineSmsFailed size={20} />
                         )}
-                      </span>
+                      </span> */}
                     </li>
                   ))}
                 </ul>
