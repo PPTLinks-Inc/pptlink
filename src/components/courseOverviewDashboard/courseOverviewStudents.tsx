@@ -19,7 +19,7 @@ export default function CourseOverviewStudents() {
   return (
     <CourseOverviewRoot>
       <ScrollArea
-        className={`wrapper w-full grid grid-rows-[auto_1fr] grid-cols-1 gap-2 overflow-hidden [&_*::-webkit-scrollbar]:hidden! [-ms-overflow-style:none]! [scrollbar-width:none]!`}
+        className={`wrapper w-full ${currentView !== 1  && "px-4"} grid grid-rows-[auto_1fr] grid-cols-1 gap-2 overflow-hidden [&_*::-webkit-scrollbar]:hidden! [-ms-overflow-style:none]! [scrollbar-width:none]!`}
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",

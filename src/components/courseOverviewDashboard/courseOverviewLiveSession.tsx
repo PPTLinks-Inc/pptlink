@@ -47,11 +47,11 @@ export default function CourseOverviewLiveSession() {
   return (
     <CourseOverviewRoot>
       <ScrollArea
-        className={`wrapper w-full overflow-hidden [&_*::-webkit-scrollbar]:hidden! [-ms-overflow-style:none]! [scrollbar-width:none]!`}
+        className={`wrapper w-full ${!(currentView === 1 && !scheduleSession) && "px-4"} [&_*::-webkit-scrollbar]:hidden! [-ms-overflow-style:none]! [scrollbar-width:none]!`}
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          minHeight: `${currentView === 1 && !scheduleSession ? "100%" : "calc(100vh-144px)"}`
+          minHeight: `${"calc(100vh-144px)"}`
         }}
       >
         {currentView === 1 && !scheduleSession && (
@@ -66,7 +66,7 @@ export default function CourseOverviewLiveSession() {
                 <Link
                   to={"#"}
                   onClick={() => setCurrentView(2)}
-                  className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 flex flex-col justify-between"
+                  className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-3 flex flex-col justify-between"
                 >
                   <div className="flex justify-between items-center">
                     <h3 className="text-2xl font-semibold">Python 001</h3>
@@ -107,7 +107,7 @@ export default function CourseOverviewLiveSession() {
                         key={index.toString()}
                         to={"#"}
                         onClick={() => setCurrentView(2)}
-                        className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 flex flex-col justify-between"
+                        className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-3 flex flex-col justify-between"
                       >
                         <h3 className="text-lg font-semibold">
                           Python 00{index}
@@ -167,7 +167,7 @@ export default function CourseOverviewLiveSession() {
                       key={index.toString()}
                       to={"#"}
                       onClick={() => setCurrentView(2)}
-                      className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-4 flex flex-col justify-between"
+                      className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-3 flex flex-col justify-between"
                     >
                       <h3 className="text-lg font-semibold">
                         Python 00{index}
@@ -351,12 +351,20 @@ export default function CourseOverviewLiveSession() {
                       <span className="flex justify-center items-center gap-1 w-full h-fit text-xs text-ellipsis">
                         {students % 2 ? (
                           <>
-                            <img src={`${open_svg}`} alt="Present" className="w-3 h-3" />
+                            <img
+                              src={`${open_svg}`}
+                              alt="Present"
+                              className="w-3 h-3"
+                            />
                             <span>Present</span>
                           </>
                         ) : (
                           <>
-                            <img src={`${close_svg}`} alt="Absent" className="w-3 h-3" />
+                            <img
+                              src={`${close_svg}`}
+                              alt="Absent"
+                              className="w-3 h-3"
+                            />
                             <span>Absent</span>
                           </>
                         )}
@@ -378,7 +386,7 @@ export default function CourseOverviewLiveSession() {
             </button>
             <div className={`w-full min-h-full py-4`}>
               <form onSubmit={handleMsgSubmit}>
-                <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
+                <div className="flex justify-between items-center gap-2 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <input
                       type="text"
@@ -443,7 +451,7 @@ export default function CourseOverviewLiveSession() {
                     </select>
                   </div>
                 </div>
-                <div className="flex justify-between items-end gap-4 mb-8 maxScreenMobile:flex-col">
+                <div className="flex justify-between items-end gap-2 mb-8 maxScreenMobile:flex-col">
                   <div className="w-[50%] maxScreenMobile:w-full">
                     <input
                       type="date"
@@ -476,7 +484,7 @@ export default function CourseOverviewLiveSession() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-[1fr_1fr] grid-rows-[1fr] gap-4 mb-8 maxScreenMobile:grid-cols-1 maxScreenMobile:grid-rows-2">
+                <div className="grid grid-cols-[1fr_1fr] grid-rows-[1fr] gap-2 mb-8 maxScreenMobile:grid-cols-1 maxScreenMobile:grid-rows-2">
                   <div className="w-full h-fit">
                     <div className="w-full h-fit mb-6">
                       <select
