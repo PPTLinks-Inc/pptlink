@@ -66,7 +66,7 @@ export default function CourseOverviewLiveSession() {
                 <Link
                   to={"#"}
                   onClick={() => setCurrentView(2)}
-                  className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-3 flex flex-col justify-between"
+                  className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo_ from-slate-200 to-primaryTwo p-3 flex flex-col justify-between"
                 >
                   <div className="flex justify-between items-center">
                     <h3 className="text-2xl font-semibold">Python 001</h3>
@@ -107,7 +107,7 @@ export default function CourseOverviewLiveSession() {
                         key={index.toString()}
                         to={"#"}
                         onClick={() => setCurrentView(2)}
-                        className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-3 flex flex-col justify-between"
+                        className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo_ from-slate-200 to-primaryTwo p-3 flex flex-col justify-between"
                       >
                         <h3 className="text-lg font-semibold">
                           Python 00{index}
@@ -167,7 +167,7 @@ export default function CourseOverviewLiveSession() {
                       key={index.toString()}
                       to={"#"}
                       onClick={() => setCurrentView(2)}
-                      className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo to-primaryTwo p-3 flex flex-col justify-between"
+                      className="w-full h-full border-none rounded-sm bg-gradient-to-b from-primarySixTwo_ from-slate-200 to-primaryTwo p-3 flex flex-col justify-between"
                     >
                       <h3 className="text-lg font-semibold">
                         Python 00{index}
