@@ -10,13 +10,13 @@ import { AiOutlineSend } from "react-icons/ai";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ViewStudents = Array.from({ length: 16 }, (_, i) => i + 1);
-
+const messagesTypeArray = ["All Messages", "Students", "Tutors"];
 export default function CourseOverviewMessages() {
   const { bg, text, border } = useTheme();
-  const [view, setView] = useState("students-list");
+  const [view, setView] = useState({ studentsList: true, aList: false });
   const [messageView, setMessageView] = useState({
     view: false,
-    value: "all-messages"
+    value: messagesTypeArray[1]
   });
 
   return (
@@ -29,7 +29,8 @@ export default function CourseOverviewMessages() {
           height: "calc(100vh-144px)"
         }}
       >
-        <div
+        {/* header section */}
+        <header
           className={`w-fit h-fit mb-4 flex justify-start items-center gap-4`}
         >
           <div className="relative w-fit h-fit">
@@ -41,7 +42,7 @@ export default function CourseOverviewMessages() {
               className={`flex items-center justify-start gap-4 h-10 px-2 ${bg} ${text} text-sm ${border} border-[0.1px] rounded-md cursor-pointer`}
             >
               <img src={settings_svg} alt={settings_svg} />
-              <span>All Messages</span>
+              <span>{messageView.value}</span>
               <span>
                 <FaAngleDown />
               </span>
@@ -49,24 +50,54 @@ export default function CourseOverviewMessages() {
 
             {/* Hidden dropdown - remove or fix display */}
             <div
-              className={`${!messageView.view ? "hidden" : "flex absolute z-10 top-[3rem] left-0"} flex-col justify-start items-center gap-2 w-full h-fit ${bg} ${text} text-sm ${border} border-[0.1px] p-[0.5rem] rounded-md cursor-pointer`}
+              className={`${!messageView.view ? "hidden" : "flex absolute z-10 top-[2.7rem] left-0"} flex-col justify-start items-center gap-[1px] w-full h-fit ${bg} ${text} text-sm ${border} border-[0.1px] p-[0.1rem] rounded-md cursor-pointer`}
             >
               {/* dropdown content */}
-              <span
-                className={`w-full h-full ${text} text-sm border-none rounded-md outline-none py-2 px-2 ${false && "[&:nth-child(even)]:!bg-primaryTwo"}`}
+              <button
+                type="button"
+                title="set message view"
+                data-message="0"
+                onClick={() => {
+                  setMessageView((prev) => ({
+                    ...prev,
+                    view: !prev.view,
+                    value: messagesTypeArray[0]
+                  }));
+                }}
+                className={`w-full h-full ${text} text-sm text-left border-[1px] rounded-md outline-none py-2 px-2 ${messageView.value === messagesTypeArray[0] && "!bg-[#FFFFF0] !text-black"}`}
               >
                 All Messages
-              </span>
-              <span
-                className={`w-full h-full ${text} text-sm border-none rounded-md outline-none py-2 px-2 ${false && "[&:nth-child(even)]:!bg-primaryTwo"}`}
+              </button>
+              <button
+                type="button"
+                title="set message view"
+                data-message="1"
+                onClick={() => {
+                  setMessageView((prev) => ({
+                    ...prev,
+                    view: !prev.view,
+                    value: messagesTypeArray[1]
+                  }));
+                }}
+                className={`w-full h-full ${text} text-sm text-left border-[1px] rounded-md outline-none py-2 px-2 ${messageView.value === messagesTypeArray[1] && "!bg-[#FFFFF0] !text-black"}`}
               >
                 Students
-              </span>
-              <span
-                className={`w-full h-full ${text} text-sm border-none rounded-md outline-none py-2 px-2 ${false && "[&:nth-child(even)]:!bg-primaryTwo"}`}
+              </button>
+              <button
+                type="button"
+                title="set message view"
+                data-message="2"
+                onClick={() => {
+                  setMessageView((prev) => ({
+                    ...prev,
+                    view: !prev.view,
+                    value: messagesTypeArray[2]
+                  }));
+                }}
+                className={`w-full h-full ${text} text-sm text-left border-[1px] rounded-md outline-none py-2 px-2 ${messageView.value === messagesTypeArray[2] && "!bg-[#FFFFF0] !text-black"}`}
               >
                 Tutors
-              </span>
+              </button>
             </div>
           </div>
           <button
@@ -75,13 +106,13 @@ export default function CourseOverviewMessages() {
           >
             Course Messages
           </button>
-        </div>
-
+        </header>
+        {/* all messages, students, tutors... area/section */}
         <div className="w-full h-full relative grid grid-rows-[auto_1fr] grid-cols-1 rounded-sm !border-[0.1px] border-white">
           <ScrollArea
-            className={`scrollbar-hide block w-full ${view === "a-list" ? "md:!h-[420px]" : "md:!h-[410px]"}`}
+            className={`scrollbar-hide block w-full ${view.aList ? "md:!h-[420px]" : "md:!h-[410px]"}`}
           >
-            {view === "students-list" ? (
+            {view.studentsList ? (
               <ul className="w-full h-fit">
                 {ViewStudents.map((students) => (
                   <li
@@ -90,7 +121,9 @@ export default function CourseOverviewMessages() {
                   >
                     <button
                       type="button"
-                      onClick={() => setView("a-list")}
+                      onClick={() =>
+                        setView({ studentsList: false, aList: true })
+                      }
                       className="w-full h-fit grid grid-cols-3 grid-rows-1 justify-center items-center py-4 px-3"
                     >
                       <span className="flex justify-start items-center gap-2 w-full h-fit text-sm text-ellipsis">
@@ -179,7 +212,11 @@ export default function CourseOverviewMessages() {
                       placeholder="Type a message..."
                     />
                   </span>
-                  <button className="text-white block w-fit h-full border-none rounded-sm p-1">
+                  <button
+                    type="button"
+                    title="send message"
+                    className="text-white block w-fit h-full border-none rounded-sm p-1"
+                  >
                     <AiOutlineSend size={20} />
                   </button>
                 </div>
@@ -187,6 +224,16 @@ export default function CourseOverviewMessages() {
             )}
           </ScrollArea>
         </div>
+        {/* back btn */}
+        {!view.studentsList && (
+          <button
+            type="button"
+            onClick={() => setView({ studentsList: true, aList: false })}
+            className="flex justify-center items-center mt-6 w-fit h-fit text-xs font-semibold py-1.5 px-6 text-primaryTwo bg-primaryThree rounded-sm"
+          >
+            Back
+          </button>
+        )}
       </ScrollArea>
     </CourseOverviewRoot>
   );
