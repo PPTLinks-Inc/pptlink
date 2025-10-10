@@ -29,7 +29,7 @@ export default function AsideForDarshboardOverview() {
                 className={`block w-full h-fit p-3 text-left border-none rounded-sm transition-colors ${
                   isActive
                     ? "bg-gradient-to-r from-primarySixTwo to-primaryTwo text-white"
-                    : "text-gray-300 hover:bg-gray-800"
+                    : "text-gray-300 hover:bg-gradient-to-r hover:from-gray-800 hover:to-primaryTwo"
                 }`}
               >
                 {item.title}
