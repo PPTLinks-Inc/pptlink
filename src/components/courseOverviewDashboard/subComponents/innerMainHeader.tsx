@@ -34,7 +34,7 @@ export default function InnerMainHeader() {
             Upload Slides
           </button>
           <button
-            onClick={handleScheduleSession}
+            onClick={() => handleScheduleSession()}
             className="bg-white text-primaryTwo text-xs px-3 py-2 rounded-md"
           >
             Schedule Live Session

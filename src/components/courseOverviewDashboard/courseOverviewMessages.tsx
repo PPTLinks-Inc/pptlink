@@ -22,7 +22,7 @@ export default function CourseOverviewMessages() {
   });
   const [messageView, setMessageView] = useState({
     view: false,
-    value: messagesTypeArray[1]
+    value: messagesTypeArray[0]
   });
 
   const handleMessageView = (currentView: string): string => {
