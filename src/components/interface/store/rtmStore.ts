@@ -131,10 +131,14 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                     hostEnd: true
                 });
             }
-        } else if (messageData.message === MIC_STATE.MIC_MUTED || messageData.message === MIC_STATE.MIC_OFF) {
+        }
+        // Handle microphone state changes
+        // See AUDIO_NOTIFICATION_DOCUMENTATION.md for details
+        else if (messageData.message === MIC_STATE.MIC_MUTED || messageData.message === MIC_STATE.MIC_OFF) {
             if (messageData.message === MIC_STATE.MIC_MUTED) {
                 const audio = get().audio;
                 if (audio) {
+                    // Play audio notification when user tries to speak while muted
                     audio.play().catch((error) => {
                         console.error("Error playing audio", error);
                     });
@@ -291,6 +295,8 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
             timeout = setTimeout(() => {
                 let playAudio = false;
                 for (const event of presenceEvents) {
+                    // Check if any user requested microphone permission
+                    // See AUDIO_NOTIFICATION_DOCUMENTATION.md for full details
                     if (event.stateChanged.micState === String(MIC_STATE.REQ_MIC)) {
                         playAudio = true;
                     }
@@ -301,6 +307,7 @@ export const useRtmStore = create<RtmStore>((set, get) => ({
                     toast({
                         description: "Someone requested to speak"
                     });
+                    // Play audio notification to alert the host
                     get().audio?.play().catch((error) => {
                         console.error("Error playing audio", error);
                     });

@@ -642,6 +642,8 @@ export const useAudioStore = create<AudioStore>((set, get) => ({
             }
         }
 
+        // Initialize audio notification for "request to speak" feature
+        // See AUDIO_NOTIFICATION_DOCUMENTATION.md for details on how this audio is used
         const audio = new Audio("https://res.cloudinary.com/dsmydljex/video/upload/v1732362719/assets/mic-request_nnca38_nj9fmv.mp3");
         audio.volume = 1;
         audio.load();
