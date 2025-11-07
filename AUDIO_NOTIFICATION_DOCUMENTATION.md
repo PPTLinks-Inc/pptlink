@@ -35,19 +35,22 @@ The audio element is:
 
 ### 2. Audio Storage
 
-**Location:** `src/components/interface/store/rtmStore.ts` (line 37)
+**Location:** `src/components/interface/store/rtmStore.ts` (line 37 in the interface definition)
 
-The audio is stored in the RTM store state:
+The audio is stored in the RTM store state as part of the `RtmStore` interface:
 
 ```typescript
 interface RtmStore {
+    userName: string;
     // ... other properties
-    audio: HTMLAudioElement | null;
+    audio: HTMLAudioElement | null;  // Line 37 - Audio element storage
+    status: "DISCONNECTED" | "CONNECTING" | "RECONNECTING" | "CONNECTED" | "FAILED" | "DISCONNECTING";
+    rtm: RTMClient | null;
     // ... other properties
 }
 ```
 
-This makes the audio accessible throughout the application.
+This makes the audio accessible throughout the application via the RTM store.
 
 ### 3. Audio Playback Scenarios
 
@@ -139,6 +142,8 @@ The system uses the following microphone states (defined in `src/constants/route
 - `MIC_OFF`: User's microphone is turned off by the host
 
 ## Priority System
+
+**Location:** `src/components/interface/store/rtmStore.ts` (lines 15-20)
 
 Users are sorted by their mic state with the following priority:
 
