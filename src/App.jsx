@@ -14,20 +14,22 @@ import * as Sentry from "@sentry/react";
 import CourseRoot from "@/layouts/courseRoot";
 import CourseSideBarContext from "@/contexts/courseSideBarContext";
 import UtilityProviderFunc from "./contexts/utilityContext";
+import CourseOverviewContextProvider from "./contexts/courseOverviewContext";
 import QuizStoreProvider from "./store/quizStoreProvider";
 
 // all lazy import
+const Root = lazy(() => import("./components/root/root"));
+const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Home = lazy(() => import("./components/home/home"));
+const NewHomePage = lazy(() => import("./components/home/newHome"));
 const NotFound = lazy(() => import("./components/404/404"));
+const SignPage = lazy(() => import("./components/sign/sign"));
 const Interface = lazy(() => import("./components/interface/Interface"));
 const InterfaceView = lazy(
   () => import("./components/interface/InterfaceView")
 );
 const InterfaceNotFound = lazy(() => import("./components/interface/404"));
-const Root = lazy(() => import("./components/root/root"));
-const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Library = lazy(() => import("./components/library/library"));
-const SignPage = lazy(() => import("./components/sign/sign"));
 // const Pay = lazy(() => import("./components/pay/pay"));
 const Payment = lazy(() => import("./components/pay/payment"));
 const About = lazy(() => import("./components/about-us/about"));
@@ -80,12 +82,45 @@ const TermsAndServicesPage = lazy(
 const PrivacyPolicyPage = lazy(
   () => import("./components/Terms_and_policy_page/privacyPolicy")
 );
+const CourseDashboardOverviewPage = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewDashboard")
+);
+const CourseOverviewPresentations = lazy(
+  () =>
+    import("./components/courseOverviewDashboard/courseOverviewPresentations")
+);
+const CourseOverviewMyCourses = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewMyCourses")
+);
+const CourseOverviewLiveSession = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewLiveSession")
+);
+const CourseOverviewStudents = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewStudents")
+);
+const CourseOverviewMessages = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewMessages")
+);
+const CourseOverviewEarnings = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewEarnings")
+);
+const CourseOverviewSettings = lazy(
+  () => import("./components/courseOverviewDashboard/courseOverviewSettings")
+);
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
 
 const router = sentryCreateBrowserRouter(
   [
+    {
+      path: "/home",
+      element: (
+        <UtilityProviderFunc>
+          <NewHomePage />
+        </UtilityProviderFunc>
+      )
+    },
     {
       path: "/",
       element: (
@@ -252,6 +287,86 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/signup",
       element: <SignPage />
+    },
+    {
+      path: "/dashboard/overview/home",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseDashboardOverviewPage />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
+    },
+    {
+      path: "/dashboard/overview/presentations",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewPresentations />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
+    },
+    {
+      path: "/dashboard/overview/mycourses",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewMyCourses />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
+    },
+    {
+      path: "/dashboard/overview/live-sessions",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewLiveSession />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
+    },
+    {
+      path: "/dashboard/overview/students",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewStudents />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
+    },
+    {
+      path: "/dashboard/overview/messages",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewMessages />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
+    },
+    {
+      path: "/dashboard/overview/earnings",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewEarnings />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
+    },
+    {
+      path: "/dashboard/overview/settings",
+      element: (
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewSettings />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
+      )
     },
     {
       path: "/forgot-password",

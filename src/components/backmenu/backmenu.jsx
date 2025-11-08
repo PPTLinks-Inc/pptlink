@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import Socials from "../social/socials";
 import { Link, useNavigate } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 import Header from "../header/header";
 import { ABOUT, LEGAL, UPLOAD } from "../../constants/routes";
 import useUser from "../../hooks/useUser";
@@ -8,13 +9,14 @@ import { UtilityProvider } from "../../contexts/utilityContext";
 
 // eslint-disable-next-line react/prop-types
 export default function Backmenu() {
-  const { dropdown } = useContext(UtilityProvider);
+  const { search, dropdown } = useContext(UtilityProvider);
   const { userQuery, logOut } = useUser();
   const user = userQuery.data;
   const navigate = useNavigate();
+  const is768PxScreen = useMediaQuery({ query: "(max-width: 768px)" });
 
   const handlePresentationBtn = () => {
-    if (!user) return navigate('/signin');
+    if (!user) return navigate("/signin");
     logOut();
   };
 
@@ -24,8 +26,10 @@ export default function Backmenu() {
   };
 
   return (
-    <div className={`w-full h-screen absolute maxScreenMobile:overflow-auto ${dropdown && "scaleIn"}`}>
-      <Header isBackMenu={true} />
+    <div
+      className={`w-full h-screen absolute maxScreenMobile:overflow-auto ${dropdown && "scaleIn"}`}
+    >
+      {(is768PxScreen && search.isMobileSearch) ? "" : <Header />}
 
       <div className="w-full h-[90vh]">
         <div className="flex-col w-[100%] h-[50%] flex-1 !border-0 justify-center flex lg:flex-wrap lg:flex-row maxScreen:my-14">
@@ -57,7 +61,9 @@ export default function Backmenu() {
 
         <div className="container m-auto border-slate-100 border-collapse text-left flex flex-col lg:flex-row maxScreenMobile:text-center maxScreenMobile:!border-primaryTwo maxScreenMobile:!border-t-[1px]">
           <div className="flex-1 pr-5">
-            <h2 className="text-2xl mt-4 mb-6 font-medium text-primaryTwo">Our location</h2>
+            <h2 className="text-2xl mt-4 mb-6 font-medium text-primaryTwo">
+              Our location
+            </h2>
             <Link
               to="/"
               className="block responsiveText py-2 relative before:block before:absolute before:top-auto before:bottom-1 before:left-0 before:right-0 before:h-0 before:!w-full before:py-[.1px] before:bg-primaryTwo before:scale-x-0 !transition-all !ease-in-out !duration-300 hover:before:!scale-x-[1] leading-[30px]"
@@ -67,7 +73,9 @@ export default function Backmenu() {
             </Link>
           </div>
           <div className="flex-1 pl-28 maxScreenMobile:mb-5 maxScreenMobile:w-full maxScreen:p-0">
-            <h3 className="text-xl font-medium my-6 text-primaryTwo">External</h3>
+            <h3 className="text-xl font-medium my-6 text-primaryTwo">
+              External
+            </h3>
             <Socials />
           </div>
         </div>

@@ -4,6 +4,7 @@ $mediaWidth: 768px;
 $blurbg: rgba(255, 255, 255, 0.1);
 $blur: blur(6px);
 $primaryTwo: #191919;
+$primaryThree: #fffff0;
 
 // //////////////////////functions//////////////////////////////
 @mixin is_mediaQuery_MaxWidth_Yes($width: 768px, $isMaxWidth: true) {
@@ -11,21 +12,15 @@ $primaryTwo: #191919;
     @media screen and (max-width: $width) {
       @content;
     }
-  }
-
-  @else if $isMaxWidth {
+  } @else if $isMaxWidth {
     @media screen and (max-width: $mediaWidth) {
       @content;
     }
-  }
-
-  @else if not $isMaxWidth and $width {
+  } @else if not $isMaxWidth and $width {
     @media screen and (min-width: $width) {
       @content;
     }
-  }
-
-  @else {
+  } @else {
     @media screen and (min-width: $mediaWidth) {
       @content;
     }
@@ -41,6 +36,29 @@ $primaryTwo: #191919;
 * {
   box-sizing: border-box !important;
   transition: all 50ms ease-in-out !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+figcaption {
+  text-wrap: pretty;
+}
+
+header,
+footer,
+main,
+section,
+article {
+  container-type: inline-size;
 }
 
 .responsiveText {
@@ -90,6 +108,17 @@ $primaryTwo: #191919;
   }
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
 .parent_page_wrapper {
   &::before {
     height: 100svh;
@@ -123,6 +152,24 @@ $primaryTwo: #191919;
         top: 20vh;
       }
     }
+  }
+
+  .rotated-bg-image::before {
+    display: none !important;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // background-image: url("/public/new/icon3.svg");
+    // background-size: cover;
+    // background-position: center top;
+    // background-repeat: no-repeat;
+    // transform: rotate(-90deg);
+    // transform-origin: top center;
+    background-color: red;
+    z-index: 15;
   }
 
   .recent {
@@ -288,11 +335,11 @@ $primaryTwo: #191919;
 }
 
 .form_tracker_wrapper {
-  &>span {
+  & > span {
     overflow-x: hidden;
 
     &:nth-child(1) {
-      &>span {
+      & > span {
         &:first-child {
           position: relative;
 
@@ -312,7 +359,7 @@ $primaryTwo: #191919;
       }
 
       &.active {
-        &>span {
+        & > span {
           &:first-child {
             background-color: #ffa500 !important;
 
@@ -329,7 +376,7 @@ $primaryTwo: #191919;
     }
 
     &:nth-child(2) {
-      &>span {
+      & > span {
         &:first-child {
           position: relative;
 
@@ -362,7 +409,7 @@ $primaryTwo: #191919;
       }
 
       &.active {
-        &>span {
+        & > span {
           &:first-child {
             background-color: #ffa500 !important;
 
@@ -380,7 +427,7 @@ $primaryTwo: #191919;
     }
 
     &:nth-child(3) {
-      &>span {
+      & > span {
         &:first-child {
           position: relative;
 
@@ -400,7 +447,7 @@ $primaryTwo: #191919;
       }
 
       &.active {
-        &>span {
+        & > span {
           &:first-child {
             background-color: #ffa500 !important;
 
@@ -416,6 +463,39 @@ $primaryTwo: #191919;
       }
     }
   }
+
+  &.thiner {
+    & > span {
+      &:nth-child(1),
+      &:nth-child(2),
+      &:nth-child(3) {
+        & > span {
+          &:first-child {
+            &::after,
+            &::before {
+              padding: 0.5px !important;
+              background-color: #ffa600 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// glowing balls
+.shadow-glow {
+  box-shadow:
+    0 0 65px 28px rgba(255, 166, 0, 0.231),
+    0 0 65px 35px rgba(255, 166, 0, 0),
+    inset 0 0 5px rgba(255, 255, 255, 0.25);
+
+  // &:hover {
+  //   box-shadow:
+  //     0 0 80px 30px rgba(255, 166, 0, 0.4),
+  //     0 0 100px 40px rgba(255, 166, 0, 0.2),
+  //     inset 0 0 10px rgba(255, 255, 255, 0.35);
+  // }
 }
 
 .wrapAllCourses {
@@ -438,24 +518,24 @@ input.toggle {
   }
 
   &:checked {
-    &+label.toggle__label {
+    & + label.toggle__label {
       &:after {
         background: white;
       }
     }
 
-    &+label {
+    & + label {
       background: #ffa500;
     }
 
-    &+label:after {
+    & + label:after {
       left: calc(100% - 1px);
       /* 20% of 5px */
       transform: translateX(-100%);
     }
 
     @include is_mediaQuery_MaxWidth_Yes {
-      &+label {
+      & + label {
         background: black !important;
       }
     }
@@ -516,7 +596,8 @@ label.toggle__label {
 .NativeDatepicker {
   width: 50%;
   height: 50%;
-  background: transparent url("/Icon-metro-calendar.svg") no-repeat center/contain;
+  background: transparent url("/Icon-metro-calendar.svg") no-repeat
+    center/contain;
   vertical-align: middle;
   /* background: transparent
       url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==")
@@ -558,7 +639,7 @@ label.toggle__label {
   display: grid;
   grid-template: 1fr, repeat(2, 1fr);
 
-  &>div {
+  & > div {
     &:first-child {
       grid-row: 1;
       grid-column: 1/2;
@@ -573,7 +654,7 @@ label.toggle__label {
   @include is_mediaQuery_MaxWidth_Yes {
     grid-template: repeat(2, 1fr), 1fr;
 
-    &>div {
+    & > div {
       &:first-child {
         grid-row: 1/2;
         grid-column: 1;
@@ -588,7 +669,7 @@ label.toggle__label {
 }
 
 .library {
-  &>div {
+  & > div {
     display: grid;
     grid-template: auto / repeat(auto-fill, minmax(350px, 1fr)); // 👌
     grid-auto-flow: row;
@@ -604,7 +685,7 @@ label.toggle__label {
     position: relative;
     overflow: hidden;
 
-    &>span {
+    & > span {
       z-index: 2;
     }
 
@@ -641,11 +722,16 @@ label.toggle__label {
     gap: 2rem;
 
     & .card {
-      background: rgba(white, 0.1);
+      background: rgba(#ffffff, 0.1);
 
       &:hover {
         outline: rgba(white, 0.5) !important;
         background: rgba(black, 0.4);
+      }
+
+      &.primarySeven {
+        background: #ffa60033 !important;
+        // background: #e2e8f0 !important;
       }
     }
 
@@ -701,8 +787,8 @@ label.toggle__label {
   grid-template: repeat(3, 1fr) / repeat(12, 1fr);
   gap: 1rem;
 
-  &>div {
-    &>div {
+  & > div {
+    & > div {
       @include is_mediaQuery_MaxWidth_Yes(468px, true) {
         flex-direction: column !important;
         justify-content: center !important;
@@ -741,7 +827,7 @@ label.toggle__label {
   }
 
   @include is_mediaQuery_MaxWidth_Yes(1200px, true) {
-    &>div {
+    & > div {
       &:nth-child(1) {
         grid-column: 1/7;
         grid-row: 1/2;
@@ -772,7 +858,7 @@ label.toggle__label {
   @include is_mediaQuery_MaxWidth_Yes {
     grid-template: repeat(5, 1fr) / repeat(12, 1fr);
 
-    &>div {
+    & > div {
       &:nth-child(1) {
         grid-column: 1/13;
         grid-row: 1/2;
@@ -803,12 +889,31 @@ label.toggle__label {
 
 .parallel_lines {
   @include is_mediaQuery_MaxWidth_Yes(768px, false) {
-
     &::before,
     &::after {
       content: "";
       display: block;
-      background-color: white;
+      background-color: $primaryThree;
+      position: absolute;
+      top: 2rem;
+      bottom: 2.5rem;
+      left: -3rem;
+      padding: 0 0.5px;
+    }
+
+    &::before {
+      left: -3.5rem;
+    }
+  }
+}
+
+.parallel_lines_dark {
+  @include is_mediaQuery_MaxWidth_Yes(768px, false) {
+    &::before,
+    &::after {
+      content: "";
+      display: block;
+      background-color: $primaryTwo;
       position: absolute;
       top: 2rem;
       bottom: 2.5rem;
@@ -848,7 +953,6 @@ label.toggle__label {
 }
 
 .backdrop_el {
-  background-color: rgba(255, 255, 255, 0.069);
   backdrop-filter: blur(2px);
 }
 
@@ -930,5 +1034,6 @@ label.toggle__label {
   }
 
   // Mobile view
-  @include is_mediaQuery_MaxWidth_Yes {}
+  @include is_mediaQuery_MaxWidth_Yes {
+  }
 }

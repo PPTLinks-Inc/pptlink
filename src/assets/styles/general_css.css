@@ -3,6 +3,29 @@
   transition: all 50ms ease-in-out !important;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+figcaption {
+  text-wrap: pretty;
+}
+
+header,
+footer,
+main,
+section,
+article {
+  container-type: inline-size;
+}
+
 .responsiveText {
   font-size: 0.9rem;
   line-height: 1.5rem;
@@ -43,6 +66,17 @@
     background: transparent !important;
   }
 }
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
 .parent_page_wrapper::before {
   height: 100svh;
 }
@@ -71,6 +105,17 @@
     top: 20vh;
   }
 }
+.parent_page_wrapper .rotated-bg-image::before {
+  display: none !important;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: red;
+  z-index: 15;
+}
 .parent_page_wrapper .recent {
   overflow: hidden;
 }
@@ -90,6 +135,15 @@
   transform: unset;
   top: 60vh;
   height: 100%;
+}
+
+@-webkit-keyframes signanim {
+  from {
+    background-blend-mode: hard-light;
+  }
+  to {
+    background-blend-mode: difference;
+  }
 }
 @keyframes signanim {
   from {
@@ -287,9 +341,16 @@
 .form_tracker_wrapper > span:nth-child(3).active > span:last-child {
   color: #ffa500 !important;
 }
+.form_tracker_wrapper.thiner > span:nth-child(1) > span:first-child::after, .form_tracker_wrapper.thiner > span:nth-child(1) > span:first-child::before, .form_tracker_wrapper.thiner > span:nth-child(2) > span:first-child::after, .form_tracker_wrapper.thiner > span:nth-child(2) > span:first-child::before, .form_tracker_wrapper.thiner > span:nth-child(3) > span:first-child::after, .form_tracker_wrapper.thiner > span:nth-child(3) > span:first-child::before {
+  padding: 0.5px !important;
+  background-color: #ffa600 !important;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 65px 28px rgba(255, 166, 0, 0.231), 0 0 65px 35px rgba(255, 166, 0, 0), inset 0 0 5px rgba(255, 255, 255, 0.25);
+}
 
 .wrapAllCourses {
-  width: -moz-fit-content;
   width: fit-content;
   display: grid;
   grid-template: auto/repeat(auto-fill, minmax(300px, 1fr));
@@ -463,8 +524,7 @@ label.toggle__label:active:after {
   border-radius: 10px;
   transform: rotateZ(25deg);
   background: rgba(255, 255, 255, 0.1);
-  -webkit-backdrop-filter: blur(6px);
-          backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 .library .before_effect::before {
   top: 50%;
@@ -485,12 +545,16 @@ label.toggle__label:active:after {
   outline: rgba(255, 255, 255, 0.5) !important;
   background: rgba(0, 0, 0, 0.4);
 }
+.public_presentations .cards_wrapper .card.primarySeven {
+  background: rgba(255, 166, 0, 0.2) !important;
+}
 @media screen and (max-width: 768px) {
   .public_presentations .cards_wrapper {
     display: flex !important;
     flex-direction: row;
     overflow-y: hidden;
     overflow-x: scroll;
+    -ms-scroll-snap-type: x mandatory;
     scroll-snap-type: x mandatory;
   }
   .public_presentations .cards_wrapper .card {
@@ -620,7 +684,7 @@ label.toggle__label:active:after {
   .parallel_lines::before, .parallel_lines::after {
     content: "";
     display: block;
-    background-color: white;
+    background-color: #fffff0;
     position: absolute;
     top: 2rem;
     bottom: 2.5rem;
@@ -628,6 +692,22 @@ label.toggle__label:active:after {
     padding: 0 0.5px;
   }
   .parallel_lines::before {
+    left: -3.5rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .parallel_lines_dark::before, .parallel_lines_dark::after {
+    content: "";
+    display: block;
+    background-color: #191919;
+    position: absolute;
+    top: 2rem;
+    bottom: 2.5rem;
+    left: -3rem;
+    padding: 0 0.5px;
+  }
+  .parallel_lines_dark::before {
     left: -3.5rem;
   }
 }
@@ -653,13 +733,12 @@ label.toggle__label:active:after {
 }
 
 .testSVG {
+  -webkit-clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
   clip-path: polygon(0 0, 100% 36%, 100% 100%, 0% 100%);
 }
 
 .backdrop_el {
-  background-color: rgba(255, 255, 255, 0.069);
-  -webkit-backdrop-filter: blur(2px);
-          backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 
 .scaleIn {
@@ -669,6 +748,7 @@ label.toggle__label:active:after {
 .snap_scrolling {
   overflow-y: hidden;
   overflow-x: scroll;
+  -ms-scroll-snap-type: x mandatory;
   scroll-snap-type: x mandatory;
 }
 .snap_scrolling .snap_scrolling_child {
@@ -720,4 +800,6 @@ label.toggle__label:active:after {
 }
 .interfaceFooter .endCallBtn {
   grid-area: endCall;
-}/*# sourceMappingURL=general_css.css.map */
+}
+
+/*# sourceMappingURL=general_css.css.map */

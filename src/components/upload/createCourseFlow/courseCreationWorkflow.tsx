@@ -6,6 +6,9 @@ import { MdOutlineQuiz } from "react-icons/md";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { MdDragIndicator } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
+import MobileCourseHeader from "./MobileCourseHeader";
+import MobileCourseSidebar from "./MobileCourseSidebar";
+import MobileCourseContent from "./MobileCourseContent";
 import {
   DndContext,
   KeyboardSensor,
@@ -75,6 +78,11 @@ export default function CourseCreationWorkflow() {
     actionText: "Delete",
     sectionId: ""
   });
+
+  // Mobile states
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [selectedContentForEdit, setSelectedContentForEdit] =
+    useState<ContentItem | null>(null);
 
   const [openQuizCreationModal, setOpenQuizCreationModal] = useState(false);
 
@@ -304,6 +312,27 @@ export default function CourseCreationWorkflow() {
     setModal((prev) => ({ ...prev, isTriggered: false }));
   }
 
+  // Mobile-specific handlers
+  const handleMobileSidebarToggle = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  };
+
+  const handleMobileGoBack = () => {
+    // Navigate back - you can implement this based on your routing
+    window.history.back();
+  };
+
+  const handleMobileContentEdit = (content: ContentItem) => {
+    setSelectedContentForEdit(content);
+    // Open the edit modal for mobile
+  };
+
+  const handleMobileContentDelete = (contentId: string) => {
+    // Handle content deletion
+    const removeContentItem = useCourseStore.getState().removeContentItem;
+    removeContentItem(contentId);
+  };
+
   return (
     <>
       <PopUpModal
@@ -323,7 +352,90 @@ export default function CourseCreationWorkflow() {
         textColor="text-[#FFFFF0]"
         borderColor="border-[#FFFFF0]"
       />
-      <div className="flex w-full h-full">
+
+      {/* Mobile Layout */}
+      <div className="md:hidden flex flex-col h-full w-full">
+        <MobileCourseHeader
+          sectionTitle={sections[selectedSectionIndex]?.title || ""}
+          onSectionTitleChange={(title) => {
+            setNewlyCreatedSection(null);
+            handleSectionTitleChange(title);
+          }}
+          onSectionTitleBlur={(title) => handleTitleBlur(title)}
+          onAddVideo={() => videoInputRef.current?.click()}
+          onAddPresentation={() => pptInputRef.current?.click()}
+          onAddQuiz={() => setOpenQuizCreationModal(true)}
+          onToggleSidebar={handleMobileSidebarToggle}
+          onGoBack={handleMobileGoBack}
+        />
+
+        <MobileCourseSidebar
+          isOpen={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+          sections={sections}
+          selectedSectionIndex={selectedSectionIndex}
+          onSelectSection={selectSection}
+          onAddSection={() => handleAddSection.mutate()}
+          onRemoveSection={handleRemoveSection.mutateAsync}
+          onSectionsReorder={setSections}
+          onSectionTitleChange={handleSectionTitleChange}
+          isAddingSectionLoading={handleAddSection.isPending}
+          newlyCreatedSection={newlyCreatedSection}
+        />
+
+        <MobileCourseContent
+          contentItems={contentItems || []}
+          onContentReorder={setContentItems}
+          onEditContent={handleMobileContentEdit}
+          onDeleteContent={handleMobileContentDelete}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        />
+
+        {/* Hidden file inputs for mobile */}
+        <input
+          type="file"
+          ref={videoInputRef}
+          className="hidden"
+          accept="video/*"
+          multiple
+          onChange={(e) => {
+            if (!e.target.files?.length) return;
+            Array.from(e.target.files).forEach((file) => {
+              handleFileSelect("VIDEO", file);
+            });
+            e.target.value = ""; // Reset input after handling files
+          }}
+        />
+        <input
+          type="file"
+          ref={pptInputRef}
+          className="hidden"
+          accept=".ppt,.pptx"
+          multiple
+          onChange={(e) => {
+            if (!e.target.files?.length) return;
+            Array.from(e.target.files).forEach((file) => {
+              handleFileSelect("PPT", file);
+            });
+            e.target.value = ""; // Reset input after handling files
+          }}
+        />
+
+        {/* Mobile Quiz Modal */}
+        <Dialog
+          open={openQuizCreationModal}
+          onOpenChange={setOpenQuizCreationModal}
+        >
+          <QuizCreationModal
+            setOpenQuizCreationModal={setOpenQuizCreationModal}
+          />
+        </Dialog>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex w-full h-full">
         <div className="w-full sm:w-1/4 h-full !bg-slate-200 p-4 border-r overflow-y-auto">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Course Sections</h2>
@@ -527,15 +639,15 @@ export default function CourseCreationWorkflow() {
                         className="p-2 rounded-md bg-gray-100"
                       >
                         <p className="font-medium">{section.title}</p>
-                        <div className="text-sm text-gray-600 flex gap-3">
-                          <span>
+                        <div className="flex flex-wrap gap-3 text-sm text-gray-600 justify-start items-start">
+                          <span className="flex-none min-w-[80px] md:flex-1 md:w-auto text-nowrap">
                             {videos} {videos === 1 ? "video" : "videos"}
                           </span>
-                          <span>
+                          <span className="flex-none min-w-[80px] md:flex-1 md:w-auto text-nowrap">
                             {ppts}{" "}
                             {ppts === 1 ? "presentation" : "presentations"}
                           </span>
-                          <span>
+                          <span className="flex-none min-w-[80px] md:flex-1 md:w-auto text-nowrap">
                             {quiz} {quiz === 1 ? "quiz" : "quizzes"}
                           </span>
                         </div>
@@ -830,15 +942,17 @@ function ContentItems({ content }: { content: ContentItem }) {
 
   return (
     <>
-      {openQuizUpdateModal && <Dialog
-        open={openQuizUpdateModal}
-        onOpenChange={setOpenQuizUpdateModal}
-      >
-        <QuizCreationModal
-          setOpenQuizCreationModal={setOpenQuizUpdateModal}
-          quizId={content.id}
-        />
-      </Dialog>}
+      {openQuizUpdateModal && (
+        <Dialog
+          open={openQuizUpdateModal}
+          onOpenChange={setOpenQuizUpdateModal}
+        >
+          <QuizCreationModal
+            setOpenQuizCreationModal={setOpenQuizUpdateModal}
+            quizId={content.id}
+          />
+        </Dialog>
+      )}
       <Dialog
         open={openEditModal || openQuizQuestionModal === content.id}
         onOpenChange={(open) => {
@@ -888,7 +1002,10 @@ function ContentItems({ content }: { content: ContentItem }) {
               </div>
             </div>
           ) : (
-            <ManageQuiz content={content} setOpenQuizUpdateModal={setOpenQuizUpdateModal} />
+            <ManageQuiz
+              content={content}
+              setOpenQuizUpdateModal={setOpenQuizUpdateModal}
+            />
           )}
 
           {(content.type === "VIDEO" || content.type === "PPT") && (

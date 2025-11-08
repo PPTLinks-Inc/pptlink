@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useRef, useCallback, useState, useEffect } from "react";
+import { useContext, useRef, useCallback, useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import callus from "/team/pptlink_resources/Group 31.png";
 import location from "/team/pptlink_resources/Group 32.png";
@@ -19,9 +19,13 @@ import { Helmet } from "react-helmet";
 import LogoBlack from "../../images/Logo-Black.png";
 import usePublicPresentation from "../../hooks/usePublicPresentation";
 import useUser from "../../hooks/useUser";
+import { UtilityProvider } from "../../contexts/utilityContext";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Home() {
   // context
+  const { dropdown, darkTheme, handleDarkTheme, handleDropdown } =
+    useContext(UtilityProvider);
   const scrollRef = useRef();
   const scrollRefTwo = useRef();
   const navigate = useNavigate();
@@ -30,6 +34,7 @@ export default function Home() {
   const { presentations, refetch } = usePublicPresentation();
   const [currentView, setCurrentView] = useState(1);
   const [open, setOpen] = useState(false);
+  const { bg, reverseBg, text, reverseText, border, isDark } = useTheme();
 
   const handleView = (e) => {
     setCurrentView(parseInt(e.target.dataset.allcourses));
@@ -51,9 +56,9 @@ export default function Home() {
     e.preventDefault();
     if (!user) {
       // Redirect to login with return URL
-      navigate('/signin?redirect=/create');
+      navigate("/signin?redirect=/create");
     } else {
-      navigate('/create');
+      navigate("/create");
     }
   };
 
@@ -69,13 +74,13 @@ export default function Home() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft - scrollAmount,
-        behavior: "smooth"
-      })
+          left: scrollContainer.scrollLeft - scrollAmount,
+          behavior: "smooth"
+        })
       : scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft + scrollAmount,
-        behavior: "smooth"
-      });
+          left: scrollContainer.scrollLeft + scrollAmount,
+          behavior: "smooth"
+        });
   };
 
   const scrollCardsTwo = (isLeft) => {
@@ -84,13 +89,13 @@ export default function Home() {
 
     return isLeft
       ? scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft - scrollAmount,
-        behavior: "smooth"
-      })
+          left: scrollContainer.scrollLeft - scrollAmount,
+          behavior: "smooth"
+        })
       : scrollContainer.scrollTo({
-        left: scrollContainer.scrollLeft + scrollAmount,
-        behavior: "smooth"
-      });
+          left: scrollContainer.scrollLeft + scrollAmount,
+          behavior: "smooth"
+        });
   };
   // framer
   const parentVarient = {
@@ -145,10 +150,7 @@ export default function Home() {
 
   return (
     <>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-      >
+      <Modal open={open} onClose={() => setOpen(false)}>
         <motion.iframe
           className="w-[95vw] md:w-[60vw] aspect-video mx-auto !border-0 rounded-md"
           src={`${open && "https://www.youtube-nocookie.com/embed/meTNh23fYKg?autoplay=1&controls=1&rel=0"}`}
@@ -165,39 +167,38 @@ export default function Home() {
         <Helmet>
           <title>{`Home - PPTLinks `}</title>
           <meta
-            name='description'
-            content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+            name="description"
+            content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
           />
           <meta
-            name='tags'
+            name="tags"
             content={`PPT, Presentations, Powerpoint, PPTLinks`}
           />
 
           {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
-          <meta property='og:type' content='website' />
-          <meta property='og:url' content={`https://www.PPTLink.com/`} />
-          <meta property='og:title' content={`Home - PPTLinks `} />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content={`https://www.PPTLink.com/`} />
+          <meta property="og:title" content={`Home - PPTLinks `} />
           <meta
-            property='og:description'
-            content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+            property="og:description"
+            content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
           />
-          <meta property='og:image' content={LogoBlack} />
+          <meta property="og:image" content={LogoBlack} />
 
           {/* meta tags to display information on twitter  */}
-          <meta property='twitter:card' content='website' />
-          <meta
-            property='twitter:url'
-            content={`https://www.PPTLink.com/`}
-          />
+          <meta property="twitter:card" content="website" />
+          <meta property="twitter:url" content={`https://www.PPTLink.com/`} />
 
-          <meta property='twitter:title' content={`Home - PPTLinks `} />
+          <meta property="twitter:title" content={`Home - PPTLinks `} />
           <meta
-            property='twitter:description'
-            content='Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks'
+            property="twitter:description"
+            content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
           />
-          <meta property='twitter:image' content={LogoBlack} />
+          <meta property="twitter:image" content={LogoBlack} />
         </Helmet>
-        <div className="relative w-full h-fit flex justify-center items-center tall:min-h-fit bg-primaryTwo text-white py-6">
+        <div
+          className={`relative w-full h-fit flex justify-center items-center tall:min-h-fit _bg-primaryTwo _text-white py-6 ${bg} ${text}`}
+        >
           <div className="container flex justify-between gap-20 maxScreenMobile:gap-4 maxScreen:flex-col-reverse _tall:flex-col-reverse !pt-16">
             <motion.div
               initial={{ y: 50, opacity: 0 }}
@@ -208,8 +209,11 @@ export default function Home() {
               }}
               viewport={{ once: true }}
               onClick={() => setOpen(true)}
-              className={`cursor-pointer banner_img w-full aspect-video mx-auto !border-[0.5px] border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-primaryTwo/50 before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}>
-              <span className="block text-5xl text-[#FFFFF0] z-10"><FaCirclePlay /></span>
+              className={`cursor-pointer banner_img w-full aspect-video mx-auto !border-[0.5px] ${border} _border-[#FFFFF0] rounded-lg _maxScreenMobile:aspect-[2/1.5] flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block before:bg-primaryTwo/50_ ${bg} before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-lg`}
+            >
+              <span className={`block text-5xl ${text} _text-[#FFFFF0] z-10`}>
+                <FaCirclePlay />
+              </span>
             </motion.div>
 
             <motion.div
@@ -234,7 +238,11 @@ export default function Home() {
                 variants={parentVarient}
                 className="w-full responsiveText leading-[2rem] opacity-5 mb-1 md:mb-3 md:text-justify"
               >
-                Don’t let internet limitations hold you back. Our platform empowers African course creators to reach their students, no matter the location or connectivity. Present your courses smoothly, with minimal data, and make sure your lessons reach the people who need them.
+                Don’t let internet limitations hold you back. Our platform
+                empowers African course creators to reach their students, no
+                matter the location or connectivity. Present your courses
+                smoothly, with minimal data, and make sure your lessons reach
+                the people who need them.
               </motion.p>
               <motion.div
                 variants={parentVarient}
@@ -243,13 +251,13 @@ export default function Home() {
                 <Link
                   onClick={handleCreateClick}
                   to="#"
-                  className="block w-fit px-6 py-1 bg-[#FFFFF0] font-normal text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3"
+                  className={`block w-fit px-6 py-1 ${reverseBg} ${reverseText} _bg-[#FFFFF0] font-normal _text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3`}
                 >
                   Create Now
                 </Link>
                 <Link
                   to="/signin"
-                  className={`block w-fit px-6 py-1 text-[#FFFFF0] font-normal responsiveText border-[0.5px] border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
+                  className={`block w-fit px-6 py-1 ${text} _text-[#FFFFF0] font-normal responsiveText border-[0.5px] ${border} _border-[#FFFFF0] rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3 ${user && "hidden"}`}
                 >
                   Sign In
                 </Link>
@@ -261,8 +269,10 @@ export default function Home() {
         {/* Checkout was here */}
         {/* ////////////////////////////End All the skills you need in one place////////////////////////////////////////////////// */}
         {/* /////////////////////////////Popular Presentations////////////////////////////////////////////////// */}
-        <div className="w-full h-fit bg-primaryTwo !pt-16">
-          <div className="public_presentations container relative h-fit bg-transparent text-[#FFFFF0] flex flex-col text-justify items-center">
+        <div className={`w-full h-fit ${bg} _bg-primaryTwo !pt-16`}>
+          <div
+            className={`public_presentations container relative h-fit bg-transparent ${text} _text-[#FFFFF0] flex flex-col text-justify items-center`}
+          >
             <motion.h2
               initial={{ y: 10, opacity: 0 }}
               whileInView={{
@@ -271,23 +281,31 @@ export default function Home() {
                 transition: { duration: 1, type: "tween" }
               }}
               viewport={{ once: true }}
-              className="w-full text-4xl font-extrabold mb-6 maxScreenMobile:mb-4 maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center">
+              className="w-full text-4xl font-extrabold mb-6 maxScreenMobile:mb-4 maxScreenMobile:font-bold maxScreenMobile:text-3xl maxScreenMobile:text-center"
+            >
               Popular Presentations
             </motion.h2>
 
             <div className="hidden maxScreenMobile:flex gap-5 justify-end w-full pb-4 h-fit bg-[transparent]">
-              <button onClick={() => scrollCards(true)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-                <FaCaretLeft className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
-                />
+              <button
+                onClick={() => scrollCards(true)}
+                className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]"
+              >
+                <FaCaretLeft className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
               </button>
-              <button onClick={() => scrollCards(false)} className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]">
-                <FaCaretRight className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]"
-                />
+              <button
+                onClick={() => scrollCards(false)}
+                className="border-[0.5px] border-[rgba(255,166,0,0.31)] flex items-center justify-center w-[45px]  aspect-square rounded-[25%] bg-[rgba(0,0,0,0.29)] hover:bg-[#FFA500]"
+              >
+                <FaCaretRight className="text-[1.5rem] text-[#FFFFF0] cursor-pointer active:text-[rgba(0,0,0,0.5)]" />
               </button>
             </div>
 
             <div className="w-full min-h-[50vh] maxScreenMobile:min-h-[20vh]">
-              <div ref={scrollRef} className="cards_wrapper w-full scroll-smooth">
+              <div
+                ref={scrollRef}
+                className="cards_wrapper w-full scroll-smooth"
+              >
                 {presentations.slice(0, 12).map((presentation) => (
                   <Card
                     key={presentation.id}
@@ -306,7 +324,9 @@ export default function Home() {
           </div>
         </div>
         {/* ////////////////////////////End Popular Presentations////////////////////////////////////////////////// */}
-        <div className="max-h-fit bg-primaryTwo text-white pt-8">
+        <div
+          className={`max-h-fit ${bg} ${text} _bg-primaryTwo _text-white pt-8`}
+        >
           <div className="container !pt-16">
             <motion.h3
               variants={secondVarient}
@@ -318,9 +338,7 @@ export default function Home() {
               Get in touch
             </motion.h3>
             <div className="wrap_contacts w-full flex justify-between items-center flex-wrap maxScreenMobile:flex-col-reverse">
-              <div
-                className="w-[50%] min-h-[30rem] text-sm maxScreenMobile:w-full"
-              >
+              <div className="w-[50%] min-h-[30rem] text-sm maxScreenMobile:w-full">
                 <motion.h5
                   variants={secondVarient}
                   className="mb-2 text-xl font-semibold"
@@ -331,10 +349,13 @@ export default function Home() {
                   variants={secondVarient}
                   className="w-full mb-4 responsiveText font-thin"
                 >
-                  Your voice matters! Share your thought and feedback with us and
-                  be part of our community.
+                  Your voice matters! Share your thought and feedback with us
+                  and be part of our community.
                 </motion.p>
-                <motion.form variants={secondVarient} onSubmit={handleMsgSubmit}>
+                <motion.form
+                  variants={secondVarient}
+                  onSubmit={handleMsgSubmit}
+                >
                   <div className="flex justify-between items-center gap-4 mb-8 maxScreenMobile:flex-col">
                     <div className="w-[50%] maxScreenMobile:w-full">
                       <label
@@ -351,7 +372,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgName: e.target.value });
                         }}
-                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgName !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-2 text-white indent-4`}
+                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgName !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} _text-white indent-4`}
                         placeholder="Enter fullname"
                         required
                       />
@@ -371,7 +392,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgEmail: e.target.value });
                         }}
-                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgEmail !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-2 text-white indent-4`}
+                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgEmail !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
                         placeholder="Enter email"
                         required
                       />
@@ -394,7 +415,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgPhone: e.target.value });
                         }}
-                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-2 text-white indent-4`}
+                        className={`block w-full bg-transparent border-[1px] border-solid ${values.msgPhone !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-2 ${text} indent-4`}
                         placeholder="Enter phone number"
                         required
                       />
@@ -413,7 +434,7 @@ export default function Home() {
                         onChange={(e) => {
                           setValues({ ...values, msgReason: e.target.value });
                         }}
-                        className={`bg-primaryTwo border-[1px] ${values.msgReason !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md text-white block w-full py-[0.5rem]`}
+                        className={`${bg} border-[1px] ${values.msgReason !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md ${text} block w-full py-[0.5rem] pl-3`}
                       >
                         <option value="" disabled>
                           Reason for writing?
@@ -473,12 +494,12 @@ export default function Home() {
                       onChange={(e) => {
                         setValues({ ...values, msg: e.target.value });
                       }}
-                      className={`block w-full !h-32 bg-transparent border-[1px] border-solid ${values.msg !== "" ? "!border-[#FFA500]" : "border-white"} rounded-md py-1 indent-4 resize-none text-white`}
+                      className={`block w-full !h-32 bg-transparent border-[1px] border-solid ${values.msg !== "" ? "!border-[#FFA500]" : `${border}`} rounded-md py-1 indent-4 resize-none ${text}`}
                     ></textarea>
                   </div>
                   <button
                     type="submit"
-                    className="h-[2rem] w-[10rem] flex items-center justify-center bg-[#FFFFF0] ml-auto text-primaryTwo text-[.8rem] font-medium rounded-md"
+                    className={`h-[2rem] w-[10rem] flex items-center justify-center ${reverseBg} ml-auto ${reverseText} text-[.8rem] font-medium rounded-md`}
                   >
                     {values.msgPending ? <LoadingAssetSmall /> : "Submit"}
                   </button>
@@ -490,13 +511,13 @@ export default function Home() {
                 initial="initial"
                 whileInView="inView"
                 viewport={{ margin: "100px", once: true }}
-                className="w-2/5 min-h-[30rem] maxScreenMobile:w-full relative parallel_lines"
+                className={`w-2/5 min-h-[30rem] maxScreenMobile:w-full relative ${isDark ? "parallel_lines" : "parallel_lines_dark"}`}
               >
                 <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Call Us</h4>
                   <p className="text-sm mb-3 font-thin">
-                    Have a question or need guidance? Call us now and lets discuss
-                    how we can help you achieve your goal.
+                    Have a question or need guidance? Call us now and lets
+                    discuss how we can help you achieve your goal.
                   </p>
                   <div className="flex items-center">
                     <img
@@ -505,7 +526,10 @@ export default function Home() {
                       className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="tel:+2349068314394" className="text-[#FFA500] text-sm">
+                    <a
+                      href="tel:+2349068314394"
+                      className="text-[#FFA500] text-sm"
+                    >
                       +2349068314394
                     </a>
                   </div>
@@ -514,8 +538,8 @@ export default function Home() {
                 <div className="w-full mb-8">
                   <h4 className="mb-3 text-[1.1rem] font-semibold">Visit Us</h4>
                   <p className="text-sm mb-3 font-thin">
-                    We’d love to welcome you to our office. Visit us let’s discuss
-                    your project.
+                    We’d love to welcome you to our office. Visit us let’s
+                    discuss your project.
                   </p>
                   <div className="flex items-center">
                     <img
@@ -525,14 +549,16 @@ export default function Home() {
                       loading="lazy"
                     />
                     <a href="/" className="text-[#FFA500] text-sm">
-                      Nascomsoft in Angwan Cashew, opp Elim church, 740102, Bauchi
-                      Nigeria
+                      Nascomsoft in Angwan Cashew, opp Elim church, 740102,
+                      Bauchi Nigeria
                     </a>
                   </div>
                 </div>
 
                 <div className="w-full mb-8">
-                  <h4 className="mb-3 text-[1.1rem] font-semibold">Message Us</h4>
+                  <h4 className="mb-3 text-[1.1rem] font-semibold">
+                    Message Us
+                  </h4>
                   <p className="text-sm mb-3 font-thin">
                     Write to us through text, on linkedin or any of our social
                     handles
@@ -544,7 +570,10 @@ export default function Home() {
                       className="block w-5 h-5 mr-1"
                       loading="lazy"
                     />
-                    <a href="sms:+2349068314394" className="text-[#FFA500] text-sm">
+                    <a
+                      href="sms:+2349068314394"
+                      className="text-[#FFA500] text-sm"
+                    >
                       SMS to +2349068314394
                     </a>
                   </div>
@@ -565,14 +594,14 @@ export default function Home() {
               <h3 className="text-[3rem] font-black break-all leading-[4rem] maxScreenMobile:text-[2rem]">
                 Frequently <br /> Asked <br /> Questions.
               </h3>
-            </motion.div >
+            </motion.div>
 
             <div className="w-3/5 maxScreenMobile:w-full" ref={scope}>
               {FAQ.map((_, id) => (
                 <AccordionWrapper
                   key={id}
-                  isDark={true}
-                  isBorder={true}
+                  isBorder={border}
+                  isDark={isDark}
                   title={_.title}
                   className="transition-all duration-300"
                 >
@@ -583,9 +612,9 @@ export default function Home() {
                 </AccordionWrapper>
               ))}
             </div>
-          </div >
-        </div >
-      </section >
+          </div>
+        </div>
+      </section>
     </>
   );
 }

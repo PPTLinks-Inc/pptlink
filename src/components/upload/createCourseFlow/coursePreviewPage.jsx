@@ -17,8 +17,11 @@ import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "../../ui/button";
 import safeAwait from "../../../util/safeAwait";
+import { useTheme } from "../../../hooks/useTheme";
 
 export default function CoursePreviewPage() {
+  const { bg, text, border, isDark, reverseBg, reverseText, reverseBorder } =
+    useTheme();
   const navigate = useNavigate();
   const [sendMessage, setSendMessage] = useState({
     message: "",
@@ -66,7 +69,7 @@ export default function CoursePreviewPage() {
 
   if (error) {
     return (
-      <div className="bg-primaryTwo w-full h-[50vh] flex items-center justify-center flex-col">
+      <div className={`${bg} ${text} w-full h-[50vh] flex items-center justify-center flex-col`}>
         {axios.isAxiosError(error) ? (
           <p>
             {error.response?.data?.message ||
@@ -80,7 +83,7 @@ export default function CoursePreviewPage() {
         <Button
           onClick={() => refetch()}
           variant="outline"
-          className="mt-4 text-primaryTwo"
+          className={`mt-4 ${reverseText} ${reverseBg} ${border}`}
         >
           Retry
         </Button>
@@ -285,7 +288,7 @@ export default function CoursePreviewPage() {
         />
         <meta property="twitter:image" content={LogoBlack} />
       </Helmet>
-      <div className="bg-primaryTwo">
+      <div className={`${bg} ${text}`}>
         <div className="container h-fit py-10 flex flex-col justify-between items-start">
           <h1 className="text-3xl maxScreenMobile:text-2xl font-[400] uppercase mb-1">
             {data.name}
@@ -315,12 +318,12 @@ export default function CoursePreviewPage() {
                 </Avatar>
               ))}
             </span>
-            <span className="block w-fit responsiveText text-white mr-1">
+            <span className={`block w-fit responsiveText ${text} mr-1`}>
               {data.purchases.count} enrolled
             </span>
-            <span className="block w-fit responsiveTex text-white">
+            <span className={`block w-fit responsiveTex ${text}`}>
               Created by{" "}
-              <Link to={"#"} className="underline text-white">
+              <Link to={"#"} className={`underline ${text}`}>
                 {data.instructors[0].instructor.user.username}
               </Link>
             </span>
@@ -331,7 +334,7 @@ export default function CoursePreviewPage() {
                 {isCreator ? (
                   <Link
                     to={`/course/${data.id}`}
-                    className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                    className={`flex justify-between items-center gap-3 py-4 w-fit px-3 ${reverseText} font-normal h-[2.5rem] text-[.8rem] rounded-md ${reverseBg}`}
                   >
                     Edit Course
                   </Link>
@@ -345,7 +348,7 @@ export default function CoursePreviewPage() {
                           ? `/pay/${data.id}`
                           : `/signin?redirect=/pay/${data.id}`
                       }
-                      className="flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                      className={`flex justify-between items-center gap-3 py-4 w-fit px-3 ${reverseText} font-normal h-[2.5rem] text-[.8rem] rounded-md ${reverseBg}`}
                     >
                       {isUserLoggedIn
                         ? enrolling
@@ -368,7 +371,7 @@ export default function CoursePreviewPage() {
                   onClick={() =>
                     setSendMessage({ ...sendMessage, openMessageModal: true })
                   }
-                  className="ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 text-primaryTwo font-normal h-[2.5rem] text-[.8rem] rounded-md bg-[#FFFFF0]"
+                  className={`ml-auto mr-0 maxSmallMobile:ml-0 maxSmallMobile:mr-auto flex justify-between items-center gap-3 py-4 w-fit px-3 font-normal h-[2.5rem] text-[.8rem] rounded-md ${reverseBg} ${reverseText}`}
                 >
                   Course Messages
                 </button>
@@ -377,7 +380,7 @@ export default function CoursePreviewPage() {
           </div>
         </div>
       </div>
-      <div className="border-t-2 border-b-2 bg-primaryTwo border-t-white border-b-white">
+      <div className={`border-y-2 ${bg} ${text} ${isDark ? "border-y-primaryThree" : "border-y-primaryTwo"}`}>
         <div className="container py-3 flex justify-between items-center gap-2 maxScreenMobile:flex-col maxScreenMobile:items-start">
           {data.courseLevel && data.duration && (
             <>
@@ -411,8 +414,8 @@ export default function CoursePreviewPage() {
           )}
         </div>
       </div>
-      <section className="bg-primaryTwo min-h-[30vh]">
-        <h2 className="container text-3xl maxScreenMobile:text-2xl font-small uppercase text-white pt-10 pb-4">
+      <section className={`${bg} min-h-[30vh]`}>
+        <h2 className={`container text-3xl maxScreenMobile:text-2xl font-small uppercase ${text} pt-10 pb-4`}>
           Courses in this Program
         </h2>
         {/* start */}
@@ -422,8 +425,8 @@ export default function CoursePreviewPage() {
               isDark={false}
               isBorder={false}
               title={
-                <p className="w-full px-6 py-4 bg-[#FFFFF0] border-0 !rounded-md !font-normal">
-                  <span className="block w-fit text-primaryTwo text-xl capitalize">
+                <p className={`w-full px-6 py-4 ${reverseBg} _bg-[#FFFFF0] border-0 !rounded-md !font-normal`}>
+                  <span className={`block w-fit ${reverseText} _text-primaryTwo text-xl capitalize`}>
                     {section.title}
                   </span>
                 </p>
@@ -453,7 +456,7 @@ export default function CoursePreviewPage() {
         ))}
         {/* end */}
       </section>
-      <section className="bg-primaryTwo w-full py-6">
+      <section className={`${bg} ${text} w-full py-6`}>
         <h3 className="container text-3xl maxScreenMobile:text-2xl _text-center font-small pb-4 uppercase">
           Your Course Instructor
         </h3>

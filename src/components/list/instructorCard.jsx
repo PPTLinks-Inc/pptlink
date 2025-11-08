@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
 import { NavLink } from "react-router-dom";
 import { FaUser } from "react-icons/fa6";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function InstructorCard({ data }) {
+  const { bg, text, border, isDark, reverseBg, reverseText, reverseBorder } =
+    useTheme();
+
   return (
-    <div className="w-full h-fit border-[1px] border-[#FFFFF0] rounded-md p-3 flex flex-col justify-between items-start gap-3">
+    <div className={`w-full h-fit border-[1px] rounded-md p-3 flex flex-col justify-between items-start gap-3 $_{bg} ${text} ${border} $_{isDark ? reverseBorder : ""}`}>
       {data.instructor.photo ? (
         <img
           src={data.instructor.photo}
@@ -16,15 +20,17 @@ export default function InstructorCard({ data }) {
           <FaUser className="text-gray-400 text-xl" />
         </div>
       )}
-      
+
       <div className="flex flex-col justify-between items-start gap-2">
         <h3 className="font-semibold text-base line-clamp-2 whitespace-pre-wrap text-ellipsis">
           {data.instructor.user.username}
         </h3>
-        
+
         <div className="flex flex-col gap-1">
           <p className="text-sm text-gray-600">{data.instructor.role}</p>
-          <p className="text-sm text-gray-600">{data.instructor.experience} years of experience</p>
+          <p className="text-sm text-gray-600">
+            {data.instructor.experience} years of experience
+          </p>
         </div>
 
         <p className="text-sm line-clamp-4 whitespace-pre-wrap w-full h-20 overflow-x-hidden text-ellipsis">

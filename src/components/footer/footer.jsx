@@ -1,23 +1,31 @@
 import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-
 import Socials from "../social/socials";
-import { ABOUT, DOCUMENT, HOME, LEGAL, SIGNUP, PRIVACY_POLICY, TERMS_AND_SERVICES } from "../../constants/routes";
+import {
+  ABOUT,
+  DOCUMENT,
+  HOME,
+  LEGAL,
+  SIGNUP,
+  PRIVACY_POLICY,
+  TERMS_AND_SERVICES
+} from "../../constants/routes";
 import logo_orange from "/imgs/onemorecolor.png";
 import useUser from "../../hooks/useUser";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Footer() {
   const { pathname } = useLocation();
   const { userQuery } = useUser();
   const user = userQuery.data;
-
+  const { bg, footerBg, text, footerText, border, isDark, reverseBg, reverseText, reverseBorder } = useTheme();
   const [getlocation] = useState(
     useLocation().pathname === "/newupload" ? true : false
   );
 
   return (
     <footer
-      className={`footer pt-10 responsiveText ${getlocation ? "hidden" : "block"} ${pathname === "/" ? "text-primaryTwo" : "text-slate-200 bg-primaryTwo black_underline"} relative`}
+      className={`footer pt-10 responsiveText ${getlocation ? "hidden" : "block"} ${pathname === "/" ? `${reverseBg} ${reverseText}` : `${footerText} ${footerBg} black_underline`} relative`}
     >
       <div className="container">
         <div className="footer_main w-full flex justify-between align-top gap-10 maxScreenMobile:flex-col mb-5">
@@ -147,7 +155,7 @@ export default function Footer() {
           </div>
         </div>
         <p
-          className={`py-5 text-center border-t-[1px] ${pathname === "/" ? "border-black" : "border-white"} border-solid responsiveText`}
+          className={`py-5 text-center border-t-[1px] ${reverseBorder} border-solid responsiveText`}
         >
           &copy; PPTLinks {new Date().getFullYear()}. All rights reserved
         </p>

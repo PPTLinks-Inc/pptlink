@@ -2,7 +2,7 @@
 import { useContext } from "react";
 import { Outlet } from "react-router";
 import { useLocation } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import MovingEllipses from "../animation/MovingEllipes";
 import Header from "../header/header";
 import Backmenu from "../backmenu/backmenu";

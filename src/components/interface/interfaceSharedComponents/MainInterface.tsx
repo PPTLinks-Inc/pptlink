@@ -3,7 +3,29 @@ import PopUpModal from "../../Models/dashboardModel";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 import { IoSync } from "react-icons/io5";
 
-export default function MainInterfaceElement({sideBar, setSideBar, is768PxScreen, orientation}) {
+interface MainInterfaceElementProps {
+  sideBar: boolean;
+  setSideBar: Dispatch<SetStateAction<boolean>>;
+  is768PxScreen: boolean;
+  orientation: OrientationState;
+  footerClass: {
+    interfaceFooter: boolean;
+    inAactiveSideBarDesktop: boolean;
+    mobileViewHost: boolean;
+    desktopViewUsers: boolean;
+    mobileViewUsers: boolean;
+  };
+}
+
+// export default function MainInterfaceElement({sideBar, setSideBar, is768PxScreen, orientation}) {
+export const MainInterfaceElement: React.FC<MainInterfaceElementProps> = ({
+  footerClass,
+  sideBar,
+  setSideBar,
+  is768PxScreen,
+  orientation
+}) => {
+  const tt = footerClass;
   return (
     <>
       <div className="relative w-full h-full bg-[white] border-none rounded-sm">
@@ -39,4 +61,4 @@ export default function MainInterfaceElement({sideBar, setSideBar, is768PxScreen
       </div>
     </>
   );
-}
+};

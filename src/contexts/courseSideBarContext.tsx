@@ -16,6 +16,7 @@ import { GoGear } from "react-icons/go";
 import logo_white from "/imgs/WHITE.png";
 import { Button } from "@/components/ui/button";
 import { FaRegSave } from "react-icons/fa";
+import { MdNavigateNext } from "react-icons/md";
 import { MdHelpOutline } from "react-icons/md";
 import { AiOutlineProfile } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
@@ -36,7 +37,9 @@ interface CourseSideBarContextType {
   isActive: ActiveTab;
 }
 
-export const CourseSideBarContext = createContext<CourseSideBarContextType>({ isActive: "course" });
+export const CourseSideBarContext = createContext<CourseSideBarContextType>({
+  isActive: "course"
+});
 
 export default function CourseSideBarContextProvider({
   children,
@@ -93,8 +96,8 @@ export default function CourseSideBarContextProvider({
 
   const isCreator = data.creatorId === userQuery.data?.id;
 
-  const getNextIncompleteTab = useCourseStore((state) =>
-    state.getNextIncompleteTab
+  const getNextIncompleteTab = useCourseStore(
+    (state) => state.getNextIncompleteTab
   );
 
   const handleNextOrPublish = () => {
@@ -121,7 +124,7 @@ export default function CourseSideBarContextProvider({
         });
         return;
       }
-      
+
       if (nextIncompleteTab === "course") {
         navigate(`/course/${data.id}`);
         return;
@@ -138,7 +141,7 @@ export default function CourseSideBarContextProvider({
           <SidebarHeader>
             <SidebarMenuButton asChild tooltip="Go to Course Dashboard">
               <Link to="/dashboard?tab=2">
-                <img src={logo_white} className="block w-8 aspect-square" />
+                <img src={logo_white} alt={logo_white} className="block w-8 aspect-square" />
                 <span className="font-bold">PPTLinks</span>
               </Link>
             </SidebarMenuButton>
@@ -204,11 +207,70 @@ export default function CourseSideBarContextProvider({
             </SidebarMenuButton>
           </SidebarFooter>
         </Sidebar>
+        {/* <SidebarInset>
+          <header className="flex flex-wrap md:flex-nowrap items-center gap-2 px-4 py-2 bg-slate-200 border-b border-white">
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="h-4" />
+              <p className="text-sm md:text-base">
+                <b>Course Builder:</b> {courseName}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap md:flex-nowrap justify-end items-center gap-2 ml-auto w-full md:w-auto mt-2 md:mt-0">
+              <Button
+                className="w-full md:w-auto"
+                variant="outline"
+                onClick={() => saveCourse.mutate()}
+                disabled={saveCourse.isPending}
+              >
+                {saveCourse.isPending ? (
+                  <LoadingAssetSmall />
+                ) : (
+                  <>
+                    <FaRegSave />
+                    <span className="ml-1">{`Save ${isActive} data`}</span>
+                  </>
+                )}
+              </Button>
+
+              {isCreator && (
+                <Button
+                  className={cn(
+                    "w-full md:w-auto border-white",
+                    published
+                      ? "bg-rose-600 hover:bg-red-700 text-white"
+                      : isPublishable
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : "bg-primaryTwo text-white"
+                  )}
+                  variant="outline"
+                  onClick={handleNextOrPublish}
+                >
+                  {togglePublish.isPending ? (
+                    <LoadingAssetSmall />
+                  ) : (
+                    <span>
+                      {published
+                        ? "Unpublish"
+                        : isPublishable
+                          ? "Publish"
+                          : "Next section"}
+                    </span>
+                  )}
+                </Button>
+              )}
+            </div>
+          </header>
+
+          <div className="bg-primaryTwo h-full">{children}</div>
+        </SidebarInset> */}
+
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 px-4 bg-slate-200 border-b-[1px] border-b-white">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <p>
+            <p className="maxScreenMobile:text-sm md:text-base">
               <b>Course Builder:</b> {courseName}
             </p>
             <div className="ml-auto mr-0 flex justify-center items-center gap-4">
@@ -223,7 +285,7 @@ export default function CourseSideBarContextProvider({
                 ) : (
                   <>
                     <FaRegSave />
-                    <span>{`Save ${isActive} data`}</span>
+                    <span className="maxScreenMobile:hidden">{`Save ${isActive} data`}</span>
                   </>
                 )}
               </Button>
@@ -245,11 +307,20 @@ export default function CourseSideBarContextProvider({
                     <LoadingAssetSmall />
                   ) : (
                     <span>
-                      {published
-                        ? "Unpublish"
-                        : isPublishable
-                          ? "Publish"
-                          : "Next section"}
+                      {published ? (
+                        "Unpublish"
+                      ) : isPublishable ? (
+                        "Publish"
+                      ) : (
+                        <>
+                          <span className="maxScreenMobile:hidden">
+                            Next section
+                          </span>
+                          <span className="hidden maxScreenMobile:block">
+                            <MdNavigateNext />
+                          </span>
+                        </>
+                      )}
                     </span>
                   )}
                 </Button>
