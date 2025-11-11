@@ -203,7 +203,7 @@ export default function NewHomePage() {
         className={`banner-section w-full min-h-screen ${text} pt-40 maxScreenMobile:!pt-[76px] md:bg-[url(/new/icon3.svg)] maxScreenMobile:bg-[url(/new/mobile-view.png)] bg-cover bg-center bg-no-repeat relative`}
       >
         {/* Background blur span - placed behind container */}
-        <span className="hidden maxScreenMobile:block absolute top-0 left-0 w-full h-full backdrop-blur-[2px] bg-white/5"></span>
+        <span className="hidden maxScreenMobile:block absolute top-0 left-0 w-full h-full backdrop-blur-[2px] bg-black/5"></span>
 
         <div className={`container h-fit relative z-10`}>
           <motion.div
