@@ -350,6 +350,10 @@ article {
   box-shadow: 0 0 65px 28px rgba(255, 166, 0, 0.231), 0 0 65px 35px rgba(255, 166, 0, 0), inset 0 0 5px rgba(255, 255, 255, 0.25);
 }
 
+.header-black-glow {
+  box-shadow: 0 0 65px 28px rgba(255, 166, 0, 0.231), 0 0 65px 35px rgba(255, 166, 0, 0), inset 0 0 5px rgba(255, 255, 255, 0.25);
+}
+
 .wrapAllCourses {
   width: fit-content;
   display: grid;
