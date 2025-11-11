@@ -239,7 +239,7 @@ export default function NewHomePage() {
           </motion.h1>
 
           <p className="text-sm w-3/6 my-6 leading-6 maxSmallMobile:text-left maxScreenMobile:!w-full">
-            PPTLinks males online teaching easier with low-data video calls,
+            PPTLinks makes online teaching easier with low-data video calls,
             presentations, students tracking, and seamless collaboraton.
           </p>
 
