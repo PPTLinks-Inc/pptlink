@@ -21,6 +21,7 @@ import QuizStoreProvider from "./store/quizStoreProvider";
 const Root = lazy(() => import("./components/root/root"));
 const RootNoFooter = lazy(() => import("./components/root/rootNoFooter"));
 const Home = lazy(() => import("./components/home/home"));
+const NewHomePage = lazy(() => import("./components/home/newHome"));
 const NotFound = lazy(() => import("./components/404/404"));
 const SignPage = lazy(() => import("./components/sign/sign"));
 const Interface = lazy(() => import("./components/interface/Interface"));
@@ -112,6 +113,14 @@ const sentryCreateBrowserRouter =
 
 const router = sentryCreateBrowserRouter(
   [
+    {
+      path: "/home",
+      element: (
+        <UtilityProviderFunc>
+          <NewHomePage />
+        </UtilityProviderFunc>
+      )
+    },
     {
       path: "/",
       element: (
@@ -282,65 +291,81 @@ const router = sentryCreateBrowserRouter(
     {
       path: "/dashboard/overview/home",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseDashboardOverviewPage />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseDashboardOverviewPage />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {
       path: "/dashboard/overview/presentations",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseOverviewPresentations />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewPresentations />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {
       path: "/dashboard/overview/mycourses",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseOverviewMyCourses />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewMyCourses />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {
       path: "/dashboard/overview/live-sessions",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseOverviewLiveSession />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewLiveSession />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {
       path: "/dashboard/overview/students",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseOverviewStudents />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewStudents />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {
       path: "/dashboard/overview/messages",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseOverviewMessages />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewMessages />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {
       path: "/dashboard/overview/earnings",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseOverviewEarnings />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewEarnings />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {
       path: "/dashboard/overview/settings",
       element: (
-        <CourseOverviewContextProvider>
-          <CourseOverviewSettings />
-        </CourseOverviewContextProvider>
+        <UtilityProviderFunc>
+          <CourseOverviewContextProvider>
+            <CourseOverviewSettings />
+          </CourseOverviewContextProvider>
+        </UtilityProviderFunc>
       )
     },
     {

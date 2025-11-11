@@ -68,7 +68,7 @@ export default function CourseOverviewStudents() {
                   Action
                 </span>
               </header>
-              <ScrollArea className="scrollbar-hide block w-full !h-[380px]">
+              <ScrollArea className="scrollbar-hide block w-full !h-[410px]">
                 <ul className="w-full h-fit">
                   {ViewStudents.map((students) => (
                     <li

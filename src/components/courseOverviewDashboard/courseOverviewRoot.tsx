@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { motion } from "framer-motion";
 import CourseOverviewHeader from "./subComponents/header";
 import AsideForDarshboardOverview from "./subComponents/aside";
 import InnerMainHeader from "./subComponents/innerMainHeader";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function CourseOverviewRoot({
   children
@@ -42,7 +40,7 @@ export default function CourseOverviewRoot({
           </button>
           <InnerMainHeader />
           {/* wrappers for different different */}
-            {children}
+          {children}
           {/* end different wrappers */}
         </main>
       </div>

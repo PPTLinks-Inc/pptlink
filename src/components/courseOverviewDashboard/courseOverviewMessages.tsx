@@ -25,16 +25,19 @@ export default function CourseOverviewMessages() {
     value: messagesTypeArray[0]
   });
 
-  const handleMessageView = (currentView: string): string => {
+  const handleMessageView = (
+    currentView: string,
+    isSet: boolean = true
+  ): string => {
     setMessageView((prev) => ({
       ...prev,
-      view: !prev.view,
+      view: !isSet ? false : !prev.view,
       value: currentView
     }));
     setView({
-      listOfAllStudents: true,
+      listOfAllStudents: !isSet ? false : true,
       studentTutorChats: false,
-      listOfCourseMessages: false,
+      listOfCourseMessages: !isSet ? true : false,
       courseMessage: false
     });
 
@@ -43,18 +46,9 @@ export default function CourseOverviewMessages() {
 
   return (
     <CourseOverviewRoot>
-      <ScrollArea
-        className={`wrapper w-full grid grid-rows-[auto_1fr] grid-cols-1 gap-2 overflow-hidden [&_*::-webkit-scrollbar]:hidden! [-ms-overflow-style:none]! [scrollbar-width:none]!`}
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          height: "calc(100vh-144px)"
-        }}
-      >
+      <div className="flex flex-col h-full overflow-hidden">
         {/* header section */}
-        <header
-          className={`w-fit h-fit mb-4 flex justify-start items-center gap-4`}
-        >
+        <header className="w-full h-fit mb-4 flex justify-start items-center gap-4 z-10 flex-shrink-0">
           <div className="relative w-fit h-fit">
             <button
               type="button"
@@ -70,7 +64,7 @@ export default function CourseOverviewMessages() {
               </span>
             </button>
 
-            {/* Hidden dropdown - remove or fix display */}
+            {/* Dropdown */}
             <div
               className={`${!messageView.view ? "hidden" : "flex absolute z-10 top-[2.7rem] left-0"} flex-col justify-start items-center gap-[1px] w-full h-fit ${bg} ${text} text-sm ${border} border-[0.1px] p-[0.1rem] rounded-md cursor-pointer`}
             >
@@ -103,24 +97,16 @@ export default function CourseOverviewMessages() {
           </div>
           <button
             type="button"
-            onClick={() =>
-              setView({
-                listOfAllStudents: false,
-                studentTutorChats: false,
-                listOfCourseMessages: true,
-                courseMessage: false
-              })
-            }
+            onClick={() => handleMessageView(messageView.value, false)}
             className={`flex items-center justify-center h-10 px-6 bg-[#FFFFF0] text-black text-sm border-none rounded-md cursor-pointer`}
           >
             Course Messages
           </button>
         </header>
-        {/* all messages, students, tutors... area/section */}
-        <div className="w-full h-full relative grid grid-rows-[auto_1fr] grid-cols-1 rounded-sm !border-[0.1px] border-white">
-          <ScrollArea
-            className={`scrollbar-hide block w-full ${view.studentTutorChats ? "md:!h-[420px]" : "md:!h-[410px]"}`}
-          >
+
+        {/* Main content area */}
+        <div className="flex-1 min-h-0 overflow-hidden border border-gray-200 rounded-sm">
+          <ScrollArea className="h-full w-full">
             {/* list of all students */}
             {view.listOfAllStudents && (
               <ul className="w-full h-fit">
@@ -349,7 +335,8 @@ export default function CourseOverviewMessages() {
             )}
           </ScrollArea>
         </div>
-        {/* back btn */}
+
+        {/* Back button */}
         {(view.studentTutorChats || view.courseMessage) && (
           <button
             type="button"
@@ -361,12 +348,12 @@ export default function CourseOverviewMessages() {
                 courseMessage: false
               })
             }
-            className="flex justify-center items-center mt-6 w-fit h-fit text-xs font-semibold py-1.5 px-6 text-primaryTwo bg-primaryThree rounded-sm"
+            className="flex justify-center items-center mt-4 w-fit h-fit text-xs font-semibold py-2 px-6 text-primaryTwo bg-primaryThree rounded-sm flex-shrink-0"
           >
             Back
           </button>
         )}
-      </ScrollArea>
+      </div>
     </CourseOverviewRoot>
   );
 }

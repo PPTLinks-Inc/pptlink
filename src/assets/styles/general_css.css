@@ -3,6 +3,29 @@
   transition: all 50ms ease-in-out !important;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+figcaption {
+  text-wrap: pretty;
+}
+
+header,
+footer,
+main,
+section,
+article {
+  container-type: inline-size;
+}
+
 .responsiveText {
   font-size: 0.9rem;
   line-height: 1.5rem;
@@ -81,6 +104,17 @@
   .parent_page_wrapper .banner::after {
     top: 20vh;
   }
+}
+.parent_page_wrapper .rotated-bg-image::before {
+  display: none !important;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: red;
+  z-index: 15;
 }
 .parent_page_wrapper .recent {
   overflow: hidden;
@@ -306,6 +340,18 @@
 }
 .form_tracker_wrapper > span:nth-child(3).active > span:last-child {
   color: #ffa500 !important;
+}
+.form_tracker_wrapper.thiner > span:nth-child(1) > span:first-child::after, .form_tracker_wrapper.thiner > span:nth-child(1) > span:first-child::before, .form_tracker_wrapper.thiner > span:nth-child(2) > span:first-child::after, .form_tracker_wrapper.thiner > span:nth-child(2) > span:first-child::before, .form_tracker_wrapper.thiner > span:nth-child(3) > span:first-child::after, .form_tracker_wrapper.thiner > span:nth-child(3) > span:first-child::before {
+  padding: 0.5px !important;
+  background-color: #ffa600 !important;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 65px 28px rgba(255, 166, 0, 0.231), 0 0 65px 35px rgba(255, 166, 0, 0), inset 0 0 5px rgba(255, 255, 255, 0.25);
+}
+
+.header-black-glow {
+  box-shadow: 0 0 65px 28px rgba(255, 166, 0, 0.231), 0 0 65px 35px rgba(255, 166, 0, 0), inset 0 0 5px rgba(255, 255, 255, 0.25);
 }
 
 .wrapAllCourses {
