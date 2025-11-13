@@ -122,7 +122,7 @@ export default function NewHomePage() {
   }, []);
 
   return (
-    <>
+    <div>
       {/* pop-up modal */}
       <Modal open={open} onClose={() => setOpen(false)}>
         <motion.iframe
@@ -138,7 +138,7 @@ export default function NewHomePage() {
       </Modal>
       {/* header */}
       <header
-        className={`fixed top-0 left-0 right-0 w-full border-none pt-8 maxScreenMobile:pt-6 maxScreenMobile:pb-2 pb-3 flex items-center justify-center z-50 transition-colors duration-300 ${scrolled ? "bg-gradient-to-r from-black to-[#00000000]" : "bg-transparent"} ${text} maxScreenMobile:bg-black [box-shadow:0_0_65px_28px_rgba(0,0,0,0.231),0_0_65px_35px_rgba(0,0,0,0),inset_0_-5px_10px_-5px_rgba(255,255,255,0.25)]`}
+        className={`fixed top-0 left-0 right-0 w-full border-none pt-8 maxScreenMobile:pt-6 maxScreenMobile:pb-2 pb-3 flex items-center justify-center z-50 transition-colors duration-300 ${scrolled ? "bg-gradient-to-r from-black to-[#00000000]" : "bg-transparent"} ${text} maxScreenMobile:bg-black maxScreenMobile:[box-shadow:0_0_65px_28px_rgba(0,0,0,0.231),0_0_65px_35px_rgba(0,0,0,0),inset_0_-5px_10px_-5px_rgba(255,255,255,0.25)]`}
       >
         <motion.div
           initial="hidden"
@@ -173,19 +173,19 @@ export default function NewHomePage() {
           >
             <Link
               to={"#"}
-              className="text-white text-sm font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
+              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
             >
               Pricing
             </Link>
             <Link
               to={"#"}
-              className="text-white text-sm font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
+              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
             >
               About
             </Link>
             <Link
               to={user ? "/signout" : "/signin"}
-              className="text-white text-sm font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
+              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
             >
               {user ? "Logout" : "Login"}
             </Link>
@@ -200,10 +200,10 @@ export default function NewHomePage() {
       </header>
       {/* banner */}
       <section
-        className={`banner-section w-full min-h-screen ${text} pt-40 maxScreenMobile:!pt-[76px] md:bg-[url(/new/icon3.svg)] maxScreenMobile:bg-[url(/new/mobile-view.png)] bg-cover bg-center bg-no-repeat relative`}
+        className={`w-full min-h-screen xl:h-fit xl:py-20 ${text} maxScreenMobile:!pt-[76px] md:bg-[url(/new/icon3.svg)] maxScreenMobile:bg-[url(/new/mobile-view.png)] bg-cover bg-center bg-no-repeat relative flex justify-center items-center`}
       >
         {/* Background blur span - placed behind container */}
-        <span className="hidden maxScreenMobile:block absolute top-0 left-0 w-full h-full backdrop-blur-[2px] bg-white/5"></span>
+        <span className="hidden maxScreenMobile:block absolute top-0 left-0 w-full h-full backdrop-blur-[2px] bg-black/60"></span>
 
         <div className={`container h-fit relative z-10`}>
           <motion.div
@@ -211,12 +211,12 @@ export default function NewHomePage() {
             initial="hidden"
             animate={heroHeadlineInView ? "show" : "hidden"}
             variants={container}
-            className="w-full flex items-center justify-between gap-8 maxScreenMobile:!hidden"
+            className="w-full flex items-center justify-start gap-8 maxScreenMobile:!hidden"
           >
             <motion.div
               variants={fadeUp}
               onClick={() => setOpen(true)}
-              className={`cursor-pointer _banner_img !w-3/6 maxScreenMobile:!w-full aspect-video mx-auto border-none rounded-0 flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block ${bg} before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-0 !border-2 !border-bg-gray-200`}
+              className={`cursor-pointer w-2/5 maxScreenMobile:!w-full aspect-video mx-auto border-none rounded-0 flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block ${bg} before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-sm !border-2 rounded-sm !border-bg-gray-200 !mx-0`}
             >
               <span className={`block text-5xl ${text} z-10`}>
                 <FaCirclePlay />
@@ -225,7 +225,7 @@ export default function NewHomePage() {
 
             <motion.h1
               variants={fadeUp}
-              className="w-3/6 maxScreenMobile:!w-full text-5xl font-extrabold maxSmallMobile:text-left maxSmallMobile:text-4xl text-balance leading-[4rem] maxScreen:text-4xl"
+              className="w-2/5 !mr-auto maxScreenMobile:!w-full text-4xl font-extrabold maxSmallMobile:text-left maxSmallMobile:text-4xl text-balance leading-[4rem] maxScreen:text-4xl"
             >
               Teach, Learn, and Connect, All in One Place.
             </motion.h1>
@@ -238,8 +238,8 @@ export default function NewHomePage() {
             Teach, Learn, and Connect, All in One Place.
           </motion.h1>
 
-          <p className="text-sm w-3/6 my-6 leading-6 maxSmallMobile:text-left maxScreenMobile:!w-full">
-            PPTLinks males online teaching easier with low-data video calls,
+          <p className="text-xl w-3/6 maxScreen:w-5/6 my-8 leading-8 maxSmallMobile:text-left maxScreenMobile:!w-full">
+            PPTLinks makes online teaching easier with low-data video calls,
             presentations, students tracking, and seamless collaboraton.
           </p>
 
@@ -247,26 +247,28 @@ export default function NewHomePage() {
             <motion.div variants={fadeUp}>
               <button
                 onClick={handleCreateClick}
-                className={`block w-[10rem] px-10 text-center maxSmallMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] font-normal _text-primaryTwo responsiveText rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3`}
+                className={`block w-[10rem] text-md text-center maxSmallMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3`}
               >
                 Create Now
               </button>
             </motion.div>
 
-            {!user && <motion.div variants={fadeUp}>
-              <Link
-                to="/signup"
-                className={`block w-[10rem] px-10 text-center maxSmallMobile:px-4 bg-black py-[calc(0.25rem-0.5px)] ${isDark ? "text-[#FFFFF0]" : text} _text-[#FFFFF0] font-normal responsiveText border-[0.5px] ${isDark ? "border-[#fffff06c]" : border} rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3 ${user && "_hidden"}`}
-              >
-                Sign Up
-              </Link>
-            </motion.div>}
+            {!user && (
+              <motion.div variants={fadeUp}>
+                <Link
+                  to="/signup"
+                  className={`block w-[10rem] text-md text-center maxSmallMobile:px-4 bg-black py-[calc(0.25rem-0.5px)] ${isDark ? "text-[#FFFFF0]" : text} border-[0.5px] ${isDark ? "border-[#fffff06c]" : border} rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3`}
+                >
+                  Sign Up
+                </Link>
+              </motion.div>
+            )}
           </div>
 
           <motion.div
             variants={fadeUp}
             onClick={() => setOpen(true)}
-            className={`cursor-pointer _banner_img hidden mt-6 !w-3/6 maxScreenMobile:!w-full aspect-video mx-auto border-none rounded-0 maxScreenMobile:flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block ${bg} before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-0 !border-2 !border-bg-gray-200`}
+            className={`cursor-pointer _banner_img hidden mt-6 !w-3/6 maxScreenMobile:!w-full aspect-video mx-auto border-none rounded-0 maxScreenMobile:flex justify-center items-center bg-[url(https://img.youtube.com/vi/meTNh23fYKg/hqdefault.jpg)] bg-cover bg-center relative before:block ${bg} before:absolute before:top-0 before:left-0 before:w-full before:h-full before:rounded-sm rounded-sm !border-2 !border-bg-gray-200`}
           >
             <span className={`block text-5xl ${text} z-10`}>
               <FaCirclePlay />
@@ -276,13 +278,13 @@ export default function NewHomePage() {
       </section>
       {/* Everything you need to teach smarter. */}
       <section
-        className={`w-full min-h-screen bg-gradient-to-b from-black to-[#222020] ${text} pt-24 pb-16`}
+        className={`w-full h-fit bg-gradient-to-b from-black to-[#222020] ${text} py-28`}
       >
         <div className="container">
           <h2 className="w-fit mx-auto text-4xl font-semibold maxScreenMobile:text-center">
             Everything you need to teach smarter.
           </h2>
-          <p className="w-fit mx-auto text-sm text-primarySixTwo mt-4">
+          <p className="w-fit mx-auto text-xl text-primarySixTwo mt-4">
             Powerful features designed for modern educators
           </p>
 
@@ -292,10 +294,10 @@ export default function NewHomePage() {
               className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
             >
               <img src={icon1} alt={icon1} className="block w-fit h-fit" />
-              <h3 className="text-lg text-white font-semibold mb-2">
+              <h3 className="text-xl text-white font-semibold mb-2">
                 Course creation
               </h3>
-              <p className="text-sm text-white text-balance maxScreenMobile:text-center">
+              <p className="text-md text-white text-center">
                 Build interractive lessons easily with our builder and
                 presentation tools.
               </p>
@@ -306,10 +308,10 @@ export default function NewHomePage() {
               className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
             >
               <img src={icon5} alt={icon5} className="block w-fit h-fit" />
-              <h3 className="text-lg text-white font-semibold mb-2">
+              <h3 className="text-xl text-white font-semibold mb-2">
                 Live lessons
               </h3>
-              <p className="text-sm text-white text-balance maxScreenMobile:text-center">
+              <p className="text-md text-white text-center">
                 Teach via audio/video or slides with low-data streaming
                 optimized for all connection.
               </p>
@@ -320,10 +322,10 @@ export default function NewHomePage() {
               className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
             >
               <img src={icon4} alt={icon4} className="block w-fit h-fit" />
-              <h3 className="text-lg text-white font-semibold mb-2">
+              <h3 className="text-xl text-white font-semibold mb-2">
                 Student Tracking
               </h3>
-              <p className="text-sm text-white text-balance maxScreenMobile:text-center">
+              <p className="text-md text-white text-center">
                 Monitor attendance, and performance with comprehensive analysis.
               </p>
             </motion.div>
@@ -333,10 +335,10 @@ export default function NewHomePage() {
               className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
             >
               <img src={icon6} alt={icon6} className="block w-fit h-fit" />
-              <h3 className="text-lg text-white font-semibold mb-2">
+              <h3 className="text-xl text-white font-semibold mb-2">
                 Earning Dashboard
               </h3>
-              <p className="text-sm text-white text-balance maxScreenMobile:text-center">
+              <p className="text-md text-white text-center">
                 Get paid for your exparties with transparent tracking and
                 flexible payment options.
               </p>
@@ -345,11 +347,11 @@ export default function NewHomePage() {
         </div>
       </section>
       {/* How It Works */}
-      <section className="w-full min-h-[80vh] bg-black text-white pt-16 px-4">
-        <h2 className="text-4xl font-semibold mb-2 text-center maxScreenMobile  :text-2xl">
+      <section className="w-full h-fit bg-black text-white py-28">
+        <h2 className="text-4xl font-semibold mb-2 text-center maxScreenMobile:text-2xl">
           How It Works
         </h2>
-        <p className="text-sm text-primarySixTwo text-center mt-2 mb-16">
+        <p className="text-xl text-primarySixTwo text-center mt-2 mb-16">
           Get started in 3 simple steps
         </p>
 
@@ -366,7 +368,7 @@ export default function NewHomePage() {
               <motion.img
                 src={icon12}
                 alt="step 1 icon"
-                className="w-1/2 h-auto"
+                className="block w-8 aspect-square"
                 initial={{ opacity: 0 }}
                 animate={howInView ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.12 }}
@@ -385,16 +387,16 @@ export default function NewHomePage() {
               </motion.span>
             </span>
 
-            <motion.div variants={fadeUp} className="w-5/6 mt-5">
+            <motion.div variants={fadeUp} className="w-5/6 mt-10">
               <motion.p
                 variants={fadeUp}
-                className="font-semibold text-md mb-2 maxScreenMobile:text-base"
+                className="font-semibold text-lg mb-2 maxScreenMobile:text-base"
               >
                 Sign up as Tutor or Learner
               </motion.p>
               <motion.p
                 variants={fadeUp}
-                className="text-sm text-gray-300 maxScreenMobile:text-xs"
+                className="!text-lg text-gray-300 maxScreenMobile:text-xs"
               >
                 Create your account in seconds and choose your role
               </motion.p>
@@ -407,7 +409,7 @@ export default function NewHomePage() {
               <motion.img
                 src={icon13}
                 alt="step 2 icon"
-                className="w-1/2 h-auto"
+                className="block w-8 aspect-square"
                 initial={{ opacity: 0 }}
                 animate={howInView ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.18 }}
@@ -426,16 +428,16 @@ export default function NewHomePage() {
               </motion.span>
             </span>
 
-            <motion.div variants={fadeUp} className="w-5/6 mt-5">
+            <motion.div variants={fadeUp} className="w-5/6 mt-10">
               <motion.p
                 variants={fadeUp}
-                className="font-semibold text-md mb-2 maxScreenMobile:text-base"
+                className="font-semibold text-lg mb-2 maxScreenMobile:text-base"
               >
                 Find or Offer Lessons
               </motion.p>
               <motion.p
                 variants={fadeUp}
-                className="text-sm text-gray-300 maxScreenMobile:text-xs"
+                className="!text-lg text-gray-300 maxScreenMobile:text-xs"
               >
                 Browse available lessons or create one to teach others
               </motion.p>
@@ -448,7 +450,7 @@ export default function NewHomePage() {
               <motion.img
                 src={icon14}
                 alt="step 3 icon"
-                className="w-1/2 h-auto"
+                className="block w-8 aspect-square"
                 initial={{ opacity: 0 }}
                 animate={howInView ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.24 }}
@@ -467,16 +469,16 @@ export default function NewHomePage() {
               </motion.span>
             </span>
 
-            <motion.div variants={fadeUp} className="w-5/6 mt-5">
+            <motion.div variants={fadeUp} className="w-5/6 mt-10">
               <motion.p
                 variants={fadeUp}
-                className="font-semibold text-md mb-2 maxScreenMobile:text-base"
+                className="font-semibold text-lg mb-2 maxScreenMobile:text-base"
               >
                 Connect and Start Learning
               </motion.p>
               <motion.p
                 variants={fadeUp}
-                className="text-sm text-gray-300 maxScreenMobile:text-xs"
+                className="!text-lg text-gray-300 maxScreenMobile:text-xs"
               >
                 Interact, learn, and grow through our interactive platform
               </motion.p>
@@ -485,7 +487,7 @@ export default function NewHomePage() {
         </div>
       </section>
       {/* Popular Presentations */}
-      <section className="w-full min-h-[80vh] bg-black text-white pt-8 maxScreenMobile:pt-28">
+      <section className="w-full h-fit bg-black text-white py-28">
         <div className="container">
           <motion.h2
             variants={fadeUp}
@@ -495,12 +497,12 @@ export default function NewHomePage() {
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="w-fit mx-auto text-sm text-primarySixTwo mt-4 mb-20 maxScreenMobile:mb-8"
+            className="w-fit mx-auto text-xl text-primarySixTwo mt-4 mb-20 maxScreenMobile:mb-8"
           >
             See recently uploaded public presentations
           </motion.p>
 
-          <div className="w-full scroll-smooth min-h-[50vh] flex flex-wrap gap-8 justify-center">
+          <div className="w-full scroll-smooth min-h-[50vh] flex flex-wrap gap-6 justify-center">
             {presentations
               .slice(0, is768PxScreen ? 4 : 12)
               .map((presentation, idx) => (
@@ -512,7 +514,7 @@ export default function NewHomePage() {
                     delay: 0.12 + idx * 0.12,
                     ease: "easeOut"
                   }}
-                  className="w-[300px] maxSmallMobile:w-full min-w-[280px] flex-shrink-0"
+                  className="w-[250px] maxSmallMobile:w-full min-w-[180px] flex-shrink-0"
                 >
                   <Card presentation={presentation} refresh={refetch} />
                 </motion.div>
@@ -521,14 +523,14 @@ export default function NewHomePage() {
 
           <Link
             to="/public_presentation"
-            className="block text-sm text-center text-[#FFA500] underline mt-8"
+            className="block text-lg text-center text-[#FFA500] underline mt-8"
           >
             See more
           </Link>
         </div>
       </section>
       {/* Loved By Tutor and Students */}
-      <section className="w-full min-h-[70vh] bg-gradient-to-b from-black to-[#222020] text-white pt-20 pb-16">
+      <section className="w-full h-fit bg-gradient-to-b from-black to-[#222020] text-white py-28">
         <motion.div
           ref={lovedRef}
           initial="hidden"
@@ -547,19 +549,19 @@ export default function NewHomePage() {
             variants={fadeUp}
             className="w-full h-fit inline-flex items-center justify-center"
           >
-            <p className="w-fit text-sm text-primarySixTwo mt-4 mb-4 inline-flex items-center gap-2">
+            <p className="w-fit text-xl text-primarySixTwo mt-4 mb-4 inline-flex items-center gap-2">
               <span className="inline-flex items-center gap-1">
                 {Array.from({ length: 5 }, (_, i) => i + 1).map((i) => (
                   <motion.img
                     key={i.toString()}
                     src={icon11}
                     alt={`star-${i}`}
-                    className="block w-3 aspect-square"
+                    className="block w-4 aspect-square"
                     variants={fadeUp}
                   />
                 ))}
               </span>
-              <span className="mt-1">4.9 average rating</span>
+              <span>4.9 average rating</span>
             </p>
           </motion.div>
 
@@ -601,7 +603,7 @@ export default function NewHomePage() {
         </motion.div>
       </section>
       {/* Ready to Teach smarter with PPTLinks */}
-      <section className="w-full min-h-[50vh] bg-black text-white pt-8">
+      <section className="w-full h-fit bg-black text-white py-28">
         <motion.div
           ref={readyRef}
           initial="hidden"
@@ -617,7 +619,7 @@ export default function NewHomePage() {
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="w-fit mx-auto text-sm text-primarySixTwo mt-4 mb-20 maxScreenMobile:text-center"
+            className="w-fit mx-auto text-xl text-primarySixTwo mt-4 mb-20 maxScreenMobile:text-center"
           >
             Join thousands of educators who are already transforming their
             teaching experience
@@ -646,13 +648,13 @@ export default function NewHomePage() {
           </motion.div>
           <motion.p
             variants={fadeUp}
-            className="w-fit mx-auto text-sm text-primarySixTwo mt-4 mb-20"
+            className="w-fit mx-auto text-xl text-primarySixTwo mt-4"
           >
             It&apos;s free to get started. No credit card required.
           </motion.p>
         </motion.div>
       </section>
       <Footer />
-    </>
+    </div>
   );
 }
