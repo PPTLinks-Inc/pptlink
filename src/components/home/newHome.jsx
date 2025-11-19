@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import logo_white from "/imgs/WHITE.png";
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useTheme } from "../../hooks/useTheme";
+import { Helmet } from "react-helmet";
 import Modal from "../Models/model";
 import { FaCirclePlay } from "react-icons/fa6";
-import { HiMenu } from "react-icons/hi";
 import { useMediaQuery } from "react-responsive";
 import useUser from "../../hooks/useUser";
 import Card from "../list/card";
+import NewHeader from "../header/newHeader";
 import usePublicPresentation from "../../hooks/usePublicPresentation";
 import icon1 from "/new/icon1.svg";
 import icon4 from "/new/icon4.svg";
@@ -20,6 +20,7 @@ import icon13 from "/new/icon13.svg";
 import icon14 from "/new/icon14.svg";
 import icon11 from "/new/icon11.svg";
 import Footer from "../footer/footer";
+import LogoBlack from "../../images/Logo-Black.png";
 // const ViewStudents = Array.from({ length: 5 }, (_, i) => i + 1);
 
 export default function NewHomePage() {
@@ -30,7 +31,6 @@ export default function NewHomePage() {
   const user = userQuery.data;
   const { presentations, refetch } = usePublicPresentation();
   const { bg, text, border, isDark } = useTheme();
-  const [menu, handleMenu] = useState(false);
   const is768PxScreen = useMediaQuery({ query: "(max-width: 768px)" });
 
   // framer - variants and reduced-motion handling
@@ -115,14 +115,46 @@ export default function NewHomePage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 200);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <div>
+    <>
+      <Helmet>
+        <title>{`Home - PPTLinks `}</title>
+        <meta
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta
+          name="tags"
+          content={`PPT, Presentations, Powerpoint, PPTLinks`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.PPTLink.com/`} />
+        <meta property="og:title" content={`Home - PPTLinks `} />
+        <meta
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="og:image" content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property="twitter:card" content="website" />
+        <meta property="twitter:url" content={`https://www.PPTLink.com/`} />
+
+        <meta property="twitter:title" content={`Home - PPTLinks `} />
+        <meta
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="twitter:image" content={LogoBlack} />
+      </Helmet>
       {/* pop-up modal */}
       <Modal open={open} onClose={() => setOpen(false)}>
         <motion.iframe
@@ -137,67 +169,7 @@ export default function NewHomePage() {
         ></motion.iframe>
       </Modal>
       {/* header */}
-      <header
-        className={`fixed top-0 left-0 right-0 w-full border-none pt-8 maxScreenMobile:pt-6 maxScreenMobile:pb-2 pb-3 flex items-center justify-center z-50 transition-colors duration-300 ${scrolled ? "bg-gradient-to-r from-black to-[#00000000]" : "bg-transparent"} ${text} maxScreenMobile:bg-black maxScreenMobile:[box-shadow:0_0_65px_28px_rgba(0,0,0,0.231),0_0_65px_35px_rgba(0,0,0,0),inset_0_-5px_10px_-5px_rgba(255,255,255,0.25)]`}
-      >
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={container}
-          className="container !mx-auto flex justify-start md:gap-44 maxScreenMobile:gap-4 maxScreenMobile:_w-full items-center relative maxScreenMobile:!static maxScreenMobile:justify-between"
-        >
-          <motion.div
-            variants={fadeUp}
-            className="logo_wrapper maxScreenMobile:z-20"
-          >
-            <Link
-              to="/"
-              className="w-fit h-fit !flex !items-center !justify-center gap-2"
-            >
-              <img
-                src={logo_white}
-                alt="PPTLinks Logo"
-                className="block w-8 aspect-square"
-              />
-              <span
-                className={`block w-fit h-fit text-2xl md:text-3xl font-semibold ${"text-[#FFFFF0]"}`}
-              >
-                PPTLinks
-              </span>
-            </Link>
-          </motion.div>
-
-          <motion.nav
-            variants={fadeUp}
-            className={`w-fit flex flex-row justify-between items-center gap-20 maxScreenMobile:gap-4 maxScreenMobile:w-full maxScreenMobile:justify-evenly maxScreenMobile:flex-col maxScreenMobile:absolute maxScreenMobile:top-0 maxScreenMobile:left-0 maxScreenMobile:right-0 maxScreenMobile:px-0 maxScreenMobile:pb-4 maxScreenMobile:bg-black maxScreenMobile:z-10 maxScreenMobile:pt-[76px] ${menu ? "maxScreenMobile:flex" : "maxScreenMobile:hidden"}`}
-          >
-            <Link
-              to={"#"}
-              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
-            >
-              Pricing
-            </Link>
-            <Link
-              to={"#"}
-              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
-            >
-              About
-            </Link>
-            <Link
-              to={user ? "/signout" : "/signin"}
-              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
-            >
-              {user ? "Logout" : "Login"}
-            </Link>
-          </motion.nav>
-          <button
-            onClick={() => handleMenu(!menu)}
-            className="hidden w-fit h-fit p-2 text-white maxScreenMobile:block maxScreenMobile:z-20"
-          >
-            <HiMenu size={28} />
-          </button>
-        </motion.div>
-      </header>
+      <NewHeader scrolled={scrolled} />
       {/* banner */}
       <section
         className={`w-full min-h-screen xl:h-fit xl:py-20 ${text} maxScreenMobile:!pt-[76px] md:bg-[url(/new/icon3.svg)] maxScreenMobile:bg-[url(/new/mobile-view.png)] bg-cover bg-center bg-no-repeat relative flex justify-center items-center`}
@@ -225,7 +197,7 @@ export default function NewHomePage() {
 
             <motion.h1
               variants={fadeUp}
-              className="w-2/5 !mr-auto maxScreenMobile:!w-full text-4xl font-extrabold maxSmallMobile:text-left maxSmallMobile:text-4xl text-balance leading-[4rem] maxScreen:text-4xl"
+              className="w-2/5 !mr-auto maxScreenMobile:!w-full text-5xl tall_:w-4/5 tall_:text-[8rem] font-extrabold maxSmallMobile:text-left maxSmallMobile:text-4xl text-balance leading-[4rem] tall_:leading-[9rem] maxScreen:text-4xl"
             >
               Teach, Learn, and Connect, All in One Place.
             </motion.h1>
@@ -247,7 +219,7 @@ export default function NewHomePage() {
             <motion.div variants={fadeUp}>
               <button
                 onClick={handleCreateClick}
-                className={`block w-[10rem] text-md text-center maxSmallMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3`}
+                className={`block w-[10rem] text-md text-center text-black maxSmallMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3`}
               >
                 Create Now
               </button>
@@ -502,7 +474,7 @@ export default function NewHomePage() {
             See recently uploaded public presentations
           </motion.p>
 
-          <div className="w-full scroll-smooth min-h-[50vh] flex flex-wrap gap-6 justify-center">
+          <div className="w-full scroll-smooth min-h-[20vh] flex flex-wrap gap-6 justify-center">
             {presentations
               .slice(0, is768PxScreen ? 4 : 12)
               .map((presentation, idx) => (
@@ -631,7 +603,7 @@ export default function NewHomePage() {
             <motion.div variants={fadeUp}>
               <Link
                 to={"#"}
-                className={`block w-fit px-10 text-center maxScreenMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] font-normal _text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3`}
+                className={`block w-fit px-10 text-center text-black maxScreenMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] font-normal _text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3`}
               >
                 Join as Tutor
               </Link>
@@ -655,6 +627,6 @@ export default function NewHomePage() {
         </motion.div>
       </section>
       <Footer />
-    </div>
+    </>
   );
 }
