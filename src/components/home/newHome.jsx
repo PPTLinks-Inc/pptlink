@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import logo_white from "/imgs/WHITE.png";
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useTheme } from "../../hooks/useTheme";
+import { Helmet } from "react-helmet";
 import Modal from "../Models/model";
 import { FaCirclePlay } from "react-icons/fa6";
-import { HiMenu } from "react-icons/hi";
 import { useMediaQuery } from "react-responsive";
 import useUser from "../../hooks/useUser";
 import Card from "../list/card";
+import NewHeader from "../header/newHeader";
 import usePublicPresentation from "../../hooks/usePublicPresentation";
 import icon1 from "/new/icon1.svg";
 import icon4 from "/new/icon4.svg";
@@ -20,6 +20,7 @@ import icon13 from "/new/icon13.svg";
 import icon14 from "/new/icon14.svg";
 import icon11 from "/new/icon11.svg";
 import Footer from "../footer/footer";
+import LogoBlack from "../../images/Logo-Black.png";
 // const ViewStudents = Array.from({ length: 5 }, (_, i) => i + 1);
 
 export default function NewHomePage() {
@@ -30,7 +31,6 @@ export default function NewHomePage() {
   const user = userQuery.data;
   const { presentations, refetch } = usePublicPresentation();
   const { bg, text, border, isDark } = useTheme();
-  const [menu, handleMenu] = useState(false);
   const is768PxScreen = useMediaQuery({ query: "(max-width: 768px)" });
 
   // framer - variants and reduced-motion handling
@@ -41,12 +41,29 @@ export default function NewHomePage() {
     show: prefersReducedMotion
       ? {}
       : {
-          opacity: 1,
-          transition: { staggerChildren: 0.18, delayChildren: 0.12 }
-        }
+        opacity: 1,
+        transition: { staggerChildren: 0.18, delayChildren: 0.12 }
+      }
+  };
+
+  const Everythingcontainer = {
+    hidden: prefersReducedMotion ? {} : { opacity: 0 },
+    show: prefersReducedMotion
+      ? {}
+      : {
+        opacity: 1,
+        transition: { staggerChildren: 0.18, delayChildren: 0.12 }
+      }
   };
 
   const fadeUp = {
+    hidden: prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 },
+    show: prefersReducedMotion
+      ? { opacity: 1, y: 0 }
+      : { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
+  };
+
+  const fadeUpEverything = {
     hidden: prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 },
     show: prefersReducedMotion
       ? { opacity: 1, y: 0 }
@@ -68,6 +85,13 @@ export default function NewHomePage() {
   const heroHeadlineInView = useInView(heroHeadlineRef, {
     once: true,
     amount: 0.22
+  });
+
+  // First, add these to your existing refs and inView hooks at the top of your component:
+  const presentationsRef = useRef(null);
+  const presentationsInView = useInView(presentationsRef, {
+    once: true,
+    threshold: 0.1
   });
 
   const animateTo = (setFn, to, duration = 700, delay = 0) => {
@@ -115,14 +139,100 @@ export default function NewHomePage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 200);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Define your animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const fadeUpVariants = {
+    hidden: {
+      opacity: 0,
+      y: 60,
+      scale: 0.95
+    },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        duration: 0.6
+      }
+    }
+  };
+
+  const textVariants = {
+    hidden: {
+      opacity: 0,
+      y: 30
+    },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        duration: 0.8
+      }
+    }
+  };
+
+  const everythingRef = useRef(null);
+  const everythingInView = useInView(everythingRef, {
+    once: true,
+    threshold: 0.1,
+    margin: "-50px"
+  });
+
   return (
-    <div>
+    <>
+      <Helmet>
+        <title>{`Home - PPTLinks `}</title>
+        <meta
+          name="description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta
+          name="tags"
+          content={`PPT, Presentations, Powerpoint, PPTLinks`}
+        />
+
+        {/* meta tags to display information on all meta platforms (facebook, instagram, whatsapp) */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.PPTLink.com/`} />
+        <meta property="og:title" content={`Home - PPTLinks `} />
+        <meta
+          property="og:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="og:image" content={LogoBlack} />
+
+        {/* meta tags to display information on twitter  */}
+        <meta property="twitter:card" content="website" />
+        <meta property="twitter:url" content={`https://www.PPTLink.com/`} />
+
+        <meta property="twitter:title" content={`Home - PPTLinks `} />
+        <meta
+          property="twitter:description"
+          content="Make your powerpoint presentations quickly and easily with or without a projector with PPTLinks"
+        />
+        <meta property="twitter:image" content={LogoBlack} />
+      </Helmet>
       {/* pop-up modal */}
       <Modal open={open} onClose={() => setOpen(false)}>
         <motion.iframe
@@ -137,67 +247,7 @@ export default function NewHomePage() {
         ></motion.iframe>
       </Modal>
       {/* header */}
-      <header
-        className={`fixed top-0 left-0 right-0 w-full border-none pt-8 maxScreenMobile:pt-6 maxScreenMobile:pb-2 pb-3 flex items-center justify-center z-50 transition-colors duration-300 ${scrolled ? "bg-gradient-to-r from-black to-[#00000000]" : "bg-transparent"} ${text} maxScreenMobile:bg-black maxScreenMobile:[box-shadow:0_0_65px_28px_rgba(0,0,0,0.231),0_0_65px_35px_rgba(0,0,0,0),inset_0_-5px_10px_-5px_rgba(255,255,255,0.25)]`}
-      >
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={container}
-          className="container !mx-auto flex justify-start md:gap-44 maxScreenMobile:gap-4 maxScreenMobile:_w-full items-center relative maxScreenMobile:!static maxScreenMobile:justify-between"
-        >
-          <motion.div
-            variants={fadeUp}
-            className="logo_wrapper maxScreenMobile:z-20"
-          >
-            <Link
-              to="/"
-              className="w-fit h-fit !flex !items-center !justify-center gap-2"
-            >
-              <img
-                src={logo_white}
-                alt="PPTLinks Logo"
-                className="block w-8 aspect-square"
-              />
-              <span
-                className={`block w-fit h-fit text-2xl md:text-3xl font-semibold ${"text-[#FFFFF0]"}`}
-              >
-                PPTLinks
-              </span>
-            </Link>
-          </motion.div>
-
-          <motion.nav
-            variants={fadeUp}
-            className={`w-fit flex flex-row justify-between items-center gap-20 maxScreenMobile:gap-4 maxScreenMobile:w-full maxScreenMobile:justify-evenly maxScreenMobile:flex-col maxScreenMobile:absolute maxScreenMobile:top-0 maxScreenMobile:left-0 maxScreenMobile:right-0 maxScreenMobile:px-0 maxScreenMobile:pb-4 maxScreenMobile:bg-black maxScreenMobile:z-10 maxScreenMobile:pt-[76px] ${menu ? "maxScreenMobile:flex" : "maxScreenMobile:hidden"}`}
-          >
-            <Link
-              to={"#"}
-              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
-            >
-              Pricing
-            </Link>
-            <Link
-              to={"#"}
-              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
-            >
-              About
-            </Link>
-            <Link
-              to={user ? "/signout" : "/signin"}
-              className="text-white text-md font-semibold maxScreenMobile:!border-b-[0.1px] maxScreenMobile:border-gray maxScreenMobile:block maxScreenMobile:w-full maxScreenMobile:text-center maxScreenMobile:py-2"
-            >
-              {user ? "Logout" : "Login"}
-            </Link>
-          </motion.nav>
-          <button
-            onClick={() => handleMenu(!menu)}
-            className="hidden w-fit h-fit p-2 text-white maxScreenMobile:block maxScreenMobile:z-20"
-          >
-            <HiMenu size={28} />
-          </button>
-        </motion.div>
-      </header>
+      <NewHeader scrolled={scrolled} />
       {/* banner */}
       <section
         className={`w-full min-h-screen xl:h-fit xl:py-20 ${text} maxScreenMobile:!pt-[76px] md:bg-[url(/new/icon3.svg)] maxScreenMobile:bg-[url(/new/mobile-view.png)] bg-cover bg-center bg-no-repeat relative flex justify-center items-center`}
@@ -205,7 +255,7 @@ export default function NewHomePage() {
         {/* Background blur span - placed behind container */}
         <span className="hidden maxScreenMobile:block absolute top-0 left-0 w-full h-full backdrop-blur-[2px] bg-black/60"></span>
 
-        <div className={`container h-fit relative z-10`}>
+        <div className={`container h-fit relative z-10 mx-auto px-4`}>
           <motion.div
             ref={heroHeadlineRef}
             initial="hidden"
@@ -225,7 +275,7 @@ export default function NewHomePage() {
 
             <motion.h1
               variants={fadeUp}
-              className="w-2/5 !mr-auto maxScreenMobile:!w-full text-4xl font-extrabold maxSmallMobile:text-left maxSmallMobile:text-4xl text-balance leading-[4rem] maxScreen:text-4xl"
+              className="w-2/5 !mr-auto maxScreenMobile:!w-full text-5xl tall_:w-4/5 tall_:text-[8rem] font-extrabold maxSmallMobile:text-left maxSmallMobile:text-4xl text-balance leading-[4rem] tall_:leading-[9rem] maxScreen:text-4xl"
             >
               Teach, Learn, and Connect, All in One Place.
             </motion.h1>
@@ -233,31 +283,31 @@ export default function NewHomePage() {
 
           <motion.h1
             variants={fadeUp}
-            className="hidden maxScreenMobile:!block maxScreenMobile:!w-full font-extrabold maxSmallMobile:text-left maxScreenMobile:!text-4xl text-balance !pt-8 maxScreenMobile:!leading-[3.5rem]"
+            className="hidden maxScreenMobile:!block maxScreenMobile:!w-full font-extrabold maxSmallMobile:text-left maxScreenMobile:!text-4xl text-balance !pt-8 maxScreenMobile:!leading-[3.5rem]  maxScreenMobile:!text-center"
           >
             Teach, Learn, and Connect, All in One Place.
           </motion.h1>
 
-          <p className="text-xl w-3/6 maxScreen:w-5/6 my-8 leading-8 maxSmallMobile:text-left maxScreenMobile:!w-full">
+          <p className="text-xl w-3/6 maxScreen:w-5/6 my-8 leading-8 maxSmallMobile:text-left ee:!w-full  maxScreenMobile:!text-center  maxScreenMobile:w-full">
             PPTLinks makes online teaching easier with low-data video calls,
             presentations, students tracking, and seamless collaboraton.
           </p>
 
-          <div className="mx-[auto] flex justify-left items-center gap-4 w-full">
-            <motion.div variants={fadeUp}>
+          <div className="mx-[auto] flex justify-left items-center gap-4 w-full  maxScreenMobile:justify-center">
+            <motion.div variants={fadeUp} className="_maxScreenMobile:w-3/6">
               <button
                 onClick={handleCreateClick}
-                className={`block w-[10rem] text-md text-center maxSmallMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3`}
+                className={`block w-[10rem] text-md text-center text-black maxSmallMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3  _maxScreenMobile:!w-full`}
               >
                 Create Now
               </button>
             </motion.div>
 
             {!user && (
-              <motion.div variants={fadeUp}>
+              <motion.div variants={fadeUp} className="_maxScreenMobile:w-3/6">
                 <Link
                   to="/signup"
-                  className={`block w-[10rem] text-md text-center maxSmallMobile:px-4 bg-black py-[calc(0.25rem-0.5px)] ${isDark ? "text-[#FFFFF0]" : text} border-[0.5px] ${isDark ? "border-[#fffff06c]" : border} rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3`}
+                  className={`block w-[10rem] text-md text-center maxSmallMobile:px-4 bg-black py-[calc(0.25rem-0.5px)] ${isDark ? "text-[#FFFFF0]" : text} border-[0.5px] ${isDark ? "border-[#fffff06c]" : border} rounded-md maxSmallMobile:w-fit maxSmallMobile:mb-3  _maxScreenMobile:!w-full`}
                 >
                   Sign Up
                 </Link>
@@ -278,76 +328,141 @@ export default function NewHomePage() {
       </section>
       {/* Everything you need to teach smarter. */}
       <section
-        className={`w-full h-fit bg-gradient-to-b from-black to-[#222020] ${text} py-28`}
+        ref={everythingRef}  // Changed from sectionRef to everythingRef
+        className={`w-full h-fit bg-gradient-to-b from-black to-[#222020] ${text} py-20 maxScreenMobile:py-10`}
       >
         <div className="container">
-          <h2 className="w-fit mx-auto text-4xl font-semibold maxScreenMobile:text-center">
-            Everything you need to teach smarter.
-          </h2>
-          <p className="w-fit mx-auto text-xl text-primarySixTwo mt-4">
-            Powerful features designed for modern educators
-          </p>
-
-          <div className="flex justify-center items-center gap-8 mt-20 flex-wrap maxScreenMobile:gap-6">
-            <motion.div
-              variants={fadeUp}
-              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
+          {/* Animated Heading */}
+          <motion.div
+            initial="hidden"
+            animate={everythingInView ? "show" : "hidden"}  // Changed from isInView to everythingInView
+            variants={containerVariants}
+          >
+            <motion.h2
+              variants={textVariants}
+              className="w-fit mx-auto text-4xl font-semibold maxScreenMobile:text-center"
             >
-              <img src={icon1} alt={icon1} className="block w-fit h-fit" />
+              Everything you need to teach smarter.
+            </motion.h2>
+
+            <motion.p
+              variants={textVariants}
+              className="w-fit mx-auto text-xl text-primarySixTwo mt-4 maxScreenMobile:text-center"
+            >
+              Powerful features designed for modern educators
+            </motion.p>
+          </motion.div>
+
+          {/* Animated Features Grid */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate={everythingInView ? "show" : "hidden"}  // Changed from isInView to everythingInView
+            className="flex justify-center items-center gap-8 mt-20 maxScreenMobile:mt-10 flex-wrap maxScreenMobile:gap-6"
+          >
+            <motion.div
+              variants={fadeUpVariants}
+              whileHover={{
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300 }
+              }}
+              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-evenly maxScreenMobile:justify-center items-start maxScreenMobile:items-center cursor-pointer"
+            >
+              <motion.img
+                src={icon1}
+                alt="Course creation"
+                className="block w-12 aspect-square"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
               <h3 className="text-xl text-white font-semibold mb-2">
                 Course creation
               </h3>
-              <p className="text-md text-white text-center">
-                Build interractive lessons easily with our builder and
+              <p className="text-md text-white text-start maxScreenMobile:text-center">
+                Build interactive lessons easily with our builder and
                 presentation tools.
               </p>
             </motion.div>
 
             <motion.div
-              variants={fadeUp}
-              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
+              variants={fadeUpVariants}
+              whileHover={{
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300 }
+              }}
+              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-evenly maxScreenMobile:justify-center items-start maxScreenMobile:items-center cursor-pointer"
             >
-              <img src={icon5} alt={icon5} className="block w-fit h-fit" />
+              <motion.img
+                src={icon5}
+                alt="Live lessons"
+                className="block w-12 aspect-square"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
               <h3 className="text-xl text-white font-semibold mb-2">
                 Live lessons
               </h3>
-              <p className="text-md text-white text-center">
+              <p className="text-md text-white text-start maxScreenMobile:text-center">
                 Teach via audio/video or slides with low-data streaming
-                optimized for all connection.
+                optimized for all connections.
               </p>
             </motion.div>
 
             <motion.div
-              variants={fadeUp}
-              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
+              variants={fadeUpVariants}
+              whileHover={{
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300 }
+              }}
+              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-evenly maxScreenMobile:justify-center items-start maxScreenMobile:items-center cursor-pointer"
             >
-              <img src={icon4} alt={icon4} className="block w-fit h-fit" />
+              <motion.img
+                src={icon4}
+                alt="Student Tracking"
+                className="block w-12 aspect-square"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
               <h3 className="text-xl text-white font-semibold mb-2">
                 Student Tracking
               </h3>
-              <p className="text-md text-white text-center">
+              <p className="text-md text-white text-start maxScreenMobile:text-center">
                 Monitor attendance, and performance with comprehensive analysis.
               </p>
             </motion.div>
 
             <motion.div
-              variants={fadeUp}
-              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-center items-center"
+              variants={fadeUpVariants}
+              whileHover={{
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300 }
+              }}
+              className="relative w-64 maxScreenMobile:w-full aspect-square maxScreenMobile:aspect-video border-[0.1px] border-primarySixTwo/10 rounded-md bg-primarySix/10 p-3 feature_card flex-shrink-0 flex flex-col justify-evenly maxScreenMobile:justify-center items-start maxScreenMobile:items-center cursor-pointer"
             >
-              <img src={icon6} alt={icon6} className="block w-fit h-fit" />
+              <motion.img
+                src={icon6}
+                alt="Earning Dashboard"
+                className="block w-12 aspect-square"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
               <h3 className="text-xl text-white font-semibold mb-2">
                 Earning Dashboard
               </h3>
-              <p className="text-md text-white text-center">
-                Get paid for your exparties with transparent tracking and
+              <p className="text-md text-white text-start maxScreenMobile:text-center">
+                Get paid for your expertise with transparent tracking and
                 flexible payment options.
               </p>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
       {/* How It Works */}
-      <section className="w-full h-fit bg-black text-white py-28">
+      <section className="w-full h-fit bg-black text-white py-20 maxScreenMobile:py-10">
         <h2 className="text-4xl font-semibold mb-2 text-center maxScreenMobile:text-2xl">
           How It Works
         </h2>
@@ -487,39 +602,46 @@ export default function NewHomePage() {
         </div>
       </section>
       {/* Popular Presentations */}
-      <section className="w-full h-fit bg-black text-white py-28">
+      <section
+        ref={presentationsRef}
+        className="w-full h-fit bg-black text-white py-20 maxScreenMobile:py-10"
+      >
         <div className="container">
           <motion.h2
+            initial="hidden"
+            animate={presentationsInView ? "show" : "hidden"}
             variants={fadeUp}
             className="text-4xl font-semibold mb-4 w-fit mx-auto maxScreenMobile:text-center"
           >
             Popular Presentations
           </motion.h2>
           <motion.p
+            initial="hidden"
+            animate={presentationsInView ? "show" : "hidden"}
             variants={fadeUp}
-            className="w-fit mx-auto text-xl text-primarySixTwo mt-4 mb-20 maxScreenMobile:mb-8"
+            className="w-fit mx-auto text-xl text-primarySixTwo mt-4 mb-20 maxScreenMobile:mb-8 maxScreenMobile:text-center"
           >
             See recently uploaded public presentations
           </motion.p>
 
-          <div className="w-full scroll-smooth min-h-[50vh] flex flex-wrap gap-6 justify-center">
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate={presentationsInView ? "show" : "hidden"}
+            className="w-full scroll-smooth min-h-[20vh] flex flex-wrap gap-6 justify-center"
+          >
             {presentations
               .slice(0, is768PxScreen ? 4 : 12)
               .map((presentation, idx) => (
                 <motion.div
                   key={presentation.id}
                   variants={fadeUp}
-                  transition={{
-                    duration: 0.7,
-                    delay: 0.12 + idx * 0.12,
-                    ease: "easeOut"
-                  }}
                   className="w-[250px] maxSmallMobile:w-full min-w-[180px] flex-shrink-0"
                 >
                   <Card presentation={presentation} refresh={refetch} />
                 </motion.div>
               ))}
-          </div>
+          </motion.div>
 
           <Link
             to="/public_presentation"
@@ -530,7 +652,7 @@ export default function NewHomePage() {
         </div>
       </section>
       {/* Loved By Tutor and Students */}
-      <section className="w-full h-fit bg-gradient-to-b from-black to-[#222020] text-white py-28">
+      <section className="w-full h-fit bg-gradient-to-b from-black to-[#222020] text-white py-20 maxScreenMobile:py-10">
         <motion.div
           ref={lovedRef}
           initial="hidden"
@@ -567,7 +689,7 @@ export default function NewHomePage() {
 
           <motion.div
             variants={container}
-            className="flex justify-center items-center gap-8 mt-20 flex-wrap maxScreenMobile:gap-6"
+            className="flex justify-center items-center gap-8 mt-20 maxScreenMobile:mt-10 flex-wrap maxScreenMobile:gap-6"
           >
             {/* testimonials go here */}
             <motion.div
@@ -603,7 +725,7 @@ export default function NewHomePage() {
         </motion.div>
       </section>
       {/* Ready to Teach smarter with PPTLinks */}
-      <section className="w-full h-fit bg-black text-white py-28">
+      <section className="w-full h-fit bg-black text-white py-20 maxScreenMobile:py-10">
         <motion.div
           ref={readyRef}
           initial="hidden"
@@ -619,7 +741,7 @@ export default function NewHomePage() {
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="w-fit mx-auto text-xl text-primarySixTwo mt-4 mb-20 maxScreenMobile:text-center"
+            className="w-fit mx-auto text-xl text-primarySixTwo mt-4 mb-10 maxScreenMobile:text-center"
           >
             Join thousands of educators who are already transforming their
             teaching experience
@@ -631,7 +753,7 @@ export default function NewHomePage() {
             <motion.div variants={fadeUp}>
               <Link
                 to={"#"}
-                className={`block w-fit px-10 text-center maxScreenMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] font-normal _text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3`}
+                className={`block w-fit px-10 text-center text-black maxScreenMobile:px-4 py-1 bg-gradient-to-r from-primarySixTwo to-[#ffa60034] font-normal _text-primaryTwo responsiveText rounded-md maxScreenMobile:w-fit maxScreenMobile:mb-3`}
               >
                 Join as Tutor
               </Link>
@@ -648,13 +770,13 @@ export default function NewHomePage() {
           </motion.div>
           <motion.p
             variants={fadeUp}
-            className="w-fit mx-auto text-xl text-primarySixTwo mt-4"
+            className="w-fit mx-auto text-xl text-primarySixTwo mt-4 maxScreenMobile:text-center"
           >
             It&apos;s free to get started. No credit card required.
           </motion.p>
         </motion.div>
       </section>
       <Footer />
-    </div>
+    </>
   );
 }
